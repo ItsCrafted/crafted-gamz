@@ -1,13 +1,15 @@
 {
-    "name": "crafted-gamz",
-    "version": "12.0.0",
-    "description": "Crafted Gamz Version 12",
-    "main": "index.html",
-    "scripts": {
-      "build": "echo 'No build needed'",
-      "start": "echo 'No start command'"
-    },
-    "dependencies": {},
-    "devDependencies": {}
-  }
-  
+  "name": "crafted-gamz",
+  "version": "12.0.0",
+  "description": "Crafted Gamz Version XII",
+  "main": "index.html",
+  "scripts": {
+    "build": "echo 'No build needed'",
+    "start": "echo 'No start command'"
+  },
+  "engines": {
+    "node": "18"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
