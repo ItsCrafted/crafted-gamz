@@ -1,0 +1,13 @@
+{
+    "name": "crafted-gamz",
+    "version": "12.0.0",
+    "description": "Crafted Gamz Version 12",
+    "main": "index.html",
+    "scripts": {
+      "build": "echo 'No build needed'",
+      "start": "echo 'No start command'"
+    },
+    "dependencies": {},
+    "devDependencies": {}
+  }
+  
