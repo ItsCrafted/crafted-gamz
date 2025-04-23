@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="style.css" />
+    <script>
+      // Load settings from localStorage
+      const redirectUrl = localStorage.getItem("panicRedirectUrl") || "https://www.wikipedia.org";
+      const keyCode = parseInt(localStorage.getItem("panicKeyCode"), 10) || 27;
+  
+      // Panic action function
+      function triggerPanic() {
+        // Open the redirect URL
+        // Replace the current page
+        window.location.replace(redirectUrl);
+      }
+  
+      // Add event listener for the hotkey (keydown event)
+      document.addEventListener("keydown", function(event) {
+        if (event.keyCode === keyCode) {
+          triggerPanic();
+        }
+      });
+  
+      // Optional: Allow click on the Panic Button to trigger the same action
+      document.getElementById("panic-button").addEventListener("click", function(event) {
+        event.preventDefault(); // Prevent default link behavior
+        triggerPanic();
+      });
+    </script>
+  </head>
+  <body>
+    <div class="calculator-container">
+      <div class="calculator">
+        <input type="text" class="calculator-screen" id="result" disabled />
+        <div class="calculator-keys">
+          <button type="button" class="key function" value="all-clear">
+            AC
+          </button>
+          <button type="button" class="key function" value="delete">DEL</button>
+          <button type="button" class="key function operator" value="%">
+            %
+          </button>
+          <button type="button" class="key operator" value="/">÷</button>
+
+          <button type="button" class="key" value="7">7</button>
+          <button type="button" class="key" value="8">8</button>
+          <button type="button" class="key" value="9">9</button>
+          <button type="button" class="key operator" value="*">×</button>
+
+          <button type="button" class="key" value="4">4</button>
+          <button type="button" class="key" value="5">5</button>
+          <button type="button" class="key" value="6">6</button>
+          <button type="button" class="key operator" value="-">−</button>
+
+          <button type="button" class="key" value="1">1</button>
+          <button type="button" class="key" value="2">2</button>
+          <button type="button" class="key" value="3">3</button>
+          <button type="button" class="key operator" value="+">+</button>
+
+          <button type="button" class="key" value="0">0</button>
+          <button type="button" class="key" value=".">.</button>
+          <button type="button" class="key operator equal-sign" value="=">
+            =
+          </button>
+        </div>
+      </div>
+      <footer>All Rights Reserved © 2020 @xiabytes (xiacodes)</footer>
+      <footer>All Rights Reserved © 2023-2025 Crafted Gamz</footer>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
