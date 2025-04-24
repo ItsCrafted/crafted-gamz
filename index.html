@@ -34,12 +34,29 @@
       font-weight: bold;
       color: #00ffcc;
     }
+
+    button {
+      margin-top: 2em;
+      padding: 1em 2em;
+      font-size: 1.2rem;
+      background-color: #00ffcc;
+      color: #000;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #00cc99;
+    }
   </style>
 </head>
 <body>
   <h1>Uh oh!</h1>
   <p>Crafted Gamz is currently under maintenance.<br>Scheduled return: <strong>May 5th, 2025</strong></p>
   <div id="countdown">Loading countdown...</div>
+
+  <button onclick="window.location.href='game/index.html';">Play a Game in the Meantime</button>
 
   <script>
     const countdownElement = document.getElementById("countdown");
