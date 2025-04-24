@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <link rel="icon" href="favicon.png">
   <title>Crafted Gamz | Main Page</title>
   <style>
     body, html {
@@ -59,18 +60,19 @@
       height: 250px;
       border-radius: 12px;
       opacity: 0.85;
-      transition: transform 0.2s ease;
+      transition: transform 0.2s ease, background-color 0.3s ease;
       padding: 20px;
       color: white;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      justify-content: center;
       text-align: center;
       overflow: hidden;
     }
 
     .box:hover {
       transform: scale(1.05);
+      background-color: #007bff;
     }
 
     .version-text {
@@ -86,31 +88,43 @@
       background: linear-gradient(135deg, #007bff, #00d4ff);
       -webkit-background-clip: text;
       color: transparent;
-      font-size: 3.5em;
+      font-size: 150px;
       font-weight: bold;
       transition: transform 0.3s, background 0.3s, box-shadow 0.3s;
     }
 
-    .version-text h1 span {
-  background: linear-gradient(135deg, #007bff, #00d4ff);
-  -webkit-background-clip: text;
-  color: transparent;
-  font-size: 2.2em; 
-  font-weight: bold;
-  transition: transform 0.3s, background 0.3s, box-shadow 0.3s;
-}
+    .social-icons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 10px;
+    }
 
-.version-text h1 .version {
-  color: white;
-  font-size: 1.5em;
-}
+    .icon {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+      border-radius: 8px;
+      transition: transform 0.2s ease;
+    }
 
+    .icon:hover {
+      transform: scale(1.2);
+    }
 
     .box img {
-      width: 100%;
+      max-width: 100%;
       height: auto;
       border-radius: 8px;
       margin-bottom: 15px;
+    }
+
+    .box4 img, .box5 img {
+      display: none;
+    }
+
+    .box6 img {
+      display: block;
     }
 
     .box1 { background-color: #05acac; }
@@ -146,32 +160,43 @@
   <div class="container">
     <div class="box box1">
       <h2>#1 Most Popular</h2>
-      <img src="image1.jpg" alt="Image 1">
-      <p>This is a description for box 1. You can add more information here.</p>
+      <p>Drive Mad is the current leader!</p>
     </div>
     <div class="box box2">
       <h2>Choice Of The Month</h2>
-      <img src="image2.jpg" alt="Image 2">
-      <p>This is a description for box 2. You can add more information here.</p>
+      <p>Snow Rider 3D is Crafted's choice of the month!</p>
     </div>
     <div class="box box3">
-      <h2>Glitchless</h2>
-      <img src="image3.jpg" alt="Image 3">
-      <p>This is a description for box 3. You can add more information here.</p>
+      <h2>Newest Feature</h2>
+      <p>The Newest Feature Is Release 12.0.0 💀</p>
     </div>
     <div class="box box4">
-      <h2>Newest Feature</h2>
-      <img src="image4.jpg" alt="Image 4">
-      <p>This is a description for box 4. You can add more information here.</p>
+      <h2>Credits And Thanks</h2>
+      <p>Website coded by Crafted, Under Crafted Gamz, with help from ai 💀💀.</p>
+      <p>Website files hosted on Github and deployed with Netlifty.</p>
+      <p>Idea came from LJH Web Games, Jordan's Math Work, and T.P.E.</p>
+      <p>Credit and thanks to 3kh0 for most of the games.</p>
     </div>
     <div class="box box5">
-      <h2>Update Log</h2>
-      <p>This is a description for box 5. You can add more information here.</p>
+      <h2>Do it Yourself</h2>
+      <p>Watch this vid to learn how to deploy Crafted Gamz for yourself</p>
     </div>
     <div class="box box6">
-      <h2>Future Ideas</h2>
-      <img src="image6.jpg" alt="Image 6">
-      <p>This is a description for box 6. You can add more information here.</p>
+      <h2>Social & Contact</h2>
+      <div class="social-icons">
+        <a href="https://pastebin.com/u7e9dA1p" target="_blank">
+          <img src="img/discord.png" alt="Discord" class="icon">
+        </a>
+        <a href="mailto:craftedgamz@outlook.com" target="_blank">
+          <img src="img/email.png" alt="Email" class="icon">
+        </a>
+        <a href="https://github.com/ItsCrafted" target="_blank">
+          <img src="img/github.png" alt="GitHub" class="icon">
+        </a>
+        <a href="https://youtube.com/@its_crafted" target="_blank">
+          <img src="img/youtube.png" alt="YouTube" class="icon">
+        </a>
+      </div>
     </div>
   </div>
 
