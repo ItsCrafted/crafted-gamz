@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Crafted Gamz Grid</title>
+  <title>Crafted Gamz | Main Page</title>
   <style>
     body, html {
       margin: 0;
@@ -56,10 +56,17 @@
     }
 
     .box {
-      height: 150px;
+      height: 250px;
       border-radius: 12px;
       opacity: 0.85;
       transition: transform 0.2s ease;
+      padding: 20px;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      text-align: center;
+      overflow: hidden;
     }
 
     .box:hover {
@@ -67,16 +74,44 @@
     }
 
     .version-text {
-  text-align: center;
-  font-size: 3em;
+      text-align: center;
+      font-size: 3em;
+      font-weight: bold;
+      color: white;
+      margin-top: 20vh;
+      margin-bottom: 1vh;
+    }
+
+    .version-text h1 span {
+      background: linear-gradient(135deg, #007bff, #00d4ff);
+      -webkit-background-clip: text;
+      color: transparent;
+      font-size: 3.5em;
+      font-weight: bold;
+      transition: transform 0.3s, background 0.3s, box-shadow 0.3s;
+    }
+
+    .version-text h1 span {
+  background: linear-gradient(135deg, #007bff, #00d4ff);
+  -webkit-background-clip: text;
+  color: transparent;
+  font-size: 2.2em; 
   font-weight: bold;
-  color: #ffffff;
-  margin-top: 20vh; /* Keeps the text positioned well from the top */
-  margin-bottom: 1vh; /* Adjusted to reduce the space to the boxes */
+  transition: transform 0.3s, background 0.3s, box-shadow 0.3s;
+}
+
+.version-text h1 .version {
+  color: white;
+  font-size: 1.5em;
 }
 
 
-
+    .box img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
 
     .box1 { background-color: #05acac; }
     .box2 { background-color: #96f3f5; }
@@ -100,21 +135,44 @@
     <a href="main.html">Home</a>
     <a href="search.html">Search</a>
     <a href="games.html">Games</a>
-    <a href="settings.html">Settings</a>
     <a href="apps.html">Apps</a>
+    <a href="settings.html">Settings</a>
   </nav>
   
   <div class="version-text">
-    <h1>Crafted Gamz Version XII</h1>
+    <h1><span>Crafted Gamz</span><br><span class="version">Version XII</span></h1>
   </div>  
 
   <div class="container">
-    <div class="box box1"></div>
-    <div class="box box2"></div>
-    <div class="box box3"></div>
-    <div class="box box4"></div>
-    <div class="box box5"></div>
-    <div class="box box6"></div>
+    <div class="box box1">
+      <h2>#1 Most Popular</h2>
+      <img src="image1.jpg" alt="Image 1">
+      <p>This is a description for box 1. You can add more information here.</p>
+    </div>
+    <div class="box box2">
+      <h2>Choice Of The Month</h2>
+      <img src="image2.jpg" alt="Image 2">
+      <p>This is a description for box 2. You can add more information here.</p>
+    </div>
+    <div class="box box3">
+      <h2>Glitchless</h2>
+      <img src="image3.jpg" alt="Image 3">
+      <p>This is a description for box 3. You can add more information here.</p>
+    </div>
+    <div class="box box4">
+      <h2>Newest Feature</h2>
+      <img src="image4.jpg" alt="Image 4">
+      <p>This is a description for box 4. You can add more information here.</p>
+    </div>
+    <div class="box box5">
+      <h2>Update Log</h2>
+      <p>This is a description for box 5. You can add more information here.</p>
+    </div>
+    <div class="box box6">
+      <h2>Future Ideas</h2>
+      <img src="image6.jpg" alt="Image 6">
+      <p>This is a description for box 6. You can add more information here.</p>
+    </div>
   </div>
 
 </body>
