@@ -2,7 +2,7 @@
   "name": "crafted-gamz",
   "version": "12.0.0",
   "description": "Crafted Gamz Version XII",
-  "main": "index.html",
+  "main": "Temp/broken.html",
   "scripts": {
     "build": "echo 'No build needed'",
     "start": "echo 'No start command'"
