@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Crafted Gamz Grid</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: sans-serif;
+      overflow-x: hidden;
+    }
+
+    iframe {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1;
+      border: none;
+    }
+
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      padding: 20px;
+      text-align: center;
+      z-index: 2;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin: 0 20px;
+      font-weight: bold;
+      font-size: 16px;
+      transition: color 0.2s;
+    }
+
+    nav a:hover {
+      color: #96f3f5;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 40px;
+      padding: 60px;
+      padding-top: 20vh;
+      box-sizing: border-box;
+    }
+
+    .box {
+      height: 150px;
+      border-radius: 12px;
+      opacity: 0.85;
+      transition: transform 0.2s ease;
+    }
+
+    .box:hover {
+      transform: scale(1.05);
+    }
+
+    .version-text {
+  text-align: center;
+  font-size: 3em;
+  font-weight: bold;
+  color: #ffffff;
+  margin-top: 20vh; /* Keeps the text positioned well from the top */
+  margin-bottom: 1vh; /* Adjusted to reduce the space to the boxes */
+}
+
+
+
+
+    .box1 { background-color: #05acac; }
+    .box2 { background-color: #96f3f5; }
+    .box3 { background-color: #3fedf3; }
+    .box4 { background-color: #1ea3a3; }
+    .box5 { background-color: #73e0e4; }
+    .box6 { background-color: #30d3d9; }
+
+    @media (max-width: 768px) {
+      .container {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <iframe src="bg.html"></iframe>
+
+  <nav>
+    <a href="main.html">Home</a>
+    <a href="search.html">Search</a>
+    <a href="games.html">Games</a>
+    <a href="settings.html">Settings</a>
+    <a href="apps.html">Apps</a>
+  </nav>
+  
+  <div class="version-text">
+    <h1>Crafted Gamz Version XII</h1>
+  </div>  
+
+  <div class="container">
+    <div class="box box1"></div>
+    <div class="box box2"></div>
+    <div class="box box3"></div>
+    <div class="box box4"></div>
+    <div class="box box5"></div>
+    <div class="box box6"></div>
+  </div>
+
+</body>
+</html>
