@@ -81,7 +81,7 @@
     <p>Please read and understand the entire agreement</p>
     <p>Estimated 5 minute read</p>
     <div class="tos-box">
-      <iframe src="version-10/Files/legaldocs.txt" width="100%" height="100%"></iframe>
+      <iframe src="legaldocs.txt" width="100%" height="100%"></iframe>
     </div>
     <div class="tos-checkbox">
       <input type="checkbox" id="tos-checkbox"> 
@@ -91,15 +91,14 @@
   </div>
 
   <script>
-    // Check if the user has already read the TOS
+
     if (localStorage.getItem('read') === 'true') {
-      window.location.href = 'index2.html'; // Redirect if TOS has been accepted
+      window.location.href = 'main.html';
     }
 
     const continueBtn = document.getElementById('continue-btn');
     const tosCheckbox = document.getElementById('tos-checkbox');
 
-    // Enable/disable the continue button based on checkbox state
     tosCheckbox.addEventListener('change', function() {
       if (tosCheckbox.checked) {
         continueBtn.classList.add('enabled');
@@ -108,11 +107,10 @@
       }
     });
 
-    // When user clicks continue, save the read status and redirect
     continueBtn.addEventListener('click', function() {
       if (tosCheckbox.checked) {
-        localStorage.setItem('read', 'true'); // Save that the user has read the TOS
-        window.location.href = 'index2.html'; // Redirect to the desired page (e.g., home page)
+        localStorage.setItem('read', 'true'); 
+        window.location.href = 'main.html'; 
       }
     });
   </script>
