@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <link rel="icon" href="favicon.png">
-  <title>Crafted Gamz | Main Page</title>
+  <title>Crafted Gamz | Apps</title>
   <style>
     body, html {
       margin: 0;
@@ -33,7 +33,7 @@
       text-align: center;
       z-index: 2;
     }
-
+    
     nav a {
       color: white;
       text-decoration: none;
@@ -46,11 +46,122 @@
     nav a:hover {
       color: #96f3f5;
     }
+
+    .container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  padding-top: 5vh;
+}
+
+.box {
+  background-color: rgba(0, 0, 0, 0.7);
+  border-radius: 12px;
+  padding: 20px;
+  transition: transform 0.2s ease, background-color 0.3s ease;
+  color: white;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 200px;
+  height: 300px;
+  margin: 10px; 
+}
+
+
+    .box:hover {
+      transform: scale(1.05);
+      background-color: #081a2e;
+    }
+
+    .box img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+
+    .box .text {
+      font-size: 1.2em;
+      font-weight: bold;
+    }
+    .search-dropdown {
+  width: 300px;
+  margin: 0 auto 10px;
+  position: relative;
+  z-index: 1;
+}
+
+  #dropdownSearch {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 2px solid #00ffe5;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    font-size: 16px;
+    outline: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 5px #00ffe5;
+  }
+
+  #dropdownSearch:focus {
+    background: rgba(0, 0, 0, 0.9);
+    box-shadow: 0 0 15px #00ffe5, 0 0 30px #00ffe5;
+  }
+
+#dropdownList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 0 0 10px 10px;
+  z-index: 1;
+  max-height: 200px;
+  overflow-y: auto;
+  display: none;
+}
+
+#dropdownList li {
+  padding: 10px;
+  color: white;
+  cursor: pointer;
+}
+
+#dropdownList li:hover {
+  background-color: #96f3f5;
+  color: black;
+}
+h1 {
+  font-size: 3rem;
+  color: #ffffff;
+  font-weight: bold;
+  line-height: 1.2;
+  margin: 3em auto;
+  text-align: center;
+}
+h2 {
+  font-size: 3rem;
+  color: #ffffff;
+  font-weight: bold;
+  line-height: 1.2;
+  margin: 3em auto;
+  text-align: center;
+}
   </style>
 </head>
 <body>
 
   <iframe src="bg.html"></iframe>
+
+  <h1>Apps</h1>
 
   <nav>
     <a href="main.html">Home</a>
@@ -61,5 +172,75 @@
     <a href="settings.html">Settings</a>
   </nav>
 
+  <div class="search-dropdown">
+    <input type="text" id="dropdownSearch" placeholder="Search..." onkeyup="filterDropdown()">
+    <ul id="dropdownList"></ul>
+  </div>
+
+  <div class="container">
+    <a href="Game_Launchers/1/index.html" class="box">
+      <img src="img/gicon/1.png" alt="Icon">
+      <h3>1</h3>
+    </a>
+  </div>
+
+<h2>Thats All Folks 🤓☝️</h2>
+
+<script>
+  const searchInput = document.getElementById("dropdownSearch");
+  const dropdownList = document.getElementById("dropdownList");
+
+  const gameBoxes = document.querySelectorAll(".box h3");
+
+  gameBoxes.forEach(box => {
+    const li = document.createElement("li");
+    li.textContent = box.textContent;
+    li.addEventListener("click", () => {
+      const targetBox = Array.from(gameBoxes).find(g => g.textContent === li.textContent);
+      const container = targetBox.closest(".box");
+
+      container.scrollIntoView({ behavior: "smooth", block: "center" });
+
+      container.style.boxShadow = "0 0 20px 5px #00ffe5";
+      container.style.border = "2px solid #00ffe5";
+
+      setTimeout(() => {
+        container.style.boxShadow = "";
+        container.style.border = "";
+      }, 10000);
+    });
+    dropdownList.appendChild(li);
+  });
+
+  function filterDropdown() {
+    const value = searchInput.value.toLowerCase();
+    const items = dropdownList.getElementsByTagName("li");
+    let matches = 0;
+
+    for (let item of items) {
+      if (item.textContent.toLowerCase().includes(value)) {
+        item.style.display = "";
+        matches++;
+      } else {
+        item.style.display = "none";
+      }
+    }
+
+    dropdownList.style.display = matches > 0 ? "block" : "none";
+  }
+</script>
+<script>
+  const totalGames = document.querySelectorAll(".box").length;
+
+  const counter = document.createElement("div");
+  counter.textContent = `Game Count: ${totalGames}`;
+  counter.style.color = "#00ffe5";
+  counter.style.fontWeight = "bold";
+  counter.style.fontSize = "20px";
+  counter.style.textAlign = "center";
+  counter.style.marginTop = "100px"; 
+
+  document.body.insertBefore(counter, document.querySelector(".search-dropdown"));
+</script>
 </body>
 </html>
