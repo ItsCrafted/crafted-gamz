@@ -90,10 +90,9 @@
       font-size: 1.2em;
       font-weight: bold;
     }
-
     .search-dropdown {
   width: 300px;
-  margin: 1px auto 10px;
+  margin: 0 auto 10px;
   position: relative;
   z-index: 1;
 }
@@ -1433,7 +1432,6 @@ h2 {
 
   const gameBoxes = document.querySelectorAll(".box h3");
 
-  // Build the dropdown list
   gameBoxes.forEach(box => {
     const li = document.createElement("li");
     li.textContent = box.textContent;
@@ -1470,6 +1468,19 @@ h2 {
 
     dropdownList.style.display = matches > 0 ? "block" : "none";
   }
+</script>
+<script>
+  const totalGames = document.querySelectorAll(".box").length;
+
+  const counter = document.createElement("div");
+  counter.textContent = `Game Count: ${totalGames}`;
+  counter.style.color = "#00ffe5";
+  counter.style.fontWeight = "bold";
+  counter.style.fontSize = "20px";
+  counter.style.textAlign = "center";
+  counter.style.marginTop = "100px"; 
+
+  document.body.insertBefore(counter, document.querySelector(".search-dropdown"));
 </script>
 </body>
 </html>
