@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crafted Gamz</title>
+  <style>
+    /* Style for the buttons container */
+    .button-container {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      padding: 10px;
+      background-color: #333;
+      z-index: 100;
+    }
+
+    /* Style for individual buttons */
+    .button {
+      background-color: transparent;
+      color: white;
+      border: 2px solid white;
+      border-radius: 25px; /* Rounded corners */
+      padding: 10px 20px;
+      margin: 0 10px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .button:hover {
+      background-color: white;
+      color: black;
+    }
+
+    /* iframe styling */
+    iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      border: none;
+      overflow: hidden; /* Hide both horizontal and vertical scrollbars */
+    }
+
+    /* To prevent the body from having extra space, we hide overflow */
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    /* Style for the shout-out text */
+    .shout-out {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      background-color: rgba(0, 0, 0, 0.7);
+      color: white;
+      padding: 10px 15px;
+      border-radius: 5px;
+      font-size: 10px;
+      z-index: 101;
+    }
+  </style>
+</head>
+<body>
+  <!-- Bottom button container -->
+  <div class="button-container">
+    <button class="button" onclick="location.reload()">Reload</button>
+    <button class="button" onclick="window.location.href='../../gameloader.html'">Go Back To Main Page</button>
+    <button class="button" onclick="toggleFullScreen()">Fullscreen</button>
+  </div>
+
+  <!-- iframe that loads the website -->
+  <iframe src="" id="myIframe"></iframe>
+
+  <!-- Shout-out message -->
+  <div class="shout-out">
+    Massive shout out to QuiteAFancyEmerald and gogo6211, without them, this wouldn't have been possible! Shout out Koyeb Web Services!
+  </div>
+
+  <script>
+    // Function to toggle fullscreen
+    function toggleFullScreen() {
+      var iframe = document.getElementById("myIframe");
+      if (iframe.requestFullscreen) {
+        iframe.requestFullscreen();
+      } else if (iframe.mozRequestFullScreen) { // Firefox
+        iframe.mozRequestFullScreen();
+      } else if (iframe.webkitRequestFullscreen) { // Chrome, Safari, Opera
+        iframe.webkitRequestFullscreen();
+      } else if (iframe.msRequestFullscreen) { // IE/Edge
+        iframe.msRequestFullscreen();
+      }
+    }
+
+    // Fetch the link from the raw GitHub file
+    fetch('https://raw.githubusercontent.com/ItysCrafted/cgpup-link/main/link.txt')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.text();
+      })
+      .then(link => {
+        const iframe = document.getElementById('myIframe');
+        iframe.src = link.trim(); // Set the iframe src to the fetched link
+      })
+      .catch(error => {
+        console.error('There was a problem with the fetch operation:', error);
+      });
+  </script>
+</body>
+</html>

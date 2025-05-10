@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Time Fetcher</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background-color: #121212;
+      color: white;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    .time-info {
+      font-size: 24px;
+      margin-bottom: 30px;
+    }
+
+    #redirect-button {
+      padding: 15px 30px;
+      background-color: #333;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    #redirect-button:hover {
+      background-color: #444;
+    }
+
+    #redirect-button:active {
+      background-color: #555;
+    }
+  </style>
+</head>
+<body>
+  <button id="redirect-button" onclick="window.location.href='HTMLN43.html'">Go Back To Miscellaneous</button>
+
+  <h1>Live Time Tracker</h1>
+  <div class="time-info">
+    Total time: <span id="time-display">0 seconds</span>
+  </div>
+
+  <script>
+    const timeDisplay = document.getElementById('time-display');
+    const localStorageKey = 'iframeTimeSpent';
+
+    function updateTime() {
+      // Fetch the current time from localStorage
+      const totalTime = parseInt(localStorage.getItem(localStorageKey), 10) || 0;
+      timeDisplay.textContent = formatTime(totalTime);
+    }
+
+    // Poll localStorage every second for updates
+    setInterval(updateTime, 1000); // Poll every 1 second
+    updateTime(); // Initial fetch
+
+    // Format time into readable units
+    function formatTime(seconds) {
+      const units = [
+        { label: 'month', value: 2592000 }, // 30 days
+        { label: 'day', value: 86400 },
+        { label: 'hour', value: 3600 },
+        { label: 'minute', value: 60 },
+        { label: 'second', value: 1 },
+      ];
+
+      let timeString = '';
+      for (const { label, value } of units) {
+        const count = Math.floor(seconds / value);
+        if (count > 0) {
+          timeString += `${count} ${label}${count > 1 ? 's' : ''} `;
+          seconds %= value;
+        }
+      }
+      return timeString.trim() || '0 seconds';
+    }
+  </script>
+</body>
+</html>
