@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="referrer" content="no-referrer">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Pulsar Network: Your free, fast, and secure web proxy solution.">
+    <meta name="keywords" content="proxy, web proxy, Pulsar Network, unblock websites, free web proxy, proxy server">
+    <meta name="theme-color" content="#222831">
+    <meta name="googlebot" content="index, follow, snippet">
+    <meta name="robots" content="index, follow">
+    <title>Pulsar</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="icon" href="Imgs/favicon.png" type="image/x-icon">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- UV Scripts -->
+    <!-- Link to external CSS file -->
+    <link rel="stylesheet" href="css/i.css">
+
+    <script src="/uv/uv.bundle.js"></script>
+    <script src="/uv/uv.config.js"></script>
+    <script src="/baremux/index.js"></script>
+<style>
+* {
+    cursor: auto !important;
+}
+body {
+    zoom: 0.8;
+}
+    #searchButton {
+  display: none;
+    }
+    body {
+  position: relative;
+}
+#urlInput {
+    width: 35rem;
+    height: 4rem;
+    background: #ffffff;
+    color: rgb(0, 0, 0);
+    outline: none;
+    border: none;
+    padding: 14px;
+    font-size: 2rem;
+    font-weight: 900;
+    border-radius: 1rem;
+    align-self: center;
+    align-items: center;
+    align-content: center;
+}
+#MyInput {
+    width: 35rem;
+    height: 4rem;
+    background: #ffffff;
+    color: rgb(0, 0, 0);
+    outline: none;
+    border: none;
+    padding: 14px;
+    font-size: 1rem;
+    font-weight: 900;
+    border-radius: 1rem;
+}
+
+#frame {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    background: black;
+    outline: none;
+    border: none;
+}
+.iframeWindow {
+    position: absolute;
+    width: 125vw;
+    height: 106vh;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    left: 0;
+    bottom: -12.8vh;
+    background-color: #00000000;
+    z-index: -1;
+}
+
+#switcher {
+    position: absolute;
+    z-index: 999;
+}
+#reloadButton {
+    position: absolute;
+    z-index: 999;
+}
+#searchButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #111;
+  color: rgb(0, 0, 0);
+  padding: 10px 20px;
+  font-size: 14px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
+}
+
+#searchButton:hover {
+  background-color: #111;
+}
+body {
+    background-color: linear-gradient(135deg, #0f0063, #4e06a0, #b300ff)
+}
+#switcher {
+  position: absolute;
+  top: 0.25%;
+  right: 0.5%;
+  padding: 12.5px 20px;
+  font-size: 20px;
+  border-radius: 4px;
+  background-color: #000000;
+  color: #ffffff;
+  appearance: none;
+  height: 6.5vh;
+  width: 11.5vw;
+}
+#reloadButton {
+  position: absolute;
+  top: 5%;
+  left: 7.5%;
+  padding: 15px 20px;
+  font-size: 20px;
+  border: none;
+  background-color: #00000000;
+  color: #ffffff;
+  appearance: none;
+}
+#switcher option {
+  padding: 10px;
+}
+#overlay {
+            position: fixed;
+            top: 7vh;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            z-index: 9999;
+            display: none;
+        }
+        #iframeWindow {
+            z-index: 9999;
+            display: none;
+        }
+        #topBar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6vh;
+            background: #000000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 5px;
+        }
+        #topUrlInput {
+            width: 75%;
+            height: 3.25vh;
+            background: #ffffff;
+            color: #000000;
+            outline: none;
+            border: none;
+            padding: 5px;
+            font-size: 1.25rem;
+            font-weight: 600;
+            border-radius: 5px;
+        }
+        #topGoButton {
+            height: 4vh;
+            margin-left: 5px;
+            background: #111;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            padding: 5px 10px;
+        }
+</style>
+    <script>
+        if ("serviceWorker" in navigator) {
+            window.addEventListener("load", async () => {
+                await navigator.serviceWorker.register("/uv/sw.js");
+            });
+        }
+        </script>
+
+</head>
+<body>
+    <div id="overlay"></div>
+    <div id="topBar">
+        <button class="reloadButton" id="reloadButton"><i class="fas fa-redo"></i></button>
+        <input type="text" id="topUrlInput" placeholder="Enter URL...">
+    </div>
+    <h1 id="stitle">Pulsar</h1>
+    <p id="memo">Browse the web unblocked, for free</p>
+    </br></br>
+    <div style="display: flex; justify-content: center; align-items: center;">
+        <div style="position: relative;">
+            <input type="text" id="urlInput" placeholder="" style="padding-left: 50px;">
+            <i class="fa fa-search" aria-hidden="true" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: black;"></i>
+        </div>
+    </div>
+    
+    <button class="searchButton" id="searchButton"></button>
+    <select id="switcher">
+        <option value="">Search Options</option>
+        <option value="epoxy">Epoxy</option>
+        <option value="bare">Bare</option>
+    </select>
+    
+    <iframe id="iframeWindow" class="iframeWindow"></iframe>
+
+
+    <script>
+        document.getElementById('topGoButton').addEventListener('click', function() {
+            const url = document.getElementById('topUrlInput').value;
+            const iframe = document.getElementById('iframeWindow');
+            if (url) {
+                iframe.src = url;
+            }
+        });
+    
+        document.getElementById('searchButton').addEventListener('click', function() {
+            const searchUrl = document.getElementById('urlInput').value;
+            const iframe = document.getElementById('iframeWindow');
+            if (searchUrl) {
+                iframe.src = searchUrl;
+            }
+        });
+    </script>
+    
+<script>
+    const updropButton = document.querySelector('.updrop-button');
+    const updropMenu = document.querySelector('.updrop-menu');
+    const menuOptions = document.querySelectorAll('.updrop-menu li');
+    const pulsarDiv = document.querySelector('.pulsar');
+    const resetColorOption = document.getElementById('reset-color');
+    
+    updropButton.addEventListener('click', () => {
+        updropMenu.classList.toggle('active');
+    });
+    
+    menuOptions.forEach(option => {
+        option.addEventListener('click', () => {
+            if (option.id === 'reset-color') {
+                document.body.style.backgroundImage = 'none';
+                localStorage.removeItem('bgColor');
+                pulsarDiv.style.display = 'none';
+            } else {
+                const color = option.getAttribute('data-color');
+                if (color === 'black-gradient') {
+                    document.body.style.backgroundImage = 'linear-gradient(315deg, #080ba3, black)';
+                } else if (color === 'blue-gradient') {
+                    document.body.style.backgroundImage = 'linear-gradient(315deg, #00aaff, #0044cc)';
+                } else if (color === 'green-gradient') {
+                    document.body.style.backgroundImage = 'linear-gradient(315deg, #00cc66, #003300)';
+                } else if (color === 'red-gradient') {
+                    document.body.style.backgroundImage = 'linear-gradient(315deg, #ff0000, #8b0000)';
+                } else if (color === 'black-solid') {
+                    document.body.style.backgroundImage = 'linear-gradient(315deg, #000000, #000000)';
+                } else if (color === 'white-gradient') {
+                    document.body.style.backgroundImage = 'linear-gradient(315deg, #ffffff, #f0f0f0)';
+                } else if (color === 'yellow-gradient') {
+                    document.body.style.backgroundImage = 'linear-gradient(315deg, #ffff00, #ffcc00)';
+                } else if (color === 'orange-gradient') {
+                    document.body.style.backgroundImage = 'linear-gradient(315deg, #ff6600, #ff3300)';
+                } else if (color === 'blu-gradient') {
+                    document.body.style.backgroundImage = 'linear-gradient(315deg, #080ba3, black)';
+                }
+    
+                localStorage.setItem('bgColor', document.body.style.backgroundImage);
+                pulsarDiv.style.display = 'block';
+            }
+    
+            updropMenu.classList.remove('active'); // Close the menu after a selection
+        });
+    });
+    
+    document.addEventListener('click', (e) => {
+        if (!updropButton.contains(e.target) && !updropMenu.contains(e.target)) {
+            updropMenu.classList.remove('active'); // Close the menu if clicked outside
+        }
+    });
+    
+    </script>    
+    <script>
+    const color = option.getAttribute('data-color');
+    
+    if (color === 'black-solid') {
+        document.body.style.backgroundImage = 'linear-gradient(315deg, #000000, #000000)';
+    } else if (color === 'green-gradient') {
+        document.body.style.backgroundImage = 'linear-gradient(315deg, #00cc66, #003300)';
+    } else if (color === 'red-gradient') {
+        document.body.style.backgroundImage = 'linear-gradient(315deg, #ff0000, #8b0000)';
+    } else if (color === 'blue-gradient') {
+        document.body.style.backgroundImage = 'linear-gradient(315deg, #00aaff, #0044cc)';
+    } else if (color === 'white-gradient') {
+        document.body.style.backgroundImage = 'linear-gradient(315deg, #ffffff, #f0f0f0)'; // White gradient
+    } else if (color === 'yellow-gradient') {
+        document.body.style.backgroundImage = 'linear-gradient(315deg, #ffff00, #ffcc00)'; // Yellow gradient
+    } else if (color === 'orange-gradient') {
+        document.body.style.backgroundImage = 'linear-gradient(315deg, #ff6600, #ff3300)'; // Orange gradient
+    } else if (color === 'blu-gradient') {
+        document.body.style.backgroundImage = 'linear-gradient(315deg, #080ba3, black)'; // Blue gradient
+    }
+    
+    
+    // Save the selected background to localStorage
+    localStorage.setItem('bgColor', document.body.style.backgroundImage);
+    
+    // Display pulsarDiv after the background change
+    pulsarDiv.style.display = 'block';
+    
+    </script>
+        
+    <script>
+        window.addEventListener('DOMContentLoaded', (event) => {
+    const savedBg = localStorage.getItem('bgColor');
+    if (savedBg) {
+        document.body.style.backgroundImage = savedBg;
+    }
+    });
+    
+    </script>
+        
+    <script>
+        window.addEventListener('DOMContentLoaded', (event) => {
+    const savedBg = localStorage.getItem('bgColor');
+    if (savedBg) {
+        document.body.style.backgroundImage = savedBg;
+    }
+    });
+    
+    </script>
+    <script>
+        document.getElementById('searchButton').addEventListener('click', function() {
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('iframeWindow').style.display = 'block';
+        });
+    </script>
+<script src="example.js"></script>
+<script>
+const iframe = document.getElementById('iframeWindow');
+
+iframe.onload = () => {
+    try {
+        const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+
+        // Get the title
+        const title = iframeDocument.title;
+
+        // Get the URL
+        const url = iframe.src;
+
+        // Get the favicon
+        const favicon = iframeDocument.querySelector("link[rel~='icon']")?.href || "No favicon found";
+
+        // Log the data for debugging purposes
+        console.log("Title:", title);
+        console.log("URL:", url);
+        console.log("Favicon:", favicon);
+
+        // Send data to parent (index.html)
+        window.parent.postMessage({ title, url, favicon }, "*");
+    } catch (error) {
+        console.error("Error accessing iframe content:", error);
+    }
+};
+
+</script>
+<script>
+document.getElementById("topUrlInput").addEventListener("keypress", function(event) {
+    if (event.key === "Enter") {
+        event.preventDefault();
+        let inputValue = this.value;
+        let lowerInput = document.getElementById("urlInput");
+
+        lowerInput.value = inputValue;
+
+        let enterEvent = new KeyboardEvent("keydown", {
+            key: "Enter",
+            code: "Enter",
+            bubbles: true
+        });
+        lowerInput.dispatchEvent(enterEvent);
+    }
+});
+
+document.getElementById("urlInput").addEventListener("input", function() {
+    document.getElementById("topUrlInput").value = this.value;
+});
+document.getElementById("reloadButton").addEventListener("click", function() {
+    let iframe = document.getElementById("iframeWindow");
+    if (iframe) iframe.src = iframe.src;
+});
+
+</script>
+<script>
+    document.getElementById('uploadButton').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imageData = e.target.result;
+                localStorage.setItem('SavedBg', imageData);
+                document.body.style.backgroundImage = `url(${imageData})`;
+                document.body.style.backgroundSize = '100% 100%';
+                document.body.style.backgroundRepeat = 'no-repeat';
+                document.body.style.backgroundPosition = 'center center';
+                document.body.style.backgroundAttachment = 'fixed';
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    window.addEventListener('load', function() {
+        const savedImage = localStorage.getItem('SavedBg');
+        if (savedImage) {
+            document.body.style.backgroundImage = `url(${savedImage})`;
+            document.body.style.backgroundSize = '100% 100%';
+            document.body.style.backgroundRepeat = 'no-repeat';
+            document.body.style.backgroundPosition = 'center center';
+            document.body.style.backgroundAttachment = 'fixed';
+        }
+    });
+
+    document.querySelectorAll('.settingpic').forEach(button => {
+        button.addEventListener('click', function() {
+            const imageSrc = this.querySelector('.settingimgg').src;
+            if (imageSrc) {
+                localStorage.setItem('SavedBg', imageSrc); // Save the image to localStorage
+                document.body.style.backgroundImage = `url(${imageSrc})`;
+                document.body.style.backgroundSize = '100% 100%';
+                document.body.style.backgroundRepeat = 'no-repeat';
+                document.body.style.backgroundPosition = 'center center';
+                document.body.style.backgroundAttachment = 'fixed';
+            }
+        });
+    });
+</script>
+<script>
+document.getElementById('uploadButton').addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const imageData = e.target.result;
+            localStorage.setItem('SavedBg', imageData);
+            document.body.style.backgroundImage = `url(${imageData})`;
+            document.body.style.backgroundSize = '100% 100%';
+            document.body.style.backgroundRepeat = 'no-repeat';
+            document.body.style.backgroundPosition = 'center center';
+            document.body.style.backgroundAttachment = 'fixed';
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+window.addEventListener('load', function() {
+    const savedBg = localStorage.getItem('SavedBg');
+    if (savedBg) {
+        if (savedBg.startsWith('url(')) {
+            document.body.style.backgroundImage = savedBg;
+        } else {
+            document.body.style.background = savedBg;
+        }
+        document.body.style.backgroundSize = '100% 100%';
+        document.body.style.backgroundRepeat = 'no-repeat';
+        document.body.style.backgroundPosition = 'center center';
+        document.body.style.backgroundAttachment = 'fixed';
+    }
+});
+
+document.querySelectorAll('.settingpic').forEach(button => {
+    button.addEventListener('click', function() {
+        const imageSrc = this.querySelector('.settingimgg').src;
+        if (imageSrc) {
+            const imageStyle = `url(${imageSrc})`;
+            localStorage.setItem('SavedBg', imageStyle); 
+            document.body.style.backgroundImage = imageStyle;
+            document.body.style.backgroundSize = '100% 100%';
+            document.body.style.backgroundRepeat = 'no-repeat';
+            document.body.style.backgroundPosition = 'center center';
+            document.body.style.backgroundAttachment = 'fixed';
+        }
+    });
+});
+
+document.querySelectorAll('.updrop-menu li').forEach(item => {
+    item.addEventListener('click', function() {
+        const color = this.getAttribute('data-color'); localStorage.setItem('SavedBg', color);
+        document.body.style.background = color;
+        document.body.style.backgroundSize = '100% 100%';
+        document.body.style.backgroundRepeat = 'no-repeat';
+        document.body.style.backgroundPosition = 'center center';
+        document.body.style.backgroundAttachment = 'fixed';
+    });
+});
+</script>
+
+</body>
+</html>

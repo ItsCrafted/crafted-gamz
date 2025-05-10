@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="referrer" content="no-referrer">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Pulsar: Your free, fast, and secure web proxy solution.">
+    <meta name="keywords" content="proxy, web proxy, Pulsar, unblock websites, free web proxy, proxy server">
+    <meta name="theme-color" content="#222831">
+    <meta name="googlebot" content="index, follow, snippet">
+    <meta name="robots" content="index, follow">
+    <title>Pulsar</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="icon" href="Imgs/favicon.ico" type="image/x-icon">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/i.css">
+<style>
+
+    body, html {
+        background-image: none;
+        background-color: black;
+    }
+            .iframe-container {
+            position: absolute;
+            width: 100%;
+            height: 95%;
+            top: 5%;
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        * {
+    cursor: auto !important;
+}
+</style>
+</head>
+<body>
+
+    <!-- Navigation Bar with Tabs -->
+    <div class="search-nav-bar">
+        <div class="tabs-container" id="tabsContainer">
+            <!-- Tabs will be dynamically added here -->
+            <button id="addTab" class="tab">+</button>
+        </div>
+    </div>
+    <div class="top-bar"></div>
+
+    <!-- Custom Dropdown Menu -->
+    <div class="custom-dropdown">
+        <button class="custom-dropdown-button"><i class="fa-solid fa-bars-staggered" aria-hidden="true"></i></button>
+        <div class="dropdown-options">
+            <div class="side-bar">
+            <a href="search.html" class="searching-button"><i class="fas fa-home"></i></a>
+            <a href="ai.html" class="searching-button"><i class="fas fa-robot"></i></a>
+            <a href="games.html" class="searching-button"><i class="fa-solid fa-basketball"></i></a>
+            <a href="apps.html" class="searching-button"><i class="fas fa-mobile-alt"></i></a>
+            <a href="settings.html" class="searching-button"><i class="fas fa-cog"></i></a>
+            <a href="credits.html" class="searching-button"><i class="fas fa-book"></i></a>
+            </div>
+        </div>
+    </div>
+    <script>
+    const color = option.getAttribute('data-color');
+    
+    if (color === 'black-solid') {
+        document.body.style.backgroundImage = 'linear-gradient(315deg, #000000, #000000)';
+    } else if (color === 'green-gradient') {
+        document.body.style.backgroundImage = 'linear-gradient(315deg, #00cc66, #003300)';
+    } else if (color === 'red-gradient') {
+        document.body.style.backgroundImage = 'linear-gradient(315deg, #ff0000, #8b0000)';
+    } else if (color === 'blue-gradient') {
+        document.body.style.backgroundImage = 'linear-gradient(315deg, #00aaff, #0044cc)';
+    } else if (color === 'white-gradient') {
+        document.body.style.backgroundImage = 'linear-gradient(315deg, #ffffff, #f0f0f0)'; // White gradient
+    } else if (color === 'yellow-gradient') {
+        document.body.style.backgroundImage = 'linear-gradient(315deg, #ffff00, #ffcc00)'; // Yellow gradient
+    } else if (color === 'orange-gradient') {
+        document.body.style.backgroundImage = 'linear-gradient(315deg, #ff6600, #ff3300)'; // Orange gradient
+    } else if (color === 'blu-gradient') {
+        document.body.style.backgroundImage = 'linear-gradient(315deg, #080ba3, black)'; // Blue gradient
+    }
+    
+    
+    // Save the selected background to localStorage
+    localStorage.setItem('bgColor', document.body.style.backgroundImage);
+    
+    // Display pulsarDiv after the background change
+    pulsarDiv.style.display = 'block';
+    
+    </script>
+    
+        <script>
+const addTabButton = document.getElementById('addTab');
+const tabsContainer = document.getElementById('tabsContainer');
+let tabCount = 0;
+
+function adjustTabSize() {
+    const containerWidth = tabsContainer.offsetWidth;
+    const containerRightEdge = tabsContainer.getBoundingClientRect().right;
+    let totalWidth = 0;
+    let tabs = Array.from(tabsContainer.children);
+
+    tabs.forEach(tab => {
+        if (tab !== addTabButton) {
+            totalWidth += tab.offsetWidth;
+        }
+    });
+
+    if (containerRightEdge >= window.innerWidth - 50) {
+        const newWidth = (window.innerWidth - 50 - addTabButton.offsetWidth) / (tabs.length - 1);
+        tabs.forEach(tab => {
+            if (tab !== addTabButton) {
+                tab.style.width = `${newWidth}px`;
+            }
+        });
+    } else {
+        tabs.forEach(tab => {
+            if (tab !== addTabButton) {
+                tab.style.width = '';
+            }
+        });
+    }
+}
+function adjustIframeHeight() {
+    const iframeContainer = document.querySelector('.iframe-container');
+    if (iframeContainer) {
+        iframeContainer.querySelector('iframe').style.height = `calc(130vh - ${iframeContainer.getBoundingClientRect().top}px)`;
+    }
+}
+
+window.addEventListener('resize', adjustIframeHeight);
+document.addEventListener('DOMContentLoaded', adjustIframeHeight);
+
+function createTab() {
+    const tab = document.createElement('div');
+    tab.classList.add('tab');
+
+    tab.innerHTML = `
+        <input type="text" value="Blank Tab" readonly>
+        <i class="fa fa-times close-tab"></i>
+    `;
+
+    const tabContent = document.createElement('div');
+    tabContent.classList.add('tab-content');
+    tabContent.style.display = 'none';
+
+    const iframeContainer = document.createElement('div');
+    iframeContainer.classList.add('iframe-container');
+    iframeContainer.style.position = 'absolute';
+    iframeContainer.style.width = '100%';
+    iframeContainer.style.height = '95%';
+    iframeContainer.style.top = '100%';
+    iframeContainer.style.left = '-4%';
+
+    const iframe = document.createElement('iframe');
+    iframe.src = 'tab.html';
+    iframe.style.width = '100%';
+    iframe.style.height = `calc(130vh - ${iframeContainer.getBoundingClientRect().top}px)`;
+    iframe.style.border = 'none';
+
+    iframeContainer.appendChild(iframe);
+    tabContent.appendChild(iframeContainer);
+
+    tab.appendChild(tabContent);
+
+    const closeTabButton = tab.querySelector('.close-tab');
+    closeTabButton.addEventListener('click', () => {
+        tab.remove();
+        adjustTabSize();
+
+        if (tab.classList.contains('active')) {
+            const remainingTabs = document.querySelectorAll('.tab');
+            if (remainingTabs.length > 0) {
+                remainingTabs[0].classList.add('active');
+                const firstTabContent = remainingTabs[0].querySelector('.tab-content');
+                firstTabContent.style.display = 'block';
+            }
+        }
+    });
+
+    tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        document.querySelectorAll('.tab-content').forEach(content => content.style.display = 'none');
+        tabContent.style.display = 'block';
+    });
+
+    tabsContainer.insertBefore(tab, addTabButton);
+    tabCount++;
+    adjustTabSize();
+
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    document.querySelectorAll('.tab-content').forEach(content => content.style.display = 'none');
+    tabContent.style.display = 'block';
+}
+
+addTabButton.addEventListener('click', createTab);
+
+document.addEventListener('DOMContentLoaded', () => {
+    createTab();
+});
+
+window.addEventListener('resize', adjustTabSize);
+
+const bottomElement = document.querySelector('.bottom-element');
+
+bottomElement.addEventListener('mouseover', function() {
+  tabsContainer.classList.add('hide-custom-cursor');
+});
+
+bottomElement.addEventListener('mouseout', function() {
+  tabsContainer.classList.remove('hide-custom-cursor');
+});
+
+// CSS class to hide the custom cursor
+const style = document.createElement('style');
+style.textContent = `
+  .hide-custom-cursor .customCursor {
+    display: none;
+  }
+`;
+document.head.appendChild(style);
+
+        </script>
+        
+    
+        
+        <script>
+            const customCursor = document.getElementById('customCursor');
+            const spikes = document.getElementById('spikes');
+            let mouseX = 0;
+            let mouseY = 0;
+            let zoomFactor = 0.8; // Match your CSS zoom value
+        
+            document.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX / zoomFactor; 
+                mouseY = e.clientY / zoomFactor;
+                customCursor.style.display = 'block'; 
+            });
+        
+            document.addEventListener('mouseleave', () => {
+                customCursor.style.display = 'none'; 
+            });
+        
+            document.addEventListener('mouseenter', () => {
+                customCursor.style.display = 'block'; 
+            });
+        
+            function updateCursor() {
+                customCursor.style.left = `${mouseX}px`;
+                customCursor.style.top = `${mouseY}px`;
+        
+                const cursorRect = customCursor.getBoundingClientRect();
+                if (Math.abs(mouseX - cursorRect.left) > 10 || Math.abs(mouseY - cursorRect.top) > 10) {
+                    customCursor.style.left = `${mouseX}px`;
+                    customCursor.style.top = `${mouseY}px`;
+                }
+                requestAnimationFrame(updateCursor);
+            }
+            requestAnimationFrame(updateCursor);
+        
+            const hoverElements = document.querySelectorAll('.nav-button');
+            hoverElements.forEach(element => {
+                element.addEventListener('mouseenter', () => {
+                    spikes.classList.add('visible');
+                });
+                element.addEventListener('mouseleave', () => {
+                    spikes.classList.remove('visible');
+                });
+            });
+        </script>
+        
+<script>
+ window.addEventListener("message", (event) => {
+    if (event.origin === window.origin) {
+        const { title, url, favicon } = event.data;
+        const activeTab = document.querySelector(".tab.active");
+
+        if (activeTab) {
+            const tabId = activeTab.dataset.tabId || `tab-${Date.now()}`;
+
+            // Retrieve existing data to avoid overwriting favicon
+            let tabData = localStorage.getItem(tabId) ? JSON.parse(localStorage.getItem(tabId)) : {};
+
+            tabData.title = title || tabData.title || "Blank Tab";
+            tabData.favicon = favicon !== undefined ? favicon : tabData.favicon || "Imgs/Thebestlogo.png";
+
+            localStorage.setItem(tabId, JSON.stringify(tabData));
+            activeTab.dataset.tabId = tabId;
+
+            updateTab(activeTab);
+        }
+    }
+});
+
+function updateTab(tab) {
+    const tabTitleInput = tab.querySelector('input');
+    let tabFavicon = tab.querySelector('.favicon');
+
+    // Retrieve stored tab data
+    const tabId = tab.dataset.tabId;
+    const storedData = tabId ? JSON.parse(localStorage.getItem(tabId)) : null;
+
+    if (storedData) {
+        tab.dataset.title = storedData.title;
+        tab.dataset.favicon = storedData.favicon;
+    }
+
+    // Update the title
+    if (!tabTitleInput.value || tabTitleInput.value === "Blank Tab") {
+        tabTitleInput.value = tab.dataset.title || "Blank Tab";
+    }
+
+    // Ensure favicon persists and doesn't revert
+    if (!tabFavicon) {
+        tabFavicon = document.createElement('img');
+        tabFavicon.classList.add('favicon');
+        tab.insertBefore(tabFavicon, tabTitleInput);
+    }
+    if (tab.dataset.favicon && tabFavicon.src !== tab.dataset.favicon) {
+        tabFavicon.src = tab.dataset.favicon;
+    }
+    tabFavicon.style.width = '30px';
+    tabFavicon.style.height = '30px';
+    tabFavicon.style.marginRight = '10px';
+}
+
+// Load saved tab data on page load
+window.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".tab").forEach(tab => {
+        updateTab(tab);
+    });
+});
+
+</script>
+</body>
+</html>
