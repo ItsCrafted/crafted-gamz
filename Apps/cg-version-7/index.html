@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="shortcut icon" href="Files/favicon.png" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Protected Page</title>
+    <script>
+        let attemptsLeft = 3;  // Set the maximum number of attempts
+
+        function checkPassword() {
+            const inputPassword = document.getElementById("password").value;
+            const correctPassword = "Crafted>GG";  // Updated password
+
+            // Check if the password is correct
+            if (inputPassword === correctPassword) {
+                window.location.href = "Files/aboutblank.html";  // Redirect to the new file
+            } else {
+                attemptsLeft--;  // Decrease attempts by 1
+                alert(`Incorrect password. You have ${attemptsLeft} attempt(s) left.`);
+
+                // If no attempts are left, lock the form
+                if (attemptsLeft === 0) {
+                    alert("Too many incorrect attempts. The form is now locked.");
+                    document.getElementById("password").disabled = true;  // Disable the password field
+                    document.getElementById("submitBtn").disabled = true;  // Disable the submit button
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+    <h2>Enter Password to Access the Page</h2>
+    <form onsubmit="event.preventDefault(); checkPassword();">
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+        <button type="submit" id="submitBtn">Submit</button>
+    </form>
+</body>
+</html>

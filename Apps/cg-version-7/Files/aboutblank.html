@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<link rel="icon" type="image/x-icon" href="favicon.png">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CG Launcher</title>
+    <script>
+        function openInBlank() {
+            var newWindow = window.open('', '_blank'); // Request full-screen features
+            newWindow.document.write(`
+                <html>
+                <head>
+                    <title>about:blank</title>
+                    <style>
+                        body {
+                            margin: 0; /* Remove default margin */
+                            overflow: hidden; /* Hide scrollbars */
+                        }
+                        iframe {
+                            width: 100vw; /* Full viewport width */
+                            height: 100vh; /* Full viewport height */
+                            border: none; /* No border */
+                        }
+                    </style>
+                </head>
+                <body>
+                    <iframe src="gameloader.html"></iframe>
+                </body>
+                </html>
+            `);
+            newWindow.document.close(); // Close the document to render it
+        }
+    </script>
+    <style>
+        body {
+            display: flex;
+            justify-content: center; /* Center horizontally */
+            align-items: center; /* Center vertically */
+            height: 100vh; /* Full viewport height */
+            margin: 0; /* Remove default margin */
+            background-color: #222; /* Light gray background */
+        }
+
+        button {
+            padding: 60px 120px; /* Increase the button size */
+            font-size: 60px; /* Increase font size */
+            border: none; /* Remove default border */
+            border-radius: 5px; /* Rounded corners */
+            color: white; /* Text color */
+            cursor: pointer; /* Pointer cursor on hover */
+            outline: none; /* Remove outline */
+            background-image: url('BBI.gif'); /* Add your background image */
+            background-size: cover; /* Cover the button area */
+            background-position: center; /* Center the image */
+            text-shadow: 4px 4px 8px rgba(0, 0, 0, 1); /* Fully opaque black shadow */
+
+
+        }
+
+        button:hover {
+            background-color: #f76f00; /* Darker shade on hover */
+        }
+    </style>
+</head>
+<body>
+    <button onclick="openInBlank()">𝓞𝓹𝓮𝓷 𝓒𝓻𝓪𝓯𝓽𝓮𝓭 𝓖𝓪𝓶𝔃 𝓥𝓮𝓻𝓼𝓲𝓸𝓷 ̠7̠.̠6̠̠6̠.̠2̠ 𝓘𝓷 𝓪𝓫𝓸𝓾𝓽:𝓫𝓵𝓪𝓷𝓴</button>
+</body>
+</html>
