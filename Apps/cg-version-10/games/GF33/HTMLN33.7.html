@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="../../styles.css">
+    <title>Crafted Gamz File Sharing</title>
+    <script>
+        // Load settings from localStorage
+        const redirectUrl = localStorage.getItem("panicRedirectUrl") || "https://www.wikipedia.org";
+        const keyCode = parseInt(localStorage.getItem("panicKeyCode"), 10) || 27;
+    
+        // Panic action function
+        function triggerPanic() {
+          // Open the redirect URL
+          // Replace the current page
+          window.location.replace(redirectUrl);
+        }
+    
+        // Add event listener for the hotkey (keydown event)
+        document.addEventListener("keydown", function(event) {
+          if (event.keyCode === keyCode) {
+            triggerPanic();
+          }
+        });
+    
+        // Optional: Allow click on the Panic Button to trigger the same action
+        document.getElementById("panic-button").addEventListener("click", function(event) {
+          event.preventDefault(); // Prevent default link behavior
+          triggerPanic();
+        });
+      </script>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #000000;
+            color: white; /* Set all text to white */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column; /* Stack content vertically */
+        }
+
+        .app {
+            width: 90%;
+            max-width: 500px;
+            background: #141414;
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+            overflow: hidden; /* Prevent content from overflowing */
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        header h1 {
+            font-size: 1.8rem;
+            color: white; /* Set header text to white */
+            margin: 0;
+        }
+
+        header p {
+            font-size: 0.9rem;
+            color: white; /* Set paragraph text to white */
+        }
+
+        .section {
+            margin-bottom: 15px;
+            width: 100%; /* Ensure section takes full width */
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            color: white; /* Set label text to white */
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid white;
+            border-radius: 8px;
+            background: transparent;
+            color: white; /* Set input and textarea text to white */
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        textarea {
+            resize: none;
+            height: 60px;
+        }
+
+        .button {
+            background-color: transparent;
+            color: white; /* Set button text to white */
+            border: 2px solid white;
+            border-radius: 25px;
+            padding: 8px 15px;
+            margin: 5px 0;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.3s, color 0.3s;
+            display: block;
+            width: 100%;
+        }
+
+        .button:hover {
+            background-color: white;
+            color: black;
+        }
+
+        .preview {
+            background: #7a7a7a;
+            border-radius: 10px;
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        .preview h4 {
+            font-size: 1rem;
+            color: white; /* Set preview header text to white */
+            margin-bottom: 8px;
+        }
+
+        .preview p {
+            font-size: 0.9rem;
+            color: white; /* Set preview paragraph text to white */
+            margin: 3px 0;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 0.8rem;
+            color: white; /* Set footer text to white */
+        }
+
+        footer a {
+            color: white; /* Set link color to white */
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Retry button styling */
+        #retryButton {
+            background-color: #141414;
+            color: white;
+            border: 2px solid white;
+            border-radius: 25px;
+            padding: 5px 10px; /* Smaller padding for a smaller button */
+            cursor: pointer;
+            font-size: 0.8rem; /* Smaller font size */
+            transition: background-color 0.3s, color 0.3s;
+            width: auto; /* Let the button resize naturally */
+            margin-top: 10px;
+        }
+
+        #retryButton:hover {
+            background-color: white;
+            color: black;
+        }
+
+        /* Button outside the container */
+        #externalButton {
+            margin-top: 20px;
+            background-color: #141414;
+            color: white;
+            border: 2px solid white;
+            border-radius: 25px;
+            padding: 8px 15px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        #externalButton:hover {
+            background-color: white;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <header>
+            <h1>Crafted Cloud Services</h1>
+            <p>Effortlessly share files with anyone who owns Crafted Gamz v9 or later!</p>
+        </header>
+
+        <div class="section">
+            <label for="fileInput"> (Max 100MB) Select a file to share:</label>
+            <input type="file" id="fileInput">
+            <button class="button" id="shareButton">Generate Sharing Link</button>
+            <textarea id="shareLink" readonly placeholder="Your sharing link will appear here..."></textarea>
+        </div>
+
+        <!-- Option to upload a text file containing the share link -->
+        <div class="section">
+            <label for="textFileInput">Upload a text file with the share link:</label>
+            <input type="file" id="textFileInput" accept=".txt">
+        </div>
+
+        <div class="section">
+            <label for="receiveInput">Enter or paste the Sharing Link:</label>
+            <textarea id="receiveInput" placeholder="Paste the sharing link here..."></textarea>
+            <button class="button" id="previewButton">Preview File</button>
+
+            <div class="preview" id="filePreview" style="display: none;">
+                <h4>File Preview</h4>
+                <p id="filePreviewName">File Name: </p>
+                <p id="filePreviewType">File Type: </p>
+                <p id="filePreviewSize">File Size: </p>
+                <button class="button" id="confirmDownloadButton">Download File</button>
+                <button class="button" id="cancelButton">Cancel</button>
+            </div>
+
+            <!-- Retry Button Below Preview -->
+            <button id="retryButton" onclick="clearFields()">Retry</button>
+        </div>
+
+        <footer>
+            <p>Crafted Gamz © 2023-2025</p>
+        </footer>
+    </div>
+
+    <!-- Button outside the container -->
+    <button id="externalButton" onclick="window.location.href='HTMLN33.html'">Go Back To Miscellaneous</button>
+
+    <script>
+        const MAX_FILE_SIZE = 104857600; // 100 MB
+        const fileInput = document.getElementById('fileInput');
+        const shareButton = document.getElementById('shareButton');
+        const shareLink = document.getElementById('shareLink');
+        const receiveInput = document.getElementById('receiveInput');
+        const previewButton = document.getElementById('previewButton');
+        const filePreview = document.getElementById('filePreview');
+        const filePreviewName = document.getElementById('filePreviewName');
+        const filePreviewType = document.getElementById('filePreviewType');
+        const filePreviewSize = document.getElementById('filePreviewSize');
+        const confirmDownloadButton = document.getElementById('confirmDownloadButton');
+        const cancelButton = document.getElementById('cancelButton');
+        const textFileInput = document.getElementById('textFileInput');
+
+        let fileData = null;
+        let downloadLink = null;
+
+        // Retry button functionality to clear fields
+        function clearFields() {
+            fileInput.value = ''; // Clear file input
+            shareLink.value = ''; // Clear sharing link
+            receiveInput.value = ''; // Clear receive input
+            filePreview.style.display = 'none'; // Hide file preview
+            filePreviewName.textContent = 'File Name: '; // Reset file preview info
+            filePreviewType.textContent = 'File Type: ';
+            filePreviewSize.textContent = 'File Size: ';
+            downloadLink = null; // Reset download link
+        }
+
+        shareButton.addEventListener('click', () => {
+            const file = fileInput.files[0];
+            if (!file) {
+                alert('Please select a file to share.');
+                return;
+            }
+
+            if (file.size > MAX_FILE_SIZE) {
+                alert(File size exceeds the limit of ${MAX_FILE_SIZE / 1048576} MB. Please choose a smaller file.);
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = () => {
+                fileData = reader.result;
+                const encodedData = encodeURIComponent(fileData);
+                const link = ${window.location.href.split("?")[0]}?file=${encodedData}&name=${encodeURIComponent(file.name)}&type=${encodeURIComponent(file.type)}&size=${encodeURIComponent(file.size)};
+                shareLink.value = link;
+                alert('Link Created.');
+            };
+            reader.readAsDataURL(file);
+        });
+
+        previewButton.addEventListener('click', () => {
+            const urlParams = new URLSearchParams(receiveInput.value.split('?')[1]);
+            const encodedData = urlParams.get('file');
+            const fileName = urlParams.get('name');
+            const fileType = urlParams.get('type');
+            const fileSize = urlParams.get('size');
+
+            if (!encodedData || !fileName) {
+                alert('Invalid link. Please provide a valid sharing link.');
+                return;
+            }
+
+            // Decode the file information
+            const decodedFileName = decodeURIComponent(fileName);
+            const decodedFileType = decodeURIComponent(fileType);
+            const decodedFileSize = (decodeURIComponent(fileSize) / (1024 * 1024)).toFixed(2); // Convert to MB
+
+            // Separate file name and file type (extension)
+            const fileNameWithoutExtension = decodedFileName.substring(0, decodedFileName.lastIndexOf('.'));
+            const fileExtension = decodedFileName.substring(decodedFileName.lastIndexOf('.'));
+
+            // Display the preview with separated file name and file type
+            filePreviewName.textContent = File Name: ${fileNameWithoutExtension};
+            filePreviewType.textContent = File Type: ${fileExtension};
+            filePreviewSize.textContent = File Size: ${decodedFileSize} MB;
+            filePreview.style.display = 'block';
+
+            // Save the link data for download
+            downloadLink = decodeURIComponent(encodedData);
+        });
+
+        // Handle uploading a text file containing the share link
+        textFileInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file && file.name.endsWith('.txt')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const textContent = e.target.result;
+                    receiveInput.value = textContent; // Paste the link into the textarea
+                };
+                reader.readAsText(file);
+            } else {
+                alert('Please upload a valid .txt file containing the share link.');
+            }
+        });
+
+        cancelButton.addEventListener('click', () => {
+            filePreview.style.display = 'none'; // Hide file preview
+        });
+
+        confirmDownloadButton.addEventListener('click', () => {
+            if (!downloadLink) {
+                alert('No file to download.');
+                return;
+            }
+
+            // Create a temporary link element
+            const tempLink = document.createElement('a');
+            tempLink.href = downloadLink;
+            tempLink.download = 'shared-file'; // Set default file name (can be dynamically set if desired)
+            tempLink.click(); // Trigger the download
+
+            // Optionally, alert the user that the file is being downloaded
+        });
+    </script>
+<script src="../../Settings/theme-switcher.js"></script>
+<script src="../../attbswitchgames.js"></script>
+</body>
+</html>
