@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>The World's Hardest Game</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="shortcut icon" type="image/x-icon" href="favicon.png"/>
+		<link rel="stylesheet" type="text/css" href="style.css">
+		<script type="text/javascript" src="script.js"></script>
+		<script>
+			// Load settings from localStorage
+			const redirectUrl = localStorage.getItem("panicRedirectUrl") || "https://www.wikipedia.org";
+			const keyCode = parseInt(localStorage.getItem("panicKeyCode"), 10) || 27;
+		
+			// Panic action function
+			function triggerPanic() {
+			  // Open the redirect URL
+			  // Replace the current page
+			  window.location.replace(redirectUrl);
+			}
+		
+			// Add event listener for the hotkey (keydown event)
+			document.addEventListener("keydown", function(event) {
+			  if (event.keyCode === keyCode) {
+				triggerPanic();
+			  }
+			});
+		
+			// Optional: Allow click on the Panic Button to trigger the same action
+			document.getElementById("panic-button").addEventListener("click", function(event) {
+			  event.preventDefault(); // Prevent default link behavior
+			  triggerPanic();
+			});
+		  </script>
+	</head>
+	<body>
+		<div id="container">
+			<div class="container-header"><span id="coins"></span><span id="level"></span><span id="deaths"></span></div>
+			<div id="home-screen">
+				<div id="square"></div>
+				<div id="title"><p>THE WORLD'S...</p><p>HARDEST GAME</p><p>VERSION 1.0</p></div>
+				<p id="new-game" onclick="startGame(true)">New<br>Game</p>
+				<p id="load-game" onclick="startGame(false)">Load<br>Game</p>
+			</div>
+			<canvas id="cvs" width="1100" height="700"></canvas>
+			<div class="container-footer"><span id="sound" onclick="sound()">🔊</span><span id="time"></span><span id="full" onclick="fullScreen()">&#x26F6;</span></div>
+		</div>
+	</body>
+</html>
