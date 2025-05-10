@@ -1,0 +1,23 @@
+Ver 1.00 (First realese, Starting ground)
+
+Ver 2.00 (Second realese, added a game loader to easily access all of the games)
+
+Ver 2.10 (Third release, Two different versions of minecraft (one with more features but an older version, the other has no additonal features but newer vanilla version) and another loader to easily select which version you want, also added a loader for js racer)
+
+Ver 2.20 (Fourth realese, Made all loaders not look like a piece of crap)
+
+Ver 2.21 (Fifth realese, added a back button to the minecraft versions selector)
+
+Ver 2.22 (Sixth realese, added what atticus told me to add)
+
+Ver 2.30 (Seventh release, added more games)
+
+Ver 2.31 (Eigth release, added a nav bar at the top, removed back button, and put the Atticus Badlands behind a password to not piss him off)
+
+Ver 2.40 (Ninth release, Added like 20 scratch games) 
+
+Ver 2.41 (Tenth release, added a theme switcher)
+
+Ver 2.43 (Twelfth realese, added cookie clicker and Chrome Dino Game)
+
+Ver 2.44 (Thirteenth release, updated Cookie Clicker to version 2.048 and added mods)
