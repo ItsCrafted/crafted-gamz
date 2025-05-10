@@ -1,0 +1,1 @@
+All game save data is stored in the computer's cache so if you switch computers you will loose all progress except for minecraft you just have to remember your username.
