@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Loader</title>
+    <style>
+        /* Basic page setup */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #333;
+            color: white;
+            font-family: 'Linux Libertine', serif;
+            text-align: center;
+        }
+
+        /* Loading message */
+        #loading-message {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        /* The iframe that will load the video */
+        #video-frame {
+            width: 80%;
+            height: 80%;
+            border: none;
+            display: none; /* Initially hidden, will show once the game is loaded */
+        }
+
+        /* Show loading animation or text */
+        .loading {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Loading spinner (you can replace this with an image or other animation) */
+        #spinner {
+            margin: 20px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loading-message" class="loading">Loading the video...</div>
+    <div id="spinner"></div>
+
+    <!-- Video iframe -->
+    <iframe id="video-frame" src="launch.mp4" allow="autoplay; encrypted-media" frameborder="0" allowfullscreen></iframe>
+
+    <script>
+        // Function to open the game loader in a new tab
+        function openGameLoader() {
+            const newWindow = window.open('', '_blank'); // Open in a new tab
+            newWindow.document.write(`
+                <html>
+                <head>
+                    <title>about:blank</title>
+                    <style>
+                        body {
+                            margin: 0;
+                            overflow: hidden;
+                        }
+                        iframe {
+                            width: 100vw;
+                            height: 100vh;
+                            border: none;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <iframe src="Files/gameloader.html"></iframe>
+                </body>
+                </html>
+            `);
+            newWindow.document.close();
+
+            // Protect the "about:blank" tab from being closed
+            newWindow.onbeforeunload = function() {
+                return "You have unsaved work, are you sure you want to leave?";
+            };
+        }
+
+        // Function to handle video events and load game after video ends
+        function onVideoEnd() {
+            // Hide the video player and spinner
+            document.getElementById('video-frame').style.display = 'none';
+            document.getElementById('spinner').style.display = 'none';
+
+            // Open the game loader in a new tab
+            openGameLoader();
+        }
+
+        // Simulate loading process and then show the video
+        setTimeout(() => {
+            // Hide the loading message and spinner
+            document.getElementById('loading-message').style.display = 'none';
+            document.getElementById('spinner').style.display = 'none';
+
+            // Show the video iframe
+            document.getElementById('video-frame').style.display = 'block';
+            
+            // Attach event listener to the video to trigger when it ends
+            const video = document.getElementById('video-frame');
+            video.onload = () => {
+                video.contentWindow.document.addEventListener('ended', onVideoEnd);
+            };
+        }, 3000); // Simulated loading time (3 seconds)
+    </script>
+
+</body>
+</html>
