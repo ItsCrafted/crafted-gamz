@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iframe Loader</title>
+  <style>
+    /* General Body Styling */
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: #fff;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+    }
+
+    .input-container {
+      font-size: 1.5rem;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 15px 25px;
+      border-radius: 10px;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+      margin-bottom: 20px;
+    }
+
+    input {
+      padding: 10px;
+      font-size: 1.2rem;
+      width: 300px;
+      border-radius: 5px;
+      border: none;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #fff;
+      background: #28a745;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    button:hover {
+      background: #1e7e34;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      border-radius: 0;
+      box-shadow: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    /* Footer Styling */
+    footer {
+      position: absolute;
+      bottom: 10px;
+      font-size: 0.8rem;
+      color: #ccc;
+    }
+  </style>
+</head>
+<body>
+  <h1>Enter a Link to Load in Iframe</h1>
+  
+  <div class="input-container">
+    <input type="text" id="urlInput" placeholder="Enter a URL">
+    <button onclick="loadIframe()">Load</button>
+  </div>
+
+  <iframe id="iframeDisplay" style="display: none;"></iframe>
+
+  <footer>Powered by Crafted Gamz</footer>
+
+  <script>
+    function loadIframe() {
+      const url = document.getElementById("urlInput").value;
+      if (url) {
+        document.getElementById("iframeDisplay").src = url;
+        document.getElementById("iframeDisplay").style.display = "block";
+      }
+    }
+  </script>
+
+  <script>
+    let cPresses = 0;
+    let firstPressTime = 0;
+
+    // Listen for "c" key presses
+    document.addEventListener("keydown", (event) => {
+      // Check if the pressed key is "C"
+      if (event.key.toLowerCase() === "c") {
+        const currentTime = new Date().getTime();
+
+        // If it's the first "c" press, record the time
+        if (cPresses === 0) {
+          firstPressTime = currentTime;
+        }
+
+        cPresses++;
+
+        // If 5 presses happened within 1.5 seconds
+        if (cPresses === 5 && currentTime - firstPressTime <= 1500) {
+          // Trigger the same action as the correct password "Crafted>GG"
+          openInBlank("selector.html"); // Open selector.html for "Crafted>GG"
+
+          // Reset the counter
+          cPresses = 0;
+        } else if (currentTime - firstPressTime > 1500) {
+          // Reset if the 1.5 seconds have passed
+          cPresses = 0;
+        }
+      }
+    });
+
+    function openInBlank(url) {
+      window.open(url, '_blank');
+    }
+  </script>
+</body>
+</html>

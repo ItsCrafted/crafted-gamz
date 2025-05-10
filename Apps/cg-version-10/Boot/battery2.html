@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Battery Status</title>
+  <style>
+    /* General Body Styling */
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: #fff;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+    }
+
+    .battery-status {
+      font-size: 1.5rem;
+      margin-bottom: 30px;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 15px 25px;
+      border-radius: 10px;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .redirecting-message {
+      font-size: 1.2rem;
+      color: #28a745;
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: rgba(40, 167, 69, 0.2);
+      border-radius: 10px;
+      display: none;
+    }
+
+    .manual-redirect {
+      margin-top: 30px;
+      display: none;
+    }
+
+    .manual-redirect button {
+      padding: 15px 30px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #fff;
+      background: #ff5733;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .manual-redirect button:hover {
+      background: #c13b1a;
+    }
+
+    /* Footer Styling */
+    footer {
+      position: absolute;
+      bottom: 10px;
+      font-size: 0.8rem;
+      color: #ccc;
+    }
+  </style>
+</head>
+<body>
+  <h1>Device Battery Status</h1>
+  <div class="battery-status">
+    Fetching battery information...
+  </div>
+  <div class="redirecting-message">
+    Battery OK, redirecting...
+  </div>
+  <div class="manual-redirect">
+    <p>Low battery detected. Proceed anyway?</p>
+    <button onclick="redirectAnyway()">Redirect Anyway</button>
+  </div>
+
+  <footer>
+    Powered by Crafted Gamz
+  </footer>
+
+  <script>
+    async function getBatteryStatus() {
+      if (!navigator.getBattery) {
+        document.querySelector('.battery-status').textContent =
+          'Battery Status API not supported by your browser.';
+        return;
+      }
+
+      try {
+        const battery = await navigator.getBattery();
+        const redirectMessage = document.querySelector('.redirecting-message');
+        const manualRedirect = document.querySelector('.manual-redirect');
+
+        // Display the battery percentage
+        const updateBatteryInfo = () => {
+          let percentage = Math.round(battery.level * 100);
+          const isCharging = battery.charging ? "Yes" : "No";
+
+          // If battery is under 20% but charging, treat it as 100%
+          if (percentage < 20 && battery.charging) {
+            percentage = 100;
+          }
+
+          // Update status text
+          document.querySelector('.battery-status').textContent = 
+            `Battery: ${percentage}% | Charging: ${isCharging}`;
+
+          // Perform actions based on battery percentage
+          if (percentage > 20) {
+            // Show redirect message
+            redirectMessage.style.display = 'block';
+
+            // Delay before redirecting
+            setTimeout(() => {
+              window.location.href = "login2.html";
+            }, 1000); // 1-second delay
+          } else if (percentage < 21 && !battery.charging) {
+            // Alert and show manual redirect button
+            alert("⚠️ Warning: Battery is critically low and not charging! On Chromebooks, when under 20% battery saver mode kicks in, which basically puts your core processor (CPU) on ECO Mode. This delays and lags the games significantly");
+            manualRedirect.style.display = 'block';
+          }
+        };
+
+        // Update battery information on change
+        battery.addEventListener('levelchange', updateBatteryInfo);
+        battery.addEventListener('chargingchange', updateBatteryInfo);
+
+        // Initial update
+        updateBatteryInfo();
+      } catch (error) {
+        document.querySelector('.battery-status').textContent =
+          'Unable to fetch battery information.';
+      }
+    }
+
+    // Manual redirect function
+    function redirectAnyway() {
+      window.location.href = "login2.html";
+    }
+
+    getBatteryStatus();
+  </script>
+</body>
+</html>
