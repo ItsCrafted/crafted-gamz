@@ -1,0 +1,126 @@
+────────────────────────────────────────────────────────────────────
+                         Crafted Gamz Terms and Policies
+────────────────────────────────────────────────────────────────────
+
+Effective Date: 11/13/2024
+
+Welcome to **Crafted Gamz**! This document contains the Terms of Service (TOS), Privacy Policy (PP), Content Policy, and Google Unblxcked Service Policy for your use and reference. By using the Crafted Gamz platform, you agree to abide by the following terms, conditions, and policies. Please read them carefully to understand your rights and responsibilities. If you disagree with any part of these, please refrain from using the platform.
+
+────────────────────────────────────────────────────────────────────
+                         Terms of Service (TOS)
+────────────────────────────────────────────────────────────────────
+
+1. Introduction
+---------------
+Welcome to Crafted Gamz! By downloading, installing, or using the Crafted Gamz software (the "Game"), you agree to be bound by these Terms of Service (the "Agreement"). If you do not agree with any part of this Agreement, please do not use the Game.
+
+2. License to Use
+-----------------
+Crafted Gamz grants you a limited, non-exclusive, non-transferable license to use the Game solely for personal, non-commercial purposes. You may not redistribute, sell, or reverse-engineer the Game.
+
+3. User Conduct
+---------------
+While using Crafted Gamz, you agree to:
+- Abide by all applicable laws and regulations.
+- Refrain from using the Game in a manner that could harm, disable, or overburden its functionality.
+- Not engage in cheating, exploiting, or unauthorized modifications to the Game.
+- Not upload, share, or distribute the Game to any file storage or sharing platforms (e.g., Google Drive, Dropbox, etc.) without explicit permission from the creators.
+
+4. Termination
+--------------
+We may suspend or terminate your access to Crafted Gamz if you violate any of these Terms of Service. Upon termination, you must immediately cease using the Game and delete any copies.
+
+5. Limitation of Liability
+---------------------------
+Crafted Gamz is provided "as-is." We make no guarantees regarding the availability, security, or performance of the Game. We are not liable for any indirect, incidental, or consequential damages arising from your use of the Game.
+
+6. Updates and Changes
+----------------------
+We reserve the right to modify these Terms of Service at any time. Any changes will be posted, and by continuing to use the Game, you agree to the updated Terms.
+
+7. Contact Information
+----------------------
+See bottom for contact details.
+
+────────────────────────────────────────────────────────────────────
+                         Privacy Policy (PP)
+────────────────────────────────────────────────────────────────────
+
+Effective Date: 11/13/2024
+
+1. How Information is Used
+---------------------------
+We use the collected information to:
+- Provide, maintain, and improve the Game.
+- Analyze user behavior and usage trends to enhance the user experience.
+- Contact you for important updates or information regarding your account or the Game.
+
+2. Cookies and Cache
+--------------------
+When using Crafted Gamz, certain data may be stored on your device in the form of cookies and cache files:
+- **Cookies**: Small files stored on your device that remember user preferences and settings, keep you logged in, and help us analyze user interactions with the Game. Cookies may be session-based (deleted when you close the Game) or persistent (remaining until manually deleted or they expire).
+- **Cache**: Temporary storage that saves elements of the Game, such as images and scripts, on your device to improve load times and reduce network usage.
+
+You can control cookies and cache settings through your device or browser settings, though doing so may impact certain functionalities of the Game.
+
+3. Data Sharing
+---------------
+We do not sell, rent, or share your personal information with third parties except as required by law or with trusted partners to improve the Game's functionality (e.g., analytics services).
+
+4. Changes to the Privacy Policy
+-------------------------------
+We may update this Privacy Policy from time to time. We will notify you of any significant changes by posting an updated policy on this page.
+
+5. Contact Information
+----------------------
+See bottom for contact details.
+
+────────────────────────────────────────────────────────────────────
+                         Content Policy
+────────────────────────────────────────────────────────────────────
+
+1. Third-Party Game Hosting
+----------------------------
+Crafted Gamz does not develop or own the games available on our platform. We provide a way for users to access and play games created by third-party developers. All content is hosted for the convenience of our users, and Crafted Gamz is not responsible for the ownership, development, or updates of these games.
+
+2. Game Removal Requests
+------------------------
+If you are the owner or authorized representative of a game hosted on our platform and would like it removed, please contact us with proof of ownership. This may include:
+- Evidence of copyright or ownership.
+- Verification from the game’s official website or social media accounts.
+
+Once we receive and verify your request, we will promptly remove the game from Crafted Gamz.
+
+3. Contact Information
+----------------------
+See bottom for contact details.
+
+────────────────────────────────────────────────────────────────────
+                         Google Unblxcked Service
+────────────────────────────────────────────────────────────────────
+
+1. Service Disclaimer
+----------------------
+The "Google Unblxcked" feature on Crafted Gamz allows users to access Google services in environments where access is typically restricted. This service is powered by the **[Holy Unblocker](https://github.com/QuiteAFancyEmerald/Holy-Unblocker)** project, and we do not control the content, results, or functionality that may be available through this service. The search results and information displayed are sourced from Google and other public sources.
+
+2. User Responsibility
+----------------------
+By using the "Google Unblxcked" service, you agree that you are solely responsible for your search activities. Crafted Gamz does not take responsibility for any consequences that may arise from searching for inappropriate, harmful, or unlawful content. We **strongly discourage** searching for explicit, inappropriate, or 18+ content and encourage responsible use in compliance with all applicable laws and guidelines.
+
+3. Contact Information
+----------------------
+See bottom for contact details.
+
+────────────────────────────────────────────────────────────────────
+                         Contact Information
+────────────────────────────────────────────────────────────────────
+
+For any inquiries regarding the Terms of Service, Privacy Policy, Content Policy, or the Google Unblxcked service, please contact us at:
+
+Emails:
+- craftedgamz@outlook.com
+- 980040746@aps.edu (school)
+
+────────────────────────────────────────────────────────────────────
+
+© Copyright Crafted Gamz 2023-2025

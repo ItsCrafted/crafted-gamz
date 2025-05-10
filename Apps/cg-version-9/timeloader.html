@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crafted Gamz</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    #clock {
+  position: absolute;
+  top: 0px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 14px;
+  color: #000000;  /* Black text color */
+  text-shadow: 
+    -1px -1px 0 #ffffff,  
+    1px -1px 0 #ffffff,  
+    -1px 1px 0 #ffffff,  
+    1px 1px 0 #ffffff;  /* Hard white outline */
+  padding: 5px 10px;
+  border-radius: 0px;
+  font-family: Arial, sans-serif;
+  text-align: center;
+  z-index: 1000;
+}
+
+  </style>
+</head>
+<body>
+  <div id="clock"></div>
+  <iframe src="gameloader.html" id="iframe"></iframe>
+
+  <script>
+    const localStorageKey = 'iframeTimeSpent';
+    const clockElement = document.getElementById('clock');
+
+    // Load the previously saved time from localStorage
+    let totalTime = parseInt(localStorage.getItem(localStorageKey), 10) || 0;
+
+    // Update time spent every second
+    let interval;
+    function startTracking() {
+      interval = setInterval(() => {
+        totalTime += 1;
+        localStorage.setItem(localStorageKey, totalTime);
+      }, 1000);
+    }
+
+    // Stop tracking time when the iframe is inactive
+    function stopTracking() {
+      clearInterval(interval);
+    }
+
+    // Track focus/blur events to start/stop the timer
+    window.addEventListener('focus', startTracking);
+    window.addEventListener('blur', stopTracking);
+
+    // Start tracking when the page is loaded
+    startTracking();
+
+    // Display a live clock
+    function updateClock() {
+      const isClockEnabled = localStorage.getItem('clockEnabled') === 'true';
+      const timeFormat = localStorage.getItem('timeFormat') || '24';
+
+      if (!isClockEnabled) {
+        clockElement.style.display = 'none'; // Hide clock
+        return;
+      }
+
+      clockElement.style.display = 'block'; // Show clock
+      const now = new Date();
+      let hours = now.getHours();
+      let minutes = String(now.getMinutes()).padStart(2, '0');
+      let seconds = String(now.getSeconds()).padStart(2, '0');
+
+      if (timeFormat === '12') {
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12 || 12; // Convert to 12-hour format
+        clockElement.textContent = `${hours}:${minutes}:${seconds} ${ampm}`;
+      } else {
+        hours = String(hours).padStart(2, '0'); // Keep 24-hour format
+        clockElement.textContent = `${hours}:${minutes}:${seconds}`;
+      }
+    }
+
+    setInterval(updateClock, 1000);
+    updateClock(); // Initial call
+  </script>
+</body>
+</html>

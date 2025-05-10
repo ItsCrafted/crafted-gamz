@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crafted Gamz</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: black;
+    }
+
+    video {
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover; /* Ensures the video fills the screen */
+    }
+
+    .play-button {
+      position: absolute;
+      z-index: 10;
+      background-color: white;
+      color: black;
+      padding: 15px 30px;
+      font-size: 18px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .play-button:active {
+      transform: scale(0.98);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Video -->
+  <video id="video" loop playsinline>
+    <source src="load.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+
+  <!-- Play Button -->
+  <button id="play-button" class="play-button">Open Crafted Gamz IX</button>
+
+  <script>
+    const video = document.getElementById('video');
+    const playButton = document.getElementById('play-button');
+
+    // Ensure video plays with sound after user interaction
+    playButton.addEventListener('click', () => {
+      video.muted = false; // Ensure sound is enabled
+      video.play(); // Start video playback
+      playButton.style.display = 'none'; // Hide play button
+      
+      // Redirect after the video starts
+      setTimeout(() => {
+        window.location.href = 'timeloader.html';
+      }, 10500); // Slight delay to ensure video starts before redirect
+    });
+
+    // Prevent pausing
+    video.addEventListener('pause', () => video.play());
+
+    // Disable right-click on the video
+    video.addEventListener('contextmenu', (event) => event.preventDefault());
+  </script>
+
+</body>
+</html>

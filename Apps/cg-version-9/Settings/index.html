@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings</title>
+  <script src="settingicon.js"></script>
+  <link rel="stylesheet" href="../styles.css">
+  
+  <!-- Additional scripts -->
+  <script src="../../Settings/theme-switcher.js"></script>
+  <script src="../../attbswitchgames.js"></script>
+  <script src="../../script.js"></script>
+</head>
+<body>
+  <div class="navbar">
+    <a href="../games/minecraft/Version selector.html" class="navbar-item">Minecraft Version Selector 🛜</a>
+    <a href="../games/GF32/index.html" class="navbar-item">Javascript Racer Level Selector</a>
+    <a href="../games/GF33/HTMLN102.html" class="navbar-item">Google 𝓤𝓷𝓫𝓵𝓬𝓴𝓮𝓭 🛜</a>
+    <a href="../games/GF41/HTMLN41.html" class="navbar-item">Movies And TV🛜</a>
+    <a href="../games/GF43/HTMLN43.html" class="navbar-item">Miscillaneous</a>
+    <a href="Settings/index.html" class="navbar-item"><i class="fas fa-cog"></i></a>
+  </div>
+  
+  <h1 id="themeText">Settings</h1>
+  
+  <!-- Theme Settings -->
+  <div class="settings">
+    <label for="theme">Select Theme:</label>
+    <select id="theme">
+      <option value="light">Light</option>
+      <option value="dark">Dark</option>
+      <option value="sunset">Sunset</option>
+      <option value="sky">Sky</option>
+      <option value="nuclear">Nuclear</option>
+      <option value="ocean">Ocean</option>
+      <option value="poison">Poison</option>
+      <option value="kelp">Kelp</option>
+      <option value="enforcer">The Enforcer</option>
+      <option value="black-pyramid">Black Pyramid</option> <!-- New option added here -->
+      <option value="mountains">Mountains</option>
+      <option value="stellar-desert">Stellar Desert</option>
+      <option value="jungle">Jungle</option>
+      <option value="savanna">Savanna</option>
+      <option value="volcano">Volcano</option>
+      <option value="autumn-forest">Autumn Forest</option>
+      <option value="tundra">Tundra</option>
+      <option value="canyon">Canyon</option>
+      <option value="custom">Custom</option>
+    </select>
+    <span style="display:block; height: 5px;"></span>
+    <button id="saveBtn">Save</button>
+    <button id="goback" onclick="window.location.href='../gameloader.html'">Back to Main page</button>
+  </div>
+
+  <span style="display:block; height: 30px;"></span>
+
+  <!-- Clock Settings -->
+  <div class="settings">
+    <label for="clock-format">Clock Format:</label>
+    <select id="clock-format">
+      <option value="24">24-Hour</option>
+      <option value="12">12-Hour</option>
+    </select>
+    <br><br>
+    <label for="enable-clock">Enable Clock:</label>
+    <input type="checkbox" id="enable-clock" checked>
+    <span style="display:block; height: 5px;"></span>
+    <button id="saveClockBtn">Save Clock Settings</button>
+  </div>
+
+  <script>
+    // Load and save clock settings
+    const clockFormatSelect = document.getElementById('clock-format');
+    const enableClockCheckbox = document.getElementById('enable-clock');
+    const themeSelect = document.getElementById('theme');
+
+    // Load saved settings on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedFormat = localStorage.getItem('timeFormat') || '24';
+      const isClockEnabled = localStorage.getItem('clockEnabled') === 'true';
+      const savedTheme = localStorage.getItem('theme') || 'light';
+
+      clockFormatSelect.value = savedFormat;
+      enableClockCheckbox.checked = isClockEnabled;
+      themeSelect.value = savedTheme;
+
+      // Apply the saved theme to the body
+      document.body.className = savedTheme;
+    });
+
+    // Save clock settings
+    document.getElementById('saveClockBtn').addEventListener('click', () => {
+      localStorage.setItem('timeFormat', clockFormatSelect.value);
+      localStorage.setItem('clockEnabled', enableClockCheckbox.checked);
+    });
+
+    // Save theme settings
+    document.getElementById('saveBtn').addEventListener('click', () => {
+      const selectedTheme = themeSelect.value;
+      localStorage.setItem('theme', selectedTheme);
+      document.body.className = selectedTheme;  // Apply the new theme immediately
+    });
+  </script>
+</body>
+</html>
