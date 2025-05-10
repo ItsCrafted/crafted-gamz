@@ -1,97 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <link rel="icon" href="favicon.png">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Crafted Gamz Is Under Maintenance</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crafted Gamz Terms And Policies</title>
   <style>
     body {
-      background: #0f0f0f;
-      color: #fff;
-      font-family: "Segoe UI", sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
+      font-family: Arial, sans-serif;
       text-align: center;
+      padding: 20px;
+      background-color: #121212;
+      color: #ffffff;
+      margin: 0;
     }
 
     h1 {
-      font-size: 3rem;
-      color: #ff4444;
-      margin-bottom: 0.5em;
+      font-size: 3em;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 10px rgba(0, 255, 255, 0.5);
     }
 
     p {
-      font-size: 1.5rem;
-      margin-bottom: 2em;
+      font-size: 1.3em;
+      margin-bottom: 30px;
     }
 
-    #countdown {
-      font-size: 2rem;
-      font-weight: bold;
-      color: #00ffcc;
+    .tos-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      box-shadow: 0 4px 20px rgba(0, 255, 255, 0.2);
     }
 
-    button {
-      margin-top: 2em;
-      padding: 1em 2em;
-      font-size: 1.2rem;
-      background-color: #00ffcc;
-      color: #000;
+    .tos-box {
+      margin: 20px 0;
+      border: 1px solid #ddd;
+      height: 300px;
+      overflow: auto;
+    }
+
+    .tos-checkbox {
+      margin: 10px 0;
+    }
+
+    .continue-btn {
+      background-color: #007bff;
+      color: white;
+      padding: 10px 20px;
       border: none;
-      border-radius: 5px;
       cursor: pointer;
+      font-size: 16px;
+      width: 100%;
+      margin-top: 10px;
+      opacity: 0.6;
+      pointer-events: none;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 122, 255, 0.5);
+      transition: transform 0.3s, background 0.3s, box-shadow 0.3s;
     }
 
-    button:hover {
-      background-color: #00cc99;
+    .continue-btn.enabled {
+      opacity: 1;
+      pointer-events: auto;
+      background: linear-gradient(135deg, #007bff, #00d4ff);
+      box-shadow: 0 6px 15px rgba(0, 122, 255, 0.8);
+    }
+
+    .continue-btn:hover {
+      transform: scale(1.1);
+      background: linear-gradient(135deg, #00d4ff, #007bff);
+      box-shadow: 0 6px 15px rgba(0, 122, 255, 0.8);
     }
   </style>
 </head>
 <body>
-  <h1>Uh oh!</h1>
-  <p>Crafted Gamz is currently under maintenance.<br>Scheduled return: <strong>May 5th, 2025</strong></p>
-  <div id="countdown">Loading countdown...</div>
-
-  <button onclick="window.location.href='3kh0_Games/retro-bowl/index.html';">Play a Game in the Meantime</button>
+  <div class="tos-container">
+    <h1>Crafted Gamz Terms And Policies</h1>
+    <p>Please read and understand the entire agreement</p>
+    <p>Estimated 5 minute read</p>
+    <div class="tos-box">
+      <iframe src="legaldocs.txt" width="100%" height="100%"></iframe>
+    </div>
+    <div class="tos-checkbox">
+      <input type="checkbox" id="tos-checkbox"> 
+      <label for="tos-checkbox">I agree to the Crafted Gamz Terms And Policies</label>
+    </div>
+    <button id="continue-btn" class="continue-btn">Continue</button>
+  </div>
 
   <script>
-    const countdownElement = document.getElementById("countdown");
 
-    // US Mountain Time offset (UTC-6 during daylight saving time in May)
-    function getMountainTimeNow() {
-      // Get UTC time and subtract 6 hours (UTC-6 for Mountain Daylight Time)
-      const now = new Date();
-      const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
-      const mtTime = new Date(utc - (6 * 60 * 60 * 1000));
-      return mtTime;
+    if (localStorage.getItem('read') === 'true') {
+      window.location.href = 'main.html';
     }
 
-    const targetDate = new Date("2025-05-05T00:00:00-06:00"); // MDT is UTC-6
+    const continueBtn = document.getElementById('continue-btn');
+    const tosCheckbox = document.getElementById('tos-checkbox');
 
-    function updateCountdown() {
-      const now = getMountainTimeNow();
-      const diff = targetDate - now;
-
-      if (diff <= 0) {
-        countdownElement.textContent = "We're back online!";
-        return;
+    tosCheckbox.addEventListener('change', function() {
+      if (tosCheckbox.checked) {
+        continueBtn.classList.add('enabled');
+      } else {
+        continueBtn.classList.remove('enabled');
       }
+    });
 
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-      const minutes = Math.floor((diff / (1000 * 60)) % 60);
-      const seconds = Math.floor((diff / 1000) % 60);
-
-      countdownElement.textContent = `${days} days, ${hours} hours, ${minutes} minutes, and ${seconds} seconds`;
-    }
-
-    setInterval(updateCountdown, 1000);
-    updateCountdown();
+    continueBtn.addEventListener('click', function() {
+      if (tosCheckbox.checked) {
+        localStorage.setItem('read', 'true'); 
+        window.location.href = 'main.html'; 
+      }
+    });
   </script>
 </body>
 </html>
