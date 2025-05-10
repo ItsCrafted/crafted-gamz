@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crafted Gamz</title>
+  <style>
+    /* Style for the buttons container */
+    .button-container {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      padding: 10px;
+      background-color: #333;
+      z-index: 100;
+    }
+
+    /* Style for individual buttons */
+    .button {
+      background-color: transparent;
+      color: white;
+      border: 2px solid white;
+      border-radius: 25px; /* Rounded corners */
+      padding: 10px 20px;
+      margin: 0 10px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .button:hover {
+      background-color: white;
+      color: black;
+    }
+
+    /* iframe styling */
+    iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      border: none;
+      overflow: hidden; /* Hide both horizontal and vertical scrollbars */
+    }
+
+    /* To prevent the body from having extra space, we hide overflow */
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  <!-- Bottom button container -->
+  <div class="button-container">
+    <button class="button" onclick="location.reload()">Reload</button>
+    <button class="button" onclick="window.location.href='../../gameloader.html'">Go Back To Main Page</button>
+    <button class="button" onclick="toggleFullScreen()">Fullscreen</button>
+  </div>
+
+  <!-- iframe that loads the website -->
+  <iframe src="HTMLN103.5.html" id="myIframe"></iframe>
+
+  <script>
+    // Function to toggle fullscreen
+    function toggleFullScreen() {
+      var iframe = document.getElementById("myIframe");
+      if (iframe.requestFullscreen) {
+        iframe.requestFullscreen();
+      } else if (iframe.mozRequestFullScreen) { // Firefox
+        iframe.mozRequestFullScreen();
+      } else if (iframe.webkitRequestFullscreen) { // Chrome, Safari, Opera
+        iframe.webkitRequestFullscreen();
+      } else if (iframe.msRequestFullscreen) { // IE/Edge
+        iframe.msRequestFullscreen();
+      }
+    }
+  </script>
+</body>
+</html>
