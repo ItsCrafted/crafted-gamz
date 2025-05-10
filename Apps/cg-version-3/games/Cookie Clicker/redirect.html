@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Drive - Google Drive</title>
+    <link rel="icon" type="image/png" href="../../favicon.png">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        /* Your other CSS styles go here */
+    </style>
+    <link rel="stylesheet" href="../../styles.css"> <!-- Replace 'your-styles.css' with the path to your additional CSS file -->
+</head>
+<body class="light"> <!-- You can change the class to 'dark' if you want a dark theme -->
+
+    <div style="text-align: center; padding: 20px;">
+        <h2>Warning!</h2>
+        <p>This version of cookie clicker is unstable because it is old and it allows mods.</p>
+        <p>By continuing, you acknowledge that save data corruption is not my fault and you should backup saves frequently.</p>
+        <a href="../../game loader.html" class="button">Go Back</a>
+        <a href="index.html" class="button">Continue On</a>
+    </div>
+
+    <script>
+        function applyTheme(theme) {
+            document.body.className = theme;
+        }
+
+        // Load saved theme from localStorage on page load
+        const savedTheme = localStorage.getItem("theme");
+        if (savedTheme) {
+            applyTheme(savedTheme);
+        }
+    </script>
+
+    <script src="../../Settings/theme-switcher.js"></script> <!-- Replace 'your-script.js' with the path to your JavaScript file -->
+
+</body>
+</html>
