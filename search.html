@@ -1,219 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Crafted Gamz | Search</title>
-  <link rel="icon" href="favicon.png">
+  <link rel="icon" href="favicon.png" type="image/png" />
   <style>
-    body, html {
+    html, body, iframe {
       margin: 0;
       padding: 0;
       height: 100%;
-      font-family: sans-serif;
-      overflow-x: hidden;
-      background: none;
-    }
-
-    iframe#bgFrame {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      z-index: -1;
+      width: 100%;
       border: none;
+      overflow: hidden;
     }
-
-    nav {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      background: rgba(0, 0, 0, 0.8);
-      padding: 20px;
-      text-align: center;
-      z-index: 2;
-    }
-
-    nav a {
-      color: white;
-      text-decoration: none;
-      margin: 0 20px;
-      font-weight: bold;
-      font-size: 16px;
-      transition: color 0.2s;
-    }
-
-    nav a:hover {
-      color: #96f3f5;
-    }
-
-    #searchContainer {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      text-align: center;
-      z-index: 2;
-      width: 100%;
-    }
-
-    #searchInput {
-      width: 60%;
-      max-width: 600px;
-      padding: 14px 20px;
-      border-radius: 20px;
-      border: 2px solid #00ffe5;
-      background: rgba(0, 0, 0, 0.7);
-      color: white;
-      font-size: 18px;
-      outline: none;
-      transition: 0.3s ease;
-      box-shadow: 0 0 8px #00ffe5;
-    }
-
-    #searchInput:focus {
-      background: rgba(0, 0, 0, 0.9);
-      box-shadow: 0 0 15px #00ffe5, 0 0 30px #00ffe5;
-    }
-
-    #engineSelect {
-      margin-top: 10px;
-      padding: 10px 14px;
-      border-radius: 12px;
-      border: 2px solid #00ffe5;
-      background: rgba(0, 0, 0, 0.7);
-      color: white;
-      font-size: 16px;
-      outline: none;
-      transition: 0.3s ease;
-    }
-
-    #engineSelect:focus {
-      background: rgba(0, 0, 0, 0.9);
-    }
-
-    #results {
-      margin-top: 30px;
-      max-height: 400px;
-      overflow-y: auto;
-      text-align: left;
-      width: 80%;
-      max-width: 800px;
-      margin-left: auto;
-      margin-right: auto;
-      color: white;
-    }
-
-    .result {
-      background: rgba(0, 0, 0, 0.7);
-      padding: 10px 15px;
-      margin: 8px 0;
-      border-radius: 12px;
-      border-left: 3px solid #96f3f5;
-    }
-
-    .result a {
-      color: #96f3f5;
-      font-size: 18px;
-      text-decoration: none;
+    iframe {
       display: block;
-    }
-
-    .result p {
-      margin: 5px 0 0 0;
-      font-size: 14px;
+      border: none;
     }
   </style>
 </head>
 <body>
-  <iframe src="bg.html" id="bgFrame"></iframe>
-
-  <nav>
-    <a href="main.html">Home</a>
-    <a href="search.html">Search</a>
-    <a href="games.html">Games</a>
-    <a href="apps.html">Apps</a>
-    <a href="tools.html">Tools</a>
-  </nav>
-
-  <div id="searchContainer">
-    <input type="text" id="searchInput" placeholder="Search Crafted, Google, Bing, or DuckDuckGo">
-    <br>
-    <select id="engineSelect">
-      <option value="crafted">Crafted</option>
-      <option value="google">Google</option>
-      <option value="bing">Bing</option>
-      <option value="duck">DuckDuckGo</option>
-    </select>
-    <div id="results"></div>
-  </div>
-
-  <script>
-    const searchInput = document.getElementById('searchInput');
-    const engineSelect = document.getElementById('engineSelect');
-    const resultsDiv = document.getElementById('results');
-    const bgFrame = document.getElementById('bgFrame');
-
-    const API_KEY = 'AIzaSyCz8pr_UTPg_1kz7obvDB7XGiDjBWfVlbo';
-    const CX = '4422ff00f3c584612';
-    const LEVEL3_PASSWORD = 'Bandrulls*2021';
-    const SECRET_PAGE = 'https://rawr.amp.nov.su/';
-
-    async function performCraftedSearch(query) {
-      const url = `https://www.googleapis.com/customsearch/v1?key=${API_KEY}&cx=${CX}&q=${encodeURIComponent(query)}`;
-      const res = await fetch(url);
-      const data = await res.json();
-      resultsDiv.innerHTML = '';
-      if (data.items) {
-        data.items.forEach(item => {
-          const div = document.createElement('div');
-          div.className = 'result';
-          div.innerHTML = `<a href="${item.link}" target="_blank">${item.title}</a><p>${item.snippet}</p>`;
-          resultsDiv.appendChild(div);
-        });
-      }
-    }
-
-    searchInput.addEventListener('input', () => {
-      const query = searchInput.value.trim();
-      const engine = engineSelect.value;
-      if (query.length === 0) {
-        resultsDiv.innerHTML = '';
-        return;
-      }
-      if (engine === 'crafted') {
-        performCraftedSearch(query);
-      } else {
-        resultsDiv.innerHTML = '';
-      }
-    });
-
-    searchInput.addEventListener('keydown', e => {
-      const query = searchInput.value.trim();
-      const engine = engineSelect.value;
-
-      if (query === 'Crafted>GG' && e.key.toLowerCase() === 'c') {
-        const pass = prompt('Crafted Security Tier 3, Please Enter Key Now:');
-        if (pass === LEVEL3_PASSWORD) {
-          bgFrame.src = SECRET_PAGE;
-          document.getElementById('searchContainer').style.display = 'none';
-        } else {
-          location.reload();
-        }
-        return;
-      }
-
-      if (e.key === 'Enter' && query.length > 0) {
-        if (engine === 'google') {
-          window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}`, '_blank');
-        } else if (engine === 'bing') {
-          window.open(`https://www.bing.com/search?q=${encodeURIComponent(query)}`, '_blank');
-        } else if (engine === 'duck') {
-          window.open(`https://duckduckgo.com/?q=${encodeURIComponent(query)}`, '_blank');
-        }
-      }
-    });
-  </script>
+  <iframe src="https://example.com" title="Search | Crafted Gamz"></iframe>
 </body>
 </html>
