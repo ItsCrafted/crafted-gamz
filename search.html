@@ -1,26 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <link rel="icon" href="favicon.png">
   <title>Crafted Gamz | Search</title>
-  <link rel="icon" href="favicon.png" type="image/png" />
   <style>
-    html, body, iframe {
+    body, html {
       margin: 0;
       padding: 0;
       height: 100%;
-      width: 100%;
-      border: none;
-      overflow: hidden;
+      font-family: sans-serif;
+      overflow-x: hidden;
     }
+
     iframe {
-      display: block;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 1;
       border: none;
+    }
+
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      padding: 20px;
+      text-align: center;
+      z-index: 2;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin: 0 20px;
+      font-weight: bold;
+      font-size: 16px;
+      transition: color 0.2s;
+    }
+
+    nav a:hover {
+      color: #96f3f5;
     }
   </style>
 </head>
 <body>
-  <iframe src="https://logical-daisie-crafted-gamz-12fda33a.koyeb.app/" title="Search | Crafted Gamz"></iframe>
+
+  <iframe src="https://logical-daisie-crafted-gamz-12fda33a.koyeb.app/"></iframe>
+
+  <nav>
+    <a href="main.html">Home</a>
+    <a href="search.html">Search</a>
+    <a href="games.html">Games</a>
+    <a href="apps.html">Apps</a>
+    <a href="tools.html">Tools</a>
+  </nav>
 </body>
 </html>
