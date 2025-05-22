@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>bypass</title>
+  <title>Bypass</title>
   <style>
     html, body {
       margin: 0;
@@ -36,7 +36,7 @@
   </style>
 </head>
 <body>
-  <button id="bypass">bypass</button>
+  <button id="bypass">Bypass</button>
   <video id="vid" playsinline></video>
 
   <script>
@@ -55,10 +55,10 @@
         if (video.requestFullscreen) await video.requestFullscreen();
 
         setTimeout(() => {
-          window.close();
+          window.location.href = 'doxx.html';
         }, 6000);
-      } catch (e) {
-        alert("Fullscreen or playback failed.");
+      } catch {
+        alert("Failed to enter fullscreen or play the video.");
       }
     };
 
