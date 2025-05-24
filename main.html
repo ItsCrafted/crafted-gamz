@@ -204,5 +204,54 @@
       </div>
     </div>
   </div>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+  import { getFirestore, collection, addDoc, getDocs, query, where, Timestamp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCLL2JZUBJwISsLljfMN4wAr3ZSRd4A1Jo",
+    authDomain: "craftedgamzvisits.firebaseapp.com",
+    projectId: "craftedgamzvisits",
+    storageBucket: "craftedgamzvisits.firebasestorage.app",
+    messagingSenderId: "935169016483",
+    appId: "1:935169016483:web:0ea28fbc25e9f390723516",
+    measurementId: "G-23C7D06VFD"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  const now = new Date();
+  const visitsRef = collection(db, "visits");
+
+  await addDoc(visitsRef, {
+    timestamp: Timestamp.fromDate(now)
+  });
+
+  const allDocs = await getDocs(visitsRef);
+  const allTime = allDocs.size;
+
+  const todayStart = new Date();
+  todayStart.setHours(0, 0, 0, 0);
+  const todayQuery = query(visitsRef, where("timestamp", ">=", Timestamp.fromDate(todayStart)));
+  const todayDocs = await getDocs(todayQuery);
+  const today = todayDocs.size;
+
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+  const monthQuery = query(visitsRef, where("timestamp", ">=", Timestamp.fromDate(monthStart)));
+  const monthDocs = await getDocs(monthQuery);
+  const month = monthDocs.size;
+
+  const container = document.createElement("div");
+  container.style.cssText = "background:#111;color:#96f3f5;padding:12px;border-radius:10px;font-size:16px;font-family:sans-serif;margin-top:10px;display:inline-block";
+  container.innerHTML = `
+    <b>Crafted Gamz Visitors</b><br>
+    All-time: ${allTime}<br>
+    Today: ${today}<br>
+    This Month: ${month}
+  `;
+  document.body.appendChild(container);
+</script>
+
 </body>
 </html>
