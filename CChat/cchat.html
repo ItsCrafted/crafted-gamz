@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CChat with Firebase</title>
+  <style>
+    body {
+      background: #121212;
+      color: #96f3f5;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+    }
+    #cchat-container {
+      max-width: 400px;
+      width: 100%;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    #messages {
+      background: #111;
+      padding: 10px;
+      height: 300px;
+      overflow-y: auto;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.6);
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+    input, textarea {
+      width: 100%;
+      border-radius: 5px;
+      border: none;
+      outline: none;
+      padding: 8px;
+      font-size: 14px;
+      resize: none;
+      margin-top: 6px;
+      box-sizing: border-box;
+    }
+    button {
+      width: 100%;
+      margin-top: 8px;
+      background: #96f3f5;
+      border: none;
+      padding: 10px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 16px;
+      color: #111;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background: #74c8ca;
+    }
+  </style>
+</head>
+<body>
+  <div id="cchat-container">
+    <h2>CChat</h2>
+    <div id="messages"></div>
+    <input id="nameInput" placeholder="Your name" maxlength="20" autocomplete="off" />
+    <textarea id="messageInput" placeholder="Type a message..." rows="3" maxlength="200"></textarea>
+    <button id="sendBtn">Send</button>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-analytics.js";
+    import {
+      getFirestore,
+      collection,
+      addDoc,
+      query,
+      orderBy,
+      limit,
+      onSnapshot,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyA__Xok4yIntigq1I5Ozrtq4ekPrWzqfaA",
+      authDomain: "cchat-e4790.firebaseapp.com",
+      projectId: "cchat-e4790",
+      storageBucket: "cchat-e4790.firebasestorage.app",
+      messagingSenderId: "960625133096",
+      appId: "1:960625133096:web:cf483c4ad308befbb6d71d",
+      measurementId: "G-X4CS0B9X26"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const db = getFirestore(app);
+
+    const messagesRef = collection(db, "cchatMessages");
+
+    const messagesDiv = document.getElementById("messages");
+    const nameInput = document.getElementById("nameInput");
+    const messageInput = document.getElementById("messageInput");
+    const sendBtn = document.getElementById("sendBtn");
+
+    function escapeHTML(text) {
+      return text.replace(/[&<>"']/g, m => ({'&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'}[m]));
+    }
+
+    function renderMessage(data) {
+      const msgDiv = document.createElement("div");
+      msgDiv.style.marginBottom = "8px";
+      msgDiv.innerHTML = `<b>${escapeHTML(data.name)}</b>: ${escapeHTML(data.text)}`;
+      messagesDiv.appendChild(msgDiv);
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    const q = query(messagesRef, orderBy("timestamp", "asc"), limit(100));
+    onSnapshot(q, (querySnapshot) => {
+      messagesDiv.innerHTML = "";
+      querySnapshot.forEach(doc => {
+        renderMessage(doc.data());
+      });
+    });
+
+    sendBtn.addEventListener("click", async () => {
+      const name = nameInput.value.trim();
+      const text = messageInput.value.trim();
+      if (!name) {
+        alert("Please enter your name.");
+        return;
+      }
+      if (!text) {
+        alert("Please enter a message.");
+        return;
+      }
+      await addDoc(messagesRef, {
+        name,
+        text,
+        timestamp: serverTimestamp()
+      });
+      messageInput.value = "";
+    });
+
+    messageInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && e.ctrlKey) {
+        sendBtn.click();
+        e.preventDefault();
+      }
+    });
+  </script>
+</body>
+</html>
