@@ -1,90 +1,117 @@
+<!DOCTYPE html>
 <html>
-    <body>
-        <!-- Register form -->
-<form id="registerForm">
-  <input type="email" id="email" placeholder="Email" required />
-  <input type="password" id="password" placeholder="Password" required />
-  <input type="text" id="displayName" placeholder="Display Name" required />
-  <input type="number" id="age" placeholder="Age" required min="1" />
-  <button type="submit">Register</button>
-</form>
+<head>
+  <title>Sign In & Set Name</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+</head>
+<body>
+  <h2>Sign In / Register</h2>
+  <div id="auth-section">
+    <input id="email" type="email" placeholder="Email" />
+    <input id="password" type="password" placeholder="Password" />
+    <button id="btn-register">Register</button>
+    <button id="btn-login">Login</button>
+  </div>
 
-<!-- Login form -->
-<form id="loginForm" style="display:none;">
-  <input type="email" id="loginEmail" placeholder="Email" required />
-  <input type="password" id="loginPassword" placeholder="Password" required />
-  <button type="submit">Login</button>
-</form>
+  <div id="name-section" style="display:none;">
+    <h3>Set Your Display Name</h3>
+    <input id="display-name" type="text" placeholder="Your name" />
+    <button id="btn-set-name">Save Name</button>
+  </div>
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-  import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
-  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+  <div id="welcome-section" style="display:none;">
+    <h3>Welcome, <span id="user-name"></span>!</h3>
+    <button id="btn-logout">Logout</button>
+  </div>
 
-  const firebaseConfig = {
-    // your config here
-  };
+  <script>
+    const firebaseConfig = {
+      // Your config here
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-  const auth = getAuth(app);
+    const authSection = document.getElementById('auth-section');
+    const nameSection = document.getElementById('name-section');
+    const welcomeSection = document.getElementById('welcome-section');
+    const userNameSpan = document.getElementById('user-name');
 
-  const registerForm = document.getElementById('registerForm');
-  const loginForm = document.getElementById('loginForm');
+    document.getElementById('btn-register').onclick = () => {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      auth.createUserWithEmailAndPassword(email, password)
+        .then(userCredential => {
+          alert('Registered! Please set your display name.');
+          authSection.style.display = 'none';
+          nameSection.style.display = 'block';
+        })
+        .catch(error => alert(error.message));
+    };
 
-  registerForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const email = e.target.email.value;
-    const password = e.target.password.value;
-    const displayName = e.target.displayName.value;
-    const age = parseInt(e.target.age.value);
+    document.getElementById('btn-login').onclick = () => {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      auth.signInWithEmailAndPassword(email, password)
+        .then(userCredential => {
+          checkDisplayName();
+        })
+        .catch(error => alert(error.message));
+    };
 
-    try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-
-      await setDoc(doc(db, "users", user.uid), {
-        displayName,
-        age,
-        email
-      });
-
-      alert('Registered! You can now log in.');
-      registerForm.style.display = 'none';
-      loginForm.style.display = 'block';
-
-    } catch (error) {
-      alert('Error: ' + error.message);
-    }
-  });
-
-  loginForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const email = e.target.loginEmail.value;
-    const password = e.target.loginPassword.value;
-
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-    } catch (error) {
-      alert('Login error: ' + error.message);
-    }
-  });
-
-  onAuthStateChanged(auth, async (user) => {
-    if (user) {
-      const userDoc = await getDoc(doc(db, "users", user.uid));
-      if (userDoc.exists()) {
-        const userData = userDoc.data();
-        console.log("Logged in as:", userData.displayName, "Age:", userData.age);
-        // Hide login/register, show chat UI here
+    document.getElementById('btn-set-name').onclick = () => {
+      const name = document.getElementById('display-name').value.trim();
+      if (!name) {
+        alert('Please enter a name');
+        return;
       }
-    } else {
-      // Not logged in, show login/register UI
-      registerForm.style.display = 'block';
-      loginForm.style.display = 'none';
-    }
-  });
-</script>
+      const user = auth.currentUser;
+      if (!user) return;
+      db.collection('users').doc(user.uid).set({ displayName: name })
+        .then(() => {
+          alert('Display name saved!');
+          nameSection.style.display = 'none';
+          welcomeSection.style.display = 'block';
+          userNameSpan.textContent = name;
+        })
+        .catch(error => alert(error.message));
+    };
 
-    </body>
+    document.getElementById('btn-logout').onclick = () => {
+      auth.signOut().then(() => {
+        welcomeSection.style.display = 'none';
+        authSection.style.display = 'block';
+      });
+    };
+
+    function checkDisplayName() {
+      const user = auth.currentUser;
+      if (!user) return;
+      db.collection('users').doc(user.uid).get()
+        .then(doc => {
+          if (doc.exists && doc.data().displayName) {
+            userNameSpan.textContent = doc.data().displayName;
+            authSection.style.display = 'none';
+            nameSection.style.display = 'none';
+            welcomeSection.style.display = 'block';
+          } else {
+            authSection.style.display = 'none';
+            nameSection.style.display = 'block';
+          }
+        });
+    }
+
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        checkDisplayName();
+      } else {
+        authSection.style.display = 'block';
+        nameSection.style.display = 'none';
+        welcomeSection.style.display = 'none';
+      }
+    });
+  </script>
+</body>
 </html>
