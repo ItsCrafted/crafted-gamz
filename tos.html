@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crafted Gamz Terms And Policies</title>
+  <link rel="manifest" href="/manifest.json" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+      background-color: #121212;
+      color: #ffffff;
+      margin: 0;
+    }
+
+    h1 {
+      font-size: 3em;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 10px rgba(0, 255, 255, 0.5);
+    }
+
+    p {
+      font-size: 1.3em;
+      margin-bottom: 30px;
+    }
+
+    .tos-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      box-shadow: 0 4px 20px rgba(0, 255, 255, 0.2);
+    }
+
+    .tos-box {
+      margin: 20px 0;
+      border: 1px solid #ddd;
+      height: 300px;
+      overflow: auto;
+    }
+
+    .tos-checkbox {
+      margin: 10px 0;
+    }
+
+    .continue-btn {
+      background-color: #007bff;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      width: 100%;
+      margin-top: 10px;
+      opacity: 0.6;
+      pointer-events: none;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 122, 255, 0.5);
+      transition: transform 0.3s, background 0.3s, box-shadow 0.3s;
+    }
+
+    .continue-btn.enabled {
+      opacity: 1;
+      pointer-events: auto;
+      background: linear-gradient(135deg, #007bff, #00d4ff);
+      box-shadow: 0 6px 15px rgba(0, 122, 255, 0.8);
+    }
+
+    .continue-btn:hover {
+      transform: scale(1.1);
+      background: linear-gradient(135deg, #00d4ff, #007bff);
+      box-shadow: 0 6px 15px rgba(0, 122, 255, 0.8);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="tos-container">
+    <h1>Crafted Gamz Terms And Policies</h1>
+    <p>Please read and understand the entire agreement</p>
+    <p>Estimated 5 minute read</p>
+    <div class="tos-box">
+      <iframe src="legaldocs.txt" width="100%" height="100%"></iframe>
+    </div>
+    <div class="tos-checkbox">
+      <input type="checkbox" id="tos-checkbox"> 
+      <label for="tos-checkbox">I agree to the Crafted Gamz Terms And Policies</label>
+    </div>
+    <button id="continue-btn" class="continue-btn">Continue</button>
+  </div>
+
+  <script>
+
+    if (localStorage.getItem('read') === 'true') {
+      window.location.href = 'main.html';
+    }
+
+    const continueBtn = document.getElementById('continue-btn');
+    const tosCheckbox = document.getElementById('tos-checkbox');
+
+    tosCheckbox.addEventListener('change', function() {
+      if (tosCheckbox.checked) {
+        continueBtn.classList.add('enabled');
+      } else {
+        continueBtn.classList.remove('enabled');
+      }
+    });
+
+    continueBtn.addEventListener('click', function() {
+      if (tosCheckbox.checked) {
+        localStorage.setItem('read', 'true'); 
+        window.location.href = 'main.html'; 
+      }
+    });
+  </script>
+</body>
+</html>
