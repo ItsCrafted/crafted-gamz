@@ -2,7 +2,7 @@ const fs = require("fs");
 const path = require("path");
 
 exports.handler = async function () {
-  const rootPath = path.resolve(__dirname, "../../crafted-gamz");
+const rootPath = path.resolve(__dirname, "../../../"); // target your real site folder
 
   function buildTree(currentPath) {
     try {
