@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>CG Feedback Form</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Crafted Gamz Feedback</h1>
+<div style="text-align: center; margin-bottom: 1em;">
+  <button onclick="location.href='../apps.html'" type="button">Back</button>
+</div>
+    <form id="feedbackForm">
+      <h2>Bug Report</h2>
+      <input type="text" id="bugName" placeholder="Your Name" />
+      <select id="bugType">
+        <option value="">Select Bug Type</option>
+        <option value="UI">UI</option>
+        <option value="Game Crash">Game Crash</option>
+        <option value="Performance">Performance</option>
+        <option value="Other">Other</option>
+      </select>
+
+      <label for="bugVersion">What Version Are You Operating?*</label>
+      <select id="bugVersion" required>
+        <option value="" disabled selected>Select Version</option>
+        <option value="Drive Games 2.0">Drive Games 2.0</option>
+        <option value="Drive Games 3.0">Drive Games 3.0</option>
+        <option value="Drive Games 4.0">Drive Games 4.0</option>
+        <option value="Drive Games 5.0">Drive Games 5.0</option>
+        <option value="Drive Games / Crafted Gamz 6.0">Drive Games / Crafted Gamz 6.0</option>
+        <option value="Crafted Gamz 7.65.2">Crafted Gamz 7.65.2</option>
+        <option value="Crafted Gamz 8.0">Crafted Gamz 8.0</option>
+        <option value="Crafted Gamz 9.0">Crafted Gamz 9.0</option>
+        <option value="Crafted Gamz 10.0">Crafted Gamz 10.0</option>
+        <option value="Crafted Gamz 12.0 (current)">Crafted Gamz 12.0 (current)</option>
+        <option value="Other">Other</option>
+      </select>
+
+      <textarea id="bugDesc" placeholder="Describe the bug..."></textarea>
+
+      <h2>Game Addition Request</h2>
+
+      <label>First and Last Name</label>
+      <input type="text" id="gameName" placeholder="Your name" />
+
+      <label>Email (APS.edu preferred)</label>
+      <input type="email" id="gameEmail" placeholder="example@aps.edu" />
+
+      <label>Game Name / Nickname</label>
+      <input type="text" id="gameTitle" placeholder="Game title" />
+
+      <label>Website(s) this game is hosted on</label>
+      <input type="url" id="gameUrl" placeholder="https://example.com" />
+
+      <label>Any comments you'd like to add?</label>
+      <textarea id="gameReason" placeholder="Explain why you think this game should be added."></textarea>
+
+      <label>Would you like to be contacted about progress?</label>
+      <select id="gameFollowUp">
+        <option value="yes">Yes</option>
+        <option value="no">No</option>
+      </select>
+
+      <label>Preferred contact method (optional)</label>
+      <select id="gameContactMethod">
+        <option value="">None</option>
+        <option value="School Email">School Email</option>
+        <option value="Google Chat">School Google Chat</option>
+        <option value="In Person">Spoken In Person</option>
+        <option value="Other">Other</option>
+      </select>
+
+      <button type="submit">Submit (Any Filed Field)</button>
+      <p id="status"></p>
+    </form>
+  </div>
+  <script type="module" src="form.js"></script>
+</body>
+</html>

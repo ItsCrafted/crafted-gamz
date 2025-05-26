@@ -15,7 +15,7 @@ const messages = [
   "78",
   "26",
   "LXXVIII",
-  "1535 Colombia",
+  "1535 Columbia",
   "Pulling up chat",
   "Came with instrustions"
 ];
