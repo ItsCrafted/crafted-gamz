@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>All Visitor Logs</title>
+  <style>
+    body {
+      background-color: #0a0a0a;
+      color: #96f3f5;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #333;
+      padding: 12px;
+      text-align: left;
+    }
+    th {
+      background-color: #1e1e1e;
+    }
+    tr:nth-child(even) {
+      background-color: #151515;
+    }
+    .highlight {
+      background-color: #003300 !important;
+      color: lime;
+    }
+  </style>
+</head>
+<body>
+  <h1>Crafted Gamz Visitor Log</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Timestamp</th>
+        <th>IP Address</th>
+      </tr>
+    </thead>
+    <tbody id="visitorTable">
+      <tr><td colspan="2">Loading...</td></tr>
+    </tbody>
+  </table>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCLL2JZUBJwISsLljfMN4wAr3ZSRd4A1Jo",
+      authDomain: "craftedgamzvisits.firebaseapp.com",
+      projectId: "craftedgamzvisits",
+      storageBucket: "craftedgamzvisits.firebase-storage.app",
+      messagingSenderId: "935169016483",
+      appId: "1:935169016483:web:0ea28fbc25e9f390723516",
+      measurementId: "G-23C7D06VFD"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const visitsRef = collection(db, "visits");
+    const visitorTable = document.getElementById("visitorTable");
+
+    const snapshot = await getDocs(visitsRef);
+    const visits = [];
+
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      visits.push({
+        timestamp: data.timestamp?.toDate().toLocaleString() || "Unknown",
+        ip: data.ip || "Unknown"
+      });
+    });
+
+    visitorTable.innerHTML = "";
+
+    visits.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+    for (const visit of visits) {
+      const row = document.createElement("tr");
+      if (visit.ip === "98.60.236.102") {
+        row.classList.add("highlight");
+      }
+      row.innerHTML = `
+        <td>${visit.timestamp}</td>
+        <td>${visit.ip}</td>
+      `;
+      visitorTable.appendChild(row);
+    }
+
+    if (visits.length === 0) {
+      visitorTable.innerHTML = "<tr><td colspan='2'>No visitors yet.</td></tr>";
+    }
+  </script>
+</body>
+</html>
