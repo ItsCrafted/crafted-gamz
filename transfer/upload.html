@@ -155,7 +155,7 @@
 
   <script>
     let lastKey = "";
-const MAX_FILE_SIZE = 5 * 1024 * 1024 * 1024; // 5 GB in bytes
+    const MAX_FILE_SIZE = 5 * 1024 * 1024 * 1024; // 5 GB in bytes
 
     function formatFileSize(bytes) {
       if (bytes === 0) return '0 Bytes';
@@ -195,7 +195,7 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024 * 1024; // 5 GB in bytes
       // Check file size limit
       if (file.size > MAX_FILE_SIZE) {
         const result = document.getElementById('result');
-        result.textContent = `File too large! Maximum size is 1.5 GB. Your file is ${formatFileSize(file.size)}.`;
+        result.textContent = `File too large! Maximum size is 5 GB. Your file is ${formatFileSize(file.size)}.`;
         result.style.color = "#f87171";
         return;
       }
@@ -214,7 +214,7 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024 * 1024; // 5 GB in bytes
       reader.onload = async () => {
         const base64 = reader.result.split(',')[1];
         try {
-          const res = await fetch('https://script.google.com/macros/s/AKfycbzguPjQVAGWhrEatSk0ACjmjNp1EYHyEQ13mlFMdlkG89ScWdizS5yq5xldDYcTpsuX/exec', {
+          const res = await fetch('https://script.google.com/macros/s/AKfycbzmmo9QrTlaHBLZxVo-FwsRM677BKg3q_r3sBf0a7WsVBxQYuR53UzBEBm9gbpZpHBB/exec', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: `filedata=${encodeURIComponent(base64)}&mimeType=${encodeURIComponent(file.type)}&filename=${encodeURIComponent(file.name)}`

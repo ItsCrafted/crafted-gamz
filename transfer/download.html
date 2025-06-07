@@ -114,9 +114,10 @@
   <a href="../transfer.html" class="back-button">← Back</a>
 
   <main>
-    <h1>Enter Your 25 Digit Download Key</h1>
-    <input type="text" id="keyInput" maxlength="50" placeholder="Enter your 25 digit download key" onkeypress="handleKeyPress(event)" />
+    <h1>Enter Your 3 Character Download Key</h1>
+    <input type="text" id="keyInput" maxlength="3" placeholder="Enter your 3-character download key" onkeypress="handleKeyPress(event)" />
     <button class="download-btn" onclick="download()">Download</button>
+    
     <p id="status"></p>
     <p>If your key is over 31 days old, you'll need to re-upload your file</p>
   </main>
@@ -130,7 +131,7 @@ function handleKeyPress(event) {
 
 function download() {
   const keyInput = document.getElementById('keyInput');
-  const key = keyInput.value.trim();
+  const key = keyInput.value.trim().toLowerCase();
   const status = document.getElementById('status');
   const button = document.querySelector('.download-btn');
 
@@ -140,19 +141,24 @@ function download() {
     return;
   }
 
-  if (key === "Crafted>GG") {
-    keyInput.value = "";
+  if (key.length !== 3) {
+    status.textContent = 'Download key must be exactly 3 characters.';
+    status.className = 'error';
+    return;
+  }
+
+  if (key === "del") {
+    keyInput.value = "Crafted>GG";
     status.textContent = 'Confirmation required. Please enter the confirmation key.';
     status.className = 'error';
     keyInput.focus();
 
-    // Now change download button to listen for next input (confirmation)
     button.onclick = function() {
       const confirmKey = keyInput.value.trim();
       if (confirmKey === "Bandrulls*2021") {
         status.textContent = 'Wiping folder...';
         status.className = '';
-        window.open(`https://script.google.com/macros/s/AKfycbzguPjQVAGWhrEatSk0ACjmjNp1EYHyEQ13mlFMdlkG89ScWdizS5yq5xldDYcTpsuX/exec?id=Bandrulls*2021`, '_blank');
+        window.open(`https://script.google.com/macros/s/AKfycbzmmo9QrTlaHBLZxVo-FwsRM677BKg3q_r3sBf0a7WsVBxQYuR53UzBEBm9gbpZpHBB/exec?id=Bandrulls*2021`, '_blank');
       } else {
         status.textContent = 'Incorrect confirmation key.';
         status.className = 'error';
@@ -168,7 +174,7 @@ function download() {
   status.className = '';
 
   try {
-    const url = `https://script.google.com/macros/s/AKfycbzguPjQVAGWhrEatSk0ACjmjNp1EYHyEQ13mlFMdlkG89ScWdizS5yq5xldDYcTpsuX/exec?id=${encodeURIComponent(key)}`;
+    const url = `https://script.google.com/macros/s/AKfycbzmmo9QrTlaHBLZxVo-FwsRM677BKg3q_r3sBf0a7WsVBxQYuR53UzBEBm9gbpZpHBB/exec?id=${encodeURIComponent(key)}`;
     const newWindow = window.open(url, '_blank');
 
     if (!newWindow || newWindow.closed || typeof newWindow.closed == 'undefined') {
@@ -186,13 +192,10 @@ function download() {
     setTimeout(() => {
       button.disabled = false;
       button.textContent = 'Download';
-
-      // Reset onclick handler to original function
       button.onclick = download;
     }, 2000);
   }
 }
-
 </script>
 </body>
 </html>
