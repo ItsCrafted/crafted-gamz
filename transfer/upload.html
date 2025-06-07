@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
+  <link rel="shortcut icon" href="../favicon.png" type="image/x-icon">
   <title>Crafted Gamz | Upload File</title>
   <style>
     html, body {
@@ -137,9 +137,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
 </head>
 <body>
-  <iframe id="bg-iframe" src="https://cgamz.site/bg" aria-hidden="true" tabindex="-1"></iframe>
+  <iframe id="bg-iframe" src="../bg.html" aria-hidden="true" tabindex="-1"></iframe>
 
-  <a href="transfer.html" class="back-button">← Back</a>
+  <a href="../transfer.html" class="back-button">← Back</a>
 
   <main>
     <h1>Upload a File</h1>
@@ -150,12 +150,12 @@
     <p id="result"></p>
     <button id="copyBtn" onclick="copyKey()">Copy Key</button>
     <p>Uploaded files will be stored for 31 days, then deleted</p>
-    <p style="font-size: 14px; color: #888;">Maximum file size: 1.5 GB</p>
+    <p style="font-size: 14px; color: #888;">Maximum file size: 5 GB</p>
   </main>
 
   <script>
     let lastKey = "";
-    const MAX_FILE_SIZE = 1.5 * 1024 * 1024 * 1024; // 1.5 GB in bytes
+const MAX_FILE_SIZE = 5 * 1024 * 1024 * 1024; // 5 GB in bytes
 
     function formatFileSize(bytes) {
       if (bytes === 0) return '0 Bytes';
