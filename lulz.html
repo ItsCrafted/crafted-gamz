@@ -13,10 +13,16 @@
     h1 {
       text-align: center;
     }
+    .toggle-container {
+      text-align: center;
+      margin-bottom: 15px;
+      font-size: 1.1em;
+      user-select: none;
+    }
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 20px;
+      margin-top: 10px;
     }
     th, td {
       border: 1px solid #333;
@@ -33,19 +39,36 @@
       background-color: #003300 !important;
       color: lime;
     }
+    .hidden {
+      display: none !important;
+    }
   </style>
 </head>
 <body>
   <h1>Crafted Gamz Visitor Log</h1>
+  
+  <div class="toggle-container">
+    <label>
+      <input type="checkbox" id="toggleGreen" />
+      Hide Dev Internet Protocal's
+    </label>
+  </div>
+  
   <table>
     <thead>
       <tr>
         <th>Timestamp</th>
         <th>IP Address</th>
+        <th>Lat</th>
+        <th>Long</th>
+        <th>City</th>
+        <th>State</th>
+        <th>Country</th>
+        <th>Tag</th>
       </tr>
     </thead>
     <tbody id="visitorTable">
-      <tr><td colspan="2">Loading...</td></tr>
+      <tr><td colspan="8">Loading...</td></tr>
     </tbody>
   </table>
 
@@ -67,6 +90,48 @@
     const db = getFirestore(app);
     const visitsRef = collection(db, "visits");
     const visitorTable = document.getElementById("visitorTable");
+    const toggleGreen = document.getElementById("toggleGreen");
+
+    const ipTags = {
+      "98.60.236.102": "Crafted Gamz Dev",
+      "70.53.89.7": "Chuckles",
+      "174.56.42.200": "Dom",
+      "178.25.102.104": "Sushy"
+    };
+
+    const geoCache = {};
+
+    async function fetchGeo(ip) {
+      if (geoCache[ip]) return geoCache[ip];
+      try {
+        const res = await fetch(`https://ipinfo.io/${ip}/json?token=`);
+        if (!res.ok) throw new Error("API error");
+        const data = await res.json();
+        const [lat, long] = (data.loc || ",").split(",");
+        const geo = {
+          lat: lat || "—",
+          long: long || "—",
+          city: data.city || "—",
+          state: data.region || "—",
+          country: data.country || "—"
+        };
+        geoCache[ip] = geo;
+        return geo;
+      } catch {
+        return { lat: "—", long: "—", city: "—", state: "—", country: "—" };
+      }
+    }
+
+    toggleGreen.addEventListener("change", () => {
+      const hide = toggleGreen.checked;
+      document.querySelectorAll("tr.highlight").forEach(row => {
+        if(hide) {
+          row.classList.add("hidden");
+        } else {
+          row.classList.remove("hidden");
+        }
+      });
+    });
 
     const snapshot = await getDocs(visitsRef);
     const visits = [];
@@ -88,15 +153,30 @@
       if (visit.ip === "98.60.236.102") {
         row.classList.add("highlight");
       }
+
       row.innerHTML = `
         <td>${visit.timestamp}</td>
         <td>${visit.ip}</td>
+        <td colspan="5">Loading location...</td>
+        <td>${ipTags[visit.ip] || ""}</td>
       `;
       visitorTable.appendChild(row);
+
+      const geo = await fetchGeo(visit.ip);
+      row.innerHTML = `
+        <td>${visit.timestamp}</td>
+        <td>${visit.ip}</td>
+        <td>${geo.lat}</td>
+        <td>${geo.long}</td>
+        <td>${geo.city}</td>
+        <td>${geo.state}</td>
+        <td>${geo.country}</td>
+        <td>${ipTags[visit.ip] || ""}</td>
+      `;
     }
 
     if (visits.length === 0) {
-      visitorTable.innerHTML = "<tr><td colspan='2'>Broken :3</td></tr>";
+      visitorTable.innerHTML = "<tr><td colspan='8'>Broken :3</td></tr>";
     }
   </script>
 </body>
