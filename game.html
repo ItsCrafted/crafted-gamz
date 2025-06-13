@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #121212;
+      color: #96f3f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      flex-direction: column;
+    }
+    #gameId {
+      font-size: 2rem;
+      padding: 1rem 2rem;
+      border: 2px solid #96f3f5;
+      border-radius: 8px;
+      background: #222;
+    }
+  </style>
+</head>
+<body>
+  <h1>Loaded Game ID</h1>
+  <div id="gameId">Loading...</div>
+
+  <script>
+const display = document.getElementById('gameId');
+const gameIds = JSON.parse(localStorage.getItem('gameIds') || '[]');
+if (gameIds.length > 0) {
+  display.textContent = gameIds[0];
+} else {
+  display.textContent = 'No game ID found in localStorage.';
+}
+  </script>
+</body>
+</html>

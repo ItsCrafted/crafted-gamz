@@ -1,0 +1,2706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="favicon.png">
+  <title>Crafted Gamz | All Games</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: sans-serif;
+      overflow-x: hidden;
+    }
+
+    iframe {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1;
+      border: none;
+    }
+
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      padding: 20px;
+      text-align: center;
+      z-index: 2;
+    }
+    
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin: 0 20px;
+      font-weight: bold;
+      font-size: 16px;
+      transition: color 0.2s;
+    }
+
+    nav a:hover {
+      color: #96f3f5;
+    }
+
+.container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  padding-top: 5vh;
+  max-width: 2000px;
+  margin: 0 auto;
+}
+
+.box {
+  background-color: rgba(0, 0, 0, 0.7);
+  border-radius: 12px;
+  transition: transform 0.2s ease, background-color 0.3s ease;
+  color: white;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 300px;
+  height: 100px;
+  text-decoration: none;
+}
+
+    .box:hover {
+      transform: scale(1.02);
+      background-color: #081a2e;
+    }
+
+    .box h3 {
+      font-size: 1.4em;
+      font-weight: bold;
+      margin: 0;
+    }
+
+    .search-dropdown {
+      width: 300px;
+      margin: 0 auto 10px;
+      position: relative;
+      z-index: 1;
+    }
+
+    #dropdownSearch {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 2px solid #00ffe5;
+      background: rgba(0, 0, 0, 0.6);
+      color: white;
+      font-size: 16px;
+      outline: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 5px #00ffe5;
+    }
+
+    #dropdownSearch:focus {
+      background: rgba(0, 0, 0, 0.9);
+      box-shadow: 0 0 15px #00ffe5, 0 0 30px #00ffe5;
+    }
+
+    #dropdownList {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      position: absolute;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      border-radius: 0 0 10px 10px;
+      z-index: 1;
+      max-height: 200px;
+      overflow-y: auto;
+      display: none;
+    }
+
+    #dropdownList li {
+      padding: 10px;
+      color: white;
+      cursor: pointer;
+    }
+
+    #dropdownList li:hover {
+      background-color: #96f3f5;
+      color: black;
+    }
+
+    h1 {
+      font-size: 3rem;
+      color: #ffffff;
+      font-weight: bold;
+      line-height: 1.2;
+      margin: 3em auto;
+      text-align: center;
+    }
+
+    h2 {
+      font-size: 3rem;
+      color: #ffffff;
+      font-weight: bold;
+      line-height: 1.2;
+      margin: 3em auto;
+      text-align: center;
+    }
+
+    p {
+      text-align: center;
+      color: white;
+      font-size: 1.2em;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <iframe src="bg.html"></iframe>
+
+  <h1>All Games</h1>
+
+<p>
+  Warning: This page was generated and some links WONT WORK
+</p>
+
+  <nav>
+    <a href="main.html">Home</a>
+    <a href="search.html">Search</a>
+    <a href="games.html">Games</a>
+    <a href="apps.html">Apps</a>
+    <a href="tools.html">Tools</a>
+    <a href="transfer.html">Transfer</a>
+    <a href="partners.html">Partners</a>
+  </nav>
+
+  <div class="search-dropdown">
+    <input type="text" id="dropdownSearch" placeholder="Search..." onkeyup="filterDropdown()">
+    <ul id="dropdownList"></ul>
+  </div>
+
+<div class="container">
+  <a href="Game_Launchers/CMM-Client/index.html" class="box" onclick="(() => {
+      let arr = ['cmm-client'];
+      localStorage.setItem('gameIds', JSON.stringify(arr));
+    })(); return true;">
+    <h3>Cmm Client</h3>
+  </a>
+
+  <a href="Game_Launchers/DOOMORI/index.html" class="box" onclick="(() => {
+      let arr = ['doomori'];
+      localStorage.setItem('gameIds', JSON.stringify(arr));
+    })(); return true;">
+    <h3>Doomori</h3>
+  </a>
+
+  <a href="Game_Launchers/DogeMiner/index.html" class="box" onclick="(() => {
+      let arr = ['dogeminer'];
+      localStorage.setItem('gameIds', JSON.stringify(arr));
+    })(); return true;">
+    <h3>Dogeminer</h3>
+  </a>
+<a href="Game_Launchers/Dogeminer2/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['dogeminer2']));
+})(); return true;">
+  <h3>Dogeminer2</h3>
+</a>
+
+<a href="Game_Launchers/HexGL/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['hexgl']));
+})(); return true;">
+  <h3>Hexgl</h3>
+</a>
+
+<a href="Game_Launchers/MonkeyMart/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['monkeymart']));
+})(); return true;">
+  <h3>Monkeymart</h3>
+</a>
+
+<a href="Game_Launchers/OfflineParadise/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['offlineparadise']));
+})(); return true;">
+  <h3>Offlineparadise</h3>
+</a>
+
+<a href="Game_Launchers/Rocket-League/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['rocket-league']));
+})(); return true;">
+  <h3>Rocket League</h3>
+</a>
+
+<a href="Game_Launchers/Run 2/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['run 2']));
+})(); return true;">
+  <h3>Run 2</h3>
+</a>
+
+<a href="Game_Launchers/ShapeShootout/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['shapeshootout']));
+})(); return true;">
+  <h3>Shapeshootout</h3>
+</a>
+
+<a href="Game_Launchers/Stickman-Survival/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['stickman-survival']));
+})(); return true;">
+  <h3>Stickman Survival</h3>
+</a>
+
+<a href="Game_Launchers/Trimps/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['trimps']));
+})(); return true;">
+  <h3>Trimps</h3>
+</a>
+
+<a href="Game_Launchers/a-dance-of-fire-and-ice/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['a-dance-of-fire-and-ice']));
+})(); return true;">
+  <h3>A Dance Of Fire And Ice</h3>
+</a>
+
+<a href="Game_Launchers/achievementunlocked/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['achievementunlocked']));
+})(); return true;">
+  <h3>Achievementunlocked</h3>
+</a>
+
+<a href="Game_Launchers/adarkroom/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['adarkroom']));
+})(); return true;">
+  <h3>Adarkroom</h3>
+</a>
+
+<a href="Game_Launchers/adrenalinechallenge/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['adrenalinechallenge']));
+})(); return true;">
+  <h3>Adrenalinechallenge</h3>
+</a>
+
+<a href="Game_Launchers/adventure-drivers/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['adventure-drivers']));
+})(); return true;">
+  <h3>Adventure Drivers</h3>
+</a>
+
+<a href="Game_Launchers/ages-of-conflict/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['ages-of-conflict']));
+})(); return true;">
+  <h3>Ages Of Conflict</h3>
+</a>
+
+<a href="Game_Launchers/alienhominid/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['alienhominid']));
+})(); return true;">
+  <h3>Alienhominid</h3>
+</a>
+
+<a href="Game_Launchers/amazing-rope-police/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['amazing-rope-police']));
+})(); return true;">
+  <h3>Amazing Rope Police</h3>
+</a>
+
+<a href="Game_Launchers/amidst-the-clouds/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['amidst-the-clouds']));
+})(); return true;">
+  <h3>Amidst The Clouds</h3>
+</a>
+
+<a href="Game_Launchers/among-us/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['among-us']));
+})(); return true;">
+  <h3>Among Us</h3>
+</a>
+
+<a href="Game_Launchers/angry-sharks/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['angry-sharks']));
+})(); return true;">
+  <h3>Angry Sharks</h3>
+</a>
+
+<a href="Game_Launchers/aquapark-slides/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['aquapark-slides']));
+})(); return true;">
+  <h3>Aquapark Slides</h3>
+</a>
+
+<a href="Game_Launchers/astray/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['astray']));
+})(); return true;">
+  <h3>Astray</h3>
+</a>
+
+<a href="Game_Launchers/avalanche/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['avalanche']));
+})(); return true;">
+  <h3>Avalanche</h3>
+</a>
+
+<a href="Game_Launchers/awesometanks2/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['awesometanks2']));
+})(); return true;">
+  <h3>Awesometanks2</h3>
+</a>
+
+<a href="Game_Launchers/backrooms/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['backrooms']));
+})(); return true;">
+  <h3>Backrooms</h3>
+</a>
+
+<a href="Game_Launchers/backrooms-2d/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['backrooms-2d']));
+})(); return true;">
+  <h3>Backrooms 2D</h3>
+</a>
+
+<a href="Game_Launchers/backrooms2d/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['backrooms2d']));
+})(); return true;">
+  <h3>Backrooms2D</h3>
+</a>
+
+<a href="Game_Launchers/bacon-may-die/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['bacon-may-die']));
+})(); return true;">
+  <h3>Bacon May Die</h3>
+</a>
+
+<a href="Game_Launchers/bad-ice-cream/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['bad-ice-cream']));
+})(); return true;">
+  <h3>Bad Ice Cream</h3>
+</a>
+
+<a href="Game_Launchers/bad-ice-cream-2/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['bad-ice-cream-2']));
+})(); return true;">
+  <h3>Bad Ice Cream 2</h3>
+</a>
+
+<a href="Game_Launchers/bad-ice-cream-3/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['bad-ice-cream-3']));
+})(); return true;">
+  <h3>Bad Ice Cream 3</h3>
+</a>
+
+<a href="Game_Launchers/baldis-basics/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['baldis-basics']));
+})(); return true;">
+  <h3>Baldis Basics</h3>
+</a>
+
+<a href="Game_Launchers/balldodge/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['balldodge']));
+})(); return true;">
+  <h3>Balldodge</h3>
+</a>
+
+<a href="Game_Launchers/ballistic-chickens/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['ballistic-chickens']));
+})(); return true;">
+  <h3>Ballistic Chickens</h3>
+</a>
+
+<a href="Game_Launchers/basket-random/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['basket-random']));
+})(); return true;">
+  <h3>Basket Random</h3>
+</a>
+
+<a href="Game_Launchers/basketball-stars/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['basketball-stars']));
+})(); return true;">
+  <h3>Basketball Stars</h3>
+</a>
+
+<a href="Game_Launchers/basketbros-io/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['basketbros-io']));
+})(); return true;">
+  <h3>Basketbros Io</h3>
+</a>
+
+<a href="Game_Launchers/battleforgondor/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['battleforgondor']));
+})(); return true;">
+  <h3>Battleforgondor</h3>
+</a>
+
+<a href="Game_Launchers/bigredbutton/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['bigredbutton']));
+})(); return true;">
+  <h3>Bigredbutton</h3>
+</a>
+
+<a href="Game_Launchers/bitlife/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['bitlife']));
+})(); return true;">
+  <h3>Bitlife</h3>
+</a>
+
+<a href="Game_Launchers/blacholesquare/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['blacholesquare']));
+})(); return true;">
+  <h3>Blacholesquare</h3>
+</a>
+
+<a href="Game_Launchers/blackknight/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['blackknight']));
+})(); return true;">
+  <h3>Blackknight</h3>
+</a>
+
+<a href="Game_Launchers/blockpost/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['blockpost']));
+})(); return true;">
+  <h3>Blockpost</h3>
+</a>
+
+<a href="Game_Launchers/bloonstd/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['bloonstd']));
+})(); return true;">
+  <h3>Bloonstd</h3>
+</a>
+
+<a href="Game_Launchers/bloonstd2/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['bloonstd2']));
+})(); return true;">
+  <h3>Bloonstd2</h3>
+</a>
+
+<a href="Game_Launchers/bloxors/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['bloxors']));
+})(); return true;">
+  <h3>Bloxors</h3>
+</a>
+
+<a href="Game_Launchers/bntts/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['bntts']));
+})(); return true;">
+  <h3>Bntts</h3>
+</a>
+
+<a href="Game_Launchers/bobtherobber2/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['bobtherobber2']));
+})(); return true;">
+  <h3>Bobtherobber2</h3>
+</a>
+
+<a href="Game_Launchers/bonkio/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['bonkio']));
+})(); return true;">
+  <h3>Bonkio</h3>
+</a>
+
+<a href="Game_Launchers/boxhead2play/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['boxhead2play']));
+})(); return true;">
+  <h3>Boxhead2Play</h3>
+</a>
+
+<a href="Game_Launchers/boxing-random/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['boxing-random']));
+})(); return true;">
+  <h3>Boxing Random</h3>
+</a>
+
+<a href="Game_Launchers/breakingthebank/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['breakingthebank']));
+})(); return true;">
+  <h3>Breakingthebank</h3>
+</a>
+
+<a href="Game_Launchers/btd4/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['btd4']));
+})(); return true;">
+  <h3>Btd4</h3>
+</a>
+
+<a href="Game_Launchers/btd5/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['btd5']));
+})(); return true;">
+  <h3>Btd5</h3>
+</a>
+
+<a href="Game_Launchers/btts/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['btts']));
+})(); return true;">
+  <h3>Btts</h3>
+</a>
+
+<a href="Game_Launchers/burger-and-frights/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['burger-and-frights']));
+})(); return true;">
+  <h3>Burger And Frights</h3>
+</a>
+
+<a href="Game_Launchers/bus and subway/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['bus and subway']));
+})(); return true;">
+  <h3>Bus And Subway</h3>
+</a>
+
+<a href="Game_Launchers/busandsubway/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['busandsubway']));
+})(); return true;">
+  <h3>Busandsubway</h3>
+</a>
+
+<a href="Game_Launchers/cannon-basketball-4/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['cannon-basketball-4']));
+})(); return true;">
+  <h3>Cannon Basketball 4</h3>
+</a>
+
+<a href="Game_Launchers/canyondefense/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['canyondefense']));
+})(); return true;">
+  <h3>Canyondefense</h3>
+</a>
+
+<a href="Game_Launchers/cars-simulator/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['cars-simulator']));
+})(); return true;">
+  <h3>Cars Simulator</h3>
+</a>
+
+<a href="Game_Launchers/cell-machine/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['cell-machine']));
+})(); return true;">
+  <h3>Cell Machine</h3>
+</a>
+
+<a href="Game_Launchers/champion-island/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['champion-island']));
+})(); return true;">
+  <h3>Champion Island</h3>
+</a>
+
+<a href="Game_Launchers/championarcher/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['championarcher']));
+})(); return true;">
+  <h3>Championarcher</h3>
+</a>
+
+<a href="Game_Launchers/checkers/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['checkers']));
+})(); return true;">
+  <h3>Checkers</h3>
+</a>
+
+<a href="Game_Launchers/chess/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['chess']));
+})(); return true;">
+  <h3>Chess</h3>
+</a>
+
+<a href="Game_Launchers/chill-radio/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['chill-radio']));
+})(); return true;">
+  <h3>Chill Radio</h3>
+</a>
+
+<a href="Game_Launchers/chrome-dino/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['chrome-dino']));
+})(); return true;">
+  <h3>Chrome Dino</h3>
+</a>
+
+<a href="Game_Launchers/circlo/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['circlo']));
+})(); return true;">
+  <h3>Circlo</h3>
+</a>
+
+<a href="Game_Launchers/classicube/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['classicube']));
+})(); return true;">
+  <h3>Classicube</h3>
+</a>
+
+<a href="Game_Launchers/cluster-rush/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['cluster-rush']));
+})(); return true;">
+  <h3>Cluster Rush</h3>
+</a>
+
+<a href="Game_Launchers/cnpingpong/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['cnpingpong']));
+})(); return true;">
+  <h3>Cnpingpong</h3>
+</a>
+
+<a href="Game_Launchers/connect3/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['connect3']));
+})(); return true;">
+  <h3>Connect3</h3>
+</a>
+
+<a href="Game_Launchers/cookie-clickers/cookie-clicker/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['cookie-clickers']));
+})(); return true;">
+  <h3>Cookie Clicker</h3>
+</a>
+
+<a href="Game_Launchers/core-ball/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['core-ball']));
+})(); return true;">
+  <h3>Core Ball</h3>
+</a>
+
+<a href="Game_Launchers/craftmine/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['craftmine']));
+})(); return true;">
+  <h3>Craftmine</h3>
+</a>
+
+<a href="Game_Launchers/creativekillchamber/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['creativekillchamber']));
+})(); return true;">
+  <h3>Creativekillchamber</h3>
+</a>
+
+<a href="Game_Launchers/crossyroad/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['crossyroad']));
+})(); return true;">
+  <h3>Crossyroad</h3>
+</a>
+
+<a href="Game_Launchers/csgo-clicker/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['csgo-clicker']));
+})(); return true;">
+  <h3>Csgo Clicker</h3>
+</a>
+
+<a href="Game_Launchers/ctr/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['ctr']));
+})(); return true;">
+  <h3>Ctr</h3>
+</a>
+
+<a href="Game_Launchers/ctr-holiday/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['ctr-holiday']));
+})(); return true;">
+  <h3>Ctr Holiday</h3>
+</a>
+
+<a href="Game_Launchers/ctr-tr/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['ctr-tr']));
+})(); return true;">
+  <h3>Ctr Tr</h3>
+</a>
+
+<a href="Game_Launchers/cubefield/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['cubefield']));
+})(); return true;">
+  <h3>Cubefield</h3>
+</a>
+
+<a href="Game_Launchers/cupcake2048/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['cupcake2048']));
+})(); return true;">
+  <h3>Cupcake2048</h3>
+</a>
+
+<a href="Game_Launchers/dante/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['dante']));
+})(); return true;">
+  <h3>Dante</h3>
+</a>
+
+<a href="Game_Launchers/deal-or-no-deal/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['deal-or-no-deal']));
+})(); return true;">
+  <h3>Deal Or No Deal</h3>
+</a>
+
+<a href="Game_Launchers/death-run-3d/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['death-run-3d']));
+})(); return true;">
+  <h3>Death Run 3D</h3>
+</a>
+
+<a href="Game_Launchers/deepest-sword/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['deepest-sword']));
+})(); return true;">
+  <h3>Deepest Sword</h3>
+</a>
+
+<a href="Game_Launchers/defend-the-tank/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['defend-the-tank']));
+})(); return true;">
+  <h3>Defend The Tank</h3>
+</a>
+
+<a href="Game_Launchers/doctor-acorn2/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['doctor-acorn2']));
+})(); return true;">
+  <h3>Doctor Acorn2</h3>
+</a>
+
+<a href="Game_Launchers/dodge/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['dodge']));
+})(); return true;">
+  <h3>Dodge</h3>
+</a>
+
+<a href="Game_Launchers/doge2048/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['doge2048']));
+})(); return true;">
+  <h3>Doge2048</h3>
+</a>
+
+<a href="Game_Launchers/doodle-jump/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['doodle-jump']));
+})(); return true;">
+  <h3>Doodle Jump</h3>
+</a>
+
+<a href="Game_Launchers/doom/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['doom']));
+})(); return true;">
+  <h3>Doom</h3>
+</a>
+
+<a href="Game_Launchers/doublewires/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['doublewires']));
+})(); return true;">
+  <h3>Doublewires</h3>
+</a>
+
+<a href="Game_Launchers/dragon-vs-bricks/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['dragon-vs-bricks']));
+})(); return true;">
+  <h3>Dragon Vs Bricks</h3>
+</a>
+
+<a href="Game_Launchers/draw-the-hill/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['draw-the-hill']));
+})(); return true;">
+  <h3>Draw The Hill</h3>
+</a>
+
+<a href="Game_Launchers/drift-boss/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['drift-boss']));
+})(); return true;">
+  <h3>Drift Boss</h3>
+</a>
+
+<a href="Game_Launchers/drift-hunters/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['drift-hunters']));
+})(); return true;">
+  <h3>Drift Hunters</h3>
+</a>
+
+<a href="Game_Launchers/drive-mad/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['drive-mad']));
+})(); return true;">
+  <h3>Drive Mad</h3>
+</a>
+
+<a href="Game_Launchers/dsc/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['dsc']));
+})(); return true;">
+  <h3>Dsc</h3>
+</a>
+
+<a href="Game_Launchers/ducklife1/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['ducklife1']));
+})(); return true;">
+  <h3>Ducklife1</h3>
+</a>
+
+<a href="Game_Launchers/ducklife2/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['ducklife2']));
+})(); return true;">
+  <h3>Ducklife2</h3>
+</a>
+
+<a href="Game_Launchers/ducklife3/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['ducklife3']));
+})(); return true;">
+  <h3>Ducklife3</h3>
+</a>
+
+<a href="Game_Launchers/ducklife4/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['ducklife4']));
+})(); return true;">
+  <h3>Ducklife4</h3>
+</a>
+
+<a href="Game_Launchers/duke-nukem-2/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['duke-nukem-2']));
+})(); return true;">
+  <h3>Duke Nukem 2</h3>
+</a>
+
+<a href="Game_Launchers/dumbwaystodie/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['dumbwaystodie']));
+})(); return true;">
+  <h3>Dumbwaystodie</h3>
+</a>
+
+<a href="Game_Launchers/eaglerfaithful/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['eaglerfaithful']));
+})(); return true;">
+  <h3>Eaglerfaithful</h3>
+</a>
+
+<a href="Game_Launchers/earntodie/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['earntodie']));
+})(); return true;">
+  <h3>Earntodie</h3>
+</a>
+
+<a href="Game_Launchers/edge-surf/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['edge-surf']));
+})(); return true;">
+  <h3>Edge Surf</h3>
+</a>
+
+<a href="Game_Launchers/edgenotfound/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['edgenotfound']));
+})(); return true;">
+  <h3>Edgenotfound</h3>
+</a>
+
+<a href="Game_Launchers/eel-slap/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['eel-slap']));
+})(); return true;">
+  <h3>Eel Slap</h3>
+</a>
+
+<a href="Game_Launchers/eggycar/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['eggycar']));
+})(); return true;">
+  <h3>Eggycar</h3>
+</a>
+
+<a href="Game_Launchers/elasticman/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['elasticman']));
+})(); return true;">
+  <h3>Elasticman</h3>
+</a>
+
+<a href="Game_Launchers/endlesswar3/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['endlesswar3']));
+})(); return true;">
+  <h3>Endlesswar3</h3>
+</a>
+
+<a href="Game_Launchers/escapingtheprison/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['escapingtheprison']));
+})(); return true;">
+  <h3>Escapingtheprison</h3>
+</a>
+
+<a href="Game_Launchers/evil-glitch/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['evil-glitch']));
+})(); return true;">
+  <h3>Evil Glitch</h3>
+</a>
+
+<a href="Game_Launchers/evolution/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['evolution']));
+})(); return true;">
+  <h3>Evolution</h3>
+</a>
+
+<a href="Game_Launchers/exo/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['exo']));
+})(); return true;">
+  <h3>Exo</h3>
+</a>
+
+<a href="Game_Launchers/factoryballs/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['factoryballs']));
+})(); return true;">
+  <h3>Factoryballs</h3>
+</a>
+
+<a href="Game_Launchers/fairsquares/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['fairsquares']));
+})(); return true;">
+  <h3>Fairsquares</h3>
+</a>
+
+<a href="Game_Launchers/fake-virus/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['fake-virus']));
+})(); return true;">
+  <h3>Fake Virus</h3>
+</a>
+
+<a href="Game_Launchers/fancypantsadventures/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['fancypantsadventures']));
+})(); return true;">
+  <h3>Fancypantsadventures</h3>
+</a>
+
+<a href="Game_Launchers/fantasy-dash/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['fantasy-dash']));
+})(); return true;">
+  <h3>Fantasy Dash</h3>
+</a>
+
+<a href="Game_Launchers/fireboywatergirlforesttemple/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['fireboywatergirlforesttemple']));
+})(); return true;">
+  <h3>Fireboywatergirlforesttemple</h3>
+</a>
+
+<a href="Game_Launchers/flappy-2048/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['flappy-2048']));
+})(); return true;">
+  <h3>Flappy 2048</h3>
+</a>
+
+<a href="Game_Launchers/flappy-bird/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['flappy-bird']));
+})(); return true;">
+  <h3>Flappy Bird</h3>
+</a>
+
+<a href="Game_Launchers/flappy-plane/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['flappy-plane']));
+})(); return true;">
+  <h3>Flappy Plane</h3>
+</a>
+
+<a href="Game_Launchers/flappybird/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['flappybird']));
+})(); return true;">
+  <h3>Flappybird</h3>
+</a>
+
+<a href="Game_Launchers/flappyplane/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['flappyplane']));
+})(); return true;">
+  <h3>Flappyplane</h3>
+</a>
+
+<a href="Game_Launchers/flashtetris/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['flashtetris']));
+})(); return true;">
+  <h3>Flashtetris</h3>
+</a>
+
+<a href="Game_Launchers/fleeingthecomplex/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['fleeingthecomplex']));
+})(); return true;">
+  <h3>Fleeingthecomplex</h3>
+</a>
+
+<a href="Game_Launchers/flippy-fish/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['flippy-fish']));
+})(); return true;">
+  <h3>Flippy Fish</h3>
+</a>
+
+<a href="Game_Launchers/fnaw/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['fnaw']));
+})(); return true;">
+  <h3>Fnaw</h3>
+</a>
+
+<a href="Game_Launchers/fridaynightfunkin/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['fridaynightfunkin']));
+})(); return true;">
+  <h3>Fridaynightfunkin</h3>
+</a>
+
+<a href="Game_Launchers/froggys-battle/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['froggys-battle']));
+})(); return true;">
+  <h3>Froggys Battle</h3>
+</a>
+
+<a href="Game_Launchers/fruitninja/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['fruitninja']));
+})(); return true;">
+  <h3>Fruitninja</h3>
+</a>
+
+<a href="Game_Launchers/frying-nemo/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['frying-nemo']));
+})(); return true;">
+  <h3>Frying Nemo</h3>
+</a>
+
+<a href="Game_Launchers/gachalife/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['gachalife']));
+})(); return true;">
+  <h3>Gachalife</h3>
+</a>
+
+<a href="Game_Launchers/game-inside/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['game-inside']));
+})(); return true;">
+  <h3>Game Inside</h3>
+</a>
+
+<a href="Game_Launchers/gdtd/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['gdtd']));
+})(); return true;">
+  <h3>Gdtd</h3>
+</a>
+
+<a href="Game_Launchers/gearsofbabies/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['gearsofbabies']));
+})(); return true;">
+  <h3>Gearsofbabies</h3>
+</a>
+
+<a href="Game_Launchers/generic-fishing-game/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['generic-fishing-game']));
+})(); return true;">
+  <h3>Generic Fishing Game</h3>
+</a>
+
+<a href="Game_Launchers/geochallenge/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['geochallenge']));
+})(); return true;">
+  <h3>Geochallenge</h3>
+</a>
+
+<a href="Game_Launchers/geodash/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['geodash']));
+})(); return true;">
+  <h3>Geodash</h3>
+</a>
+
+<a href="Game_Launchers/geodashlite/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['geodashlite']));
+})(); return true;">
+  <h3>Geodashlite</h3>
+</a>
+
+<a href="Game_Launchers/geogeo/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['geogeo']));
+})(); return true;">
+  <h3>Geogeo</h3>
+</a>
+
+<a href="Game_Launchers/geops1/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['geops1']));
+})(); return true;">
+  <h3>Geops1</h3>
+</a>
+
+<a href="Game_Launchers/georash/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['georash']));
+})(); return true;">
+  <h3>Georash</h3>
+</a>
+
+<a href="Game_Launchers/georgeandtheprinter/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['georgeandtheprinter']));
+})(); return true;">
+  <h3>Georgeandtheprinter</h3>
+</a>
+
+<a href="Game_Launchers/geotrash/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['geotrash']));
+})(); return true;">
+  <h3>Geotrash</h3>
+</a>
+
+<a href="Game_Launchers/getaway-shootout/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['getaway-shootout']));
+})(); return true;">
+  <h3>Getaway Shootout</h3>
+</a>
+
+<a href="Game_Launchers/gimme-the-airpod/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['gimme-the-airpod']));
+})(); return true;">
+  <h3>Gimme The Airpod</h3>
+</a>
+
+<a href="Game_Launchers/glass-city/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['glass-city']));
+})(); return true;">
+  <h3>Glass City</h3>
+</a>
+
+<a href="Game_Launchers/gmonster/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['gmonster']));
+})(); return true;">
+  <h3>Gmonster</h3>
+</a>
+
+<a href="Game_Launchers/go-ball/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['go-ball']));
+})(); return true;">
+  <h3>Go Ball</h3>
+</a>
+
+<a href="Game_Launchers/goodnight/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['goodnight']));
+})(); return true;">
+  <h3>Goodnight</h3>
+</a>
+
+<a href="Game_Launchers/goodnight-meowmie/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['goodnight-meowmie']));
+})(); return true;">
+  <h3>Goodnight Meowmie</h3>
+</a>
+
+<a href="Game_Launchers/google-feud/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['google-feud']));
+})(); return true;">
+  <h3>Google Feud</h3>
+</a>
+
+<a href="Game_Launchers/google-snake/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['google-snake']));
+})(); return true;">
+  <h3>Google Snake</h3>
+</a>
+
+<a href="Game_Launchers/gravity-soccer/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['gravity-soccer']));
+})(); return true;">
+  <h3>Gravity Soccer</h3>
+</a>
+
+<a href="Game_Launchers/greybox/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['greybox']));
+})(); return true;">
+  <h3>Greybox</h3>
+</a>
+
+<a href="Game_Launchers/grindcraft/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['grindcraft']));
+})(); return true;">
+  <h3>Grindcraft</h3>
+</a>
+
+<a href="Game_Launchers/hackertype/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['hackertype']));
+})(); return true;">
+  <h3>Hackertype</h3>
+</a>
+
+<a href="Game_Launchers/handshakes/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['handshakes']));
+})(); return true;">
+  <h3>Handshakes</h3>
+</a>
+
+<a href="Game_Launchers/happy-hop/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['happy-hop']));
+})(); return true;">
+  <h3>Happy Hop</h3>
+</a>
+
+<a href="Game_Launchers/happywheels/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['happywheels']));
+})(); return true;">
+  <h3>Happywheels</h3>
+</a>
+
+<a href="Game_Launchers/hardware-tycoon/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['hardware-tycoon']));
+})(); return true;">
+  <h3>Hardware Tycoon</h3>
+</a>
+
+<a href="Game_Launchers/hba/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['hba']));
+})(); return true;">
+  <h3>Hba</h3>
+</a>
+
+<a href="Game_Launchers/helicopter/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['helicopter']));
+})(); return true;">
+  <h3>Helicopter</h3>
+</a>
+
+<a href="Game_Launchers/hellscaper/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['hellscaper']));
+})(); return true;">
+  <h3>Hellscaper</h3>
+</a>
+
+<a href="Game_Launchers/hexempire/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['hexempire']));
+})(); return true;">
+  <h3>Hexempire</h3>
+</a>
+
+<a href="Game_Launchers/hextris/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['hextris']));
+})(); return true;">
+  <h3>Hextris</h3>
+</a>
+
+<a href="Game_Launchers/highrisehop/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['highrisehop']));
+})(); return true;">
+  <h3>Highrisehop</h3>
+</a>
+
+<a href="Game_Launchers/hill-climb-racing/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['hill-climb-racing']));
+})(); return true;">
+  <h3>Hill Climb Racing</h3>
+</a>
+
+<a href="Game_Launchers/hungry-lamu/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['hungry-lamu']));
+})(); return true;">
+  <h3>Hungry Lamu</h3>
+</a>
+
+<a href="Game_Launchers/iceagebaby/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['iceagebaby']));
+})(); return true;">
+  <h3>Iceagebaby</h3>
+</a>
+
+<a href="Game_Launchers/iceagebaby2/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['iceagebaby2']));
+})(); return true;">
+  <h3>Iceagebaby2</h3>
+</a>
+
+<a href="Game_Launchers/idle-breakout/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['idle-breakout']));
+})(); return true;">
+  <h3>Idle Breakout</h3>
+</a>
+
+<a href="Game_Launchers/idle-shark/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['idle-shark']));
+})(); return true;">
+  <h3>Idle Shark</h3>
+</a>
+
+<a href="Game_Launchers/idledice/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['idledice']));
+})(); return true;">
+  <h3>Idledice</h3>
+</a>
+
+<a href="Game_Launchers/impossiblequiz/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['impossiblequiz']));
+})(); return true;">
+  <h3>Impossiblequiz</h3>
+</a>
+
+<a href="Game_Launchers/impossiblequiz2/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['impossiblequiz2']));
+})(); return true;">
+  <h3>Impossiblequiz2</h3>
+</a>
+
+<a href="Game_Launchers/impossiblequizbeta/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['impossiblequizbeta']));
+})(); return true;">
+  <h3>Impossiblequizbeta</h3>
+</a>
+
+<a href="Game_Launchers/interactivebuddy/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['interactivebuddy']));
+})(); return true;">
+  <h3>Interactivebuddy</h3>
+</a>
+
+<a href="Game_Launchers/invite-the-blackbird/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['invite-the-blackbird']));
+})(); return true;">
+  <h3>Invite The Blackbird</h3>
+</a>
+
+<a href="Game_Launchers/iron dash/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['iron dash']));
+})(); return true;">
+  <h3>Iron Dash</h3>
+</a>
+
+<a href="Game_Launchers/irondash/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['irondash']));
+})(); return true;">
+  <h3>Irondash</h3>
+</a>
+
+<a href="Game_Launchers/jetpack-joyride/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['jetpack-joyride']));
+})(); return true;">
+  <h3>Jetpack Joyride</h3>
+</a>
+
+<a href="Game_Launchers/just-fall/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['just-fall']));
+})(); return true;">
+  <h3>Just Fall</h3>
+</a>
+
+<a href="Game_Launchers/just-one-boss/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['just-one-boss']));
+})(); return true;">
+  <h3>Just One Boss</h3>
+</a>
+
+<a href="Game_Launchers/kirkaio/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['kirkaio']));
+})(); return true;">
+  <h3>Kirkaio</h3>
+</a>
+
+<a href="Game_Launchers/kitchen-gun-game/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['kitchen-gun-game']));
+})(); return true;">
+  <h3>Kitchen Gun Game</h3>
+</a>
+
+<a href="Game_Launchers/kittencannon/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['kittencannon']));
+})(); return true;">
+  <h3>Kittencannon</h3>
+</a>
+
+<a href="Game_Launchers/knife-master/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['knife-master']));
+})(); return true;">
+  <h3>Knife Master</h3>
+</a>
+
+<a href="Game_Launchers/krunker/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['krunker']));
+})(); return true;">
+  <h3>Krunker</h3>
+</a>
+
+<a href="Game_Launchers/learntofly/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['learntofly']));
+})(); return true;">
+  <h3>Learntofly</h3>
+</a>
+
+<a href="Game_Launchers/learntofly2/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['learntofly2']));
+})(); return true;">
+  <h3>Learntofly2</h3>
+</a>
+
+<a href="Game_Launchers/level13/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['level13']));
+})(); return true;">
+  <h3>Level13</h3>
+</a>
+
+<a href="Game_Launchers/linerider/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['linerider']));
+})(); return true;">
+  <h3>Linerider</h3>
+</a>
+
+<a href="Game_Launchers/linkgen/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['linkgen']));
+})(); return true;">
+  <h3>Linkgen</h3>
+</a>
+
+<a href="Game_Launchers/ltf-idle/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['ltf-idle']));
+})(); return true;">
+  <h3>Ltf Idle</h3>
+</a>
+
+<a href="Game_Launchers/ltf3/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['ltf3']));
+})(); return true;">
+  <h3>Ltf3</h3>
+</a>
+
+<a href="Game_Launchers/madalin-stunt-cars-2/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['madalin-stunt-cars-2']));
+})(); return true;">
+  <h3>Madalin Stunt Cars 2</h3>
+</a>
+
+<a href="Game_Launchers/madalin-stunt-cars-3/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['madalin-stunt-cars-3']));
+})(); return true;">
+  <h3>Madalin Stunt Cars 3</h3>
+</a>
+
+<a href="Game_Launchers/mario/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['mario']));
+})(); return true;">
+  <h3>Mario</h3>
+</a>
+
+<a href="Game_Launchers/marvinspectrum/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['marvinspectrum']));
+})(); return true;">
+  <h3>Marvinspectrum</h3>
+</a>
+
+<a href="Game_Launchers/matrixrampage/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['matrixrampage']));
+})(); return true;">
+  <h3>Matrixrampage</h3>
+</a>
+
+<a href="Game_Launchers/mcje/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['mcje']));
+})(); return true;">
+  <h3>Mcje</h3>
+</a>
+
+<a href="Game_Launchers/meme2048/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['meme2048']));
+})(); return true;">
+  <h3>Meme2048</h3>
+</a>
+
+<a href="Game_Launchers/merge-round-racers/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['merge-round-racers']));
+})(); return true;">
+  <h3>Merge Round Racers</h3>
+</a>
+
+<a href="Game_Launchers/mindustry/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['mindustry']));
+})(); return true;">
+  <h3>Mindustry</h3>
+</a>
+
+<a href="Game_Launchers/mineblocks/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['mineblocks']));
+})(); return true;">
+  <h3>Mineblocks</h3>
+</a>
+
+<a href="Game_Launchers/minecraft-15/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['minecraft-15']));
+})(); return true;">
+  <h3>Minecraft 15</h3>
+</a>
+
+<a href="Game_Launchers/minecraft-18/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['minecraft-18']));
+})(); return true;">
+  <h3>Minecraft 18</h3>
+</a>
+
+<a href="Game_Launchers/minecraft-classic/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['minecraft-classic']));
+})(); return true;">
+  <h3>Minecraft Classic</h3>
+</a>
+
+<a href="Game_Launchers/minecraftbeta/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['minecraftbeta']));
+})(); return true;">
+  <h3>Minecraftbeta</h3>
+</a>
+
+<a href="Game_Launchers/minecrafttowerdefence/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['minecrafttowerdefence']));
+})(); return true;">
+  <h3>Minecrafttowerdefence</h3>
+</a>
+
+<a href="Game_Launchers/minesweeper/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['minesweeper']));
+})(); return true;">
+  <h3>Minesweeper</h3>
+</a>
+
+<a href="Game_Launchers/miniputt/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['miniputt']));
+})(); return true;">
+  <h3>Miniputt</h3>
+</a>
+
+<a href="Game_Launchers/missiles/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['missiles']));
+})(); return true;">
+  <h3>Missiles</h3>
+</a>
+
+<a href="Game_Launchers/monster-tracks/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['monster-tracks']));
+})(); return true;">
+  <h3>Monster Tracks</h3>
+</a>
+
+<a href="Game_Launchers/motox3m/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['motox3m']));
+})(); return true;">
+  <h3>Motox3M</h3>
+</a>
+
+<a href="Game_Launchers/motox3m-pool/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['motox3m-pool']));
+})(); return true;">
+  <h3>Motox3M Pool</h3>
+</a>
+
+<a href="Game_Launchers/motox3m-spooky/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['motox3m-spooky']));
+})(); return true;">
+  <h3>Motox3M Spooky</h3>
+</a>
+
+<a href="Game_Launchers/motox3m-winter/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['motox3m-winter']));
+})(); return true;">
+  <h3>Motox3M Winter</h3>
+</a>
+
+<a href="Game_Launchers/motox3m2/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['motox3m2']));
+})(); return true;">
+  <h3>Motox3M2</h3>
+</a>
+
+<a href="Game_Launchers/my-rusty-submarine/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['my-rusty-submarine']));
+})(); return true;">
+  <h3>My Rusty Submarine</h3>
+</a>
+
+<a href="Game_Launchers/n-gon/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['n-gon']));
+})(); return true;">
+  <h3>N Gon</h3>
+</a>
+
+<a href="Game_Launchers/neal.fun/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['neal.fun']));
+})(); return true;">
+  <h3>Neal.Fun</h3>
+</a>
+
+<a href="Game_Launchers/ninja/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['ninja']));
+})(); return true;">
+  <h3>Ninja</h3>
+</a>
+
+<a href="Game_Launchers/ninjavsevilcorp/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['ninjavsevilcorp']));
+})(); return true;">
+  <h3>Ninjavsevilcorp</h3>
+</a>
+
+<a href="Game_Launchers/noob-steve-parkour/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['noob-steve-parkour']));
+})(); return true;">
+  <h3>Noob Steve Parkour</h3>
+</a>
+
+<a href="Game_Launchers/ns-shaft/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['ns-shaft']));
+})(); return true;">
+  <h3>Ns Shaft</h3>
+</a>
+
+<a href="Game_Launchers/nsresurgence/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['nsresurgence']));
+})(); return true;">
+  <h3>Nsresurgence</h3>
+</a>
+
+<a href="Game_Launchers/om-bounce/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['om-bounce']));
+})(); return true;">
+  <h3>Om Bounce</h3>
+</a>
+
+<a href="Game_Launchers/osu!/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['osu!']));
+})(); return true;">
+  <h3>Osu!</h3>
+</a>
+
+<a href="Game_Launchers/out-of-ctrl/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['out-of-ctrl']));
+})(); return true;">
+  <h3>Out Of Ctrl</h3>
+</a>
+
+<a href="Game_Launchers/overwatch/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['overwatch']));
+})(); return true;">
+  <h3>Overwatch</h3>
+</a>
+
+<a href="Game_Launchers/ovo/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['ovo']));
+})(); return true;">
+  <h3>Ovo</h3>
+</a>
+
+<a href="Game_Launchers/pandemic2/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['pandemic2']));
+})(); return true;">
+  <h3>Pandemic2</h3>
+</a>
+
+<a href="Game_Launchers/papasburgeria/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['papasburgeria']));
+})(); return true;">
+  <h3>Papasburgeria</h3>
+</a>
+
+<a href="Game_Launchers/papaspizzaria/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['papaspizzaria']));
+})(); return true;">
+  <h3>Papaspizzaria</h3>
+</a>
+
+<a href="Game_Launchers/paperio2/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['paperio2']));
+})(); return true;">
+  <h3>Paperio2</h3>
+</a>
+
+<a href="Game_Launchers/papery-planes/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['papery-planes']));
+})(); return true;">
+  <h3>Papery Planes</h3>
+</a>
+
+<a href="Game_Launchers/particle-clicker/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['particle-clicker']));
+})(); return true;">
+  <h3>Particle Clicker</h3>
+</a>
+
+<a href="Game_Launchers/piclient/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['piclient']));
+})(); return true;">
+  <h3>Piclient</h3>
+</a>
+
+<a href="Game_Launchers/pigeon-ascent/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['pigeon-ascent']));
+})(); return true;">
+  <h3>Pigeon Ascent</h3>
+</a>
+
+<a href="Game_Launchers/pixel-gun-survival/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['pixel-gun-survival']));
+})(); return true;">
+  <h3>Pixel Gun Survival</h3>
+</a>
+
+<a href="Game_Launchers/planetlife/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['planetlife']));
+})(); return true;">
+  <h3>Planetlife</h3>
+</a>
+
+<a href="Game_Launchers/plantsvzombie1/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['plantsvzombie1']));
+})(); return true;">
+  <h3>Plantsvzombie1</h3>
+</a>
+
+<a href="Game_Launchers/polybranch/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['polybranch']));
+})(); return true;">
+  <h3>Polybranch</h3>
+</a>
+
+<a href="Game_Launchers/popcat-classic/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['popcat-classic']));
+})(); return true;">
+  <h3>Popcat Classic</h3>
+</a>
+
+<a href="Game_Launchers/portalflash/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['portalflash']));
+})(); return true;">
+  <h3>Portalflash</h3>
+</a>
+
+<a href="Game_Launchers/precision-client/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['precision-client']));
+})(); return true;">
+  <h3>Precision Client</h3>
+</a>
+
+<a href="Game_Launchers/protektor/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['protektor']));
+})(); return true;">
+  <h3>Protektor</h3>
+</a>
+
+<a href="Game_Launchers/push-the-square/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['push-the-square']));
+})(); return true;">
+  <h3>Push The Square</h3>
+</a>
+
+<a href="Game_Launchers/push-your-luck/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['push-your-luck']));
+})(); return true;">
+  <h3>Push Your Luck</h3>
+</a>
+
+<a href="Game_Launchers/rabbit-samurai/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['rabbit-samurai']));
+})(); return true;">
+  <h3>Rabbit Samurai</h3>
+</a>
+
+<a href="Game_Launchers/rabbit-samurai2/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['rabbit-samurai2']));
+})(); return true;">
+  <h3>Rabbit Samurai2</h3>
+</a>
+
+<a href="Game_Launchers/resent-client/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['resent-client']));
+})(); return true;">
+  <h3>Resent Client</h3>
+</a>
+
+<a href="Game_Launchers/retro-bowl/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['retro-bowl']));
+})(); return true;">
+  <h3>Retro Bowl</h3>
+</a>
+
+<a href="Game_Launchers/rhythm-doctor/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['rhythm-doctor']));
+})(); return true;">
+  <h3>Rhythm Doctor</h3>
+</a>
+
+<a href="Game_Launchers/riddleschool/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['riddleschool']));
+})(); return true;">
+  <h3>Riddleschool</h3>
+</a>
+
+<a href="Game_Launchers/riddleschool2/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['riddleschool2']));
+})(); return true;">
+  <h3>Riddleschool2</h3>
+</a>
+
+<a href="Game_Launchers/riddleschool3/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['riddleschool3']));
+})(); return true;">
+  <h3>Riddleschool3</h3>
+</a>
+
+<a href="Game_Launchers/riddleschool4/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['riddleschool4']));
+})(); return true;">
+  <h3>Riddleschool4</h3>
+</a>
+
+<a href="Game_Launchers/riddleschool5/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['riddleschool5']));
+})(); return true;">
+  <h3>Riddleschool5</h3>
+</a>
+
+<a href="Game_Launchers/riddletransfer/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['riddletransfer']));
+})(); return true;">
+  <h3>Riddletransfer</h3>
+</a>
+
+<a href="Game_Launchers/riddletransfer2/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['riddletransfer2']));
+})(); return true;">
+  <h3>Riddletransfer2</h3>
+</a>
+
+<a href="Game_Launchers/roblox/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['roblox']));
+})(); return true;">
+  <h3>Roblox</h3>
+</a>
+
+<a href="Game_Launchers/roblox copy/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['roblox copy']));
+})(); return true;">
+  <h3>Roblox Copy</h3>
+</a>
+
+<a href="Game_Launchers/robuxclicker/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['robuxclicker']));
+})(); return true;">
+  <h3>Robuxclicker</h3>
+</a>
+
+<a href="Game_Launchers/rolling-forests/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['rolling-forests']));
+})(); return true;">
+  <h3>Rolling Forests</h3>
+</a>
+
+<a href="Game_Launchers/rolly-vortex/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['rolly-vortex']));
+})(); return true;">
+  <h3>Rolly Vortex</h3>
+</a>
+
+<a href="Game_Launchers/rooftop-snipers/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['rooftop-snipers']));
+})(); return true;">
+  <h3>Rooftop Snipers</h3>
+</a>
+
+<a href="Game_Launchers/roommate/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['roommate']));
+})(); return true;">
+  <h3>Roommate</h3>
+</a>
+
+<a href="Game_Launchers/ruffle/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['ruffle']));
+})(); return true;">
+  <h3>Ruffle</h3>
+</a>
+
+<a href="Game_Launchers/run/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['run']));
+})(); return true;">
+  <h3>Run</h3>
+</a>
+
+<a href="Game_Launchers/run 3/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['run 3']));
+})(); return true;">
+  <h3>Run 3</h3>
+</a>
+
+<a href="Game_Launchers/run2/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['run2']));
+})(); return true;">
+  <h3>Run2</h3>
+</a>
+
+<a href="Game_Launchers/run3/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['run3']));
+})(); return true;">
+  <h3>Run3</h3>
+</a>
+
+<a href="Game_Launchers/run4bootleg/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['run4bootleg']));
+})(); return true;">
+  <h3>Run4Bootleg</h3>
+</a>
+
+<a href="Game_Launchers/runner/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['runner']));
+})(); return true;">
+  <h3>Runner</h3>
+</a>
+
+<a href="Game_Launchers/sand-game/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['sand-game']));
+})(); return true;">
+  <h3>Sand Game</h3>
+</a>
+
+<a href="Game_Launchers/sandboxels/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['sandboxels']));
+})(); return true;">
+  <h3>Sandboxels</h3>
+</a>
+
+<a href="Game_Launchers/santy-is-home/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['santy-is-home']));
+})(); return true;">
+  <h3>Santy Is Home</h3>
+</a>
+
+<a href="Game_Launchers/scooperia/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['scooperia']));
+})(); return true;">
+  <h3>Scooperia</h3>
+</a>
+
+<a href="Game_Launchers/scrapmetal/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['scrapmetal']));
+})(); return true;">
+  <h3>Scrapmetal</h3>
+</a>
+
+<a href="Game_Launchers/scratcharia/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['scratcharia']));
+})(); return true;">
+  <h3>Scratcharia</h3>
+</a>
+
+<a href="Game_Launchers/shellshockers/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['shellshockers']));
+})(); return true;">
+  <h3>Shellshockers</h3>
+</a>
+
+<a href="Game_Launchers/shogunshowdown/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['shogunshowdown']));
+})(); return true;">
+  <h3>Shogunshowdown</h3>
+</a>
+
+<a href="Game_Launchers/shotinthedark/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['shotinthedark']));
+})(); return true;">
+  <h3>Shotinthedark</h3>
+</a>
+
+<a href="Game_Launchers/shuttledeck/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['shuttledeck']));
+})(); return true;">
+  <h3>Shuttledeck</h3>
+</a>
+
+<a href="Game_Launchers/sky-car-stunt/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['sky-car-stunt']));
+})(); return true;">
+  <h3>Sky Car Stunt</h3>
+</a>
+
+<a href="Game_Launchers/sleepingbeauty/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['sleepingbeauty']));
+})(); return true;">
+  <h3>Sleepingbeauty</h3>
+</a>
+
+<a href="Game_Launchers/slime-rush-td/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['slime-rush-td']));
+})(); return true;">
+  <h3>Slime Rush Td</h3>
+</a>
+
+<a href="Game_Launchers/slitherio/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['slitherio']));
+})(); return true;">
+  <h3>Slitherio</h3>
+</a>
+
+<a href="Game_Launchers/slope/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['slope']));
+})(); return true;">
+  <h3>Slope</h3>
+</a>
+
+<a href="Game_Launchers/slope-2/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['slope-2']));
+})(); return true;">
+  <h3>Slope 2</h3>
+</a>
+
+<a href="Game_Launchers/slope-ball/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['slope-ball']));
+})(); return true;">
+  <h3>Slope Ball</h3>
+</a>
+
+<a href="Game_Launchers/sm64/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['sm64']));
+})(); return true;">
+  <h3>Sm64</h3>
+</a>
+
+<a href="Game_Launchers/smashkarts/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['smashkarts']));
+})(); return true;">
+  <h3>Smashkarts</h3>
+</a>
+
+<a href="Game_Launchers/smokingbarrels/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['smokingbarrels']));
+})(); return true;">
+  <h3>Smokingbarrels</h3>
+</a>
+
+<a href="Game_Launchers/snowbattle/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['snowbattle']));
+})(); return true;">
+  <h3>Snowbattle</h3>
+</a>
+
+<a href="Game_Launchers/snowrider3d/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['snowrider3d']));
+})(); return true;">
+  <h3>Snowrider3D</h3>
+</a>
+
+<a href="Game_Launchers/soccer-random/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['soccer-random']));
+})(); return true;">
+  <h3>Soccer Random</h3>
+</a>
+
+<a href="Game_Launchers/soccer-skills/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['soccer-skills']));
+})(); return true;">
+  <h3>Soccer Skills</h3>
+</a>
+
+<a href="Game_Launchers/soldier-legend/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['soldier-legend']));
+})(); return true;">
+  <h3>Soldier Legend</h3>
+</a>
+
+<a href="Game_Launchers/solitaire/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['solitaire']));
+})(); return true;">
+  <h3>Solitaire</h3>
+</a>
+
+<a href="Game_Launchers/sort-the-court/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['sort-the-court']));
+})(); return true;">
+  <h3>Sort The Court</h3>
+</a>
+
+<a href="Game_Launchers/soundboard/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['soundboard']));
+})(); return true;">
+  <h3>Soundboard</h3>
+</a>
+
+<a href="Game_Launchers/space-company/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['space-company']));
+})(); return true;">
+  <h3>Space Company</h3>
+</a>
+
+<a href="Game_Launchers/spacegarden/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['spacegarden']));
+})(); return true;">
+  <h3>Spacegarden</h3>
+</a>
+
+<a href="Game_Launchers/spelunky/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['spelunky']));
+})(); return true;">
+  <h3>Spelunky</h3>
+</a>
+
+<a href="Game_Launchers/spinningrat/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['spinningrat']));
+})(); return true;">
+  <h3>Spinningrat</h3>
+</a>
+
+<a href="Game_Launchers/squaredash/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['squaredash']));
+})(); return true;">
+  <h3>Squaredash</h3>
+</a>
+
+<a href="Game_Launchers/ssurferbotleg/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['ssurferbotleg']));
+})(); return true;">
+  <h3>Ssurferbotleg</h3>
+</a>
+
+<a href="Game_Launchers/stack/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['stack']));
+})(); return true;">
+  <h3>Stack</h3>
+</a>
+
+<a href="Game_Launchers/stack-bump-3d/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['stack-bump-3d']));
+})(); return true;">
+  <h3>Stack Bump 3D</h3>
+</a>
+
+<a href="Game_Launchers/starve/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['starve']));
+})(); return true;">
+  <h3>Starve</h3>
+</a>
+
+<a href="Game_Launchers/station-141/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['station-141']));
+})(); return true;">
+  <h3>Station 141</h3>
+</a>
+
+<a href="Game_Launchers/stationmeltdown/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['stationmeltdown']));
+})(); return true;">
+  <h3>Stationmeltdown</h3>
+</a>
+
+<a href="Game_Launchers/stealingthediamond/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['stealingthediamond']));
+})(); return true;">
+  <h3>Stealingthediamond</h3>
+</a>
+
+<a href="Game_Launchers/stick-archers/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['stick-archers']));
+})(); return true;">
+  <h3>Stick Archers</h3>
+</a>
+
+<a href="Game_Launchers/stick-duel-battle/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['stick-duel-battle']));
+})(); return true;">
+  <h3>Stick Duel Battle</h3>
+</a>
+
+<a href="Game_Launchers/stick-merge/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['stick-merge']));
+})(); return true;">
+  <h3>Stick Merge</h3>
+</a>
+
+<a href="Game_Launchers/stickman-boost/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['stickman-boost']));
+})(); return true;">
+  <h3>Stickman Boost</h3>
+</a>
+
+<a href="Game_Launchers/stickman-golf/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['stickman-golf']));
+})(); return true;">
+  <h3>Stickman Golf</h3>
+</a>
+
+<a href="Game_Launchers/stickman-hook/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['stickman-hook']));
+})(); return true;">
+  <h3>Stickman Hook</h3>
+</a>
+
+<a href="Game_Launchers/stickwar/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['stickwar']));
+})(); return true;">
+  <h3>Stickwar</h3>
+</a>
+
+<a href="Game_Launchers/stormthehouse2/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['stormthehouse2']));
+})(); return true;">
+  <h3>Stormthehouse2</h3>
+</a>
+
+<a href="Game_Launchers/stumble-guys/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['stumble-guys']));
+})(); return true;">
+  <h3>Stumble Guys</h3>
+</a>
+
+<a href="Game_Launchers/subway-surfers/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['subway-surfers']));
+})(); return true;">
+  <h3>Subway Surfers</h3>
+</a>
+
+<a href="Game_Launchers/subway-surfers-ny/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['subway-surfers-ny']));
+})(); return true;">
+  <h3>Subway Surfers Ny</h3>
+</a>
+
+<a href="Game_Launchers/suggestions/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['suggestions']));
+})(); return true;">
+  <h3>Suggestions</h3>
+</a>
+
+<a href="Game_Launchers/superautopets/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['superautopets']));
+})(); return true;">
+  <h3>Superautopets</h3>
+</a>
+
+<a href="Game_Launchers/superfowlist/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['superfowlist']));
+})(); return true;">
+  <h3>Superfowlist</h3>
+</a>
+
+<a href="Game_Launchers/superhot/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['superhot']));
+})(); return true;">
+  <h3>Superhot</h3>
+</a>
+
+<a href="Game_Launchers/supermarioconstruct/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['supermarioconstruct']));
+})(); return true;">
+  <h3>Supermarioconstruct</h3>
+</a>
+
+<a href="Game_Launchers/surviv/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['surviv']));
+})(); return true;">
+  <h3>Surviv</h3>
+</a>
+
+<a href="Game_Launchers/sushi-unroll/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['sushi-unroll']));
+})(); return true;">
+  <h3>Sushi Unroll</h3>
+</a>
+
+<a href="Game_Launchers/swarmsimulator/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['swarmsimulator']));
+})(); return true;">
+  <h3>Swarmsimulator</h3>
+</a>
+
+<a href="Game_Launchers/swerve/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['swerve']));
+})(); return true;">
+  <h3>Swerve</h3>
+</a>
+
+<a href="Game_Launchers/synesthesia/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['synesthesia']));
+})(); return true;">
+  <h3>Synesthesia</h3>
+</a>
+
+<a href="Game_Launchers/tactical-weapon-pack-2/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['tactical-weapon-pack-2']));
+})(); return true;">
+  <h3>Tactical Weapon Pack 2</h3>
+</a>
+
+<a href="Game_Launchers/tacticalassasin2/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['tacticalassasin2']));
+})(); return true;">
+  <h3>Tacticalassasin2</h3>
+</a>
+
+<a href="Game_Launchers/tank-trouble-2/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['tank-trouble-2']));
+})(); return true;">
+  <h3>Tank Trouble 2</h3>
+</a>
+
+<a href="Game_Launchers/tanuki-sunset/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['tanuki-sunset']));
+})(); return true;">
+  <h3>Tanuki Sunset</h3>
+</a>
+
+<a href="Game_Launchers/temple-run-2/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['temple-run-2']));
+})(); return true;">
+  <h3>Temple Run 2</h3>
+</a>
+
+<a href="Game_Launchers/the-final-earth/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['the-final-earth']));
+})(); return true;">
+  <h3>The Final Earth</h3>
+</a>
+
+<a href="Game_Launchers/the-final-earth-2/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['the-final-earth-2']));
+})(); return true;">
+  <h3>The Final Earth 2</h3>
+</a>
+
+<a href="Game_Launchers/the-hotel/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['the-hotel']));
+})(); return true;">
+  <h3>The Hotel</h3>
+</a>
+
+<a href="Game_Launchers/thebattle/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['thebattle']));
+})(); return true;">
+  <h3>Thebattle</h3>
+</a>
+
+<a href="Game_Launchers/theheist/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['theheist']));
+})(); return true;">
+  <h3>Theheist</h3>
+</a>
+
+<a href="Game_Launchers/there-is-no-game/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['there-is-no-game']));
+})(); return true;">
+  <h3>There Is No Game</h3>
+</a>
+
+<a href="Game_Launchers/thisistheonlylevel/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['thisistheonlylevel']));
+})(); return true;">
+  <h3>Thisistheonlylevel</h3>
+</a>
+
+<a href="Game_Launchers/throwrocks/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['throwrocks']));
+})(); return true;">
+  <h3>Throwrocks</h3>
+</a>
+
+<a href="Game_Launchers/tiny-fishing/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['tiny-fishing']));
+})(); return true;">
+  <h3>Tiny Fishing</h3>
+</a>
+
+<a href="Game_Launchers/tiny-islands/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['tiny-islands']));
+})(); return true;">
+  <h3>Tiny Islands</h3>
+</a>
+
+<a href="Game_Launchers/tosstheturtle/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['tosstheturtle']));
+})(); return true;">
+  <h3>Tosstheturtle</h3>
+</a>
+
+<a href="Game_Launchers/townscaper/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['townscaper']));
+})(); return true;">
+  <h3>Townscaper</h3>
+</a>
+
+<a href="Game_Launchers/tube-jumpers/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['tube-jumpers']));
+})(); return true;">
+  <h3>Tube Jumpers</h3>
+</a>
+
+<a href="Game_Launchers/tunnel-rush/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['tunnel-rush']));
+})(); return true;">
+  <h3>Tunnel Rush</h3>
+</a>
+
+<a href="Game_Launchers/tv-static/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['tv-static']));
+})(); return true;">
+  <h3>Tv Static</h3>
+</a>
+
+<a href="Game_Launchers/twitch-tetris/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['twitch-tetris']));
+})(); return true;">
+  <h3>Twitch Tetris</h3>
+</a>
+
+<a href="Game_Launchers/unfairmario/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['unfairmario']));
+})(); return true;">
+  <h3>Unfairmario</h3>
+</a>
+
+<a href="Game_Launchers/veloce/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['veloce']));
+})(); return true;">
+  <h3>Veloce</h3>
+</a>
+
+<a href="Game_Launchers/vex2/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['vex2']));
+})(); return true;">
+  <h3>Vex2</h3>
+</a>
+
+<a href="Game_Launchers/vex3/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['vex3']));
+})(); return true;">
+  <h3>Vex3</h3>
+</a>
+
+<a href="Game_Launchers/vex4/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['vex4']));
+})(); return true;">
+  <h3>Vex4</h3>
+</a>
+
+<a href="Game_Launchers/vex5/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['vex5']));
+})(); return true;">
+  <h3>Vex5</h3>
+</a>
+
+<a href="Game_Launchers/vex6/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['vex6']));
+})(); return true;">
+  <h3>Vex6</h3>
+</a>
+
+<a href="Game_Launchers/vex7/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['vex7']));
+})(); return true;">
+  <h3>Vex7</h3>
+</a>
+
+<a href="Game_Launchers/volley-random/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['volley-random']));
+})(); return true;">
+  <h3>Volley Random</h3>
+</a>
+
+<a href="Game_Launchers/wallsmash/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['wallsmash']));
+})(); return true;">
+  <h3>Wallsmash</h3>
+</a>
+
+<a href="Game_Launchers/waterworks/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['waterworks']));
+})(); return true;">
+  <h3>Waterworks</h3>
+</a>
+
+<a href="Game_Launchers/weavesilk/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['weavesilk']));
+})(); return true;">
+  <h3>Weavesilk</h3>
+</a>
+
+<a href="Game_Launchers/webcleaner/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['webcleaner']));
+})(); return true;">
+  <h3>Webcleaner</h3>
+</a>
+
+<a href="Game_Launchers/webgl-fluid-simulation/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['webgl-fluid-simulation']));
+})(); return true;">
+  <h3>Webgl Fluid Simulation</h3>
+</a>
+
+<a href="Game_Launchers/webretro/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['webretro']));
+})(); return true;">
+  <h3>Webretro</h3>
+</a>
+
+<a href="Game_Launchers/webxash/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['webxash']));
+})(); return true;">
+  <h3>Webxash</h3>
+</a>
+
+<a href="Game_Launchers/win-the-whitehouse/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['win-the-whitehouse']));
+})(); return true;">
+  <h3>Win The Whitehouse</h3>
+</a>
+
+<a href="Game_Launchers/wolf2d/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['wolf2d']));
+})(); return true;">
+  <h3>Wolf2D</h3>
+</a>
+
+<a href="Game_Launchers/wolf3d/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['wolf3d']));
+})(); return true;">
+  <h3>Wolf3D</h3>
+</a>
+
+<a href="Game_Launchers/wordle/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['wordle']));
+})(); return true;">
+  <h3>Wordle</h3>
+</a>
+
+<a href="Game_Launchers/worlds-hardest-game/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['worlds-hardest-game']));
+})(); return true;">
+  <h3>Worlds Hardest Game</h3>
+</a>
+
+<a href="Game_Launchers/worlds-hardest-game-2/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['worlds-hardest-game-2']));
+})(); return true;">
+  <h3>Worlds Hardest Game 2</h3>
+</a>
+
+<a href="Game_Launchers/wounded-summer-baby-edition/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['wounded-summer-baby-edition']));
+})(); return true;">
+  <h3>Wounded Summer Baby Edition</h3>
+</a>
+
+<a href="Game_Launchers/x-trial-racing/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['x-trial-racing']));
+})(); return true;">
+  <h3>X Trial Racing</h3>
+</a>
+
+<a href="Game_Launchers/xx142-b2exe/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['xx142-b2exe']));
+})(); return true;">
+  <h3>Xx142 B2Exe</h3>
+</a>
+
+<a href="Game_Launchers/yohoho/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['yohoho']));
+})(); return true;">
+  <h3>Yohoho</h3>
+</a>
+
+<a href="Game_Launchers/yoshifabrication/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['yoshifabrication']));
+})(); return true;">
+  <h3>Yoshifabrication</h3>
+</a>
+
+<a href="Game_Launchers/you-are-bezos/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['you-are-bezos']));
+})(); return true;">
+  <h3>You Are Bezos</h3>
+</a>
+
+<a href="Game_Launchers/zigzag/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['zigzag']));
+})(); return true;">
+  <h3>Zigzag</h3>
+</a>
+
+<a href="Game_Launchers/zombs-royale/index.html" class="box" onclick="(() => {
+  localStorage.setItem('gameIds', JSON.stringify(['zombs-royale']));
+})(); return true;">
+  <h3>Zombs Royale</h3>
+</a>
+
+</div>
+  <h2>Thats All Folks 🤓☝️</h2>
+
+  <script>
+    const searchInput = document.getElementById("dropdownSearch");
+    const dropdownList = document.getElementById("dropdownList");
+
+    const gameBoxes = document.querySelectorAll(".box h3");
+
+    gameBoxes.forEach(box => {
+      const li = document.createElement("li");
+      li.textContent = box.textContent;
+      li.addEventListener("click", () => {
+        const targetBox = Array.from(gameBoxes).find(g => g.textContent === li.textContent);
+        const container = targetBox.closest(".box");
+
+        container.scrollIntoView({ behavior: "smooth", block: "center" });
+
+        container.style.boxShadow = "0 0 20px 5px #00ffe5";
+        container.style.border = "2px solid #00ffe5";
+
+        setTimeout(() => {
+          container.style.boxShadow = "";
+          container.style.border = "";
+        }, 10000);
+      });
+      dropdownList.appendChild(li);
+    });
+
+    function filterDropdown() {
+      const value = searchInput.value.toLowerCase();
+      const items = dropdownList.getElementsByTagName("li");
+      let matches = 0;
+
+      for (let item of items) {
+        if (item.textContent.toLowerCase().includes(value)) {
+          item.style.display = "";
+          matches++;
+        } else {
+          item.style.display = "none";
+        }
+      }
+
+      dropdownList.style.display = matches > 0 ? "block" : "none";
+    }
+
+    const totalGames = document.querySelectorAll(".box").length;
+
+    const counter = document.createElement("div");
+    counter.textContent = `Game Count: ${totalGames}`;
+    counter.style.color = "#00ffe5";
+    counter.style.fontWeight = "bold";
+    counter.style.fontSize = "20px";
+    counter.style.textAlign = "center";
+    counter.style.marginTop = "100px"; 
+
+    document.body.insertBefore(counter, document.querySelector(".search-dropdown"));
+  </script>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCLL2JZUBJwISsLljfMN4wAr3ZSRd4A1Jo",
+      authDomain: "craftedgamzvisits.firebaseapp.com",
+      projectId: "craftedgamzvisits",
+      storageBucket: "craftedgamzvisits.firebase-storage.app",
+      messagingSenderId: "935169016483",
+      appId: "1:935169016483:web:0ea28fbc25e9f390723516",
+      measurementId: "G-23C7D06VFD"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    document.querySelectorAll(".box").forEach(box => {
+        box.addEventListener("click", async (e) => {
+            e.preventDefault();
+            
+            const gameName = box.querySelector("h3")?.textContent.trim();
+            if (!gameName) {
+                window.location.href = box.href;
+                return;
+            }
+
+            console.log(`Tracking click for game: ${gameName}`);
+
+            try {
+                const gameDoc = db.collection("gameCounts").doc(gameName);
+                
+                const docSnapshot = await gameDoc.get();
+                
+                if (docSnapshot.exists) {
+                    const currentCount = docSnapshot.data().count || 0;
+                    await gameDoc.update({ 
+                        count: currentCount + 1,
+                        lastClicked: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    console.log(`Updated count for ${gameName}: ${currentCount + 1}`);
+                } else {
+                    await gameDoc.set({ 
+                        count: 1,
+                        lastClicked: firebase.firestore.FieldValue.serverTimestamp(),
+                        gameName: gameName
+                    });
+                    console.log(`Created new count for ${gameName}: 1`);
+                }
+                
+            } catch (error) {
+                console.error("Failed to update game count:", error);
+            }
+            
+            setTimeout(() => {
+                window.location.href = box.href;
+            }, 100);
+        });
+    });
+  </script>
+</body>
+</html>
