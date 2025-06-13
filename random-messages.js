@@ -3,8 +3,6 @@ const messages = [
   "Still unblockable. Still Crafted.",
   "You found the good stuff",
   "Im in your walls",
-  "Atlas is gay.",
-  "Fuck America, fuck you all!",
   "Yeah chat im done.",
   "Arsen 🔥🔥🔥",
   "Chat GPT carrys this shi hard",
