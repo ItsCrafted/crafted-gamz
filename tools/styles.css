@@ -14,7 +14,7 @@ body {
   padding: 40px;
   height: 100vh;
   background: #0c0c0c;
-  color: #96f3f5;
+  color: #00ffe5;
   font-family: sans-serif;
   margin: 0;
 }
@@ -50,7 +50,7 @@ nav a {
 }
 
 nav a:hover {
-  color: #96f3f5;
+  color: #00ffe5;
 }
 
 .tool-bar-container {
@@ -79,7 +79,7 @@ nav a:hover {
 }
 
 .tool-bar:hover {
-  background: #96f3f5;
+  background: #00ffe5;
   color: black;
   transform: translateY(-2px);
   cursor: default;
@@ -132,7 +132,7 @@ nav a:hover {
 }
 
 input:checked + .slider {
-  background-color: #96f3f5;
+  background-color: #00ffe5;
 }
 
 input:checked + .slider:before {
@@ -175,13 +175,13 @@ input:checked + .slider:before {
 }
 
 #particleColor::placeholder {
-  color: #96f3f5;
+  color: #00ffe5;
   opacity: 0.7;
 }
 
 #particleColor:focus {
-  border-color: #96f3f5;
-  box-shadow: 0 0 8px #96f3f5;
+  border-color: #00ffe5;
+  box-shadow: 0 0 8px #00ffe5;
   background-color: #1c1c1c;
 }
 
@@ -189,7 +189,7 @@ input:checked + .slider:before {
   padding: 6px 14px;
   border-radius: 12px;
   background: #222;
-  color: #96f3f5;
+  color: #00ffe5;
   border: none;
   cursor: pointer;
   font-weight: 600;
@@ -225,7 +225,7 @@ input[type="text"] {
 }
 
 button#saveConfig {
-  background-color: #96f3f5;
+  background-color: #00ffe5;
   border: none;
   padding: 12px 24px;
   font-weight: bold;
@@ -249,8 +249,8 @@ button#saveConfig:hover {
 
 #presetSelect {
   background: #0a0f14;
-  color: #96f3f5;
-  border: 2px solid #96f3f5;
+  color: #00ffe5;
+  border: 2px solid #00ffe5;
   border-radius: 8px;
   padding: 10px 14px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -259,7 +259,7 @@ button#saveConfig:hover {
   width: 220px;
   cursor: pointer;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 0 8px #96f3f5;
+  box-shadow: 0 0 8px #00ffe5;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
@@ -284,6 +284,6 @@ button#saveConfig:hover {
 
 #presetSelect option {
   background: #0a0f14;
-  color: #96f3f5;
+  color: #00ffe5;
   font-weight: 500;
 }

@@ -21,7 +21,7 @@ body {
 
 h1, h2 {
   text-align: center;
-  color: #96f3f5;
+  color: #00ffe5;
   margin-bottom: 25px;
 }
 
@@ -42,9 +42,9 @@ input, select, textarea, button {
 }
 
 input:focus, select:focus, textarea:focus {
-  border-color: #96f3f5;
+  border-color: #00ffe5;
   outline: none;
-  box-shadow: 0 0 10px #96f3f57a;
+  box-shadow: 0 0 10px #00ffe57a;
 }
 
 textarea {
@@ -53,12 +53,12 @@ textarea {
 }
 
 button {
-  background: #96f3f5;
+  background: #00ffe5;
   color: #000;
   font-weight: bold;
   cursor: pointer;
   border: none;
-  box-shadow: 0 0 10px #96f3f5aa;
+  box-shadow: 0 0 10px #00ffe5aa;
   transition: 0.3s ease;
 }
 
@@ -70,13 +70,13 @@ button:hover {
 #status {
   text-align: center;
   margin-top: 10px;
-  color: #96f3f5;
+  color: #00ffe5;
   font-weight: bold;
 }
 
 .entry {
   background: #1e1e1e;
-  border-left: 4px solid #96f3f5;
+  border-left: 4px solid #00ffe5;
   margin-bottom: 25px;
   padding: 20px;
   border-radius: 15px;
@@ -85,7 +85,7 @@ button:hover {
 
 .entry h3 {
   margin-top: 0;
-  color: #96f3f5;
+  color: #00ffe5;
 }
 
 .section {
@@ -95,7 +95,7 @@ button:hover {
 }
 
 a {
-  color: #96f3f5;
+  color: #00ffe5;
   text-decoration: underline;
 }
 

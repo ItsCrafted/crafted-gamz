@@ -36,9 +36,9 @@
       // Original cloak flow, show button to open cloaked tab
       const btn = document.createElement('button');
       btn.textContent = 'Open Cloaked Tab';
-      btn.style.cssText = 'padding:12px 24px; font-size:18px; background:#96f3f5; border:none; border-radius:10px; cursor:pointer; color:black; font-weight:bold; transition: background 0.3s; margin-top: 20px;';
+      btn.style.cssText = 'padding:12px 24px; font-size:18px; background:#00ffe5; border:none; border-radius:10px; cursor:pointer; color:black; font-weight:bold; transition: background 0.3s; margin-top: 20px;';
       btn.onmouseover = () => btn.style.background = '#7acbd0';
-      btn.onmouseout = () => btn.style.background = '#96f3f5';
+      btn.onmouseout = () => btn.style.background = '#00ffe5';
 
       btn.onclick = () => {
         const newTab = window.open('about:blank', '_blank');
