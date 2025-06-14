@@ -8,6 +8,13 @@
 <link rel="manifest" href="/manifest.json" />
 
   <style>
+
+  @font-face {
+  font-family: 'Crafted';
+  src: url('crafted-font.ttf') format('truetype');
+  font-display: swap;
+}
+
     body, html {
       margin: 0;
       padding: 0;
@@ -84,17 +91,19 @@
       font-weight: bold;
       color: white;
       margin-top: 20vh;
-      margin-bottom: 1vh;
+     line-height: 1; 
     }
 
-    .version-text h1 span {
-      background: linear-gradient(135deg, #007bff, #00d4ff);
-      -webkit-background-clip: text;
-      color: transparent;
-      font-size: 150px;
-      font-weight: bold;
-      transition: transform 0.3s, background 0.3s, box-shadow 0.3s;
-    }
+.version-text h1 span {
+  background: linear-gradient(135deg, #007bff, #00d4ff);
+  -webkit-background-clip: text;
+  color: transparent;
+  font-size: 150px;
+  font-weight: bold;
+  transition: transform 0.3s, background 0.3s, box-shadow 0.3s;
+  font-family: 'Crafted', sans-serif;
+}
+
 
     .social-icons {
       display: flex;
@@ -159,7 +168,7 @@
   </nav>
 
 <div class="version-text">
-  <h1><span>Crafted Gamz</span><br><span class="version">Version XII BETA</span></h1>
+  <h1><span>Crafted Gamz</span><br><span class="version">Version 12</span><br><span class="version">BETA</span></h1>
   <p id="random-message" style="font-size: 30px; color: #ccc;"></p>
 </div>
 
