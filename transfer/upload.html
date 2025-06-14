@@ -11,7 +11,7 @@
       font-family: 'Poppins', sans-serif;
       background: #111;
       overflow: hidden;
-      color: #00ffe5;
+      color: #4bf9ed;
       user-select: none;
     }
     iframe#bg-iframe {
@@ -31,7 +31,7 @@
       left: 20px;
       background-color: #444;
       border: none;
-      color: #00ffe5;
+      color: #4bf9ed;
       font-size: 14px;
       padding: 8px 16px;
       border-radius: 6px;
@@ -64,14 +64,14 @@
       border: none;
       margin: 20px 0;
       background: #222;
-      color: #00ffe5;
+      color: #4bf9ed;
       box-sizing: border-box;
     }
     input[type=file]:focus {
-      outline: 2px solid #00ffe5;
+      outline: 2px solid #4bf9ed;
     }
     button {
-      background-color: #00ffe5;
+      background-color: #4bf9ed;
       border: none;
       color: #111;
       font-size: 16px;
@@ -98,7 +98,7 @@
     }
     .loading-spinner {
       border: 4px solid #222;
-      border-top: 4px solid #00ffe5;
+      border-top: 4px solid #4bf9ed;
       border-radius: 50%;
       width: 24px;
       height: 24px;
@@ -111,7 +111,7 @@
       margin-top: 12px;
       display: none;
       background-color: #333;
-      color: #00ffe5;
+      color: #4bf9ed;
       padding: 8px 20px;
       border-radius: 6px;
       font-size: 14px;
@@ -177,7 +177,7 @@
         
         // Clear any previous error messages
         result.textContent = '';
-        result.style.color = "#00ffe5";
+        result.style.color = "#4bf9ed";
       } else {
         fileInfo.textContent = '';
       }
@@ -208,7 +208,7 @@
       uploadBtn.textContent = 'Uploading...';
       copyBtn.style.display = 'none';
       result.innerHTML = 'Uploading <span class="loading-spinner"></span>';
-      result.style.color = "#00ffe5";
+      result.style.color = "#4bf9ed";
 
       const reader = new FileReader();
       reader.onload = async () => {

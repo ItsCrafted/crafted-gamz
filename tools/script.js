@@ -12,7 +12,7 @@ cloakToggle.addEventListener('change', () => {
 const particlesToggle = document.getElementById('particlesToggle');
 const particleColorInput = document.getElementById('particleColor');
 const resetBtn = document.getElementById('resetColor');
-const defaultColor = '#00ffe5';
+const defaultColor = '#4bf9ed';
 
 function reloadPage() {
   setTimeout(() => {
