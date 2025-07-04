@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Bypass</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      font-family: sans-serif;
+    }
+
+    button {
+      padding: 12px 24px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    video {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      display: none;
+      z-index: 9999;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <button id="bypass">Bypass</button>
+  <video id="vid" playsinline></video>
+
+  <script>
+    const btn = document.getElementById('bypass');
+    const video = document.getElementById('vid');
+
+    video.src = 'troll.mp4';
+
+    btn.onclick = async () => {
+      btn.remove();
+      video.style.display = 'block';
+      video.muted = false;
+
+      try {
+        await video.play();
+        if (video.requestFullscreen) await video.requestFullscreen();
+
+        setTimeout(() => {
+          window.location.href = 'doxx.html';
+        }, 6000);
+      } catch {
+        alert("Failed to enter fullscreen or play the video.");
+      }
+    };
+
+    window.oncontextmenu = e => e.preventDefault();
+    window.onkeydown = e => e.preventDefault();
+  </script>
+</body>
+</html>

@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Fingerprinting and System Info</title>
+<style>
+  body {
+    background: white;
+    color: black;
+    font-family: monospace, monospace;
+    margin: 1rem;
+  }
+  h1.big-text {
+    text-align: center;
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 0.3rem;
+  }
+  #loading-bar-container {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 0.3rem;
+    user-select: none;
+    letter-spacing: 0.1em;
+  }
+  #loading-status {
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: normal;
+    margin-bottom: 2rem;
+    user-select: none;
+  }
+  h2 {
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 0.3rem;
+    margin-top: 2rem;
+  }
+  pre {
+    font-family: monospace;
+  }
+</style>
+</head>
+<body>
+<h1 class="big-text">dont fuck with me</h1>
+<div id="loading-bar-container">[----------]</div>
+<div id="loading-status">INITIALIZING...</div>
+
+<div id="exact-location" style="display:none;">
+  <h2>Exact Location</h2>
+  <pre id="coords"></pre>
+  <div id="map" style="width:100%; height:350px;"></div>
+</div>
+
+<div id="content">Loading system info...</div>
+
+<script>
+function textProgressBar(filledBrackets, totalBrackets=10) {
+  filledBrackets = Math.min(Math.max(filledBrackets,0), totalBrackets);
+  let filled = "=".repeat(filledBrackets);
+  let empty = "-".repeat(totalBrackets - filledBrackets);
+  return "[" + filled + empty + "]";
+}
+
+function makeListItems(obj) {
+  return Object.entries(obj).map(([k,v]) => {
+    if (typeof v === "number") {
+      if (v >= 0 && v <= 100) {
+        return `<div><strong>${k}:</strong> ${v} ${textProgressBar(Math.round(v/10))}</div>`;
+      }
+    }
+    return `<div><strong>${k}:</strong> ${v}</div>`;
+  }).join('\n');
+}
+
+async function getPublicIPs() {
+  try {
+    let response = await fetch('https://api64.ipify.org?format=json');
+    let data = await response.json();
+    let ipv6 = data.ip || 'Unavailable';
+
+    response = await fetch('https://api.ipify.org?format=json');
+    data = await response.json();
+    let ipv4 = data.ip || 'Unavailable';
+
+    return { ipv4, ipv6 };
+  } catch {
+    return { ipv4: 'Unavailable', ipv6: 'Unavailable' };
+  }
+}
+
+async function getGeo(ip) {
+  try {
+    let response = await fetch(`https://ipapi.co/${ip}/json/`);
+    let data = await response.json();
+    return data;
+  } catch {
+    return {};
+  }
+}
+
+function getNavigatorPlugins() {
+  try {
+    return Array.from(navigator.plugins).map(p => p.name);
+  } catch {
+    return [];
+  }
+}
+
+function getMimeTypes() {
+  try {
+    return Array.from(navigator.mimeTypes).map(m => m.type);
+  } catch {
+    return [];
+  }
+}
+
+async function getMediaDevices() {
+  try {
+    let devices = await navigator.mediaDevices.enumerateDevices();
+    return devices.map(d => `${d.kind}: ${d.label || 'Unknown'}`);
+  } catch {
+    return [];
+  }
+}
+
+async function getBatteryInfo() {
+  try {
+    let battery = await navigator.getBattery();
+    return {
+      charging: battery.charging,
+      chargingTime: battery.chargingTime,
+      dischargingTime: battery.dischargingTime,
+      level: Math.round(battery.level * 100),
+      chargingType: battery.charging ? "Charging" : "Not charging"
+    };
+  } catch {
+    return null;
+  }
+}
+
+function getPerformanceMarks() {
+  try {
+    let marks = performance.getEntriesByType('mark').map(m => m.name);
+    let measures = performance.getEntriesByType('measure').map(m => m.name);
+    return { marks, measures };
+  } catch {
+    return { marks: [], measures: [] };
+  }
+}
+
+function getMemoryInfo() {
+  try {
+    if (performance && performance.memory) {
+      return performance.memory;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+async function getClipboardPermissions() {
+  try {
+    let readPerm = await navigator.permissions.query({name:'clipboard-read'});
+    let writePerm = await navigator.permissions.query({name:'clipboard-write'});
+    return {
+      read: readPerm.state,
+      write: writePerm.state
+    };
+  } catch {
+    return {
+      read: "Unavailable",
+      write: "Unavailable"
+    };
+  }
+}
+
+function getTouchInfo() {
+  return {
+    maxTouchPoints: navigator.maxTouchPoints || 0,
+    touchEvent: 'ontouchstart' in window,
+    pointerEvent: 'onpointerdown' in window
+  };
+}
+
+function getIntlInfo() {
+  try {
+    let tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "Unavailable";
+    let numberingSystem = Intl.NumberFormat().resolvedOptions().numberingSystem || "Unavailable";
+    let currency = (Intl.NumberFormat('en', { style: 'currency', currency: 'USD' }).resolvedOptions().currency) || "Unavailable";
+    let calendar = Intl.DateTimeFormat().resolvedOptions().calendar || "Unavailable";
+    let hourCycle = Intl.DateTimeFormat().resolvedOptions().hourCycle || "Unavailable";
+    return { timezone: tz, numberingSystem, currency, calendar, hourCycle };
+  } catch {
+    return { timezone: "Unavailable", numberingSystem: "Unavailable", currency: "Unavailable", calendar: "Unavailable", hourCycle: "Unavailable" };
+  }
+}
+
+function getCanvasFingerprint() {
+  try {
+    let canvas = document.createElement('canvas');
+    let ctx = canvas.getContext('2d');
+    ctx.textBaseline = 'top';
+    ctx.font = "14px 'Arial'";
+    ctx.textBaseline = "alphabetic";
+    ctx.fillStyle = "#f60";
+    ctx.fillRect(125,1,62,20);
+    ctx.fillStyle = "#069";
+    ctx.fillText("Coded by ChatGPT", 2, 15);
+    ctx.fillStyle = "rgba(102, 204, 0, 0.7)";
+    ctx.fillText("Coded by ChatGPT", 4, 17);
+    let dataUrl = canvas.toDataURL();
+    let hash = 0;
+    for(let i=0; i<dataUrl.length; i++) {
+      let chr = dataUrl.charCodeAt(i);
+      hash = ((hash << 5) - hash) + chr;
+      hash |= 0;
+    }
+    return hash.toString();
+  } catch {
+    return "Unavailable";
+  }
+}
+
+async function getAudioFingerprint() {
+  try {
+    return new Promise((resolve) => {
+      let context = new (window.AudioContext || window.webkitAudioContext)();
+      let oscillator = context.createOscillator();
+      let analyser = context.createAnalyser();
+      let dst = context.createMediaStreamDestination();
+      oscillator.type = "triangle";
+      oscillator.frequency.setValueAtTime(10000, context.currentTime);
+      oscillator.connect(analyser);
+      analyser.connect(dst);
+      oscillator.start(0);
+      let array = new Uint8Array(analyser.frequencyBinCount);
+      analyser.getByteFrequencyData(array);
+      oscillator.stop();
+      context.close();
+      let sum = 0;
+      for(let i=0; i < array.length; i++) sum += array[i];
+      resolve(sum.toString());
+    });
+  } catch {
+    return "Unavailable";
+  }
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function loadingBarAnimation() {
+  let container = document.getElementById('loading-bar-container');
+  let status = document.getElementById('loading-status');
+  let totalBrackets = 10;
+  let durationMs = 20000;
+  let stepMs = durationMs / totalBrackets;
+
+  for (let i = 1; i <= totalBrackets; i++) {
+    container.textContent = textProgressBar(i, totalBrackets);
+    if (i <= 2) status.textContent = "INITIALIZING...";
+    else if (i <= 5) status.textContent = "BUILDING...";
+    else if (i <= 8) status.textContent = "DEPLOYING...";
+    else status.textContent = "ACTIVATING...";
+    await sleep(stepMs);
+  }
+  window.location.href = "funi.html";
+}
+
+async function main() {
+  loadingBarAnimation();
+
+  let content = document.getElementById('content');
+
+  let { ipv4, ipv6 } = await getPublicIPs();
+  let geo = await getGeo(ipv4 !== 'Unavailable' ? ipv4 : ipv6);
+
+  let intl = getIntlInfo();
+  let battery = await getBatteryInfo();
+  let clipPerms = await getClipboardPermissions();
+
+  let plugins = getNavigatorPlugins();
+  let mimeTypes = getMimeTypes();
+  let mediaDevices = await getMediaDevices();
+
+  let perf = getPerformanceMarks();
+  let mem = getMemoryInfo();
+
+  let touch = getTouchInfo();
+
+  let canvasFP = getCanvasFingerprint();
+  let audioFP = await getAudioFingerprint();
+
+  let ipInfo = {
+    "IPv4 Address": ipv4,
+    "IPv6 Address": ipv6,
+    "Country": geo.country_name || "Unavailable",
+    "Region": geo.region || "Unavailable",
+    "City": geo.city || "Unavailable",
+    "Postal Code": geo.postal || "Unavailable",
+    "Timezone": geo.timezone || intl.timezone,
+    "Latitude": geo.latitude ? geo.latitude.toFixed(10) : "Unavailable",
+    "Longitude": geo.longitude ? geo.longitude.toFixed(10) : "Unavailable",
+    "ASN": geo.asn || "Unavailable",
+    "Organization": geo.org || "Unavailable"
+  };
+
+  let basicInfo = {
+    "User Agent": navigator.userAgent,
+    "Platform": navigator.platform,
+    "Language": navigator.language,
+    "Cookies Enabled": navigator.cookieEnabled,
+    "Do Not Track": navigator.doNotTrack || "Unavailable",
+    "Online": navigator.onLine,
+    "Hardware Concurrency (Cores)": navigator.hardwareConcurrency || "Unavailable",
+    "Max Touch Points": touch.maxTouchPoints,
+    "Screen Resolution": `${screen.width}x${screen.height}`,
+    "Color Depth": screen.colorDepth,
+    "Pixel Depth": screen.pixelDepth,
+    "Timezone": intl.timezone,
+  };
+
+  let batteryInfo = battery ? {
+    "Battery Charging": battery.charging,
+    "Battery Level (%)": battery.level,
+    "Charging Time (s)": battery.chargingTime === Infinity ? "Infinity" : battery.chargingTime,
+    "Discharging Time (s)": battery.dischargingTime === Infinity ? "Infinity" : battery.dischargingTime,
+  } : {"Battery Info": "Unavailable"};
+
+  let permsInfo = {
+    "Clipboard Read Permission": clipPerms.read,
+    "Clipboard Write Permission": clipPerms.write,
+  };
+
+  let canvasInfo = {
+    "Canvas Fingerprint Hash": canvasFP
+  };
+
+  let audioInfo = {
+    "Audio Fingerprint Value": audioFP
+  };
+
+  let intlInfo = {
+    "Time Zone": intl.timezone,
+    "Numbering System": intl.numberingSystem,
+    "Currency": intl.currency,
+    "Calendar": intl.calendar,
+    "Hour Cycle": intl.hourCycle
+  };
+
+  let touchInfo = {
+    "Max Touch Points": touch.maxTouchPoints,
+    "Supports Touch Events": touch.touchEvent,
+    "Supports Pointer Events": touch.pointerEvent
+  };
+
+  let perfInfo = {
+    "Performance Marks": perf.marks.length ? perf.marks.join(', ') : "None",
+    "Performance Measures": perf.measures.length ? perf.measures.join(', ') : "None",
+  };
+
+  let memInfo = mem ? {
+    "JS Heap Size Limit (MB)": (mem.jsHeapSizeLimit / (1024*1024)).toFixed(2),
+    "Total JS Heap Size (MB)": (mem.totalJSHeapSize / (1024*1024)).toFixed(2),
+    "Used JS Heap Size (MB)": (mem.usedJSHeapSize / (1024*1024)).toFixed(2)
+  } : {"Memory Info": "Unavailable"};
+
+  let deviceInfo = {
+    "Plugins": plugins.length ? plugins.join(', ') : "None",
+    "Mime Types": mimeTypes.length ? mimeTypes.join(', ') : "None",
+    "Media Devices": mediaDevices.length ? mediaDevices.join(', ') : "None",
+  };
+
+  if (geo.latitude && geo.longitude) {
+    let exactLocation = document.getElementById('exact-location');
+    exactLocation.style.display = 'block';
+    document.getElementById('coords').textContent = `Latitude: ${geo.latitude.toFixed(10)}\nLongitude: ${geo.longitude.toFixed(10)}`;
+    let lat = geo.latitude;
+    let lon = geo.longitude;
+    document.getElementById('map').innerHTML = `<iframe 
+      width="100%" height="350" frameborder="0" scrolling="no" 
+      src="https://www.openstreetmap.org/export/embed.html?bbox=${(lon-0.0025).toFixed(7)}%2C${(lat-0.0025).toFixed(7)}%2C${(lon+0.0025).toFixed(7)}%2C${(lat+0.0025).toFixed(7)}&layer=mapnik&marker=${lat}%2C${lon}">
+      </iframe>`;
+  } else {
+    document.getElementById('exact-location').style.display = 'none';
+  }
+
+  content.innerHTML = `
+<h2>IP and Location Info</h2>
+${makeListItems(ipInfo)}
+
+<h2>Basic System Info</h2>
+${makeListItems(basicInfo)}
+
+<h2>Battery Info</h2>
+${makeListItems(batteryInfo)}
+
+<h2>Permissions</h2>
+${makeListItems(permsInfo)}
+
+<h2>Canvas Fingerprint</h2>
+${makeListItems(canvasInfo)}
+
+<h2>Audio Fingerprint</h2>
+${makeListItems(audioInfo)}
+
+<h2>Intl and Timezone Info</h2>
+${makeListItems(intlInfo)}
+
+<h2>Touch Support</h2>
+${makeListItems(touchInfo)}
+
+<h2>Performance Info</h2>
+${makeListItems(perfInfo)}
+
+<h2>Memory Info</h2>
+${makeListItems(memInfo)}
+
+<h2>Device Info</h2>
+${makeListItems(deviceInfo)}
+  `;
+}
+main();
+</script>
+</body>
+</html>

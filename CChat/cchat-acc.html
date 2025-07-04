@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Sign In & Set Name</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+</head>
+<body>
+  <h2>Sign In / Register</h2>
+  <div id="auth-section">
+    <input id="email" type="email" placeholder="Email" />
+    <input id="password" type="password" placeholder="Password" />
+    <button id="btn-register">Register</button>
+    <button id="btn-login">Login</button>
+  </div>
+
+  <div id="name-section" style="display:none;">
+    <h3>Set Your Display Name</h3>
+    <input id="display-name" type="text" placeholder="Your name" />
+    <button id="btn-set-name">Save Name</button>
+  </div>
+
+  <div id="welcome-section" style="display:none;">
+    <h3>Welcome, <span id="user-name"></span>!</h3>
+    <button id="btn-logout">Logout</button>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      // Your config here
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    const authSection = document.getElementById('auth-section');
+    const nameSection = document.getElementById('name-section');
+    const welcomeSection = document.getElementById('welcome-section');
+    const userNameSpan = document.getElementById('user-name');
+
+    document.getElementById('btn-register').onclick = () => {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      auth.createUserWithEmailAndPassword(email, password)
+        .then(userCredential => {
+          alert('Registered! Please set your display name.');
+          authSection.style.display = 'none';
+          nameSection.style.display = 'block';
+        })
+        .catch(error => alert(error.message));
+    };
+
+    document.getElementById('btn-login').onclick = () => {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      auth.signInWithEmailAndPassword(email, password)
+        .then(userCredential => {
+          checkDisplayName();
+        })
+        .catch(error => alert(error.message));
+    };
+
+    document.getElementById('btn-set-name').onclick = () => {
+      const name = document.getElementById('display-name').value.trim();
+      if (!name) {
+        alert('Please enter a name');
+        return;
+      }
+      const user = auth.currentUser;
+      if (!user) return;
+      db.collection('users').doc(user.uid).set({ displayName: name })
+        .then(() => {
+          alert('Display name saved!');
+          nameSection.style.display = 'none';
+          welcomeSection.style.display = 'block';
+          userNameSpan.textContent = name;
+        })
+        .catch(error => alert(error.message));
+    };
+
+    document.getElementById('btn-logout').onclick = () => {
+      auth.signOut().then(() => {
+        welcomeSection.style.display = 'none';
+        authSection.style.display = 'block';
+      });
+    };
+
+    function checkDisplayName() {
+      const user = auth.currentUser;
+      if (!user) return;
+      db.collection('users').doc(user.uid).get()
+        .then(doc => {
+          if (doc.exists && doc.data().displayName) {
+            userNameSpan.textContent = doc.data().displayName;
+            authSection.style.display = 'none';
+            nameSection.style.display = 'none';
+            welcomeSection.style.display = 'block';
+          } else {
+            authSection.style.display = 'none';
+            nameSection.style.display = 'block';
+          }
+        });
+    }
+
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        checkDisplayName();
+      } else {
+        authSection.style.display = 'block';
+        nameSection.style.display = 'none';
+        welcomeSection.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>

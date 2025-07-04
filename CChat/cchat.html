@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>CChat with Servers & DMs</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0; padding: 0;
+    display: flex; height: 100vh;
+    overflow: hidden;
+  }
+  #loginSection {
+    margin: auto;
+    width: 320px;
+  }
+  #sidebar {
+    width: 250px;
+    border-right: 1px solid #ccc;
+    display: flex;
+    flex-direction: column;
+  }
+  #sidebar h2 {
+    margin: 10px;
+  }
+  #serverList, #browseServers, #dmList {
+    flex: 1;
+    overflow-y: auto;
+    border-top: 1px solid #ccc;
+    padding: 5px;
+  }
+  .server-item, .browse-server-item, .dm-item {
+    padding: 5px;
+    cursor: pointer;
+    border-radius: 3px;
+    margin-bottom: 4px;
+  }
+  .server-item:hover, .browse-server-item:hover, .dm-item:hover {
+    background-color: #eee;
+  }
+  #mainChat {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  #chatHeader {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    font-weight: bold;
+  }
+  #messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+    background: #f9f9f9;
+  }
+  .message {
+    margin-bottom: 8px;
+  }
+  .message .author {
+    font-weight: bold;
+  }
+  #inputArea {
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid #ccc;
+  }
+  #messageInput {
+    flex: 1;
+    padding: 6px;
+  }
+  #sendBtn {
+    margin-left: 10px;
+  }
+  #createServerPopup {
+    position: fixed;
+    background: rgba(0,0,0,0.5);
+    top:0; left:0; right:0; bottom:0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #createServerPopup.hidden {
+    display: none;
+  }
+  #createServerPopup .popupContent {
+    background: white;
+    padding: 20px;
+    border-radius: 5px;
+    width: 300px;
+  }
+  button {
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<div id="loginSection">
+  <h2>Login / Signup</h2>
+  <input id="email" type="email" placeholder="Email" /><br/><br/>
+  <input id="password" type="password" placeholder="Password" /><br/><br/>
+  <input id="displayName" type="text" placeholder="Display Name" /><br/><br/>
+  <input id="age" type="number" placeholder="Age" min="1" max="120" /><br/><br/>
+  <button id="signupBtn">Sign Up</button>
+  <button id="loginBtn">Log In</button>
+  <button id="logoutBtn" style="display:none;">Log Out</button>
+  <p id="status"></p>
+</div>
+
+<div id="sidebar" style="display:none;">
+  <h2>Your Servers <button id="createServerBtn">+ Create</button></h2>
+  <div id="serverList"></div>
+  
+  <h2>Browse Servers</h2>
+  <div id="browseServers"></div>
+  
+  <h2>Direct Messages</h2>
+  <div id="dmList"></div>
+</div>
+
+<div id="mainChat" style="display:none; flex-direction: column;">
+  <div id="chatHeader">Select a chat</div>
+  <div id="messages"></div>
+  <div id="inputArea">
+    <input id="messageInput" type="text" placeholder="Type a message..." autocomplete="off" />
+    <button id="sendBtn">Send</button>
+  </div>
+</div>
+
+<!-- Create Server Popup -->
+<div id="createServerPopup" class="hidden">
+  <div class="popupContent">
+    <h3>Create New Server</h3>
+    <input id="newServerNameInput" type="text" placeholder="Server Name" /><br/><br/>
+    <button id="confirmCreateServerBtn">Create</button>
+    <button id="cancelCreateServerBtn">Cancel</button>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-analytics.js";
+import {
+  getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
+  signOut, onAuthStateChanged, updateProfile
+} from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+import {
+  getFirestore, collection, addDoc, getDocs, query, where, onSnapshot, orderBy,
+  serverTimestamp, doc, setDoc, getDoc
+} from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyA__Xok4yIntigq1I5Ozrtq4ekPrWzqfaA",
+  authDomain: "cchat-e4790.firebaseapp.com",
+  projectId: "cchat-e4790",
+  storageBucket: "cchat-e4790.firebasestorage.app",
+  messagingSenderId: "960625133096",
+  appId: "1:960625133096:web:cf483c4ad308befbb6d71d",
+  measurementId: "G-X4CS0B9X26"
+};
+const app = initializeApp(firebaseConfig);
+getAnalytics(app);
+const auth = getAuth();
+const db = getFirestore();
+
+const loginSection = document.getElementById('loginSection');
+const emailInput = document.getElementById('email');
+const passwordInput = document.getElementById('password');
+const displayNameInput = document.getElementById('displayName');
+const ageInput = document.getElementById('age');
+const signupBtn = document.getElementById('signupBtn');
+const loginBtn = document.getElementById('loginBtn');
+const logoutBtn = document.getElementById('logoutBtn');
+const statusP = document.getElementById('status');
+
+const sidebar = document.getElementById('sidebar');
+const serverList = document.getElementById('serverList');
+const browseServers = document.getElementById('browseServers');
+const dmList = document.getElementById('dmList');
+
+const mainChat = document.getElementById('mainChat');
+const chatHeader = document.getElementById('chatHeader');
+const messagesDiv = document.getElementById('messages');
+const messageInput = document.getElementById('messageInput');
+const sendBtn = document.getElementById('sendBtn');
+
+const createServerBtn = document.getElementById('createServerBtn');
+const createServerPopup = document.getElementById('createServerPopup');
+const newServerNameInput = document.getElementById('newServerNameInput');
+const confirmCreateServerBtn = document.getElementById('confirmCreateServerBtn');
+const cancelCreateServerBtn = document.getElementById('cancelCreateServerBtn');
+
+let currentUser = null;
+let currentChat = null; // {type: 'server'|'dm', id, name}
+let unsubscribeMessages = null;
+
+// Utility
+function clearChildren(el) {
+  while (el.firstChild) el.removeChild(el.firstChild);
+}
+
+function formatDate(date) {
+  return date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+}
+
+// Signup
+signupBtn.onclick = async () => {
+  const email = emailInput.value.trim();
+  const password = passwordInput.value;
+  const displayName = displayNameInput.value.trim();
+  const age = ageInput.value.trim();
+
+  if (!email || !password || !displayName || !age) {
+    statusP.textContent = 'Fill all fields for signup.';
+    return;
+  }
+
+  try {
+    const userCred = await createUserWithEmailAndPassword(auth, email, password);
+    currentUser = userCred.user;
+    await updateProfile(currentUser, { displayName });
+    // Save user info in Firestore
+    await setDoc(doc(db, 'users', currentUser.uid), {
+      displayName,
+      age: Number(age),
+      email,
+      createdAt: serverTimestamp()
+    });
+    statusP.textContent = 'Signed up & logged in!';
+  } catch (e) {
+    statusP.textContent = 'Signup error: ' + e.message;
+  }
+};
+
+// Login
+loginBtn.onclick = async () => {
+  const email = emailInput.value.trim();
+  const password = passwordInput.value;
+  if (!email || !password) {
+    statusP.textContent = 'Fill email and password to login.';
+    return;
+  }
+  try {
+    const userCred = await signInWithEmailAndPassword(auth, email, password);
+    currentUser = userCred.user;
+    statusP.textContent = 'Logged in!';
+  } catch (e) {
+    statusP.textContent = 'Login error: ' + e.message;
+  }
+};
+
+// Logout
+logoutBtn.onclick = async () => {
+  await signOut(auth);
+  statusP.textContent = 'Logged out';
+};
+
+// Auth state change listener
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    currentUser = user;
+    loginSection.style.display = 'none';
+    sidebar.style.display = 'flex';
+    mainChat.style.display = 'flex';
+    logoutBtn.style.display = 'inline-block';
+    statusP.textContent = '';
+    await loadUserServers();
+    await loadBrowseServers();
+    await loadDMs();
+  } else {
+    currentUser = null;
+    loginSection.style.display = 'block';
+    sidebar.style.display = 'none';
+    mainChat.style.display = 'none';
+    logoutBtn.style.display = 'none';
+    clearChildren(serverList);
+    clearChildren(browseServers);
+    clearChildren(dmList);
+    clearChildren(messagesDiv);
+    chatHeader.textContent = 'Select a chat';
+    currentChat = null;
+    if (unsubscribeMessages) unsubscribeMessages();
+  }
+});
+
+// Load user's joined servers
+async function loadUserServers() {
+  clearChildren(serverList);
+  const q = query(collection(db, 'servers'), where('members', 'array-contains', currentUser.uid));
+  const querySnapshot = await getDocs(q);
+  querySnapshot.forEach(docSnap => {
+    const data = docSnap.data();
+    const div = document.createElement('div');
+    div.className = 'server-item';
+    div.textContent = data.name;
+    div.dataset.id = docSnap.id;
+    div.onclick = () => selectChat('server', docSnap.id, data.name);
+    serverList.appendChild(div);
+  });
+}
+
+// Load public servers to browse
+async function loadBrowseServers() {
+  clearChildren(browseServers);
+  const q = query(collection(db, 'servers'), where('public', '==', true));
+  const querySnapshot = await getDocs(q);
+  querySnapshot.forEach(docSnap => {
+    const data = docSnap.data();
+    const div = document.createElement('div');
+    div.className = 'browse-server-item';
+    div.textContent = data.name;
+    div.dataset.id = docSnap.id;
+    div.onclick = async () => {
+      // Join server if not already member
+      if (data.members.includes(currentUser.uid)) {
+        alert(`Already a member of "${data.name}"`);
+        return;
+      }
+      try {
+        const serverRef = doc(db, 'servers', docSnap.id);
+        await setDoc(serverRef, {
+          members: [...data.members, currentUser.uid]
+        }, { merge: true });
+        await loadUserServers();
+        alert(`Joined server "${data.name}"`);
+      } catch (e) {
+        alert('Error joining server: ' + e.message);
+      }
+    };
+    browseServers.appendChild(div);
+  });
+}
+
+// Load DM list (all other users)
+async function loadDMs() {
+  clearChildren(dmList);
+  const q = query(collection(db, 'users'));
+  const querySnapshot = await getDocs(q);
+  querySnapshot.forEach(docSnap => {
+    if (docSnap.id !== currentUser.uid) {
+      const data = docSnap.data();
+      const div = document.createElement('div');
+      div.className = 'dm-item';
+      div.textContent = data.displayName || 'Unknown';
+      div.dataset.uid = docSnap.id;
+      div.onclick = () => selectChat('dm', docSnap.id, data.displayName || 'Unknown');
+      dmList.appendChild(div);
+    }
+  });
+}
+
+// Select a chat to load messages
+async function selectChat(type, id, name) {
+  currentChat = { type, id, name };
+  chatHeader.textContent = (type === 'server' ? `Server: ${name}` : `DM with ${name}`);
+  clearChildren(messagesDiv);
+  messageInput.disabled = false;
+  sendBtn.disabled = false;
+
+  if (unsubscribeMessages) unsubscribeMessages();
+
+  if (type === 'server') {
+    const messagesRef = collection(db, 'servers', id, 'messages');
+    const q = query(messagesRef, orderBy('createdAt'));
+    unsubscribeMessages = onSnapshot(q, snapshot => {
+      clearChildren(messagesDiv);
+      snapshot.forEach(docSnap => {
+        const msg = docSnap.data();
+        appendMessage(msg);
+      });
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    });
+  } else {
+    // DM convoId is sorted uid1_uid2
+    const uid1 = currentUser.uid;
+    const uid2 = id;
+    const convoId = [uid1, uid2].sort().join('_');
+    const messagesRef = collection(db, 'dms', convoId, 'messages');
+    const q = query(messagesRef, orderBy('createdAt'));
+    unsubscribeMessages = onSnapshot(q, snapshot => {
+      clearChildren(messagesDiv);
+      snapshot.forEach(docSnap => {
+        const msg = docSnap.data();
+        appendMessage(msg);
+      });
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    });
+  }
+}
+
+// Append a message div
+function appendMessage(msg) {
+  const div = document.createElement('div');
+  div.className = 'message';
+  const time = msg.createdAt ? (msg.createdAt.toDate ? formatDate(msg.createdAt.toDate()) : '') : '';
+  div.innerHTML = `<span class="author">${msg.authorName}</span> <small>${time}</small><br/>${msg.text}`;
+  messagesDiv.appendChild(div);
+}
+
+// Send message
+sendBtn.onclick = async () => {
+  const text = messageInput.value.trim();
+  if (!text || !currentChat) return;
+  const now = new Date();
+
+  if (currentChat.type === 'server') {
+    const messagesRef = collection(db, 'servers', currentChat.id, 'messages');
+    await addDoc(messagesRef, {
+      text,
+      authorId: currentUser.uid,
+      authorName: currentUser.displayName || 'Unknown',
+      createdAt: serverTimestamp()
+    });
+  } else {
+    const uid1 = currentUser.uid;
+    const uid2 = currentChat.id;
+    const convoId = [uid1, uid2].sort().join('_');
+    const messagesRef = collection(db, 'dms', convoId, 'messages');
+    // Ensure the DM convo exists (can add metadata if needed)
+    await addDoc(messagesRef, {
+      text,
+      authorId: currentUser.uid,
+      authorName: currentUser.displayName || 'Unknown',
+      createdAt: serverTimestamp()
+    });
+  }
+  messageInput.value = '';
+};
+
+// Create Server Popup toggling
+createServerBtn.onclick = () => {
+  createServerPopup.classList.remove('hidden');
+  newServerNameInput.value = '';
+  newServerNameInput.focus();
+};
+
+cancelCreateServerBtn.onclick = () => {
+  createServerPopup.classList.add('hidden');
+};
+
+// Confirm Create Server
+confirmCreateServerBtn.onclick = async () => {
+  const name = newServerNameInput.value.trim();
+  if (!name) {
+    alert('Enter a server name');
+    return;
+  }
+  try {
+    const serversCol = collection(db, 'servers');
+    const docRef = await addDoc(serversCol, {
+      name,
+      members: [currentUser.uid],
+      public: true,
+      createdAt: serverTimestamp()
+    });
+    createServerPopup.classList.add('hidden');
+    await loadUserServers();
+    alert(`Server "${name}" created!`);
+  } catch (e) {
+    alert('Error creating server: ' + e.message);
+  }
+};
+
+</script>
+
+</body>
+</html>
