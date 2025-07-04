@@ -249,23 +249,12 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Get IP address silently
-let userIP = "Unknown";
-try {
-  const res = await fetch("https://api.ipify.org?format=json");
-  const data = await res.json();
-  userIP = data.ip;
-} catch (e) {
-  userIP = "Fetch Failed";
-}
-
-// Log the visit
+// Log the visit (without IP)
 const now = new Date();
 const visitsRef = collection(db, "visits");
 
 await addDoc(visitsRef, {
-  timestamp: Timestamp.fromDate(now),
-  ip: userIP
+  timestamp: Timestamp.fromDate(now)
 });
 
 // Fetch visit stats
