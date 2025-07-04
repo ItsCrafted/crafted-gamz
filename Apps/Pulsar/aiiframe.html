@@ -1,0 +1,474 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js"></script>
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, system-ui, sans-serif;
+        }
+
+        :root {
+            --bg: #101010;
+            --input-bg: #303030;
+            --msg-bg: #363636;
+            --user-msg-bg: #3465eb;
+            --border: #eaeaea;
+            --text: #eaeaea;
+            --text-dim: #d9d9d9;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .chat {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .message {
+            max-width: 32rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideIn 0.3s ease forwards;
+        }
+
+        .message.user {
+            margin-left: auto;
+        }
+
+        .message.ai {
+            margin-right: auto;
+        }
+        .chat {
+    scrollbar-width: thin;
+    scrollbar-color: var(--text-dim) var(--bg);
+}
+
+/* Webkit (Chrome, Edge, Safari) */
+.chat::-webkit-scrollbar {
+    width: 8px;
+}
+
+.chat::-webkit-scrollbar-track {
+    background: var(--bg);
+    border-radius: 10px;
+}
+
+.chat::-webkit-scrollbar-thumb {
+    background: var(--text-dim);
+    border-radius: 10px;
+}
+
+.chat::-webkit-scrollbar-thumb:hover {
+    background: var(--text);
+}
+
+        .bubble {
+            padding: 0.75rem 1rem;
+            border-radius: 1rem;
+            line-height: 1.5;
+            font-size: 1.2rem;
+            transition: transform 0.2s;
+            white-space: pre-wrap;
+        }
+
+        .bubble:hover {
+            transform: translateY(-1px);
+        }
+
+        .user .bubble {
+            background: var(--user-msg-bg);
+            margin-left: 2rem;
+        }
+
+        .ai .bubble {
+            background: var(--msg-bg);
+            margin-right: 2rem;
+        }
+
+        .input-wrap {
+            padding: 1rem 0;
+            border-top: 1px solid var(--border);
+        }
+
+        .input-box {
+            background: var(--input-bg);
+            border-radius: 0.75rem;
+            padding: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: all 0.2s;
+        }
+
+        .input-box:focus-within {
+            background: var(--bg);
+            box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1);
+        }
+
+        input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text);
+            font-size: 1.2rem;
+            padding: 0.5rem;
+        }
+
+        input:focus {
+            outline: none;
+        }
+        
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-selected {
+            border: 1px solid var(--text);
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 300ms ease-in-out;
+        }
+
+        .dropdown-selected:hover {
+            background-color: var(--msg-bg);
+        }
+                
+        .dropdown-options {
+            position: absolute;
+            bottom: 100%;
+            margin-bottom: 20px;
+            right: 0;
+            width: 170px;
+            border: 1px solid var(--text-dim);
+            background-color: var(--bg);
+            z-index: 9999;
+            visibility: hidden;
+            opacity: 0;
+            transition: all 300ms ease-in-out;
+            border-radius: 10px;
+            animation: moveDown 300ms forwards;
+            font-size: 1.2em;
+        }
+
+        .dropdown-options div {
+            padding: 10px;
+            margin: 10px;
+            cursor: pointer;
+            transition: all 300ms ease-in-out;
+            border-radius: 5px;
+            font-size: 1.2em;
+        }
+
+        .dropdown-options div:hover {
+            background-color: var(--msg-bg);
+        }
+
+        .show {
+            visibility: visible;
+            opacity: 1;
+            pointer-events: auto;
+            animation: moveUp 300ms forwards;
+        }
+
+        @keyframes moveUp {
+            0% { transform: translateY(20px) }
+            100% { transform: translateY(0) }
+        }
+
+        @keyframes moveDown {
+            0% { transform: translateY(0) }
+            100% { transform: translateY(20px) }
+        }
+                
+        button {
+            background: transparent;
+            border: none;
+            color: var(--text);
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            background: rgba(255,255,255,0.1);
+            transform: scale(1.05);
+        }
+
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .chat {
+                padding: 1rem 0;
+            }
+            
+            .message {
+                max-width: 85%;
+            }
+        }
+
+        code {
+            background: rgba(0, 0, 0, 0.329);
+            padding: 0.2em 0.4em;
+            border-radius: 0.3em;
+            font-size: 1.2em;
+            font-family: monospace;
+        }
+
+        pre {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 1em;
+            border-radius: 0.5em;
+            overflow-x: auto;
+            margin: 0.5em 0;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+            font-size: 1.2em;
+        }
+
+        strong {
+            color: #fff;
+        }
+
+        em {
+            color: #fff;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat" id="chat"></div>
+
+    <div class="input-wrap">
+        <div class="input-box">
+            <input type="text" autocomplete="off" placeholder="Type your message here..." id="input">
+            <div class="dropdown">
+                <div class="dropdown-selected" data-value="human-ai">Human AI</div>
+                <div class="dropdown-options">
+                    <div data-value="human-ai">Human AI</div>
+                    <div data-value="deepseek-r1-distill-llama-70b">Deepseek r1</div>
+                    <div data-value="gemma2-9b-it">Gemma 2</div>
+                    <div data-value="llama-3.3-70b-versatile">Llama 3.3</div>
+                </div>
+            </div>
+            <button onclick="send()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const chat = document.getElementById('chat');
+        const input = document.getElementById('input');
+        let modelSelect = "";
+
+        let messages = [
+            {
+                "role": "system",
+                "content": "You are oMega AI 1.1, a helpful and knowledgeable AI assistant. You are direct, informative, and friendly in your responses."
+            }
+        ];
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function formatHTML(out) {
+            out = out.value.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            out = out.replace(/-/g, '923')
+
+            out = out.replace(/&lt;?(\w+)* /g, function(match, p1) {
+                return '<span class="tag-name">&lt;' + p1 + '</span> ';
+            });
+
+            out = out.replace(/"&gt;?(\w+)*/g, function(match, p1) {
+                return '"<span class="tag-name">&gt;</span>';
+            });
+
+            out = out.replace(/&lt;\/?(\w+)*&gt;/g, function(match, p1) {
+                return '<span class="tag-name">&lt;/' + p1 + '&gt;</span>';
+            });
+
+            out = out.replace(/="\/?(\w+)*"/g, function(match, p1) {
+                return '=<span class="name">"' + p1 + '"</span>';
+            });
+
+            out = out.replace(/923/g, '-');
+
+            return out;
+        }
+        
+        function formatMarkdown(text, type) {
+            let content = type == "user" ? escapeHtml(text) : text;
+
+            // Preserve and style code blocks (TRIM WHITESPACE)
+            content = content.replace(/```([^\s]+)?\n([\s\S]+?)```/g, function(match, language, code) {
+                return `<pre><code class="language-${language}">${escapeHtml(code.trim())}</code></pre>`;
+            });
+
+            // Inline code (TRIM WHITESPACE)
+            content = content.replace(/`([^`]+?)`/g, '<code>$1</code>');
+
+            // Preserve and style code blocks (TRIM WHITESPACE)
+            content = content.replace(/`([^\s]+?)`/g, function(match, code) {
+                return `<pre><code>${formatHTML(code.trim())}</code></pre>`;
+            });
+
+            // Bold (TRIM WHITESPACE)
+            content = content.replace(/\*\*\s*([^*]+?)\s*\*\*/g, '<strong>$1</strong>');
+
+            // Italic (TRIM WHITESPACE)
+            content = content.replace(/\*\s*([^*]+?)\s*\*/g, '<em>$1</em>');
+
+            // Links (No change needed, usually whitespace around links is desired)
+            content = content.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+
+            return content;
+        }
+
+        function createMessage(text, type) {
+            const msg = document.createElement('div');
+            const msgBubble = document.createElement('div');
+            msg.className = `message ${type}`;
+            msgBubble.className = "bubble";
+    
+            const formattedText = type === 'ai' ? formatMarkdown(text, type) : escapeHtml(text);
+    
+            msgBubble.innerHTML = formattedText;
+            msg.appendChild(msgBubble)
+    
+            return msg;
+        }
+
+        async function send() {
+            console.log(messages);
+
+            
+            const text = input.value.trim();
+            if (!text) return;
+            if (modelSelect == "human-ai") modelSelect = "deepseek-r1-distill-llama-70b";
+            messages[0] = {
+                "role": "system",
+                "content": "Thundercloud AI, a helpful and knowledgeable AI assistant. You are direct, informative, and friendly in your responses. ACT LIKE A HUMAN AND WRITE LIKE A VERY SMART ONE"
+            };
+
+            chat.appendChild(createMessage(text, 'user'));
+            input.value = '';
+
+            messages.push({
+                "role": "user",
+                "content": text
+            });
+
+            try {
+                const res = await fetch('https://ai-997.pages.dev/api/title/1/endpoint', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        message: text,
+                        model: modelSelect,
+                        messages: messages
+                    })
+                });
+
+                if (!res.ok) throw new Error();
+                const data = await res.json();
+                
+                messages.push({
+                    "role": "assistant",
+                    "content": data.response
+                });
+
+                chat.appendChild(createMessage(data.response, 'ai'));
+            } catch (err) {
+                chat.appendChild(createMessage('Failed to send message', 'error'));
+            }
+
+            chat.scrollTop = chat.scrollHeight;
+        }
+
+        input.addEventListener('keypress', e => {
+            if (e.key === 'Enter') send();
+        });
+
+        setTimeout(() => {
+            const initialMessage = 'Hi there! How can I help you today?';
+            chat.appendChild(createMessage(initialMessage, 'ai'));
+            messages.push({
+                "role": "assistant",
+                "content": initialMessage
+            });
+        }, 500);
+        
+        const dropdown = document.querySelector('.dropdown');
+        const selected = document.querySelector('.dropdown-selected');
+        const options = document.querySelector('.dropdown-options');
+        modelSelect = selected.dataset.value;
+
+        dropdown.addEventListener('click', (event) => {
+            event.stopPropagation();
+            options.classList.toggle("show");
+        });
+
+        options.addEventListener('click', (event) => {
+            if (event.target.tagName === 'DIV') {
+                selected.textContent = event.target.textContent;
+                selected.dataset.value = event.target.dataset.value;
+                modelSelect = selected.dataset.value;
+                options.classList.remove("show");
+            }
+        });
+
+        window.addEventListener('click', (event) => {
+            if (!dropdown.contains(event.target)) {
+                options.classList.remove("show");
+            }
+        });
+    </script>
+</body>
+</html>

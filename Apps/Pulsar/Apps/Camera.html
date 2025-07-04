@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camera App</title>
+    <style>
+        body {
+            text-align: center;
+            background: #1e1e1e;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+        video {
+            width: 90%;
+            max-width: 400px;
+            border: 2px solid white;
+            margin: 10px;
+        }
+        .controls {
+            margin: 10px;
+        }
+        .gallery-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .gallery {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            width: 120px;
+            height: 120px;
+            position: relative;
+        }
+        .gallery-item {
+            margin: 5px;
+            display: inline-block;
+            position: relative;
+        }
+        .gallery img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border: 2px solid white;
+        }
+        .delete-btn {
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: transparent;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 24px;
+            opacity: 0; /* Initially hidden */
+            transition: opacity 0.3s;
+        }
+        button {
+            background: #333;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #555;
+        }
+        .arrow-btn {
+            background: transparent;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+            padding: 10px;
+            opacity: 0; /* Initially hidden */
+            transition: opacity 0.3s;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Camera App</h1>
+    <video id="camera" autoplay playsinline></video>
+    <canvas id="canvas" style="display: none;"></canvas>
+    <div class="controls" id="controls">
+        <button id="toggleCamera">Toggle Camera</button>
+        <button id="capturePhoto">Take Picture</button>
+    </div>
+    <h2>Gallery</h2>
+    <div class="gallery-container">
+        <button class="arrow-btn" id="prevArrow">&#8592;</button>
+        <div id="gallery" class="gallery"></div>
+        <button class="arrow-btn" id="nextArrow">&#8594;</button>
+    </div>
+
+    <script>
+        const camera = document.getElementById('camera');
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const gallery = document.getElementById('gallery');
+        const controls = document.getElementById('controls');
+        const prevArrow = document.getElementById('prevArrow');
+        const nextArrow = document.getElementById('nextArrow');
+        let stream = null;
+        let galleryImages = [];
+        let currentIndex = 0;
+
+        async function startCamera() {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                camera.srcObject = stream;
+            } catch (err) {
+                alert('Error accessing camera: ' + err);
+            }
+        }
+
+        document.getElementById('toggleCamera').addEventListener('click', () => {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                camera.srcObject = null;
+                stream = null;
+            } else {
+                startCamera();
+            }
+        });
+
+        document.getElementById('capturePhoto').addEventListener('click', () => {
+            if (!stream) return alert('Turn on the camera first!');
+            canvas.width = camera.videoWidth;
+            canvas.height = camera.videoHeight;
+            ctx.drawImage(camera, 0, 0);
+            
+            const img = document.createElement('img');
+            img.src = canvas.toDataURL('image/png');
+            const deleteBtn = document.createElement('button');
+            deleteBtn.classList.add('delete-btn');
+            deleteBtn.innerHTML = '🗑️';  // Trash can emoji
+            deleteBtn.onclick = () => removeImage(galleryImages.length - 1);
+
+            const galleryItem = document.createElement('div');
+            galleryItem.classList.add('gallery-item');
+            galleryItem.appendChild(img);
+            galleryItem.appendChild(deleteBtn);
+
+            galleryImages.push(galleryItem);
+            showImageAtIndex(currentIndex);
+        });
+
+        function showImageAtIndex(index) {
+            gallery.innerHTML = ''; // Clear the gallery
+            if (galleryImages.length > 0) {
+                gallery.appendChild(galleryImages[index]);
+            }
+        }
+
+        function removeImage(index) {
+            galleryImages.splice(index, 1);
+            if (currentIndex >= galleryImages.length) {
+                currentIndex = galleryImages.length - 1;
+            }
+            showImageAtIndex(currentIndex);
+        }
+
+        document.getElementById('nextArrow').addEventListener('click', () => {
+            if (currentIndex < galleryImages.length - 1) {
+                currentIndex++;
+                showImageAtIndex(currentIndex);
+            }
+        });
+
+        document.getElementById('prevArrow').addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                showImageAtIndex(currentIndex);
+            }
+        });
+
+        // Show delete button and arrows when gallery image is clicked
+        gallery.addEventListener('click', () => {
+            const deleteBtn = galleryImages[currentIndex].querySelector('.delete-btn');
+            deleteBtn.style.opacity = 1; // Show the delete button
+            prevArrow.style.opacity = 1;  // Show the previous arrow
+            nextArrow.style.opacity = 1;  // Show the next arrow
+            controls.classList.add('hidden');  // Hide the camera and controls
+            camera.classList.add('hidden');   // Hide the camera
+        });
+
+        startCamera();
+    </script>
+</body>
+</html>
