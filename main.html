@@ -151,6 +151,9 @@
         grid-template-columns: 1fr;
       }
     }
+
+
+  }
   </style>
 </head>
 <body>
@@ -249,7 +252,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Log the visit (without IP)
 const now = new Date();
 const visitsRef = collection(db, "visits");
 
@@ -257,7 +259,7 @@ await addDoc(visitsRef, {
   timestamp: Timestamp.fromDate(now)
 });
 
-// Fetch visit stats
+// visit stats
 const allDocs = await getDocs(visitsRef);
 const allTime = allDocs.size;
 
