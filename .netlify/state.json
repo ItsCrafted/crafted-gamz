@@ -1,0 +1,21 @@
+{
+	"siteId": "edf29788-a875-464f-8813-d7c1578923fa",
+	"geolocation": {
+		"data": {
+			"city": "Albuquerque",
+			"country": {
+				"code": "US",
+				"name": "United States"
+			},
+			"subdivision": {
+				"code": "NM",
+				"name": "New Mexico"
+			},
+			"timezone": "America/Denver",
+			"latitude": 35.0712,
+			"longitude": -106.5768,
+			"postalCode": "87108"
+		},
+		"timestamp": 1748202298518
+	}
+}
