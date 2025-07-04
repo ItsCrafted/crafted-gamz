@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" href="../favicon.png" type="image/x-icon">
+  <title>Crafted Gamz | Download File</title>
+  <style>
+    html, body {
+      margin: 0; padding: 0; height: 100%;
+      font-family: 'Poppins', sans-serif;
+      background: #111;
+      overflow: hidden;
+      color: #4bf9ed;
+      user-select: none;
+    }
+    iframe#bg-iframe {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      border: none;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.6;
+      filter: brightness(0.7);
+    }
+    main {
+      position: relative;
+      z-index: 1;
+      max-width: 400px;
+      margin: auto;
+      padding: 40px;
+      text-align: center;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .back-button {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background-color: #444;
+      border: none;
+      color: #4bf9ed;
+      font-size: 14px;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .back-button:hover {
+      background-color: #555;
+    }
+    input[type=text] {
+      width: 100%;
+      font-size: 16px;
+      padding: 10px;
+      border-radius: 6px;
+      border: none;
+      margin-bottom: 20px;
+      background: #222;
+      color: #4bf9ed;
+      box-sizing: border-box;
+    }
+    input[type=text]:focus {
+      outline: 2px solid #4bf9ed;
+    }
+    button.download-btn {
+      background-color: #4bf9ed;
+      border: none;
+      color: #111;
+      font-size: 16px;
+      padding: 12px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      font-weight: 600;
+    }
+    button.download-btn:hover {
+      background-color: #6ec9cc;
+    }
+    button.download-btn:disabled {
+      background-color: #555;
+      color: #999;
+      cursor: not-allowed;
+    }
+    #status {
+      margin-top: 20px;
+      font-weight: 600;
+      white-space: pre-wrap;
+      text-align: center;
+      min-height: 20px;
+    }
+    .success {
+      color: #4ade80;
+    }
+    .error {
+      color: #f87171;
+    }
+    h1 {
+      margin-bottom: 30px;
+      font-weight: 600;
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <iframe id="bg-iframe" src="../bg.html" aria-hidden="true" tabindex="-1"></iframe>
+
+  <a href="../transfer.html" class="back-button">← Back</a>
+
+  <main>
+    <h1>Enter Your 3 Character Download Key</h1>
+    <input type="text" id="keyInput" maxlength="3" placeholder="Enter your 3-character download key" onkeypress="handleKeyPress(event)" />
+    <button class="download-btn" onclick="download()">Download</button>
+    
+    <p id="status"></p>
+    <p>If your key is over 31 days old, you'll need to re-upload your file</p>
+  </main>
+
+<script>
+function handleKeyPress(event) {
+  if (event.key === 'Enter') {
+    download();
+  }
+}
+
+function download() {
+  const keyInput = document.getElementById('keyInput');
+  const key = keyInput.value.trim().toLowerCase();
+  const status = document.getElementById('status');
+  const button = document.querySelector('.download-btn');
+
+  if (!key) {
+    status.textContent = 'Please enter your download key.';
+    status.className = 'error';
+    return;
+  }
+
+  if (key.length !== 3) {
+    status.textContent = 'Download key must be exactly 3 characters.';
+    status.className = 'error';
+    return;
+  }
+
+  if (key === "del") {
+    keyInput.value = "Crafted>GG";
+    status.textContent = 'Confirmation required. Please enter the confirmation key.';
+    status.className = 'error';
+    keyInput.focus();
+
+    button.onclick = function() {
+      const confirmKey = keyInput.value.trim();
+      if (confirmKey === "Bandrulls*2021") {
+        status.textContent = 'Wiping folder...';
+        status.className = '';
+        window.open(`https://script.google.com/macros/s/AKfycbzmmo9QrTlaHBLZxVo-FwsRM677BKg3q_r3sBf0a7WsVBxQYuR53UzBEBm9gbpZpHBB/exec?id=Bandrulls*2021`, '_blank');
+      } else {
+        status.textContent = 'Incorrect confirmation key.';
+        status.className = 'error';
+      }
+    };
+    return;
+  }
+
+  // Normal download flow here...
+  button.disabled = true;
+  button.textContent = 'Opening...';
+  status.textContent = 'Opening download...';
+  status.className = '';
+
+  try {
+    const url = `https://script.google.com/macros/s/AKfycbzmmo9QrTlaHBLZxVo-FwsRM677BKg3q_r3sBf0a7WsVBxQYuR53UzBEBm9gbpZpHBB/exec?id=${encodeURIComponent(key)}`;
+    const newWindow = window.open(url, '_blank');
+
+    if (!newWindow || newWindow.closed || typeof newWindow.closed == 'undefined') {
+      status.textContent = 'Popup blocked! Please allow popups and try again.';
+      status.className = 'error';
+    } else {
+      status.textContent = 'Download opened in new tab';
+      status.className = 'success';
+    }
+  } catch (error) {
+    status.textContent = 'Error opening download. Please try again.';
+    status.className = 'error';
+    console.error('Download error:', error);
+  } finally {
+    setTimeout(() => {
+      button.disabled = false;
+      button.textContent = 'Download';
+      button.onclick = download;
+    }, 2000);
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" href="../favicon.png" type="image/x-icon">
+  <title>Crafted Gamz | Upload File</title>
+  <style>
+    html, body {
+      margin: 0; padding: 0; height: 100%;
+      font-family: 'Poppins', sans-serif;
+      background: #111;
+      overflow: hidden;
+      color: #4bf9ed;
+      user-select: none;
+    }
+    iframe#bg-iframe {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      border: none;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.6;
+      filter: brightness(0.7);
+    }
+    .back-button {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background-color: #444;
+      border: none;
+      color: #4bf9ed;
+      font-size: 14px;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+      z-index: 2;
+    }
+    .back-button:hover {
+      background-color: #555;
+    }
+    main {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 40px;
+      max-width: 400px;
+      margin: auto;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    input[type=file] {
+      width: 100%;
+      font-size: 16px;
+      padding: 10px;
+      border-radius: 6px;
+      border: none;
+      margin: 20px 0;
+      background: #222;
+      color: #4bf9ed;
+      box-sizing: border-box;
+    }
+    input[type=file]:focus {
+      outline: 2px solid #4bf9ed;
+    }
+    button {
+      background-color: #4bf9ed;
+      border: none;
+      color: #111;
+      font-size: 16px;
+      padding: 12px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      font-weight: 600;
+    }
+    button:hover {
+      background-color: #6ec9cc;
+    }
+    button:disabled {
+      background-color: #555;
+      color: #999;
+      cursor: not-allowed;
+    }
+    #result {
+      margin-top: 20px;
+      font-weight: 600;
+      white-space: pre-wrap;
+      text-align: center;
+      min-height: 20px;
+    }
+    .loading-spinner {
+      border: 4px solid #222;
+      border-top: 4px solid #4bf9ed;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      animation: spin 1s linear infinite;
+      display: inline-block;
+      vertical-align: middle;
+      margin-left: 8px;
+    }
+    #copyBtn {
+      margin-top: 12px;
+      display: none;
+      background-color: #333;
+      color: #4bf9ed;
+      padding: 8px 20px;
+      border-radius: 6px;
+      font-size: 14px;
+      user-select: none;
+    }
+    #copyBtn:hover {
+      background-color: #555;
+      cursor: pointer;
+    }
+    h1 {
+      margin-bottom: 30px;
+      font-weight: 600;
+    }
+    .file-info {
+      font-size: 14px;
+      color: #888;
+      margin-top: 10px;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <iframe id="bg-iframe" src="../bg.html" aria-hidden="true" tabindex="-1"></iframe>
+
+  <a href="../transfer.html" class="back-button">← Back</a>
+
+  <main>
+    <h1>Upload a File</h1>
+    <input type="file" id="fileInput" onchange="showFileInfo()" />
+    <div id="fileInfo" class="file-info"></div>
+    <br />
+    <button id="uploadBtn" onclick="upload()">Upload</button>
+    <p id="result"></p>
+    <button id="copyBtn" onclick="copyKey()">Copy Key</button>
+    <p>Uploaded files will be stored for 31 days, then deleted</p>
+    <p style="font-size: 14px; color: #888;">Maximum file size: 5 GB</p>
+  </main>
+
+  <script>
+    let lastKey = "";
+    const MAX_FILE_SIZE = 5 * 1024 * 1024 * 1024; // 5 GB in bytes
+
+    function formatFileSize(bytes) {
+      if (bytes === 0) return '0 Bytes';
+      const k = 1024;
+      const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    function showFileInfo() {
+      const fileInput = document.getElementById('fileInput');
+      const fileInfo = document.getElementById('fileInfo');
+      const result = document.getElementById('result');
+      
+      if (fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+        const fileSize = formatFileSize(file.size);
+        fileInfo.textContent = `Selected: ${file.name} (${fileSize})`;
+        
+        // Clear any previous error messages
+        result.textContent = '';
+        result.style.color = "#4bf9ed";
+      } else {
+        fileInfo.textContent = '';
+      }
+    }
+
+    async function upload() {
+      const file = document.getElementById('fileInput').files[0];
+      if (!file) {
+        const result = document.getElementById('result');
+        result.textContent = "Please choose a file first";
+        result.style.color = "#f87171";
+        return;
+      }
+
+      // Check file size limit
+      if (file.size > MAX_FILE_SIZE) {
+        const result = document.getElementById('result');
+        result.textContent = `File too large! Maximum size is 5 GB. Your file is ${formatFileSize(file.size)}.`;
+        result.style.color = "#f87171";
+        return;
+      }
+
+      const uploadBtn = document.getElementById('uploadBtn');
+      const result = document.getElementById('result');
+      const copyBtn = document.getElementById('copyBtn');
+
+      uploadBtn.disabled = true;
+      uploadBtn.textContent = 'Uploading...';
+      copyBtn.style.display = 'none';
+      result.innerHTML = 'Uploading <span class="loading-spinner"></span>';
+      result.style.color = "#4bf9ed";
+
+      const reader = new FileReader();
+      reader.onload = async () => {
+        const base64 = reader.result.split(',')[1];
+        try {
+          const res = await fetch('https://script.google.com/macros/s/AKfycbzmmo9QrTlaHBLZxVo-FwsRM677BKg3q_r3sBf0a7WsVBxQYuR53UzBEBm9gbpZpHBB/exec', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `filedata=${encodeURIComponent(base64)}&mimeType=${encodeURIComponent(file.type)}&filename=${encodeURIComponent(file.name)}`
+          });
+          if (!res.ok) throw new Error('Upload failed');
+          const key = await res.text();
+          lastKey = key;
+          result.innerHTML = `✅ Upload complete!<br>Your download key: <b>${key}</b>`;
+          result.style.color = "#4ade80";
+          copyBtn.style.display = 'inline-block';
+        } catch(e) {
+          result.textContent = "❌ Upload failed. Please try again.";
+          result.style.color = "#f87171";
+          console.error('Upload error:', e);
+        } finally {
+          uploadBtn.disabled = false;
+          uploadBtn.textContent = 'Upload';
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function copyKey() {
+      if (!lastKey) return;
+      navigator.clipboard.writeText(lastKey).then(() => {
+        const copyBtn = document.getElementById('copyBtn');
+        const originalText = copyBtn.textContent;
+        copyBtn.textContent = "Copied!";
+        setTimeout(() => {
+          copyBtn.textContent = originalText;
+        }, 1500);
+      }).catch(err => {
+        console.error('Copy failed:', err);
+        // Fallback for older browsers
+        const textArea = document.createElement('textarea');
+        textArea.value = lastKey;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        
+        const copyBtn = document.getElementById('copyBtn');
+        const originalText = copyBtn.textContent;
+        copyBtn.textContent = "Copied!";
+        setTimeout(() => {
+          copyBtn.textContent = originalText;
+        }, 1500);
+      });
+    }
+
+    // Auto-focus file input on page load
+    window.addEventListener('load', function() {
+      document.getElementById('fileInput').focus();
+    });
+  </script>
+</body>
+</html>
