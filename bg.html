@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Particles Background | Crafted Gamz</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+  background: linear-gradient(45deg, #050506, #1b4e52);
+    }
+
+    #particles-js {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    .fog-cloud {
+      position: absolute;
+      width: 600px;
+      height: 400px;
+      background: radial-gradient(ellipse at center, #4bf9ed11 0%, #4bf9ed00 80%);
+      opacity: 0.9;
+      border-radius: 50%;
+      filter: blur(100px);
+      animation: drift 120s linear infinite;
+      z-index: 0;
+    }
+
+    @keyframes drift {
+      0% {
+        transform: translateX(0);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.7;
+      }
+      85% {
+        opacity: 0.9;
+      }
+      100% {
+        transform: translateX(-500px);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="particles-js"></div>
+  <div id="fog-container"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <script>
+    // Check particles setting
+    const particlesSetting = localStorage.getItem('particles');
+    if (particlesSetting === '0') {
+      // Do NOT load particles if disabled
+      document.getElementById('particles-js').style.display = 'none';
+    } else {
+      const color = localStorage.getItem('particleColor') || '#4bf9ed';
+
+      particlesJS('particles-js', {
+        particles: {
+          number: { value: 80, density: { enable: true, value_area: 800 } },
+          color: { value: color },
+          shape: {
+            type: 'circle',
+            stroke: { width: 0, color: color }
+          },
+          opacity: { value: 1 },
+          size: { value: 4, random: true },
+          line_linked: {
+            enable: true,
+            distance: 175,
+            color: color,
+            opacity: 0.3,
+            width: 1
+          },
+          move: { enable: true, speed: 6, random: true, out_mode: 'out' }
+        },
+        interactivity: {
+          detect_on: 'canvas',
+          events: { onhover: { enable: false }, onclick: { enable: false }, resize: false }
+        },
+        retina_detect: true
+      });
+    }
+
+    // Fog cloud code (always active)
+    const fogContainer = document.getElementById('fog-container');
+    function createFogCloud() {
+      const cloud = document.createElement('div');
+      cloud.className = 'fog-cloud';
+      cloud.style.top = `${Math.random() * 100}%`;
+      cloud.style.left = `${Math.random() * 100}%`;
+      const duration = 25 + Math.random() * 15;
+      const direction = Math.random() > 0.7 ? 1 : -1;
+      cloud.style.animation = `drift ${duration}s linear infinite`;
+      cloud.style.transform = `scale(${0.5 + Math.random() * 0.6})`;
+      cloud.style.animationDirection = direction === 1 ? 'normal' : 'reverse';
+      fogContainer.appendChild(cloud);
+    }
+    for (let i = 0; i < 8; i++) {
+      createFogCloud();
+    }
+  </script>
+
+</body>
+</html>

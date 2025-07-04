@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Crafted Gamz</title>
+  <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
+  <style>
+    html, body {
+      margin: 0; padding: 0;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+      background: black;
+    }
+
+    #bgFrame {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      border: none;
+      z-index: 0;
+    }
+
+    #launchBtn {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0,0,0,0.5);
+      color: #4bf9ed;
+      padding: 1rem 2rem;
+      font-size: 1.5rem;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    #gameFrame {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      border: none;
+      display: none;
+      opacity: 0;
+      z-index: 2;
+      transition: opacity 0.6s ease-in;
+    }
+
+    .transition-box {
+      position: absolute;
+      background: rgba(0,0,0,0.5);
+      border-radius: 12px;
+      z-index: 10;
+    }
+
+    #bar {
+      position: absolute;
+      bottom: 10px;
+      left: 30px;
+      right: 30px;
+      height: 40px;
+      background: rgba(0,0,0,0.5);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;  /* vertical center */
+      justify-content: space-between;
+      color: #4bf9ed;
+      font-weight: bold;
+      font-size: 1rem;
+      padding: 0 10px;
+      opacity: 0;
+      z-index: 20;
+      user-select: none;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+
+    #bar.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    #bar .button-group {
+      display: flex;
+      gap: 12px;
+      align-items: center;  /* vertical center */
+    }
+
+    #bar .title {
+      display: flex;
+      align-items: center;  /* vertical center */
+      height: 100%;
+    }
+
+    #bar button {
+      background: transparent;
+      border: 1.5px solid #4bf9ed;
+      color: #4bf9ed;
+      border-radius: 8px;
+      padding: 5px 12px;
+      cursor: pointer;
+      font-weight: normal;
+      font-size: 0.9rem;
+      line-height: 1;
+      transition: background 0.3s ease;
+    }
+
+    #bar button:hover {
+      background: #4bf9ed;
+      color: black;
+    }
+  </style>
+</head>
+<body>
+  <iframe id="bgFrame" src="bg.html"></iframe>
+  <button id="launchBtn">Launch</button>
+  <iframe id="gameFrame"></iframe>
+
+  <div id="bar" aria-label="Game controls bar" role="region" aria-live="polite">
+    <div class="title left-title"></div>
+    <div class="button-group">
+      <button id="reloadBtn" aria-label="Reload game iframe">Reload</button>
+      <button id="homeBtn" aria-label="Go to home page">Home</button>
+      <button id="backBtn" aria-label="Go to games page">Back</button>
+      <button id="fullscreenBtn" aria-label="Toggle fullscreen">Fullscreen</button>
+    </div>
+    <div class="title right-title"></div>
+  </div>
+
+  <script src="gameconfigs.js"></script>
+  <script>
+    const gameId = (JSON.parse(localStorage.getItem('gameIds') || '[]')[0]) || null;
+    const config = gameConfigs[gameId] || null;
+
+    
+  if (config) {
+    document.title = config.title;  // <-- Set page title here
+  }
+
+    const launchBtn = document.getElementById('launchBtn');
+    const gameFrame = document.getElementById('gameFrame');
+    const bar = document.getElementById('bar');
+    const leftTitle = bar.querySelector('.left-title');
+    const rightTitle = bar.querySelector('.right-title');
+    const reloadBtn = document.getElementById('reloadBtn');
+    const homeBtn = document.getElementById('homeBtn');
+    const backBtn = document.getElementById('backBtn');
+    const fullscreenBtn = document.getElementById('fullscreenBtn');
+
+    if (config) {
+      launchBtn.textContent = `Launch ${config.title}`;
+      leftTitle.textContent = config.title;
+      rightTitle.textContent = config.title;
+    } else {
+      launchBtn.textContent = 'Invalid Game ID';
+      launchBtn.disabled = true;
+    }
+
+    launchBtn.addEventListener('click', () => {
+      const rect = launchBtn.getBoundingClientRect();
+      const box = document.createElement('div');
+
+      launchBtn.textContent = '';
+      box.className = 'transition-box';
+      box.style.width = `${rect.width}px`;
+      box.style.height = `${rect.height}px`;
+      box.style.left = `${rect.left}px`;
+      box.style.top = `${rect.top}px`;
+      document.body.appendChild(box);
+      launchBtn.style.display = 'none';
+
+      const startWidth = rect.width;
+      const startHeight = rect.height;
+      const targetSize = 60;
+      const centerY = rect.top + startHeight / 2;
+      const centerX = rect.left + startWidth / 2;
+
+      let progress = 0;
+
+      // Shrink with braking easing
+      const shrink = setInterval(() => {
+        progress += 0.025;
+        if (progress >= 1) {
+          clearInterval(shrink);
+          box.style.width = `${targetSize}px`;
+          box.style.height = `${targetSize}px`;
+          box.style.left = `${centerX - targetSize / 2}px`;
+          box.style.top = `${centerY - targetSize / 2}px`;
+          box.style.borderRadius = '50%';
+          setTimeout(() => driftDown(box), 300);
+        } else {
+          const eased = 1 - Math.pow(1 - progress, 3);
+          const currentWidth = startWidth - (startWidth - targetSize) * eased;
+          const currentHeight = startHeight - (startHeight - targetSize) * eased;
+          box.style.width = `${currentWidth}px`;
+          box.style.height = `${currentHeight}px`;
+          box.style.left = `${centerX - currentWidth / 2}px`;
+          box.style.top = `${centerY - currentHeight / 2}px`;
+          const radiusPercent = (targetSize / Math.max(currentWidth, currentHeight)) * 100;
+          box.style.borderRadius = `${radiusPercent}%`;
+        }
+      }, 12);
+
+      function driftDown(box) {
+        const targetY = window.innerHeight - 10 - parseFloat(box.style.height);
+        let currentTop = parseFloat(box.style.top);
+        let totalDistance = targetY - currentTop;
+        let progress = 0;
+
+        const drift = setInterval(() => {
+          progress += 0.015;
+          if (progress >= 1) {
+            clearInterval(drift);
+            box.style.top = `${targetY}px`;
+            box.style.borderRadius = '12px';
+            expandOverlay(box);
+          } else {
+            const eased = 1 - Math.pow(1 - progress, 3);
+            const newTop = currentTop + totalDistance * eased;
+            box.style.top = `${newTop}px`;
+          }
+        }, 10);
+      }
+
+function expandOverlay(box) {
+  const margin = 30;
+  const targetLeft = margin;
+  const targetRight = window.innerWidth - margin;
+  const targetWidth = targetRight - targetLeft;
+
+  let initialLeft = parseFloat(box.style.left);
+  let initialWidth = parseFloat(box.style.width);
+  let totalLeftChange = initialLeft - targetLeft;
+  let totalWidthChange = targetWidth - initialWidth;
+  let progress = 0;
+
+  const expand = setInterval(() => {
+    progress += 0.015;
+    if (progress >= 1) {
+      clearInterval(expand);
+      box.style.left = `${targetLeft}px`;
+      box.style.width = `${targetWidth}px`;
+      loadGame(box);
+      box.remove();  // <-- Remove the shrinking box once done
+    } else {
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const newLeft = initialLeft - totalLeftChange * eased;
+      const newWidth = initialWidth + totalWidthChange * eased;
+      box.style.left = `${newLeft}px`;
+      box.style.width = `${newWidth}px`;
+    }
+  }, 10);
+}
+
+
+      function loadGame(box) {
+        gameFrame.src = `games/${config.url}/index.html`;
+        gameFrame.style.display = 'block';
+        setTimeout(() => {
+          gameFrame.style.opacity = 1;
+          bar.classList.add('visible');
+        }, 100);
+      }
+    });
+
+    // Button functionalities
+    reloadBtn.addEventListener('click', () => {
+      if (gameFrame.src) {
+        gameFrame.contentWindow.location.reload();
+      }
+    });
+
+    homeBtn.addEventListener('click', () => {
+      window.location.href = 'main.html';
+    });
+
+    backBtn.addEventListener('click', () => {
+      window.location.href = 'games.html';
+    });
+
+    fullscreenBtn.addEventListener('click', () => {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().then(() => {
+          bar.style.display = 'none';
+        }).catch(() => {});
+      } else {
+        document.exitFullscreen().then(() => {
+          bar.style.display = 'flex';
+        }).catch(() => {});
+      }
+    });
+
+    document.addEventListener('fullscreenchange', () => {
+      if (!document.fullscreenElement) {
+        bar.style.display = 'flex';
+      }
+    });
+  </script>
+</body>
+</html>

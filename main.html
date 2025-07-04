@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="favicon.png">
+  <title>Crafted Gamz | Main Page</title>
+<script src="random-messages.js"></script>
+<link rel="manifest" href="/manifest.json" />
+
+  <style>
+
+  @font-face {
+  font-family: 'Crafted';
+  src: url('crafted-font.ttf') format('truetype');
+  font-display: swap;
+}
+
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: sans-serif;
+      overflow-x: hidden;
+    }
+
+    iframe {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1;
+      border: none;
+    }
+
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      padding: 20px;
+      text-align: center;
+      z-index: 2;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin: 0 20px;
+      font-weight: bold;
+      font-size: 16px;
+      transition: color 0.2s;
+    }
+
+    nav a:hover {
+      color: #4bf9ed;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 40px;
+      padding: 60px;
+      padding-top: 20vh;
+      box-sizing: border-box;
+    }
+
+    .box {
+      height: 250px;
+      border-radius: 12px;
+      opacity: 0.85;
+      transition: transform 0.2s ease, background-color 0.3s ease;
+      padding: 20px;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .box:hover {
+      transform: scale(1.05);
+      background-color: #081a2e;
+    }
+
+    .version-text {
+      text-align: center;
+      font-size: 3em;
+      font-weight: bold;
+      color: white;
+      margin-top: 20vh;
+     line-height: 1; 
+    }
+
+.version-text h1 span {
+  background: linear-gradient(135deg, #007bff, #00d4ff);
+  -webkit-background-clip: text;
+  color: transparent;
+  font-size: 150px;
+  font-weight: bold;
+  transition: transform 0.3s, background 0.3s, box-shadow 0.3s;
+  font-family: 'Crafted', sans-serif;
+}
+
+
+    .social-icons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 10px;
+    }
+
+    .icon {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+      border-radius: 8px;
+      transition: transform 0.2s ease;
+    }
+
+    .icon:hover {
+      transform: scale(1.2);
+    }
+
+    .box img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+
+    .box4 img, .box5 img {
+      display: none;
+    }
+
+    .box6 img {
+      display: block;
+    }
+
+    .box1 { background-color: rgba(0, 0, 0, 0.8); }
+    .box2 { background-color: rgba(0, 0, 0, 0.8); }
+    .box3 { background-color: rgba(0, 0, 0, 0.8); }
+    .box4 { background-color: rgba(0, 0, 0, 0.8); }
+    .box5 { background-color: rgba(0, 0, 0, 0.8); }
+    .box6 { background-color: rgba(0, 0, 0, 0.8); }
+
+    @media (max-width: 768px) {
+      .container {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <iframe src="bg.html"></iframe>
+
+  <nav>
+    <a href="main.html">Home</a>
+    <a href="search.html">Search</a>
+    <a href="games.html">Games</a>
+    <a href="apps.html">Apps</a>
+    <a href="tools.html">Tools</a>
+   <a href="transfer.html">Transfer</a>
+   <a href="ai.html">AI</a>
+       <a href="partners.html">Partners</a>
+  </nav>
+
+<div class="version-text"> 
+  <h1><span>Crafted Gamz</span><br><span class="version">Version 12</span><br><span class="version">BETA</span></h1>
+  <p id="random-message" style="font-size: 30px; color: #ccc;"></p>
+</div>
+
+<div id="visitors"></div>
+
+  <div class="container">
+<div class="box box1">
+  <h2>Most Popular (Live)</h2>
+  <div id="leaderboard">
+    Loading leaderboard...
+  </div>
+</div>
+<div class="box box2">
+  <h2>Choice Of The Month</h2>
+  <h3>This Month's Pick:</h3>
+  <div id="value" style="font-size: 2.5rem; font-weight: 700; margin-top: 0.5rem;">Loading...</div>
+</div>
+    <div class="box box3">
+      <h2>Newest Feature</h2>
+      <p>The Newest Feature Is Release 12.0.0 💀</p>
+    </div>
+    <div class="box box4">
+      <h2>Credits And Thanks</h2>
+      <p>Website coded by Crafted, Under Crafted Gamz, with help from ai 💀💀.</p>
+      <p>Website files hosted on Github and deployed with Netlifty.</p>
+      <p>Idea came from LJH Web Games, Jordan's Math Work, and T.P.E.</p>
+      <p>Credit and thanks to 3kh0 for most of the games.</p>
+      <p>Random text inspired from US4</p>
+    </div>
+    <div class="box box5">
+      <h2>Do it Yourself</h2>
+<a href="diy.html" style="
+  background-color: #4bf9ed;
+  color: #1a1a1a;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: bold;
+  display: inline-block;
+  max-width: 400px;
+  align-self: center;
+">How to deploy Crafted Gamz for yourself</a>
+
+    </div>
+    <div class="box box6">
+      <h2>Social & Contact</h2>
+      <div class="social-icons">
+        <a href="https://discordid.netlify.app/?id=1216168493213552660" target="_blank">
+          <img src="img/discord.png" alt="Discord" class="icon">
+        </a>
+        <a href="mailto:crafted@craftedgamz.com" target="_blank">
+          <img src="img/email.png" alt="Email" class="icon">
+        </a>
+        <a href="https://github.com/ItsCrafted" target="_blank">
+          <img src="img/github.png" alt="GitHub" class="icon">
+        </a>
+        <a href="https://youtube.com/@its_crafted" target="_blank">
+          <img src="img/youtube.png" alt="YouTube" class="icon">
+        </a>
+      </div>
+    </div>
+  </div>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, query, where, Timestamp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCLL2JZUBJwISsLljfMN4wAr3ZSRd4A1Jo",
+  authDomain: "craftedgamzvisits.firebaseapp.com",
+  projectId: "craftedgamzvisits",
+  storageBucket: "craftedgamzvisits.firebase-storage.app",
+  messagingSenderId: "935169016483",
+  appId: "1:935169016483:web:0ea28fbc25e9f390723516",
+  measurementId: "G-23C7D06VFD"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// Get IP address silently
+let userIP = "Unknown";
+try {
+  const res = await fetch("https://api.ipify.org?format=json");
+  const data = await res.json();
+  userIP = data.ip;
+} catch (e) {
+  userIP = "Fetch Failed";
+}
+
+// Log the visit
+const now = new Date();
+const visitsRef = collection(db, "visits");
+
+await addDoc(visitsRef, {
+  timestamp: Timestamp.fromDate(now),
+  ip: userIP
+});
+
+// Fetch visit stats
+const allDocs = await getDocs(visitsRef);
+const allTime = allDocs.size;
+
+const todayStart = new Date();
+todayStart.setHours(0, 0, 0, 0);
+const todayQuery = query(visitsRef, where("timestamp", ">=", Timestamp.fromDate(todayStart)));
+const todayDocs = await getDocs(todayQuery);
+const today = todayDocs.size;
+
+const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+const monthQuery = query(visitsRef, where("timestamp", ">=", Timestamp.fromDate(monthStart)));
+const monthDocs = await getDocs(monthQuery);
+const month = monthDocs.size;
+
+const container = document.createElement("div");
+container.style.cssText = `
+  background: rgba(0, 0, 0, 0.8);
+  color: #4bf9ed;
+  padding: 16px 24px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-family: sans-serif;
+  text-align: center;
+  margin: 0 auto;
+  width: fit-content;
+`;
+
+container.innerHTML = `
+  <b>Crafted Gamz Visitors</b><br>
+  Today: ${today}<br>
+  This Month: ${month}<br>
+  All-time: ${allTime}<br>
+`;
+
+document.getElementById("visitors").appendChild(container);
+</script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyCLL2JZUBJwISsLljfMN4wAr3ZSRd4A1Jo",
+    authDomain: "craftedgamzvisits.firebaseapp.com",
+    projectId: "craftedgamzvisits",
+    storageBucket: "craftedgamzvisits.firebase-storage.app",
+    messagingSenderId: "935169016483",
+    appId: "1:935169016483:web:0ea28fbc25e9f390723516",
+    measurementId: "G-23C7D06VFD"
+  };
+
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
+  const db = firebase.firestore();
+
+  const leaderboard = document.getElementById("leaderboard");
+
+  function loadLeaderboard() {
+    db.collection("gameCounts")
+      .orderBy("count", "desc")
+      .limit(3)
+      .get()
+      .then(snapshot => {
+        if (snapshot.empty) {
+          leaderboard.textContent = "No data yet.";
+          return;
+        }
+        leaderboard.innerHTML = "";
+        let rank = 1;
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          const div = document.createElement("div");
+          div.style.marginBottom = "10px";
+          div.innerHTML = `<strong>#${rank}: ${doc.id}</strong> — ${data.count} plays`;
+          leaderboard.appendChild(div);
+          rank++;
+        });
+      })
+      .catch(error => {
+        leaderboard.textContent = "Failed to load leaderboard.";
+        console.error("Error fetching leaderboard:", error);
+      });
+  }
+
+  loadLeaderboard();
+  setInterval(loadLeaderboard, 1000);
+</script>
+<script>
+  async function fetchValue() {
+    try {
+      const res = await fetch('/value.json');
+      if (!res.ok) throw new Error('Network error');
+      const data = await res.json();
+      document.getElementById('value').textContent = data.value;
+    } catch (e) {
+      document.getElementById('value').textContent = 'Error loading value';
+      console.error(e);
+    }
+  }
+  fetchValue();
+</script>
+</body>
+</html>

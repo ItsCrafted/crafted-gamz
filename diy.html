@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>DIY</title>
+  <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
+  <style>
+    html, body {
+      margin: 0; padding: 0; height: 100%;
+      font-family: Arial, sans-serif;
+      color: #f0f0f0;
+      overflow: hidden;
+      background: transparent;
+      overflow: visible;
+    }
+
+    iframe#bg-frame {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      border: none;
+      z-index: 0;
+    }
+
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      padding: 20px;
+      text-align: center;
+      z-index: 10;
+    }
+
+    nav a {
+      color: #4bf9ed;
+      text-decoration: none;
+      margin: 0 20px;
+      font-weight: bold;
+      font-size: 16px;
+      transition: color 0.2s;
+      background: none;
+      padding: 0;
+      border-radius: 0;
+    }
+
+    nav a:hover {
+      color: #4bf9ed;
+    }
+
+    .article-container {
+      max-width: 800px;
+      margin: 100px auto 3rem;
+      background-color: rgba(0, 0, 0, 0.85);
+      padding: 3rem;
+      border-radius: 12px;
+      position: relative;
+      z-index: 1;
+      box-shadow: 0 0 15px rgba(150, 243, 245, 0.5);
+    }
+
+    h1 {
+      color: #4bf9ed;
+    }
+
+    p {
+      line-height: 1.6;
+    }
+
+    .subtitle {
+  color: white;
+  font-size: 1.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+a {
+  color: #4bf9ed;
+  text-decoration: underline;
+}
+ul li {
+  margin-bottom: 20px;
+}
+
+  </style>
+</head>
+<body>
+
+  <iframe id="bg-frame" src="bg.html" aria-hidden="true"></iframe>
+
+  <nav>
+    <a href="main.html">← Back to Main Page</a>
+  </nav>
+
+  <div class="article-container">
+    <h1>How To Make Your Own Deploy Of Crafted Gamz:</h1>
+<p class="subtitle">Step 1: Requirements</p>
+<p>You must have:</p>
+<ul>
+  <li>
+  A
+  <a href="https://github.com" target="_blank" rel="noopener noreferrer">Github</a> account
+</li>
+<li>
+  A
+  <a href="https://netlify.com" target="_blank" rel="noopener noreferrer">Netlify</a> account
+</li>
+<li>
+  A custom domain <span style="color: #ff0000;"><strong>(paid)</strong></span> (recommended from 
+  <a href="https://namecheap.com" target="_blank" rel="noopener noreferrer">Namecheap</a>) 
+  <i>ONLY IF YOUR SCHOOL BLOCKS "example.netlify.app" DOMAINS (ex.</i>
+    <a href="https://crafted-gamz.netlify.app/" target="_blank" rel="noopener noreferrer">https://crafted-gamz.netlify.app/</a>) In the sense that you <strong>DO</strong> need a custom domain, you'll need a   <a href="https://namecheap.com" target="_blank" rel="noopener noreferrer">Namecheap</a> account
+</li>
+</ul>
+<p class="subtitle">Step 2: Repo Cloning</p>
+<p><i>Make sure you are signed into Github</i></p>
+<p>"repo" = Repository</p>
+<p>Go to <a href="https://github.com/ItsCrafted/crafted-gamz" target="_blank" rel="noopener noreferrer">https://github.com/ItsCrafted/crafted-gamz</a></p>
+<p><i>I recommend starring the repo to pin it to your account</i></p>
+<p>Click "fork" (top right of repo section, next to "Unwatch" and "Star"</p>
+<p>Make the repo name "crafted-gamz-fork"</p>
+<p>Select "Copy the <strong>main</strong> branch only"</p>
+<p>Click "Create fork"</p>
+<p>Wait for the fork operation to complete, so your new repo looks something like <a href="https://github.com/ItsCrafted/crafted-gamz" target="_blank" rel="noopener noreferrer">https://github.com/ItsCrafted/crafted-gamz</a></p>
+<p class="subtitle">Step 3: Deploying</p>
+  <p>Go to your <a href="https://netlify.com" target="_blank" rel="noopener noreferrer">Netlify</a> "Projects" Page</p>
+  <p>Click "Add new project" then "Import an existing project"</p>
+  <p>Where it says "Let’s deploy your project with", Select Github</p>
+  <p>Verify Netlify access to Github</p>
+  <p>Select "crafted-gamz-fork" from the list</p>
+  <p>Set the following fields to their respective values:</p>
+  <ul>
+  <li>Team <strong>is not needed</strong></li>
+  <li>Project name should be set to whatever you wish (this will determine the value before ".netlify.app")</li>
+  <li>Branch to deploy should be set to "main"</li>
+  <li>Base directory should be blank</li>
+  <li>Build command should be blank</li>
+  <li>Publish directory should be set to "." (as in a period)</li>
+  <li>Functions Directory should be set to "netlify/functions"</li>
+  <li>Add <strong>NO</strong> Environment variables</li>
+  </ul>
+  <p>Click "Deploy "____"</p>
+  <p>Wait for it to go live (takes around 15 minutes)</p>
+  <p>Please Email "crafted@craftedgamz.com" the url to your new site</p>
+<p class="subtitle"><i>Step 4: Adding A Custom Domain From Namecheap (If Needed)</i></p>
+  <p>Go to your   <a href="https://namecheap.com" target="_blank" rel="noopener noreferrer">Namecheap</a> Dashboard</p>
+<p>Click on "Manage", on the domain you want to add</p>
+<p>Go to "Advanced DNS"</p>
+<p>Delete <strong>All</strong> existing Host Records</p>
+<p>Go back to the "Domain" tab</p>
+<p>Scroll down to "Nameservers"</p>
+<p>Click Custom DNS</p>
+<p>Open Netlify in another tab, this time in "Domains" (sidebar)</p>
+<p>Click "Add or register domain", then "Add a domain you already own"</p>
+<p>Enter your domain from Namecheap into "What domain would you like to use?", then "Verify"</p>
+<p>It should say "_____ is already registered. If you registered this domain name through a different registrar, select Add domain to begin delegating it to Netlify"</p>
+<p>Click "Add domain"</p>
+<p><strong>Add no DNS records, just hit "Continue"</strong></p>
+<p>Go back to your Namecheap tab</p>
+<p>Add 4 Nameservers as the following, making sure <strong>that they are the only 4 Nameservers</strong></p>
+<ul>
+<li>dns1.p03.nsone.net</li>
+<li>dns2.p03.nsone.net</li>
+<li>dns3.p03.nsone.net</li>
+<li>dns4.p03.nsone.net</li>
+</ul>
+<p>Click the check mark</p>
+<p>Go back to Netlify</p>
+<p>Click "Done"</p>
+<p><i>I recommend clicking "Enable IPv6"</i></p>
+<p>Go back to your "Projects" tab</p>
+<p>Click "Domain management" (other tab bar)</p>
+<p>Click "Add domain alias"</p>
+<p>Enter your custom domain (no https or www), ex. "craftedgamz.com"</p>
+<p>Wait until it says "Netlify DNS"</p>
+<p>Your domain now links to Crafted Gamz!</p>
+<p>Wait 24 hours for Netlify to add https</p>
+</div>
+</body>
+</html>

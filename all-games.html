@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="favicon.png">
+  <title>Crafted Gamz | All Games</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: sans-serif;
+      overflow-x: hidden;
+    }
+
+    iframe {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1;
+      border: none;
+    }
+
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      padding: 20px;
+      text-align: center;
+      z-index: 2;
+    }
+    
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin: 0 20px;
+      font-weight: bold;
+      font-size: 16px;
+      transition: color 0.2s;
+    }
+
+    nav a:hover {
+      color: #4bf9ed;
+    }
+
+.container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  padding-top: 5vh;
+  max-width: 1700px;
+  margin: 0 auto;
+}
+
+.box {
+  background-color: rgba(0, 0, 0, 0.7);
+  border-radius: 12px;
+  transition: transform 0.2s ease, background-color 0.3s ease;
+  color: white;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 300px;
+  height: 100px;
+  text-decoration: none;
+}
+
+    .box:hover {
+      transform: scale(1.02);
+      background-color: #081a2e;
+    }
+
+    .box h3 {
+      font-size: 1.4em;
+      font-weight: bold;
+      margin: 0;
+    }
+
+    .search-dropdown {
+      width: 500px;
+      margin: 0 auto 10px;
+      position: relative;
+      z-index: 1;
+    }
+
+    #dropdownSearch {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 2px solid #4bf9ed;
+      background: rgba(0, 0, 0, 0.6);
+      color: white;
+      font-size: 16px;
+      outline: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 5px #4bf9ed;
+    }
+
+    #dropdownSearch:focus {
+      background: rgba(0, 0, 0, 0.9);
+      box-shadow: 0 0 15px #4bf9ed, 0 0 30px #4bf9ed;
+    }
+
+    #dropdownList {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      position: absolute;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      border-radius: 0 0 10px 10px;
+      z-index: 1;
+      max-height: 200px;
+      overflow-y: auto;
+      display: none;
+    }
+
+    #dropdownList li {
+      padding: 10px;
+      color: white;
+      cursor: pointer;
+    }
+
+    #dropdownList li:hover {
+      background-color: #4bf9ed;
+      color: black;
+    }
+
+    h1 {
+      font-size: 3rem;
+      color: #ffffff;
+      font-weight: bold;
+      line-height: 1.2;
+      margin: 3em auto;
+      text-align: center;
+    }
+
+    h2 {
+      font-size: 3rem;
+      color: #ffffff;
+      font-weight: bold;
+      line-height: 1.2;
+      margin: 3em auto;
+      text-align: center;
+    }
+
+    p {
+      text-align: center;
+      color: white;
+      font-size: 1.2em;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <iframe src="bg.html"></iframe>
+
+  <h1>All Games</h1>
+
+<p>
+  Warning: This page was generated and some links WONT WORK
+</p>
+
+  <nav>
+    <a href="main.html">Home</a>
+    <a href="search.html">Search</a>
+    <a href="games.html">Games</a>
+    <a href="apps.html">Apps</a>
+    <a href="tools.html">Tools</a>
+    <a href="transfer.html">Transfer</a>
+    <a href="partners.html">Partners</a>
+  </nav>
+
+  <div class="search-dropdown">
+    <input type="text" id="dropdownSearch" placeholder="Search..." onkeyup="filterDropdown()">
+    <ul id="dropdownList"></ul>
+  </div>
+
+<div class="container">
+<a href="game.html" class="box" data-id="a-dance-of-fire-and-ice"><h3>A Dance Of Fire And Ice</h3></a><a href="game.html" class="box" data-id="achievementunlocked"><h3>Achievementunlocked</h3></a><a href="game.html" class="box" data-id="adarkroom"><h3>Adarkroom</h3></a><a href="game.html" class="box" data-id="adrenalinechallenge"><h3>Adrenalinechallenge</h3></a><a href="game.html" class="box" data-id="adventure-drivers"><h3>Adventure Drivers</h3></a><a href="game.html" class="box" data-id="ages-of-conflict"><h3>Ages Of Conflict</h3></a><a href="game.html" class="box" data-id="alienhominid"><h3>Alienhominid</h3></a><a href="game.html" class="box" data-id="amazing-rope-police"><h3>Amazing Rope Police</h3></a><a href="game.html" class="box" data-id="amidst-the-clouds"><h3>Amidst The Clouds</h3></a><a href="game.html" class="box" data-id="among-us"><h3>Among Us</h3></a><a href="game.html" class="box" data-id="angry-sharks"><h3>Angry Sharks</h3></a><a href="game.html" class="box" data-id="aquapark-slides"><h3>Aquapark Slides</h3></a><a href="game.html" class="box" data-id="astray"><h3>Astray</h3></a><a href="game.html" class="box" data-id="avalanche"><h3>Avalanche</h3></a><a href="game.html" class="box" data-id="awesometanks2"><h3>Awesometanks2</h3></a><a href="game.html" class="box" data-id="backrooms"><h3>Backrooms</h3></a><a href="game.html" class="box" data-id="backrooms-2d"><h3>Backrooms 2D</h3></a><a href="game.html" class="box" data-id="backrooms2d"><h3>Backrooms2D</h3></a><a href="game.html" class="box" data-id="bacon-may-die"><h3>Bacon May Die</h3></a><a href="game.html" class="box" data-id="bad-ice-cream"><h3>Bad Ice Cream</h3></a><a href="game.html" class="box" data-id="bad-ice-cream-2"><h3>Bad Ice Cream 2</h3></a><a href="game.html" class="box" data-id="bad-ice-cream-3"><h3>Bad Ice Cream 3</h3></a><a href="game.html" class="box" data-id="baldis-basics"><h3>Baldis Basics</h3></a><a href="game.html" class="box" data-id="balldodge"><h3>Balldodge</h3></a><a href="game.html" class="box" data-id="ballistic-chickens"><h3>Ballistic Chickens</h3></a><a href="game.html" class="box" data-id="basket-random"><h3>Basket Random</h3></a><a href="game.html" class="box" data-id="basketball-stars"><h3>Basketball Stars</h3></a><a href="game.html" class="box" data-id="basketbros-io"><h3>Basketbros Io</h3></a><a href="game.html" class="box" data-id="battleforgondor"><h3>Battleforgondor</h3></a><a href="game.html" class="box" data-id="bigredbutton"><h3>Bigredbutton</h3></a><a href="game.html" class="box" data-id="bitlife"><h3>Bitlife</h3></a><a href="game.html" class="box" data-id="blacholesquare"><h3>Blacholesquare</h3></a><a href="game.html" class="box" data-id="blackknight"><h3>Blackknight</h3></a><a href="game.html" class="box" data-id="blockpost"><h3>Blockpost</h3></a><a href="game.html" class="box" data-id="bloonstd"><h3>Bloonstd</h3></a><a href="game.html" class="box" data-id="bloonstd2"><h3>Bloonstd2</h3></a><a href="game.html" class="box" data-id="bloxors"><h3>Bloxors</h3></a><a href="game.html" class="box" data-id="bntts"><h3>Bntts</h3></a><a href="game.html" class="box" data-id="bobtherobber2"><h3>Bobtherobber2</h3></a><a href="game.html" class="box" data-id="bonkio"><h3>Bonkio</h3></a><a href="game.html" class="box" data-id="boxhead2play"><h3>Boxhead2Play</h3></a><a href="game.html" class="box" data-id="boxing-random"><h3>Boxing Random</h3></a><a href="game.html" class="box" data-id="breakingthebank"><h3>Breakingthebank</h3></a><a href="game.html" class="box" data-id="btd4"><h3>Btd4</h3></a><a href="game.html" class="box" data-id="btd5"><h3>Btd5</h3></a><a href="game.html" class="box" data-id="btts"><h3>Btts</h3></a><a href="game.html" class="box" data-id="burger-and-frights"><h3>Burger And Frights</h3></a><a href="game.html" class="box" data-id="bus and subway"><h3>Bus And Subway</h3></a><a href="game.html" class="box" data-id="busandsubway"><h3>Busandsubway</h3></a><a href="game.html" class="box" data-id="cannon-basketball-4"><h3>Cannon Basketball 4</h3></a><a href="game.html" class="box" data-id="canyondefense"><h3>Canyondefense</h3></a><a href="game.html" class="box" data-id="cars-simulator"><h3>Cars Simulator</h3></a><a href="game.html" class="box" data-id="cell-machine"><h3>Cell Machine</h3></a><a href="game.html" class="box" data-id="champion-island"><h3>Champion Island</h3></a><a href="game.html" class="box" data-id="championarcher"><h3>Championarcher</h3></a><a href="game.html" class="box" data-id="checkers"><h3>Checkers</h3></a><a href="game.html" class="box" data-id="chess"><h3>Chess</h3></a><a href="game.html" class="box" data-id="chill-radio"><h3>Chill Radio</h3></a><a href="game.html" class="box" data-id="chrome-dino"><h3>Chrome Dino</h3></a><a href="game.html" class="box" data-id="circlo"><h3>Circlo</h3></a><a href="game.html" class="box" data-id="classicube"><h3>Classicube</h3></a><a href="game.html" class="box" data-id="cluster-rush"><h3>Cluster Rush</h3></a><a href="game.html" class="box" data-id="cnpingpong"><h3>Cnpingpong</h3></a><a href="game.html" class="box" data-id="connect3"><h3>Connect3</h3></a><a href="game.html" class="box" data-id="cookie-clickers"><h3>Cookie Clicker</h3></a><a href="game.html" class="box" data-id="core-ball"><h3>Core Ball</h3></a><a href="game.html" class="box" data-id="craftmine"><h3>Craftmine</h3></a><a href="game.html" class="box" data-id="creativekillchamber"><h3>Creativekillchamber</h3></a><a href="game.html" class="box" data-id="crossyroad"><h3>Crossyroad</h3></a><a href="game.html" class="box" data-id="csgo-clicker"><h3>Csgo Clicker</h3></a><a href="game.html" class="box" data-id="ctr"><h3>Ctr</h3></a><a href="game.html" class="box" data-id="ctr-holiday"><h3>Ctr Holiday</h3></a><a href="game.html" class="box" data-id="ctr-tr"><h3>Ctr Tr</h3></a><a href="game.html" class="box" data-id="cubefield"><h3>Cubefield</h3></a><a href="game.html" class="box" data-id="cupcake2048"><h3>Cupcake2048</h3></a><a href="game.html" class="box" data-id="dante"><h3>Dante</h3></a><a href="game.html" class="box" data-id="deal-or-no-deal"><h3>Deal Or No Deal</h3></a><a href="game.html" class="box" data-id="death-run-3d"><h3>Death Run 3D</h3></a><a href="game.html" class="box" data-id="deepest-sword"><h3>Deepest Sword</h3></a><a href="game.html" class="box" data-id="defend-the-tank"><h3>Defend The Tank</h3></a><a href="game.html" class="box" data-id="doctor-acorn2"><h3>Doctor Acorn2</h3></a><a href="game.html" class="box" data-id="dodge"><h3>Dodge</h3></a><a href="game.html" class="box" data-id="doge2048"><h3>Doge2048</h3></a><a href="game.html" class="box" data-id="dogeminer2"><h3>Dogeminer2</h3></a><a href="game.html" class="box" data-id="doodle-jump"><h3>Doodle Jump</h3></a><a href="game.html" class="box" data-id="doom"><h3>Doom</h3></a><a href="game.html" class="box" data-id="doublewires"><h3>Doublewires</h3></a><a href="game.html" class="box" data-id="dragon-vs-bricks"><h3>Dragon Vs Bricks</h3></a><a href="game.html" class="box" data-id="draw-the-hill"><h3>Draw The Hill</h3></a><a href="game.html" class="box" data-id="drift-boss"><h3>Drift Boss</h3></a><a href="game.html" class="box" data-id="drift-hunters"><h3>Drift Hunters</h3></a><a href="game.html" class="box" data-id="drive-mad"><h3>Drive Mad</h3></a><a href="game.html" class="box" data-id="dsc"><h3>Dsc</h3></a><a href="game.html" class="box" data-id="ducklife1"><h3>Ducklife1</h3></a><a href="game.html" class="box" data-id="ducklife2"><h3>Ducklife2</h3></a><a href="game.html" class="box" data-id="ducklife3"><h3>Ducklife3</h3></a><a href="game.html" class="box" data-id="ducklife4"><h3>Ducklife4</h3></a><a href="game.html" class="box" data-id="duke-nukem-2"><h3>Duke Nukem 2</h3></a><a href="game.html" class="box" data-id="dumbwaystodie"><h3>Dumbwaystodie</h3></a><a href="game.html" class="box" data-id="eaglerfaithful"><h3>Eaglerfaithful</h3></a><a href="game.html" class="box" data-id="earntodie"><h3>Earntodie</h3></a><a href="game.html" class="box" data-id="edge-surf"><h3>Edge Surf</h3></a><a href="game.html" class="box" data-id="edgenotfound"><h3>Edgenotfound</h3></a><a href="game.html" class="box" data-id="eel-slap"><h3>Eel Slap</h3></a><a href="game.html" class="box" data-id="eggycar"><h3>Eggycar</h3></a><a href="game.html" class="box" data-id="elasticman"><h3>Elasticman</h3></a><a href="game.html" class="box" data-id="endlesswar3"><h3>Endlesswar3</h3></a><a href="game.html" class="box" data-id="escapingtheprison"><h3>Escapingtheprison</h3></a><a href="game.html" class="box" data-id="evil-glitch"><h3>Evil Glitch</h3></a><a href="game.html" class="box" data-id="evolution"><h3>Evolution</h3></a><a href="game.html" class="box" data-id="exo"><h3>Exo</h3></a><a href="game.html" class="box" data-id="factoryballs"><h3>Factoryballs</h3></a><a href="game.html" class="box" data-id="fairsquares"><h3>Fairsquares</h3></a><a href="game.html" class="box" data-id="fake-virus"><h3>Fake Virus</h3></a><a href="game.html" class="box" data-id="fancypantsadventures"><h3>Fancypantsadventures</h3></a><a href="game.html" class="box" data-id="fantasy-dash"><h3>Fantasy Dash</h3></a><a href="game.html" class="box" data-id="fireboywatergirlforesttemple"><h3>Fireboywatergirlforesttemple</h3></a><a href="game.html" class="box" data-id="flappy-2048"><h3>Flappy 2048</h3></a><a href="game.html" class="box" data-id="flappy-bird"><h3>Flappy Bird</h3></a><a href="game.html" class="box" data-id="flappy-plane"><h3>Flappy Plane</h3></a><a href="game.html" class="box" data-id="flappybird"><h3>Flappybird</h3></a><a href="game.html" class="box" data-id="flappyplane"><h3>Flappyplane</h3></a><a href="game.html" class="box" data-id="flashtetris"><h3>Flashtetris</h3></a><a href="game.html" class="box" data-id="fleeingthecomplex"><h3>Fleeingthecomplex</h3></a><a href="game.html" class="box" data-id="flippy-fish"><h3>Flippy Fish</h3></a><a href="game.html" class="box" data-id="fnaw"><h3>Fnaw</h3></a><a href="game.html" class="box" data-id="fridaynightfunkin"><h3>Fridaynightfunkin</h3></a><a href="game.html" class="box" data-id="froggys-battle"><h3>Froggys Battle</h3></a><a href="game.html" class="box" data-id="fruitninja"><h3>Fruitninja</h3></a><a href="game.html" class="box" data-id="frying-nemo"><h3>Frying Nemo</h3></a><a href="game.html" class="box" data-id="gachalife"><h3>Gachalife</h3></a><a href="game.html" class="box" data-id="game-inside"><h3>Game Inside</h3></a><a href="game.html" class="box" data-id="gdtd"><h3>Gdtd</h3></a><a href="game.html" class="box" data-id="gearsofbabies"><h3>Gearsofbabies</h3></a><a href="game.html" class="box" data-id="generic-fishing-game"><h3>Generic Fishing Game</h3></a><a href="game.html" class="box" data-id="geochallenge"><h3>Geochallenge</h3></a><a href="game.html" class="box" data-id="geodash"><h3>Geodash</h3></a><a href="game.html" class="box" data-id="geodashlite"><h3>Geodashlite</h3></a><a href="game.html" class="box" data-id="geogeo"><h3>Geogeo</h3></a><a href="game.html" class="box" data-id="geops1"><h3>Geops1</h3></a><a href="game.html" class="box" data-id="georash"><h3>Georash</h3></a><a href="game.html" class="box" data-id="georgeandtheprinter"><h3>Georgeandtheprinter</h3></a><a href="game.html" class="box" data-id="geotrash"><h3>Geotrash</h3></a><a href="game.html" class="box" data-id="getaway-shootout"><h3>Getaway Shootout</h3></a><a href="game.html" class="box" data-id="gimme-the-airpod"><h3>Gimme The Airpod</h3></a><a href="game.html" class="box" data-id="glass-city"><h3>Glass City</h3></a><a href="game.html" class="box" data-id="gmonster"><h3>Gmonster</h3></a><a href="game.html" class="box" data-id="go-ball"><h3>Go Ball</h3></a><a href="game.html" class="box" data-id="goodnight"><h3>Goodnight</h3></a><a href="game.html" class="box" data-id="goodnight-meowmie"><h3>Goodnight Meowmie</h3></a><a href="game.html" class="box" data-id="google-feud"><h3>Google Feud</h3></a><a href="game.html" class="box" data-id="google-snake"><h3>Google Snake</h3></a><a href="game.html" class="box" data-id="gravity-soccer"><h3>Gravity Soccer</h3></a><a href="game.html" class="box" data-id="greybox"><h3>Greybox</h3></a><a href="game.html" class="box" data-id="grindcraft"><h3>Grindcraft</h3></a><a href="game.html" class="box" data-id="hackertype"><h3>Hackertype</h3></a><a href="game.html" class="box" data-id="handshakes"><h3>Handshakes</h3></a><a href="game.html" class="box" data-id="happy-hop"><h3>Happy Hop</h3></a><a href="game.html" class="box" data-id="happywheels"><h3>Happywheels</h3></a><a href="game.html" class="box" data-id="hardware-tycoon"><h3>Hardware Tycoon</h3></a><a href="game.html" class="box" data-id="hba"><h3>Hba</h3></a><a href="game.html" class="box" data-id="helicopter"><h3>Helicopter</h3></a><a href="game.html" class="box" data-id="hellscaper"><h3>Hellscaper</h3></a><a href="game.html" class="box" data-id="hexempire"><h3>Hexempire</h3></a><a href="game.html" class="box" data-id="hexgl"><h3>Hexgl</h3></a><a href="game.html" class="box" data-id="hextris"><h3>Hextris</h3></a><a href="game.html" class="box" data-id="highrisehop"><h3>Highrisehop</h3></a><a href="game.html" class="box" data-id="hill-climb-racing"><h3>Hill Climb Racing</h3></a><a href="game.html" class="box" data-id="hungry-lamu"><h3>Hungry Lamu</h3></a><a href="game.html" class="box" data-id="iceagebaby"><h3>Iceagebaby</h3></a><a href="game.html" class="box" data-id="iceagebaby2"><h3>Iceagebaby2</h3></a><a href="game.html" class="box" data-id="idle-breakout"><h3>Idle Breakout</h3></a><a href="game.html" class="box" data-id="idle-shark"><h3>Idle Shark</h3></a><a href="game.html" class="box" data-id="idledice"><h3>Idledice</h3></a><a href="game.html" class="box" data-id="impossiblequiz"><h3>Impossiblequiz</h3></a><a href="game.html" class="box" data-id="impossiblequiz2"><h3>Impossiblequiz2</h3></a><a href="game.html" class="box" data-id="impossiblequizbeta"><h3>Impossiblequizbeta</h3></a><a href="game.html" class="box" data-id="interactivebuddy"><h3>Interactivebuddy</h3></a><a href="game.html" class="box" data-id="invite-the-blackbird"><h3>Invite The Blackbird</h3></a><a href="game.html" class="box" data-id="iron dash"><h3>Iron Dash</h3></a><a href="game.html" class="box" data-id="irondash"><h3>Irondash</h3></a><a href="game.html" class="box" data-id="jetpack-joyride"><h3>Jetpack Joyride</h3></a><a href="game.html" class="box" data-id="just-fall"><h3>Just Fall</h3></a><a href="game.html" class="box" data-id="just-one-boss"><h3>Just One Boss</h3></a><a href="game.html" class="box" data-id="kirkaio"><h3>Kirkaio</h3></a><a href="game.html" class="box" data-id="kitchen-gun-game"><h3>Kitchen Gun Game</h3></a><a href="game.html" class="box" data-id="kittencannon"><h3>Kittencannon</h3></a><a href="game.html" class="box" data-id="knife-master"><h3>Knife Master</h3></a><a href="game.html" class="box" data-id="krunker"><h3>Krunker</h3></a><a href="game.html" class="box" data-id="learntofly"><h3>Learntofly</h3></a><a href="game.html" class="box" data-id="learntofly2"><h3>Learntofly2</h3></a><a href="game.html" class="box" data-id="level13"><h3>Level13</h3></a><a href="game.html" class="box" data-id="linerider"><h3>Linerider</h3></a><a href="game.html" class="box" data-id="linkgen"><h3>Linkgen</h3></a><a href="game.html" class="box" data-id="ltf-idle"><h3>Ltf Idle</h3></a><a href="game.html" class="box" data-id="ltf3"><h3>Ltf3</h3></a><a href="game.html" class="box" data-id="madalin-stunt-cars-2"><h3>Madalin Stunt Cars 2</h3></a><a href="game.html" class="box" data-id="madalin-stunt-cars-3"><h3>Madalin Stunt Cars 3</h3></a><a href="game.html" class="box" data-id="mario"><h3>Mario</h3></a><a href="game.html" class="box" data-id="marvinspectrum"><h3>Marvinspectrum</h3></a><a href="game.html" class="box" data-id="matrixrampage"><h3>Matrixrampage</h3></a><a href="game.html" class="box" data-id="mcje"><h3>Mcje</h3></a><a href="game.html" class="box" data-id="meme2048"><h3>Meme2048</h3></a><a href="game.html" class="box" data-id="merge-round-racers"><h3>Merge Round Racers</h3></a><a href="game.html" class="box" data-id="mindustry"><h3>Mindustry</h3></a><a href="game.html" class="box" data-id="mineblocks"><h3>Mineblocks</h3></a><a href="game.html" class="box" data-id="minecraft-15"><h3>Minecraft 15</h3></a><a href="game.html" class="box" data-id="minecraft-18"><h3>Minecraft 18</h3></a><a href="game.html" class="box" data-id="minecraft-classic"><h3>Minecraft Classic</h3></a><a href="game.html" class="box" data-id="minecraftbeta"><h3>Minecraftbeta</h3></a><a href="game.html" class="box" data-id="minecrafttowerdefence"><h3>Minecrafttowerdefence</h3></a><a href="game.html" class="box" data-id="minesweeper"><h3>Minesweeper</h3></a><a href="game.html" class="box" data-id="miniputt"><h3>Miniputt</h3></a><a href="game.html" class="box" data-id="missiles"><h3>Missiles</h3></a><a href="game.html" class="box" data-id="monkeymart"><h3>Monkeymart</h3></a><a href="game.html" class="box" data-id="monster-tracks"><h3>Monster Tracks</h3></a><a href="game.html" class="box" data-id="motox3m"><h3>Motox3M</h3></a><a href="game.html" class="box" data-id="motox3m-pool"><h3>Motox3M Pool</h3></a><a href="game.html" class="box" data-id="motox3m-spooky"><h3>Motox3M Spooky</h3></a><a href="game.html" class="box" data-id="motox3m-winter"><h3>Motox3M Winter</h3></a><a href="game.html" class="box" data-id="motox3m2"><h3>Motox3M2</h3></a><a href="game.html" class="box" data-id="my-rusty-submarine"><h3>My Rusty Submarine</h3></a><a href="game.html" class="box" data-id="n-gon"><h3>N Gon</h3></a><a href="game.html" class="box" data-id="neal.fun"><h3>Neal.Fun</h3></a><a href="game.html" class="box" data-id="ninja"><h3>Ninja</h3></a><a href="game.html" class="box" data-id="ninjavsevilcorp"><h3>Ninjavsevilcorp</h3></a><a href="game.html" class="box" data-id="noob-steve-parkour"><h3>Noob Steve Parkour</h3></a><a href="game.html" class="box" data-id="ns-shaft"><h3>Ns Shaft</h3></a><a href="game.html" class="box" data-id="nsresurgence"><h3>Nsresurgence</h3></a><a href="game.html" class="box" data-id="offlineparadise"><h3>Offlineparadise</h3></a><a href="game.html" class="box" data-id="om-bounce"><h3>Om Bounce</h3></a><a href="game.html" class="box" data-id="osu!"><h3>Osu!</h3></a><a href="game.html" class="box" data-id="out-of-ctrl"><h3>Out Of Ctrl</h3></a><a href="game.html" class="box" data-id="overwatch"><h3>Overwatch</h3></a><a href="game.html" class="box" data-id="ovo"><h3>Ovo</h3></a><a href="game.html" class="box" data-id="pandemic2"><h3>Pandemic2</h3></a><a href="game.html" class="box" data-id="papasburgeria"><h3>Papasburgeria</h3></a><a href="game.html" class="box" data-id="papaspizzaria"><h3>Papaspizzaria</h3></a><a href="game.html" class="box" data-id="paperio2"><h3>Paperio2</h3></a><a href="game.html" class="box" data-id="papery-planes"><h3>Papery Planes</h3></a><a href="game.html" class="box" data-id="particle-clicker"><h3>Particle Clicker</h3></a><a href="game.html" class="box" data-id="piclient"><h3>Piclient</h3></a><a href="game.html" class="box" data-id="pigeon-ascent"><h3>Pigeon Ascent</h3></a><a href="game.html" class="box" data-id="pixel-gun-survival"><h3>Pixel Gun Survival</h3></a><a href="game.html" class="box" data-id="planetlife"><h3>Planetlife</h3></a><a href="game.html" class="box" data-id="plantsvzombie1"><h3>Plantsvzombie1</h3></a><a href="game.html" class="box" data-id="polybranch"><h3>Polybranch</h3></a><a href="game.html" class="box" data-id="popcat-classic"><h3>Popcat Classic</h3></a><a href="game.html" class="box" data-id="portalflash"><h3>Portalflash</h3></a><a href="game.html" class="box" data-id="precision-client"><h3>Precision Client</h3></a><a href="game.html" class="box" data-id="protektor"><h3>Protektor</h3></a><a href="game.html" class="box" data-id="push-the-square"><h3>Push The Square</h3></a><a href="game.html" class="box" data-id="push-your-luck"><h3>Push Your Luck</h3></a><a href="game.html" class="box" data-id="rabbit-samurai"><h3>Rabbit Samurai</h3></a><a href="game.html" class="box" data-id="rabbit-samurai2"><h3>Rabbit Samurai2</h3></a><a href="game.html" class="box" data-id="resent-client"><h3>Resent Client</h3></a><a href="game.html" class="box" data-id="retro-bowl"><h3>Retro Bowl</h3></a><a href="game.html" class="box" data-id="rhythm-doctor"><h3>Rhythm Doctor</h3></a><a href="game.html" class="box" data-id="riddleschool"><h3>Riddleschool</h3></a><a href="game.html" class="box" data-id="riddleschool2"><h3>Riddleschool2</h3></a><a href="game.html" class="box" data-id="riddleschool3"><h3>Riddleschool3</h3></a><a href="game.html" class="box" data-id="riddleschool4"><h3>Riddleschool4</h3></a><a href="game.html" class="box" data-id="riddleschool5"><h3>Riddleschool5</h3></a><a href="game.html" class="box" data-id="riddletransfer"><h3>Riddletransfer</h3></a><a href="game.html" class="box" data-id="riddletransfer2"><h3>Riddletransfer2</h3></a><a href="game.html" class="box" data-id="roblox"><h3>Roblox</h3></a><a href="game.html" class="box" data-id="roblox copy"><h3>Roblox Copy</h3></a><a href="game.html" class="box" data-id="robuxclicker"><h3>Robuxclicker</h3></a><a href="game.html" class="box" data-id="rocket-league"><h3>Rocket League</h3></a><a href="game.html" class="box" data-id="rolling-forests"><h3>Rolling Forests</h3></a><a href="game.html" class="box" data-id="rolly-vortex"><h3>Rolly Vortex</h3></a><a href="game.html" class="box" data-id="rooftop-snipers"><h3>Rooftop Snipers</h3></a><a href="game.html" class="box" data-id="roommate"><h3>Roommate</h3></a><a href="game.html" class="box" data-id="ruffle"><h3>Ruffle</h3></a><a href="game.html" class="box" data-id="run"><h3>Run</h3></a><a href="game.html" class="box" data-id="run 2"><h3>Run 2</h3></a><a href="game.html" class="box" data-id="run 3"><h3>Run 3</h3></a><a href="game.html" class="box" data-id="run2"><h3>Run2</h3></a><a href="game.html" class="box" data-id="run3"><h3>Run3</h3></a><a href="game.html" class="box" data-id="run4bootleg"><h3>Run4Bootleg</h3></a><a href="game.html" class="box" data-id="runner"><h3>Runner</h3></a><a href="game.html" class="box" data-id="sand-game"><h3>Sand Game</h3></a><a href="game.html" class="box" data-id="sandboxels"><h3>Sandboxels</h3></a><a href="game.html" class="box" data-id="santy-is-home"><h3>Santy Is Home</h3></a><a href="game.html" class="box" data-id="scooperia"><h3>Scooperia</h3></a><a href="game.html" class="box" data-id="scrapmetal"><h3>Scrapmetal</h3></a><a href="game.html" class="box" data-id="scratcharia"><h3>Scratcharia</h3></a><a href="game.html" class="box" data-id="shapeshootout"><h3>Shapeshootout</h3></a><a href="game.html" class="box" data-id="shellshockers"><h3>Shellshockers</h3></a><a href="game.html" class="box" data-id="shogunshowdown"><h3>Shogunshowdown</h3></a><a href="game.html" class="box" data-id="shotinthedark"><h3>Shotinthedark</h3></a><a href="game.html" class="box" data-id="shuttledeck"><h3>Shuttledeck</h3></a><a href="game.html" class="box" data-id="sky-car-stunt"><h3>Sky Car Stunt</h3></a><a href="game.html" class="box" data-id="sleepingbeauty"><h3>Sleepingbeauty</h3></a><a href="game.html" class="box" data-id="slime-rush-td"><h3>Slime Rush Td</h3></a><a href="game.html" class="box" data-id="slitherio"><h3>Slitherio</h3></a><a href="game.html" class="box" data-id="slope"><h3>Slope</h3></a><a href="game.html" class="box" data-id="slope-2"><h3>Slope 2</h3></a><a href="game.html" class="box" data-id="slope-ball"><h3>Slope Ball</h3></a><a href="game.html" class="box" data-id="sm64"><h3>Sm64</h3></a><a href="game.html" class="box" data-id="smashkarts"><h3>Smashkarts</h3></a><a href="game.html" class="box" data-id="smokingbarrels"><h3>Smokingbarrels</h3></a><a href="game.html" class="box" data-id="snowbattle"><h3>Snowbattle</h3></a><a href="game.html" class="box" data-id="snowrider3d"><h3>Snowrider3D</h3></a><a href="game.html" class="box" data-id="soccer-random"><h3>Soccer Random</h3></a><a href="game.html" class="box" data-id="soccer-skills"><h3>Soccer Skills</h3></a><a href="game.html" class="box" data-id="soldier-legend"><h3>Soldier Legend</h3></a><a href="game.html" class="box" data-id="solitaire"><h3>Solitaire</h3></a><a href="game.html" class="box" data-id="sort-the-court"><h3>Sort The Court</h3></a><a href="game.html" class="box" data-id="soundboard"><h3>Soundboard</h3></a><a href="game.html" class="box" data-id="space-company"><h3>Space Company</h3></a><a href="game.html" class="box" data-id="spacegarden"><h3>Spacegarden</h3></a><a href="game.html" class="box" data-id="spelunky"><h3>Spelunky</h3></a><a href="game.html" class="box" data-id="spinningrat"><h3>Spinningrat</h3></a><a href="game.html" class="box" data-id="squaredash"><h3>Squaredash</h3></a><a href="game.html" class="box" data-id="ssurferbotleg"><h3>Ssurferbotleg</h3></a><a href="game.html" class="box" data-id="stack"><h3>Stack</h3></a><a href="game.html" class="box" data-id="stack-bump-3d"><h3>Stack Bump 3D</h3></a><a href="game.html" class="box" data-id="starve"><h3>Starve</h3></a><a href="game.html" class="box" data-id="station-141"><h3>Station 141</h3></a><a href="game.html" class="box" data-id="stationmeltdown"><h3>Stationmeltdown</h3></a><a href="game.html" class="box" data-id="stealingthediamond"><h3>Stealingthediamond</h3></a><a href="game.html" class="box" data-id="stick-archers"><h3>Stick Archers</h3></a><a href="game.html" class="box" data-id="stick-duel-battle"><h3>Stick Duel Battle</h3></a><a href="game.html" class="box" data-id="stick-merge"><h3>Stick Merge</h3></a><a href="game.html" class="box" data-id="stickman-boost"><h3>Stickman Boost</h3></a><a href="game.html" class="box" data-id="stickman-golf"><h3>Stickman Golf</h3></a><a href="game.html" class="box" data-id="stickman-hook"><h3>Stickman Hook</h3></a><a href="game.html" class="box" data-id="stickman-survival"><h3>Stickman Survival</h3></a><a href="game.html" class="box" data-id="stickwar"><h3>Stickwar</h3></a><a href="game.html" class="box" data-id="stormthehouse2"><h3>Stormthehouse2</h3></a><a href="game.html" class="box" data-id="stumble-guys"><h3>Stumble Guys</h3></a><a href="game.html" class="box" data-id="subway-surfers"><h3>Subway Surfers</h3></a><a href="game.html" class="box" data-id="subway-surfers-ny"><h3>Subway Surfers Ny</h3></a><a href="game.html" class="box" data-id="suggestions"><h3>Suggestions</h3></a><a href="game.html" class="box" data-id="superautopets"><h3>Superautopets</h3></a><a href="game.html" class="box" data-id="superfowlist"><h3>Superfowlist</h3></a><a href="game.html" class="box" data-id="superhot"><h3>Superhot</h3></a><a href="game.html" class="box" data-id="supermarioconstruct"><h3>Supermarioconstruct</h3></a><a href="game.html" class="box" data-id="surviv"><h3>Surviv</h3></a><a href="game.html" class="box" data-id="sushi-unroll"><h3>Sushi Unroll</h3></a><a href="game.html" class="box" data-id="swarmsimulator"><h3>Swarmsimulator</h3></a><a href="game.html" class="box" data-id="swerve"><h3>Swerve</h3></a><a href="game.html" class="box" data-id="synesthesia"><h3>Synesthesia</h3></a><a href="game.html" class="box" data-id="tactical-weapon-pack-2"><h3>Tactical Weapon Pack 2</h3></a><a href="game.html" class="box" data-id="tacticalassasin2"><h3>Tacticalassasin2</h3></a><a href="game.html" class="box" data-id="tank-trouble-2"><h3>Tank Trouble 2</h3></a><a href="game.html" class="box" data-id="tanuki-sunset"><h3>Tanuki Sunset</h3></a><a href="game.html" class="box" data-id="temple-run-2"><h3>Temple Run 2</h3></a><a href="game.html" class="box" data-id="the-final-earth"><h3>The Final Earth</h3></a><a href="game.html" class="box" data-id="the-final-earth-2"><h3>The Final Earth 2</h3></a><a href="game.html" class="box" data-id="the-hotel"><h3>The Hotel</h3></a><a href="game.html" class="box" data-id="thebattle"><h3>Thebattle</h3></a><a href="game.html" class="box" data-id="theheist"><h3>Theheist</h3></a><a href="game.html" class="box" data-id="there-is-no-game"><h3>There Is No Game</h3></a><a href="game.html" class="box" data-id="thisistheonlylevel"><h3>Thisistheonlylevel</h3></a><a href="game.html" class="box" data-id="throwrocks"><h3>Throwrocks</h3></a><a href="game.html" class="box" data-id="tiny-fishing"><h3>Tiny Fishing</h3></a><a href="game.html" class="box" data-id="tiny-islands"><h3>Tiny Islands</h3></a><a href="game.html" class="box" data-id="tosstheturtle"><h3>Tosstheturtle</h3></a><a href="game.html" class="box" data-id="townscaper"><h3>Townscaper</h3></a><a href="game.html" class="box" data-id="trimps"><h3>Trimps</h3></a><a href="game.html" class="box" data-id="tube-jumpers"><h3>Tube Jumpers</h3></a><a href="game.html" class="box" data-id="tunnel-rush"><h3>Tunnel Rush</h3></a><a href="game.html" class="box" data-id="tv-static"><h3>Tv Static</h3></a><a href="game.html" class="box" data-id="twitch-tetris"><h3>Twitch Tetris</h3></a><a href="game.html" class="box" data-id="unfairmario"><h3>Unfairmario</h3></a><a href="game.html" class="box" data-id="veloce"><h3>Veloce</h3></a><a href="game.html" class="box" data-id="vex2"><h3>Vex2</h3></a><a href="game.html" class="box" data-id="vex3"><h3>Vex3</h3></a><a href="game.html" class="box" data-id="vex4"><h3>Vex4</h3></a><a href="game.html" class="box" data-id="vex5"><h3>Vex5</h3></a><a href="game.html" class="box" data-id="vex6"><h3>Vex6</h3></a><a href="game.html" class="box" data-id="vex7"><h3>Vex7</h3></a><a href="game.html" class="box" data-id="volley-random"><h3>Volley Random</h3></a><a href="game.html" class="box" data-id="wallsmash"><h3>Wallsmash</h3></a><a href="game.html" class="box" data-id="waterworks"><h3>Waterworks</h3></a><a href="game.html" class="box" data-id="weavesilk"><h3>Weavesilk</h3></a><a href="game.html" class="box" data-id="webcleaner"><h3>Webcleaner</h3></a><a href="game.html" class="box" data-id="webgl-fluid-simulation"><h3>Webgl Fluid Simulation</h3></a><a href="game.html" class="box" data-id="webretro"><h3>Webretro</h3></a><a href="game.html" class="box" data-id="webxash"><h3>Webxash</h3></a><a href="game.html" class="box" data-id="win-the-whitehouse"><h3>Win The Whitehouse</h3></a><a href="game.html" class="box" data-id="wolf2d"><h3>Wolf2D</h3></a><a href="game.html" class="box" data-id="wolf3d"><h3>Wolf3D</h3></a><a href="game.html" class="box" data-id="wordle"><h3>Wordle</h3></a><a href="game.html" class="box" data-id="worlds-hardest-game"><h3>Worlds Hardest Game</h3></a><a href="game.html" class="box" data-id="worlds-hardest-game-2"><h3>Worlds Hardest Game 2</h3></a><a href="game.html" class="box" data-id="wounded-summer-baby-edition"><h3>Wounded Summer Baby Edition</h3></a><a href="game.html" class="box" data-id="x-trial-racing"><h3>X Trial Racing</h3></a><a href="game.html" class="box" data-id="xx142-b2exe"><h3>Xx142 B2Exe</h3></a><a href="game.html" class="box" data-id="yohoho"><h3>Yohoho</h3></a><a href="game.html" class="box" data-id="yoshifabrication"><h3>Yoshifabrication</h3></a><a href="game.html" class="box" data-id="you-are-bezos"><h3>You Are Bezos</h3></a><a href="game.html" class="box" data-id="zigzag"><h3>Zigzag</h3></a><a href="game.html" class="box" data-id="zombs-royale"><h3>Zombs Royale</h3></a>
+</div>
+  <h2>Thats All Folks 🤓☝️</h2>
+
+  <script>
+    const searchInput = document.getElementById("dropdownSearch");
+    const dropdownList = document.getElementById("dropdownList");
+
+    const gameBoxes = document.querySelectorAll(".box h3");
+
+    gameBoxes.forEach(box => {
+      const li = document.createElement("li");
+      li.textContent = box.textContent;
+      li.addEventListener("click", () => {
+        const targetBox = Array.from(gameBoxes).find(g => g.textContent === li.textContent);
+        const container = targetBox.closest(".box");
+
+        container.scrollIntoView({ behavior: "smooth", block: "center" });
+
+        container.style.boxShadow = "0 0 20px 5px #4bf9ed";
+        container.style.border = "2px solid #4bf9ed";
+
+        setTimeout(() => {
+          container.style.boxShadow = "";
+          container.style.border = "";
+        }, 10000);
+      });
+      dropdownList.appendChild(li);
+    });
+
+    function filterDropdown() {
+      const value = searchInput.value.toLowerCase();
+      const items = dropdownList.getElementsByTagName("li");
+      let matches = 0;
+
+      for (let item of items) {
+        if (item.textContent.toLowerCase().includes(value)) {
+          item.style.display = "";
+          matches++;
+        } else {
+          item.style.display = "none";
+        }
+      }
+
+      dropdownList.style.display = matches > 0 ? "block" : "none";
+    }
+
+    const totalGames = document.querySelectorAll(".box").length;
+
+    const counter = document.createElement("div");
+    counter.textContent = `Game Count: ${totalGames}`;
+    counter.style.color = "#4bf9ed";
+    counter.style.fontWeight = "bold";
+    counter.style.fontSize = "20px";
+    counter.style.textAlign = "center";
+    counter.style.marginTop = "100px"; 
+
+    document.body.insertBefore(counter, document.querySelector(".search-dropdown"));
+  </script>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCLL2JZUBJwISsLljfMN4wAr3ZSRd4A1Jo",
+      authDomain: "craftedgamzvisits.firebaseapp.com",
+      projectId: "craftedgamzvisits",
+      storageBucket: "craftedgamzvisits.firebase-storage.app",
+      messagingSenderId: "935169016483",
+      appId: "1:935169016483:web:0ea28fbc25e9f390723516",
+      measurementId: "G-23C7D06VFD"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    document.querySelectorAll(".box").forEach(box => {
+        box.addEventListener("click", async (e) => {
+            e.preventDefault();
+            
+            const gameName = box.querySelector("h3")?.textContent.trim();
+            if (!gameName) {
+                window.location.href = box.href;
+                return;
+            }
+
+            console.log(`Tracking click for game: ${gameName}`);
+
+            try {
+                const gameDoc = db.collection("gameCounts").doc(gameName);
+                
+                const docSnapshot = await gameDoc.get();
+                
+                if (docSnapshot.exists) {
+                    const currentCount = docSnapshot.data().count || 0;
+                    await gameDoc.update({ 
+                        count: currentCount + 1,
+                        lastClicked: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    console.log(`Updated count for ${gameName}: ${currentCount + 1}`);
+                } else {
+                    await gameDoc.set({ 
+                        count: 1,
+                        lastClicked: firebase.firestore.FieldValue.serverTimestamp(),
+                        gameName: gameName
+                    });
+                    console.log(`Created new count for ${gameName}: 1`);
+                }
+                
+            } catch (error) {
+                console.error("Failed to update game count:", error);
+            }
+            
+            setTimeout(() => {
+                window.location.href = box.href;
+            }, 100);
+        });
+    });
+  </script>
+  
+<script>
+document.querySelectorAll('.box').forEach(el => {
+  el.addEventListener('click', e => {
+    const gameId = e.currentTarget.getAttribute('data-id');
+    if (gameId) {
+      localStorage.setItem('gameIds', JSON.stringify([gameId]));
+    }
+  });
+});
+</script>
+</body>
+</html>

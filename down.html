@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" href="favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Crafted Gamz Is Under Maintenance</title>
+  <style>
+    body {
+      background: #0f0f0f;
+      color: #fff;
+      font-family: "Segoe UI", sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 3rem;
+      color: #ff4444;
+      margin-bottom: 0.5em;
+    }
+
+    p {
+      font-size: 1.5rem;
+      margin-bottom: 2em;
+    }
+
+    #countdown {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #00ffcc;
+    }
+
+    button {
+      margin-top: 2em;
+      padding: 1em 2em;
+      font-size: 1.2rem;
+      background-color: #00ffcc;
+      color: #000;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #00cc99;
+    }
+  </style>
+</head>
+<body>
+  <h1>Uh oh!</h1>
+  <p>Crafted Gamz is currently under maintenance.<br>Scheduled return: <strong>May 12th, 2025</strong></p>
+  <div id="countdown">Loading countdown...</div>
+
+  <button onclick="window.location.href='Down_Game/index.html';">Play a Game in the Meantime</button>
+
+  <script>
+    const countdownElement = document.getElementById("countdown");
+
+    // US Mountain Time offset (UTC-6 during daylight saving time in May)
+    function getMountainTimeNow() {
+      // Get UTC time and subtract 6 hours (UTC-6 for Mountain Daylight Time)
+      const now = new Date();
+      const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+      const mtTime = new Date(utc - (6 * 60 * 60 * 1000));
+      return mtTime;
+    }
+
+    const targetDate = new Date("2025-05-12T00:00:00-06:00"); // MDT is UTC-6
+
+    function updateCountdown() {
+      const now = getMountainTimeNow();
+      const diff = targetDate - now;
+
+      if (diff <= 0) {
+        countdownElement.textContent = "We're back online!";
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+
+      countdownElement.textContent = `${days} days, ${hours} hours, ${minutes} minutes, and ${seconds} seconds`;
+    }
+
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+  </script>
+</body>
+</html>

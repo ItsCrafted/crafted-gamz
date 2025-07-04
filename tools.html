@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="favicon.png">
+  <title>Crafted Gamz | Tools</title>
+  <link rel="stylesheet" href="tools/styles.css">
+</head>
+<body>
+
+  <iframe src="bg.html"></iframe>
+
+  <nav>
+    <a href="main.html">Home</a>
+    <a href="search.html">Search</a>
+    <a href="games.html">Games</a>
+    <a href="apps.html">Apps</a>
+    <a href="tools.html">Tools</a>
+        <a href="transfer.html">Transfer</a>
+    <a href="partners.html">Partners</a>
+  </nav>
+
+<h1>Tools</h1>
+
+<div class="tool-bar-container">
+  <div class="tool-bar cloak-toggle">
+    <span>about:blank Cloaking</span>
+    <p>Requires Reload</p>
+    <label class="switch">
+      <input type="checkbox" id="cloakToggle">
+      <span class="slider"></span>
+    </label>
+  </div>
+
+  <div class="tool-bar particles-toggle">
+    <span>Particles</span>
+    <label class="switch">
+      <input type="checkbox" id="particlesToggle" />
+      <span class="slider"></span>
+    </label>
+    <input type="text" id="particleColor" placeholder="#4bf9ed" maxlength="7" />
+    <button id="resetColor">Reset</button>
+  </div>
+  <div class="tool-bar" id="colorPickerTool">
+  <label for="colorWheel" style="margin-right: 12px;">Color Picker To Make Particles Ez:</label>
+  <input type="color" id="colorWheel" style="width: 48px; height: 32px; vertical-align: middle; cursor: pointer;">
+  <input type="text" id="colorHex" readonly style="margin-left: 12px; width: 90px; font-family: monospace; font-weight: 700; font-size: 16px; background: transparent; border: none; color: #4bf9ed; text-transform: lowercase; letter-spacing: 1.2px; user-select: all; cursor: text;">
+</div>
+
+<div class="tool-bar" id="ipDisplay">IP: Loading...</div>
+<div class="tool-bar" id="autoPing">
+ Site Ping:
+  <span id="autoPingResult" style="margin-left: 10px; color: #fff; font-weight: 600;">Calculating...</span>
+</div>
+<div class="tool-bar" id="configExport">Export All Settings</div>
+<div class="tool-bar" id="configImport">Import All Settings</div>
+<input type="file" id="configFileInput" accept=".cgcf" style="display:none" />
+</div>
+
+  <div class="tool-bar-container">
+    <div class="tool-bar" style="cursor:auto;">
+      <div class="cloak-toggle">
+        <label for="disguiseToggle">Disguise:</label>
+            <p>Requires Reload</p>
+        <label class="switch">
+          <input type="checkbox" id="disguiseToggle">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <label for="disimgInput">Favicon URL:</label>
+      <input type="text" id="disimgInput" placeholder="https://example.com/favicon.ico" />
+      <label for="distxtInput">Tab Title:</label>
+      <input type="text" id="distxtInput" placeholder="Custom Tab Title" />
+          <label for="presetSelect">Presets:</label>
+    <select id="presetSelect">
+      <option value="">Select a preset</option>
+      <option value="google">Google</option>
+      <option value="drive">Google Drive</option>
+      <option value="youtube">YouTube</option>
+      <option value="canva">Canva</option>
+      <option value="ixl">IXL</option>
+      <option value="aps">APS.edu</option>
+      <option value="gclass">Google Classroom</option>
+    </select>
+      <button id="saveConfig">Save Config</button>
+<div id="saveConfirmation" style="color: green; margin-top: 8px; display: none;">Settings saved!</div>
+    </div>
+  </div>
+</body>
+<script src="tools/script.js"></script>
+</html>
+

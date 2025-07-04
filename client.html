@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Checking...</title>
+  <link rel="shortcut icon" href="favicon.png" type="image/x-icon" id="favicon">
+  <style>
+    html, body {
+      margin: 0; padding: 0; overflow: hidden; height: 100%;
+      background: #000;
+    }
+    iframe {
+      border: none;
+      width: 100vw;
+      height: 100vh;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="status" style="color:white; font-family:sans-serif; text-align:center; padding-top: 2rem;">
+    Checking cloak status...
+  </div>
+
+  <script>
+    const cloak = localStorage.getItem('cloak');
+    const disguise = localStorage.getItem('disguise');
+    const disimg = localStorage.getItem('disimg');
+    const distxt = localStorage.getItem('distxt');
+    const status = document.getElementById('status');
+    const favicon = document.getElementById('favicon');
+
+    if (cloak === '1') {
+      status.textContent = 'Cloak enabled. Please click below to open cloaked page.';
+      // Original cloak flow, show button to open cloaked tab
+      const btn = document.createElement('button');
+      btn.textContent = 'Open Cloaked Tab';
+      btn.style.cssText = 'padding:12px 24px; font-size:18px; background:#4bf9ed; border:none; border-radius:10px; cursor:pointer; color:black; font-weight:bold; transition: background 0.3s; margin-top: 20px;';
+      btn.onmouseover = () => btn.style.background = '#7acbd0';
+      btn.onmouseout = () => btn.style.background = '#4bf9ed';
+
+      btn.onclick = () => {
+        const newTab = window.open('about:blank', '_blank');
+        if (!newTab) {
+          alert('Popup blocked! Please allow popups for this site.');
+          return;
+        }
+        newTab.document.write(`
+          <style>html,body{margin:0;padding:0;overflow:hidden;height:100%;}</style>
+          <iframe src="tos.html" style="border:none;width:100vw;height:100vh;"></iframe>
+        `);
+        setTimeout(() => window.close(), 69);
+      };
+
+      document.body.appendChild(btn);
+
+    } else {
+      if (disguise === '1') {
+        if (disimg) {
+          favicon.href = disimg;
+        }
+        if (distxt) {
+          document.title = distxt;
+        }
+        status.style.display = 'none';
+
+        const iframe = document.createElement('iframe');
+        iframe.src = 'tos.html';
+        document.body.appendChild(iframe);
+
+      } else {
+        location.href = 'tos.html';
+      }
+    }
+  </script>
+
+</body>
+</html>

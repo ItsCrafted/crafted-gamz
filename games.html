@@ -1,0 +1,389 @@
+<html lang="en"><head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="favicon.png">
+  <title>Crafted Gamz | Games</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: sans-serif;
+      overflow-x: hidden;
+    }
+
+    iframe {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1;
+      border: none;
+    }
+
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      padding: 20px;
+      text-align: center;
+      z-index: 2;
+    }
+    
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin: 0 20px;
+      font-weight: bold;
+      font-size: 16px;
+      transition: color 0.2s;
+    }
+
+    nav a:hover {
+      color: #4bf9ed;
+    }
+
+    .container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  padding-top: 5vh;
+}
+
+.box {
+  background-color: rgba(0, 0, 0, 0.7);
+  border-radius: 12px;
+  padding: 20px;
+  transition: transform 0.2s ease, background-color 0.3s ease;
+  color: white;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 200px;
+  height: 300px;
+  margin: 10px; 
+}
+
+
+    .box:hover {
+      transform: scale(1.05);
+      background-color: #081a2e;
+    }
+
+    .box img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+
+    .box .text {
+      font-size: 1.2em;
+      font-weight: bold;
+    }
+    .search-dropdown {
+  width: 500px;
+  margin: 0 auto 10px;
+  position: relative;
+  z-index: 1;
+}
+
+  #dropdownSearch {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 2px solid #4bf9ed;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    font-size: 16px;
+    outline: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 5px #4bf9ed;
+  }
+
+  #dropdownSearch:focus {
+    background: rgba(0, 0, 0, 0.9);
+    box-shadow: 0 0 15px #4bf9ed, 0 0 30px #4bf9ed;
+  }
+
+#dropdownList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 0 0 10px 10px;
+  z-index: 1;
+  max-height: 200px;
+  overflow-y: auto;
+  display: none;
+}
+
+#dropdownList li {
+  padding: 10px;
+  color: white;
+  cursor: pointer;
+}
+
+#dropdownList li:hover {
+  background-color: #4bf9ed;
+  color: black;
+}
+h1 {
+  font-size: 3rem;
+  color: #ffffff;
+  font-weight: bold;
+  line-height: 1.2;
+  margin: 3em auto;
+  text-align: center;
+}
+h2 {
+  font-size: 3rem;
+  color: #ffffff;
+  font-weight: bold;
+  line-height: 1.2;
+  margin: 3em auto;
+  text-align: center;
+}
+.button {
+  background-color: rgba(0, 0, 0, 0.7);
+  border-radius: 120px;
+  transition: transform 0.2s ease, background-color 0.3s ease;
+  color: white;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 500px;
+  height: 50px;
+  text-decoration: none;
+  margin-top: 30px;
+  border-color: #4bf9ed;
+  border-width: 2px;
+  border-style: solid;
+}
+
+  .button:hover {
+    background: rgba(0, 0, 0, 0.9);
+    box-shadow: 0 0 15px #4bf9ed, 0 0 30px #4bf9ed;
+  }
+  </style>
+<link rel="stylesheet" href="chrome-extension://ihcjicgdanjaechkgeegckofjjedodee/app/content-style.css"></head>
+<body>
+
+  <iframe src="bg.html"></iframe>
+
+  <h1>Popular Games</h1>
+
+  <nav>
+    <a href="main.html">Home</a>
+    <a href="search.html">Search</a>
+    <a href="games.html">Games</a>
+    <a href="apps.html">Apps</a>
+    <a href="tools.html">Tools</a>
+   <a href="transfer.html">Transfer</a>
+       <a href="partners.html">Partners</a>
+  </nav>
+
+  <div style="color: #4bf9ed; font-weight: bold; font-size: 20px; text-align: center; margin-top: 100px;"></div><div class="search-dropdown">
+    <input type="text" id="dropdownSearch" placeholder="Search..." onkeyup="filterDropdown()">
+    <ul id="dropdownList"><li>1</li><li>10 Minutes Till Dawn</li><li>1V1 Lol</li><li>1V1 Space</li><li>2048 Multitask</li><li>2048</li><li>99 Balls</li><li>A Dance Of Fire And Ice</li><li>Achievement Unlocked</li><li>A Dark Room</li><li>Adrenaline Challenge</li><li>Adventure Drivers</li><li>Amazing Rope Police</li><li>Among Us</li><li>Awesome Tanks 2</li><li>Backrooms</li><li>Backrooms 2D</li><li>Bacon May Die</li><li>Bad Ice Cream 2</li><li>Bad Ice Cream 3</li><li>Bad Ice Cream</li><li>Baldis Basics</li><li>Basket Random</li><li>Basketball Stars</li><li>Basketbros IO</li><li>Battle For Gondor</li><li>Bitlife</li><li>Block Post</li><li>Bloons TD</li><li>Bloons TD 2</li><li>Big Neon Tower, Tiny Square</li><li>Bonk.io</li><li>Btd 4</li><li>Btd 5</li><li>Bing Tower Tiny Square</li><li>Bus And Subway</li><li>Champion Island</li><li>Chess</li><li>Chill Radio</li><li>Cluster Rush</li><li>Cmm Client (Minecraft)</li><li>Cut The Rope Holiday</li><li>Cut The Rope 2</li><li>Cut The Rope</li><li>Death Run 3D</li><li>Deepest Sword</li><li>Doge Miner 2</li><li>Doom</li><li>Drift Boss</li><li>Drift Hunters</li><li>Drive Mad</li><li>Duck Life 2</li><li>Duck Life 3</li><li>Duck Life 4</li><li>Dumb Ways To Die</li><li>Earntodie</li><li>Edge Surf</li><li>Fancy Pants Adventures</li><li>Fireboy And Watergirl Forest Temple</li><li>Flappy Bird</li><li>Flappy Bird</li><li>Flappy Plane</li><li>Fleeing The Complex</li><li>Friday Night Funkin</li><li>Fruit Ninja</li><li>Gdtd</li><li>Getaway Shootout</li><li>Google Snake</li><li>Happy Wheels</li><li>Hba</li><li>Hill Climb Racing</li><li>Hungry Lamu</li><li>Idle Breakout</li><li>Idle Shark</li><li>Impossible Quiz</li><li>Impossible Quiz 2</li><li>Iron Dash</li><li>Just One Boss</li><li>Kirka.io</li><li>Knife Master</li><li>Learn To Fly 2</li><li>Ltf3</li><li>Madalin Stunt Cars 2</li><li>Madalin Stunt Cars 3</li><li>Mario</li><li>Marvin Spectrum</li><li>Minecraft 15</li><li>Minecraft 18</li><li>Minecraft Classic</li><li>Minecraft Beta</li><li>Minecraft Tower Defence</li><li>Minesweeper</li><li>Miniputt</li><li>Missiles</li><li>Monster Tracks</li><li>Motox 3M Pool Party</li><li>Motox 3M Spooky Edition</li><li>Motox 3M Winter Edition</li><li>Motox 3M</li><li>Motox 3M 2</li><li>Neal.Fun</li><li>Overwatch</li><li>Pandemic 2</li><li>Retro Bowl</li><li>Rhythm Doctor</li><li>Roblox</li><li>Rooftop Snipers</li><li>Ruffle (Launcher)</li><li>Rocket League</li><li>Run 2</li><li>Run 3</li><li>Run</li><li>Run 2</li><li>Run 3</li><li>Run 4 Bootleg</li><li>Runner</li><li>Sand Game</li><li>Sandboxels</li><li>Santy Is Home</li><li>Scooperia</li><li>Scrapmetal</li><li>Scratcharia</li><li>Shape Shootout</li><li>Stickman Survival</li><li>Shell Shockers</li><li>Shogun Showdown</li><li>Shot In The Dark</li><li>Shuttledeck</li><li>Sky Car Stunt</li><li>Sleeping Beauty</li><li>Slime Rush TD</li><li>Slither.io</li><li>Slope 2</li><li>Slope Ball</li><li>Slope</li><li>Sm64</li><li>Smash Karts</li><li>Smoking Barrels</li><li>Snowbattle</li><li>Snowrider3d</li><li>Soccer Random</li><li>Soccer Skills</li><li>Soldier Legend</li><li>Solitaire</li><li>Sort The Court</li><li>Soundboard</li><li>Space Company</li><li>Space Garden</li><li>Spelunky</li><li>Spinningrat</li><li>Squaredash</li><li>Ssurferbotleg</li><li>Stack Bump 3d</li><li>Stack</li><li>Starblast</li><li>Starblastio</li><li>Starblastx</li><li>Starve.io</li><li>Steak And Shake</li><li>Steal</li><li>Stick Figure Penalty</li><li>Stickman</li><li>Stickman Dirtbike</li><li>Stickman Parkour</li><li>Stickman Wars</li><li>Stickwar</li><li>Stickwars2</li><li>Stickwars3</li><li>Sticksoccer</li><li>Stun Run</li><li>Stun Run2</li><li>Stuntcar</li><li>Stuntracer</li><li>Super Mario 64</li><li>Supermegamonster</li><li>Super Mario</li><li>Super Mario Bros</li></ul>
+  <a class="button" href="all-games.html">Go to all games</a>
+  </div>
+
+ <div class="container">
+<a class="box" href="/game_launchers/10-minutes-till-dawn/"><img src="img/gicon/10-minutes-till-dawn.png" alt="Icon"><h3>10 Minutes Till Dawn</h3></a>
+<a class="box" href="/game_launchers/2048/"><img src="img/gicon/2048.png" alt="Icon"><h3>2048</h3></a>
+<a class="box" href="/game_launchers/backrooms/"><img src="img/gicon/backrooms.png" alt="Icon"><h3>Backrooms</h3></a>
+<a class="box" href="/game_launchers/backrooms2d/"><img src="img/gicon/backrooms2d.png" alt="Icon"><h3>Backrooms 2D</h3></a>
+<a class="box" href="/game_launchers/bacon-may-die/"><img src="img/gicon/bacon-may-die.png" alt="Icon"><h3>Bacon May Die</h3></a>
+<a class="box" href="/game_launchers/bad-ice-cream-2/"><img src="img/gicon/bad-ice-cream-2.png" alt="Icon"><h3>Bad Ice Cream 2</h3></a>
+<a class="box" href="/game_launchers/bad-ice-cream-3/"><img src="img/gicon/bad-ice-cream-3.png" alt="Icon"><h3>Bad Ice Cream 3</h3></a>
+<a class="box" href="/game_launchers/bad-ice-cream/"><img src="img/gicon/bad-ice-cream.png" alt="Icon"><h3>Bad Ice Cream</h3></a>
+<a class="box" href="/game_launchers/baldis-basics/"><img src="img/gicon/baldis-basics.png" alt="Icon"><h3>Baldis Basics</h3></a>
+<a class="box" href="/game_launchers/basket-random/"><img src="img/gicon/basket-random.png" alt="Icon"><h3>Basket Random</h3></a>
+<a class="box" href="/game_launchers/basketball-stars/"><img src="img/gicon/basketball-stars.png" alt="Icon"><h3>Basketball Stars</h3></a>
+<a class="box" href="/game_launchers/bitlife/"><img src="img/gicon/bitlife.png" alt="Icon"><h3>Bitlife</h3></a>
+<a class="box" href="/game_launchers/bntts/"><img src="img/gicon/bntts.png" alt="Icon"><h3>Big Neon Tower, Tiny Square</h3></a>
+<a class="box" href="/game_launchers/btts/"><img src="img/gicon/btts.png" alt="Icon"><h3>Big Tower Tiny Square</h3></a>
+<a class="box" href="/game_launchers/busandsubway/"><img src="img/gicon/busandsubway.png" alt="Icon"><h3>Subway Surfers</h3></a>
+<a class="box" href="/game_launchers/chess/"><img src="img/gicon/chess.png" alt="Icon"><h3>Chess</h3></a>
+<a class="box" href="/game_launchers/cluster-rush/"><img src="img/gicon/cluster-rush.png" alt="Icon"><h3>Cluster Rush</h3></a>
+<a class="box" href="/game_launchers/cmm-client/"><img src="img/gicon/CMM-Client.png" alt="Icon"><h3>Cmm Client (Minecraft)</h3></a>
+<a class="box" href="/game_launchers/ctr-holiday/"><img src="img/gicon/ctr-holiday.png" alt="Icon"><h3>Cut The Rope Holiday</h3></a>
+<a class="box" href="/game_launchers/ctr-tr/"><img src="img/gicon/ctr-tr.png" alt="Icon"><h3>Cut The Rope 2</h3></a>
+<a class="box" href="/game_launchers/ctr/"><img src="img/gicon/ctr.png" alt="Icon"><h3>Cut The Rope</h3></a>
+<a class="box" href="/game_launchers/death-run-3d/"><img src="img/gicon/death-run-3d.png" alt="Icon"><h3>Death Run 3D</h3></a>
+<a class="box" href="/game_launchers/drift-boss/"><img src="img/gicon/drift-boss.png" alt="Icon"><h3>Drift Boss</h3></a>
+<a class="box" href="/game_launchers/drift-hunters/"><img src="img/gicon/drift-hunters.png" alt="Icon"><h3>Drift Hunters</h3></a>
+<a class="box" href="/game_launchers/drive-mad/"><img src="img/gicon/drive-mad.png" alt="Icon"><h3>Drive Mad</h3></a>
+<a class="box" href="/game_launchers/ducklife2/"><img src="img/gicon/ducklife2.png" alt="Icon"><h3>Duck Life 2</h3></a>
+<a class="box" href="/game_launchers/ducklife3/"><img src="img/gicon/ducklife3.png" alt="Icon"><h3>Duck Life 3</h3></a>
+<a class="box" href="/game_launchers/ducklife4/"><img src="img/gicon/ducklife4.png" alt="Icon"><h3>Duck Life 4</h3></a>
+<a class="box" href="/game_launchers/fireboywatergirlforesttemple/"><img src="img/gicon/fireboywatergirlforesttemple.png" alt="Icon"><h3>Fireboy And Watergirl Forest Temple</h3></a>
+<a class="box" href="/game_launchers/flappy-bird/"><img src="img/gicon/flappy-bird.png" alt="Icon"><h3>Flappy Bird</h3></a>
+<a class="box" href="/game_launchers/getaway-shootout/"><img src="img/gicon/getaway-shootout.png" alt="Icon"><h3>Getaway Shootout</h3></a>
+<a class="box" href="/game_launchers/learntofly2/"><img src="img/gicon/learntofly2.png" alt="Icon"><h3>Learn To Fly 2</h3></a>
+<a class="box" href="/game_launchers/madalin-stunt-cars-2/"><img src="img/gicon/madalin-stunt-cars-2.png" alt="Icon"><h3>Madalin Stunt Cars 2</h3></a>
+<a class="box" href="/game_launchers/madalin-stunt-cars-3/"><img src="img/gicon/madalin-stunt-cars-3.png" alt="Icon"><h3>Madalin Stunt Cars 3</h3></a>
+<a class="box" href="/game_launchers/minecraft-15/"><img src="img/gicon/minecraft-15.png" alt="Icon"><h3>Minecraft 1.5</h3></a>
+<a class="box" href="/game_launchers/minecraft-18/"><img src="img/gicon/minecraft-18.png" alt="Icon"><h3>Minecraft 1.8</h3></a>
+<a class="box" href="/game_launchers/motox3m-pool/"><img src="img/gicon/motox3m-pool.png" alt="Icon"><h3>Motox 3M Pool Party</h3></a>
+<a class="box" href="/game_launchers/motox3m-spooky/"><img src="img/gicon/motox3m-spooky.png" alt="Icon"><h3>Motox 3M Spooky Edition</h3></a>
+<a class="box" href="/game_launchers/motox3m-winter/"><img src="img/gicon/motox3m-winter.png" alt="Icon"><h3>Motox 3M Winter Edition</h3></a>
+<a class="box" href="/game_launchers/motox3m/"><img src="img/gicon/motox3m.png" alt="Icon"><h3>Motox 3M</h3></a>
+<a class="box" href="/game_launchers/motox3m2/"><img src="img/gicon/motox3m2.png" alt="Icon"><h3>Motox 3M 2</h3></a>
+<a class="box" href="/game_launchers/retro-bowl/"><img src="img/gicon/retro-bowl.png" alt="Icon"><h3>Retro Bowl</h3></a>
+<a class="box" href="/game_launchers/rhythm-doctor/"><img src="img/gicon/rhythm-doctor.png" alt="Icon"><h3>Rhythm Doctor</h3></a>
+<a class="box" href="/game_launchers/rooftop-snipers/"><img src="img/gicon/rooftop-snipers.png" alt="Icon"><h3>Rooftop Snipers</h3></a>
+<a class="box" href="/game_launchers/run/"><img src="img/gicon/run.png" alt="Icon"><h3>Run</h3></a>
+<a class="box" href="/game_launchers/run2/"><img src="img/gicon/run2.png" alt="Icon"><h3>Run 2</h3></a>
+<a class="box" href="/game_launchers/run3/"><img src="img/gicon/run3.png" alt="Icon"><h3>Run 3</h3></a>
+<a class="box" href="/game_launchers/scrapmetal/"><img src="img/gicon/scrapmetal.png" alt="Icon"><h3>Scrap Metal</h3></a>
+<a class="box" href="Game_Launchers/slope 2/index.html" class="box"><img src="img/gicon/slope 2.png" alt="Icon"><h3>Slope 2</h3></a>
+<a class="box" href="/game_launchers/slope-ball/"><img src="img/gicon/slope-ball.png" alt="Icon"><h3>Slope Ball</h3></a>
+<a class="box" href="/game_launchers/slope/"><img src="img/gicon/slope.png" alt="Icon"><h3>Slope</h3></a>
+<a class="box" href="/game_launchers/smashkarts/"><img src="img/gicon/smashkarts.png" alt="Icon"><h3>Smash Karts</h3></a>
+<a class="box" href="/game_launchers/snowrider3d/"><img src="img/gicon/snowrider3d.png" alt="Icon"><h3>Snow Rider 3D</h3></a>
+<a class="box" href="/game_launchers/soccer-random/"><img src="img/gicon/soccer-random.png" alt="Icon"><h3>Soccer Random</h3></a>
+</div>
+
+<h2>Thats All Folks 🤓☝️</h2>
+
+<script>
+  const searchInput = document.getElementById("dropdownSearch");
+  const dropdownList = document.getElementById("dropdownList");
+
+  const gameBoxes = document.querySelectorAll(".box h3");
+
+  gameBoxes.forEach(box => {
+    const li = document.createElement("li");
+    li.textContent = box.textContent;
+    li.addEventListener("click", () => {
+      const targetBox = Array.from(gameBoxes).find(g => g.textContent === li.textContent);
+      const container = targetBox.closest(".box");
+
+      container.scrollIntoView({ behavior: "smooth", block: "center" });
+
+      container.style.boxShadow = "0 0 20px 5px #4bf9ed";
+      container.style.border = "2px solid #4bf9ed";
+
+      setTimeout(() => {
+        container.style.boxShadow = "";
+        container.style.border = "";
+      }, 10000);
+    });
+    dropdownList.appendChild(li);
+  });
+
+  function filterDropdown() {
+    const value = searchInput.value.toLowerCase();
+    const items = dropdownList.getElementsByTagName("li");
+    let matches = 0;
+
+    for (let item of items) {
+      if (item.textContent.toLowerCase().includes(value)) {
+        item.style.display = "";
+        matches++;
+      } else {
+        item.style.display = "none";
+      }
+    }
+
+    dropdownList.style.display = matches > 0 ? "block" : "none";
+  }
+</script>
+<script>
+  const totalGames = document.querySelectorAll(".box").length;
+
+  const counter = document.createElement("div");
+  counter.textContent = `Popular Game Count: ${totalGames}`;
+  counter.style.color = "#4bf9ed";
+  counter.style.fontWeight = "bold";
+  counter.style.fontSize = "20px";
+  counter.style.textAlign = "center";
+  counter.style.marginTop = "100px"; 
+
+  document.body.insertBefore(counter, document.querySelector(".search-dropdown"));
+<!-- Firebase SDK -->
+</script>
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyCLL2JZUBJwISsLljfMN4wAr3ZSRd4A1Jo",
+    authDomain: "craftedgamzvisits.firebaseapp.com",
+    projectId: "craftedgamzvisits",
+    storageBucket: "craftedgamzvisits.firebase-storage.app",
+    messagingSenderId: "935169016483",
+    appId: "1:935169016483:web:0ea28fbc25e9f390723516",
+    measurementId: "G-23C7D06VFD"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+// Replace your existing Firebase click tracking script with this:
+
+document.querySelectorAll(".box").forEach(box => {
+    box.addEventListener("click", async (e) => {
+        // Prevent default link behavior temporarily to ensure tracking
+        e.preventDefault();
+        
+        const gameName = box.querySelector("h3")?.textContent.trim();
+        if (!gameName) {
+            // If no game name, just follow the link
+            window.location.href = box.href;
+            return;
+        }
+
+        console.log(`Tracking click for game: ${gameName}`); // Debug log
+
+        try {
+            const gameDoc = db.collection("gameCounts").doc(gameName);
+            
+            // Use simpler approach - get document first, then update
+            const docSnapshot = await gameDoc.get();
+            
+            if (docSnapshot.exists) {
+                // Document exists, increment count
+                const currentCount = docSnapshot.data().count || 0;
+                await gameDoc.update({ 
+                    count: currentCount + 1,
+                    lastClicked: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                console.log(`Updated count for ${gameName}: ${currentCount + 1}`);
+            } else {
+                // Document doesn't exist, create it
+                await gameDoc.set({ 
+                    count: 1,
+                    lastClicked: firebase.firestore.FieldValue.serverTimestamp(),
+                    gameName: gameName
+                });
+                console.log(`Created new count for ${gameName}: 1`);
+            }
+            
+        } catch (error) {
+            console.error("Failed to update game count:", error);
+            // Still allow navigation even if tracking fails
+        }
+        
+        // After tracking (success or failure), navigate to the game
+        setTimeout(() => {
+            window.location.href = box.href;
+        }, 100); // Small delay to ensure Firebase write completes
+    });
+});
+</script>
+
+<div style="position: fixed; top: 0px; left: 0px; z-index: 999999;"></div></body></html>

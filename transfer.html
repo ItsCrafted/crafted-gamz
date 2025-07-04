@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="favicon.png">
+  <title>Crafted Gamz | Transfer</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Poppins', sans-serif;
+      overflow: hidden;
+      background: #111;
+    }
+
+    iframe#bg-iframe {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 1;
+      border: none;
+      pointer-events: none;
+      opacity: 0.6;
+      filter: brightness(0.7);
+    }
+
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(0,0,0,0.8);
+      padding: 16px;
+      text-align: center;
+      z-index: 5;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+    }
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      margin: 0 16px;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: color 0.2s;
+    }
+    nav a:hover {
+      color: #4bf9ed;
+    }
+
+    main {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      padding-top: 80px; /* leave room for nav */
+      text-align: center;
+    }
+
+    h1 {
+      color: #4bf9ed;
+      font-size: 2.5rem;
+      text-shadow: 0 0 8px #4bf9ed;
+      margin-bottom: 40px;
+    }
+
+    .btn-container {
+      display: flex;
+      gap: 24px;
+    }
+
+    .btn {
+      background-color: #4bf9ed;
+      color: #111;
+      border: none;
+      border-radius: 8px;
+      padding: 14px 32px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 0 10px #4bf9ed;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+    .btn:hover {
+      background-color: #6ec9cc;
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+  <iframe id="bg-iframe" src="bg.html" aria-hidden="true" tabindex="-1"></iframe>
+
+  <nav>
+    <a href="main.html">Home</a>
+    <a href="search.html">Search</a>
+    <a href="games.html">Games</a>
+    <a href="apps.html">Apps</a>
+    <a href="tools.html">Tools</a>
+    <a href="index.html">Transfer</a>
+        <a href="partners.html">Partners</a>
+  </nav>
+
+  <main>
+    <h1>What would you like to do?</h1>
+    <div class="btn-container">
+      <a class="btn" href="transfer/upload.html">Upload</a>
+      <a class="btn" href="transfer/download.html">Download</a>
+      <a class="btn" href="transfer/remove.html">File Removal</a>
+    </div>
+  </main>
+</body>
+</html>

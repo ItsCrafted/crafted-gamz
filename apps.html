@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="favicon.png">
+  <title>Crafted Gamz | Apps</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: sans-serif;
+      overflow-x: hidden;
+    }
+
+    iframe {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1;
+      border: none;
+    }
+
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      padding: 20px;
+      text-align: center;
+      z-index: 2;
+    }
+    
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin: 0 20px;
+      font-weight: bold;
+      font-size: 16px;
+      transition: color 0.2s;
+    }
+
+    nav a:hover {
+      color: #4bf9ed;
+    }
+
+    .container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  padding-top: 5vh;
+}
+
+.box {
+  background-color: rgba(0, 0, 0, 0.7);
+  border-radius: 12px;
+  padding: 20px;
+  transition: transform 0.2s ease, background-color 0.3s ease;
+  color: white;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 200px;
+  height: 300px;
+  margin: 10px; 
+}
+
+
+    .box:hover {
+      transform: scale(1.05);
+      background-color: #081a2e;
+    }
+
+    .box img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+
+    .box .text {
+      font-size: 1.2em;
+      font-weight: bold;
+    }
+    .search-dropdown {
+  width: 300px;
+  margin: 0 auto 10px;
+  position: relative;
+  z-index: 1;
+}
+
+  #dropdownSearch {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 2px solid #4bf9ed;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    font-size: 16px;
+    outline: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 5px #4bf9ed;
+  }
+
+  #dropdownSearch:focus {
+    background: rgba(0, 0, 0, 0.9);
+    box-shadow: 0 0 15px #4bf9ed, 0 0 30px #4bf9ed;
+  }
+
+#dropdownList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 0 0 10px 10px;
+  z-index: 1;
+  max-height: 200px;
+  overflow-y: auto;
+  display: none;
+}
+
+#dropdownList li {
+  padding: 10px;
+  color: white;
+  cursor: pointer;
+}
+
+#dropdownList li:hover {
+  background-color: #4bf9ed;
+  color: black;
+}
+h1 {
+  font-size: 3rem;
+  color: #ffffff;
+  font-weight: bold;
+  line-height: 1.2;
+  margin: 3em auto;
+  text-align: center;
+}
+h2 {
+  font-size: 3rem;
+  color: #ffffff;
+  font-weight: bold;
+  line-height: 1.2;
+  margin: 3em auto;
+  text-align: center;
+}
+  </style>
+</head>
+<body>
+
+  <iframe src="bg.html"></iframe>
+
+  <h1>Apps</h1>
+
+  <nav>
+    <a href="main.html">Home</a>
+    <a href="search.html">Search</a>
+    <a href="games.html">Games</a>
+    <a href="apps.html">Apps</a>
+    <a href="tools.html">Tools</a>
+        <a href="transfer.html">Transfer</a>
+            <a href="partners.html">Partners</a>
+  </nav>
+
+  <div class="search-dropdown">
+    <input type="text" id="dropdownSearch" placeholder="Search..." onkeyup="filterDropdown()">
+    <ul id="dropdownList"></ul>
+  </div>
+
+  <div class="container">
+    <a href="form/index.html" class="box">
+      <img src="img/aicon/form.png" alt="Icon">
+      <h3>Forms (Bugs and Games)</h3>
+    </a>
+    <a href="Apps/Pulsar/index.html" class="box">
+      <img src="img/aicon/pulsar.png" alt="Icon">
+      <h3>Pulsar</h3>
+    </a>
+    <a href="Apps/cg-version-2/index.html" class="box">
+      <img src="img/aicon/v2.png" alt="Icon">
+      <h3>Crafted Gamz Version 2</h3>
+    </a>
+    <a href="Apps/cg-version-3/index.html" class="box">
+      <img src="img/aicon/v3.png" alt="Icon">
+      <h3>Crafted Gamz Version 3</h3>
+    </a>
+    <a href="Apps/cg-version-4/index.html" class="box">
+      <img src="img/aicon/v4.png" alt="Icon">
+      <h3>Crafted Gamz Version 4</h3>
+    </a>
+    <a href="Apps/cg-version-5/index.html" class="box">
+      <img src="img/aicon/v5.png" alt="Icon">
+      <h3>Crafted Gamz Version 5</h3>
+    </a>
+    <a href="Apps/cg-version-6/index.html" class="box">
+      <img src="img/aicon/v6.png" alt="Icon">
+      <h3>Crafted Gamz Version 6</h3>
+    </a>
+    <a href="Apps/cg-version-7/index.html" class="box">
+      <img src="img/aicon/v7.png" alt="Icon">
+      <h3>Crafted Gamz Version 7</h3>
+    </a>
+    <a href="Apps/cg-version-8/index.html" class="box">
+      <img src="img/aicon/v8.png" alt="Icon">
+      <h3>Crafted Gamz Version 8</h3>
+    </a>
+    <a href="Apps/cg-version-9/index.html" class="box">
+      <img src="img/aicon/v9.png" alt="Icon">
+      <h3>Crafted Gamz Version 9</h3>
+    </a>
+    <a href="Apps/cg-version-10/index.html" class="box">
+      <img src="img/aicon/v10.png" alt="Icon">
+      <h3>Crafted Gamz Version 10</h3>
+    </a>
+    <a href="https://crafted-gamz-general-ai.zapier.app/" class="box">
+      <img src="img/aicon/gai.png" alt="Icon">
+      <h3>Crafted General AI</h3>
+    </a>
+    <a href="https://crafted-gamz-einstein-ai.zapier.app/" class="box">
+      <img src="img/aicon/eai.png" alt="Icon">
+      <h3>Crafted Einstien AI</h3>
+    </a>
+    <a href="https://calculator.apps.chrome/" class="box">
+      <img src="img/aicon/calc.png" alt="Icon">
+      <h3>Calculator</h3>
+    </a>
+  </div>
+
+<h2>Thats All Folks 🤓☝️</h2>
+
+<script>
+  const searchInput = document.getElementById("dropdownSearch");
+  const dropdownList = document.getElementById("dropdownList");
+
+  const gameBoxes = document.querySelectorAll(".box h3");
+
+  gameBoxes.forEach(box => {
+    const li = document.createElement("li");
+    li.textContent = box.textContent;
+    li.addEventListener("click", () => {
+      const targetBox = Array.from(gameBoxes).find(g => g.textContent === li.textContent);
+      const container = targetBox.closest(".box");
+
+      container.scrollIntoView({ behavior: "smooth", block: "center" });
+
+      container.style.boxShadow = "0 0 20px 5px #4bf9ed";
+      container.style.border = "2px solid #4bf9ed";
+
+      setTimeout(() => {
+        container.style.boxShadow = "";
+        container.style.border = "";
+      }, 10000);
+    });
+    dropdownList.appendChild(li);
+  });
+
+  function filterDropdown() {
+    const value = searchInput.value.toLowerCase();
+    const items = dropdownList.getElementsByTagName("li");
+    let matches = 0;
+
+    for (let item of items) {
+      if (item.textContent.toLowerCase().includes(value)) {
+        item.style.display = "";
+        matches++;
+      } else {
+        item.style.display = "none";
+      }
+    }
+
+    dropdownList.style.display = matches > 0 ? "block" : "none";
+  }
+</script>
+<script>
+  const totalGames = document.querySelectorAll(".box").length;
+
+  const counter = document.createElement("div");
+  counter.textContent = `App Count: ${totalGames}`;
+  counter.style.color = "#4bf9ed";
+  counter.style.fontWeight = "bold";
+  counter.style.fontSize = "20px";
+  counter.style.textAlign = "center";
+  counter.style.marginTop = "100px"; 
+
+  document.body.insertBefore(counter, document.querySelector(".search-dropdown"));
+</script>
+</body>
+</html>
