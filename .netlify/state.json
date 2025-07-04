@@ -1,5 +1,4 @@
 {
-	"siteId": "edf29788-a875-464f-8813-d7c1578923fa",
 	"geolocation": {
 		"data": {
 			"city": "Albuquerque",
@@ -17,5 +16,6 @@
 			"postalCode": "87108"
 		},
 		"timestamp": 1748202298518
-	}
+	},
+	"siteId": "a27e63d1-a83d-488a-a79e-5250e7606f16"
 }

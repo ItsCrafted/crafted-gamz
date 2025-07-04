@@ -7,7 +7,6 @@ headers = []
 [build]
 publish = "C:\\Users\\Bandi\\Main\\All things Crafted\\GitHub\\crafted-gamz"
 publishOrigin = "config"
-base = "C:\\Users\\Bandi\\Main\\All things Crafted\\GitHub\\crafted-gamz"
 functions = "C:\\Users\\Bandi\\Main\\All things Crafted\\GitHub\\crafted-gamz\\netlify\\functions"
 
 [build.environment]
