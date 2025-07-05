@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Crafted Gamz</title>
+  <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
+  <style>
+    html, body {
+      margin: 0; padding: 0; height: 100%; overflow: hidden;
+      background: transparent;
+      font-family: sans-serif;
+    }
+    iframe {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      border: none;
+      z-index: -1;
+    }
+    #loader {
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 70%;
+      height: 10px;
+      background: #111;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 0 15px #4bf9ed;
+      z-index: 9999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+    #loader.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    #bar {
+      height: 100%;
+      width: 0%;
+      background: #4bf9ed;
+    }
+    @keyframes fillBar {
+      from { width: 0%; }
+      to { width: 100%; }
+    }
+    #start-button {
+      position: fixed;
+      top: 60%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #4bf9ed;
+      border: none;
+      padding: 14px 28px;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      z-index: 10000;
+      box-shadow: 0 0 10px #4bf9ed;
+    }
+  </style>
+</head>
+<body>
+
+<iframe src="bg.html" aria-hidden="true"></iframe>
+
+<div id="loader">
+  <div id="bar"></div>
+</div>
+
+<button id="start-button">Enter Crafted Gamz</button>
+
+<audio id="intro-audio" src="intro_p1.mp3" preload="auto"></audio>
+
+<script>
+  const audio = document.getElementById('intro-audio');
+  const loader = document.getElementById('loader');
+  const bar = document.getElementById('bar');
+  const button = document.getElementById('start-button');
+
+  button.addEventListener('click', () => {
+    // Set localStorage
+    localStorage.setItem("intro", "1");
+
+    // Show loader bar
+    loader.classList.add('active');
+    bar.style.animation = 'fillBar 4s linear forwards';
+
+    // Play sound
+    audio.play().catch(err => {
+      console.warn('Audio play failed:', err);
+    });
+
+    // Redirect after 4 seconds
+    setTimeout(() => {
+      window.location.href = 'main.html';
+    }, 4000);
+
+    // Hide button
+    button.style.display = 'none';
+  });
+</script>
+
+</body>
+</html>

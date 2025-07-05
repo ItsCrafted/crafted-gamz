@@ -5,6 +5,24 @@
   <link rel="icon" href="favicon.png">
   <title>Crafted Gamz | Main Page</title>
 <script src="random-messages.js"></script>
+
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    const introFlag = localStorage.getItem('intro');
+    if (introFlag === '1') {
+      const audio = document.getElementById('intro-audio');
+      if (audio) {
+        // Reset first so it won't happen on refresh
+        localStorage.setItem('intro', '0');
+
+        // Try to play the audio
+        audio.play().catch(e => { 
+          console.warn('Autoplay failed:', e);
+        });
+      }
+    }
+  });
+</script>
 <link rel="manifest" href="/manifest.json" />
 
   <style>
@@ -157,6 +175,7 @@
   </style>
 </head>
 <body>
+<audio id="intro-audio" src="intro_p2.mp3" preload="auto"></audio>
 
   <iframe src="bg.html"></iframe>
 
@@ -360,5 +379,6 @@ document.getElementById("visitors").appendChild(container);
   }
   fetchValue();
 </script>
+
 </body>
 </html>
