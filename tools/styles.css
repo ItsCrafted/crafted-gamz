@@ -29,30 +29,6 @@ iframe {
   border: none;
 }
 
-nav {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  background: rgba(0, 0, 0, 0.8);
-  padding: 20px;
-  text-align: center;
-  z-index: 2;
-}
-
-nav a {
-  color: white;
-  text-decoration: none;
-  margin: 0 20px;
-  font-weight: bold;
-  font-size: 16px;
-  transition: color 0.2s;
-}
-
-nav a:hover {
-  color: #4bf9ed;
-}
-
 .tool-bar-container {
   display: flex;
   flex-direction: column;

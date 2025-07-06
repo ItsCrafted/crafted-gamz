@@ -27,30 +27,6 @@
       pointer-events: none;
     }
 
-    nav {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      background: rgba(0, 0, 0, 0.8);
-      padding: 19px;
-      text-align: center;
-      z-index: 9999;
-      height: 24px; /* Fixed height for nav */
-    }
-
-    nav a {
-      color: white;
-      text-decoration: none;
-      margin: 0 20px;
-      font-weight: bold;
-      font-size: 16px;
-      transition: color 0.2s;
-    }
-
-    nav a:hover {
-      color: #4bf9ed;
-    }
 
     #app {
       position: relative;
@@ -276,16 +252,9 @@
 <body>
   <iframe id="bgframe" src="../bg.html" title="Background"></iframe>
 
-  <nav>
-    <a href="main.html">Home</a>
-    <a href="search.html">Search</a>
-    <a href="games.html">Games</a>
-    <a href="apps.html">Apps</a>
-    <a href="tools.html">Tools</a>
-    <a href="transfer.html">Transfer</a>
-    <a href="ai.html">AI</a>
-    <a href="partners.html">Partners</a>
-  </nav>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="nav.js" defer></script>
+
 
   <div id="app">
     <div id="chat"></div>
