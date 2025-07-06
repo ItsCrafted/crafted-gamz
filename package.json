@@ -4,7 +4,6 @@
   "description": "Crafted Gamz Version XII",
   "main": "index.html",
   "scripts": {
-    "start": "vite",
     "lint": "eslint .",
     "format": "prettier --write .",
     "update": "npm update"

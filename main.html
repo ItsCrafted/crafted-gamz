@@ -209,10 +209,10 @@
   <h3>This Month's Pick:</h3>
   <div id="value" style="font-size: 2.5rem; font-weight: 700; margin-top: 0.5rem;">Loading...</div>
 </div>
-    <div class="box box3">
-      <h2>Newest Feature</h2>
-      <p>The Newest Feature Is Release 12.0.0 💀</p>
-    </div>
+<div class="box box3">
+  <h2>Newest Feature</h2>
+  <p id="latest-feature">Loading latest update...</p>
+</div>
     <div class="box box4">
       <h2>Credits And Thanks</h2>
       <p>Website coded by Crafted, Under Crafted Gamz, with help from ai 💀💀.</p>
@@ -379,6 +379,23 @@ document.getElementById("visitors").appendChild(container);
   }
   fetchValue();
 </script>
+<script>
+  fetch("https://api.github.com/repos/ItsCrafted/crafted-gamz/commits")
+    .then(response => response.json())
+    .then(commits => {
+      const latest = commits[0];
+      const message = latest.commit.message;
+      const rawAuthor = latest.commit.author.name;
+      const author = rawAuthor.split(" ").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+      const date = new Date(latest.commit.author.date).toLocaleDateString();
 
+      document.getElementById("latest-feature").innerHTML = 
+        `The latest commit is: "<span style="color:white;">${message}</span>" by <span style="color:#4bf9ed;">${author}</span> on (${date})`;
+    })
+    .catch(error => {
+      document.getElementById("latest-feature").innerText = "Could not load latest commit.";
+      console.error(error);
+    });
+</script>
 </body>
 </html>
