@@ -135,6 +135,29 @@
       font-size: 1.2em;
       margin-bottom: 20px;
     }
+
+    /* For Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #00ffe5 transparent;
+}
+
+/* For Chrome, Edge, Safari */
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #00ffe5;
+  border-radius: 10px;
+  border: 2px solid transparent; /* Optional: adds some padding effect */
+}
+
   </style>
 </head>
 <body>
