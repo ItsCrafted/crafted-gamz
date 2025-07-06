@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Mirrored from vplaza.org/fp.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 03 Jul 2025 05:07:40 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clever | Recover Account</title>
+    <link rel="icon" href="images/clever.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-image: url('images/child.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+            position: relative;
+        }
+
+        .recover-container {
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 720px;
+            padding: 48px;
+            margin: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            color: #4285F4;
+            font-size: 32px;
+            margin: 0 0 24px 0;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+
+        .recover-content {
+            display: flex;
+            gap: 48px;
+            align-items: flex-start;
+        }
+
+        .form-section {
+            flex: 1;
+        }
+
+        .help-section {
+            flex: 1;
+            padding-left: 24px;
+            border-left: 1px solid #f1f3f4;
+        }
+
+        .description {
+            color: #5f6368;
+            font-size: 16px;
+            line-height: 1.5;
+            margin-bottom: 32px;
+        }
+
+        .form-group {
+            margin-bottom: 32px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            color: #202124;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        input[type="email"] {
+            width: 100%;
+            padding: 16px;
+            font-size: 16px;
+            border: 1px solid #dadce0;
+            border-radius: 8px;
+            outline: none;
+            transition: all 0.2s ease;
+            font-family: inherit;
+            background-color: white;
+        }
+
+        input[type="email"]:focus {
+            border-color: #4285F4;
+            box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.1);
+        }
+
+        input[type="email"]::placeholder {
+            color: #9aa0a6;
+        }
+
+        .send-button {
+            background-color: #f1f3f4;
+            color: #5f6368;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+            min-width: 80px;
+        }
+
+        .send-button:hover {
+            background-color: #e8eaed;
+        }
+
+        .send-button.active {
+            background-color: #4285F4;
+            color: white;
+            cursor: pointer;
+        }
+
+        .send-button.active:hover {
+            background-color: #3367d6;
+        }
+
+        .help-title {
+            color: #202124;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .help-text {
+            color: #5f6368;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            padding: 24px;
+            z-index: 10;
+        }
+
+        .logo {
+            color: white;
+            font-size: 42px;
+            font-weight: 700;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
+        }
+
+        .footer-links {
+            font-size: 12px;
+            line-height: 1.5;
+            color: white;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .footer-links a:hover {
+            opacity: 0.8;
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .recover-container {
+                padding: 32px 24px;
+                margin: 16px;
+                max-width: 90vw;
+            }
+
+            .recover-content {
+                flex-direction: column;
+                gap: 32px;
+            }
+
+            .help-section {
+                padding-left: 0;
+                border-left: none;
+                border-top: 1px solid #f1f3f4;
+                padding-top: 32px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            .footer {
+                padding: 16px;
+            }
+
+            .logo {
+                font-size: 32px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .recover-container {
+                padding: 24px 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .description {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="recover-container">
+        <h1>Recover account</h1>
+
+        <div class="recover-content">
+            <div class="form-section">
+                <p class="description">
+                    Enter the email that you signed up with to receive password reset instructions.
+                </p>
+
+                <form id="recoverForm" onsubmit="handleRecovery(event)">
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" id="recoveryEmail" required>
+                    </div>
+
+                    <button type="submit" class="send-button" id="sendBtn">Send</button>
+                </form>
+            </div>
+
+            <div class="help-section">
+                <h3 class="help-title">How do I recover my password?</h3>
+                <p class="help-text">
+                    Please enter the email for your district administrator account.
+                </p>
+                <p class="help-text">
+                    A link will be emailed to you that will allow you to set a new password.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="logo">Clever</div>
+        <div class="footer-links">
+            Clever © 2025<br>
+            <a href="https://clever.com/trust/privacy/policy">https://clever.com/trust/privacy/policy</a><br>
+            <a href="https://clever.com/about/terms">https://clever.com/about/terms</a>
+        </div>
+    </div>
+
+    <script>
+        function handleRecovery(event) {
+            event.preventDefault();
+            const email = document.getElementById('recoveryEmail').value.trim();
+
+            if (email === 'vplaza@vplaza.org') {
+                alert('Password reset instructions have been sent to your email address.');
+                // In a real application, this would trigger an email
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 2000);
+            } else {
+                alert('Email address not found. Please check your email and try again.');
+            }
+        }
+
+        // Enable send button when email field has valid content
+        function checkFormValidity() {
+            const email = document.getElementById('recoveryEmail').value.trim();
+            const sendBtn = document.getElementById('sendBtn');
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (email && emailRegex.test(email)) {
+                sendBtn.classList.add('active');
+            } else {
+                sendBtn.classList.remove('active');
+            }
+        }
+
+        document.getElementById('recoveryEmail').addEventListener('input', checkFormValidity);
+
+        // Add subtle animations on load
+        window.addEventListener('load', function() {
+            document.querySelector('.recover-container').style.animation = 'fadeInUp 0.6s ease-out';
+        });
+
+        // Add CSS animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+
+<!-- Mirrored from vplaza.org/fp.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 03 Jul 2025 05:07:40 GMT -->
+</html>
