@@ -18,7 +18,14 @@ const messages = [
   "Came with instrustions"
 ];
 
+function getRandomMessage() {
+  return messages[Math.floor(Math.random() * messages.length)];
+}
+
 window.addEventListener("DOMContentLoaded", () => {
-  const message = messages[Math.floor(Math.random() * messages.length)];
-  document.getElementById("random-message").textContent = message;
+  const el = document.getElementById("random-message");
+  el.textContent = getRandomMessage();
+  el.addEventListener("click", () => {
+    el.textContent = getRandomMessage();
+  });
 });
