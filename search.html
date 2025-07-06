@@ -9,7 +9,6 @@
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
   />
   <style>
-    /* 1) Make the root transparent */
     html, body {
       margin: 0; padding: 0;
       width: 100%; height: 100%;
@@ -18,7 +17,6 @@
       font-family: sans-serif;
     }
 
-    /* 2) Background iframe container always at back */
     #bg-container {
       position: fixed;
       inset: 0;
@@ -32,13 +30,11 @@
       filter: brightness(0.7);
     }
 
-    /* 3) Nav (injected by nav.js) */
     nav {
       background: rgba(0, 0, 0, 0.6) !important;
       backdrop-filter: blur(8px);
     }
 
-    /* 4) Tab bar */
     #tab-bar {
       position: fixed;
       top: 64px; left: 0; right: 0; height: 36px;
@@ -50,15 +46,23 @@
       border-bottom: 1px solid rgba(75, 249, 237, 0.3);
       overflow-x: auto; white-space: nowrap;
     }
-    .tab {
-      background: rgba(34,34,34,0.8);
-      color: #fff;
-      border-radius: 4px 4px 0 0;
-      padding: 6px 12px; margin-right: 6px;
-      display: flex; align-items: center;
-      font-size: 14px; cursor: pointer;
-      transition: background 0.2s;
-    }
+.tab {
+  background: rgba(34,34,34,0.8);
+  color: #fff;
+  border-radius: 4px 4px 0 0;
+  padding: 6px 12px;
+  margin-right: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* this pushes the close button to the far right */
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+  min-width: 80px;
+  max-width: 200px;
+  overflow: hidden;
+}
+
     .tab.active {
       background: rgba(75,249,237,0.9);
       color: #000; font-weight: bold;
