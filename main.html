@@ -357,7 +357,7 @@ document.getElementById("visitors").appendChild(container);
       const dateTime = new Date(latest.commit.author.date).toLocaleString();
 
       document.getElementById("latest-feature").innerHTML = 
-        `The latest commit is: "<span style="color:white;">${message}</span>" by <span style="color:#4bf9ed;">${author}</span> on <span style="color:white;">${dateTime}</span>`;
+        `The latest commit is: "<span style="color:#4bf9ed;">${message}</span>" by <span style="color:#4bf9ed;">${author}</span> on <span style="color:#4bf9ed;">${dateTime}</span>`;
     })
     .catch(error => {
       document.getElementById("latest-feature").innerText = "Could not load latest commit.";
