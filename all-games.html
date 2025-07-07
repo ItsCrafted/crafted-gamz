@@ -247,15 +247,19 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 
   <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyCLL2JZUBJwISsLljfMN4wAr3ZSRd4A1Jo",
-      authDomain: "craftedgamzvisits.firebaseapp.com",
-      projectId: "craftedgamzvisits",
-      storageBucket: "craftedgamzvisits.firebase-storage.app",
-      messagingSenderId: "935169016483",
-      appId: "1:935169016483:web:0ea28fbc25e9f390723516",
-      measurementId: "G-23C7D06VFD"
-    };
+async function loadFirebaseConfig() {
+  const res = await fetch('/.netlify/functions/get-firebase-config')
+  if (!res.ok) throw new Error('Failed to fetch Firebase config')
+  const config = await res.json()
+  return config
+}
+
+loadFirebaseConfig().then(config => {
+  const app = firebase.initializeApp(config)
+  // now use Firebase as normal
+})
+.catch(console.error)
+
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
