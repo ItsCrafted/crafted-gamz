@@ -11,7 +11,9 @@
   <iframe src="bg.html"></iframe>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="periodSchedule.js"></script>
 <script src="nav.js" defer></script>
+
 
 
 <h1>Tools</h1>
@@ -50,6 +52,16 @@
 <div class="tool-bar" id="configImport">Import All Settings</div>
 <input type="file" id="configFileInput" accept=".cgcf" style="display:none" />
 </div>
+
+<div class="tool-bar toggle-period-timer">
+  <span>Show Period Timer</span>
+  <label class="switch">
+    <input type="checkbox" id="periodTimerToggle" />
+    <span class="slider"></span>
+  </label>
+  <div id="status" style="margin-top: 8px; font-weight: normal; font-size: 14px; color: #96f3f5;"></div>
+</div>
+
 
   <div class="tool-bar-container">
     <div class="tool-bar" style="cursor:auto;">

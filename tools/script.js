@@ -216,3 +216,22 @@ colorHex.value = colorWheel.value;
 colorWheel.addEventListener('input', () => {
   colorHex.value = colorWheel.value.toLowerCase();
 });
+
+const periodTimerToggle = document.getElementById('periodTimerToggle');
+const statusDiv = document.getElementById('status');
+
+function updateStatus() {
+  const val = localStorage.getItem('showPeriodTimer');
+  const isOn = val === 'true';
+  statusDiv.textContent = `Period Timer is currently: ${isOn ? 'ON' : 'OFF'}`;
+  periodTimerToggle.checked = isOn;
+}
+
+// Toggle handler
+periodTimerToggle.addEventListener('change', () => {
+  localStorage.setItem('showPeriodTimer', periodTimerToggle.checked ? 'true' : 'false');
+  updateStatus();
+});
+
+// Initialize on page load
+updateStatus();
