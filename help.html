@@ -414,34 +414,43 @@
     </button>
 
     <script>
-        // Handle search functionality
-        document.getElementById('helpSearch').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                const searchTerm = this.value.trim().toLowerCase();
-                if (searchTerm === 'crafted') {
-                    window.location.href = 'client.html';
-                }
-            }
-        });
+    async function checkPasswordMatch(input) {
+        try {
+            const res = await fetch('/.netlify/functions/getPassword');
+            const data = await res.json();
+            const correctPassword = data.password;
+            return input.toLowerCase() === 'crafted' && correctPassword.toLowerCase() === 'craftedgamz';
+        } catch (err) {
+            console.error('Error fetching password:', err);
+            return false;
+        }
+    }
 
-        // Add fade-in animation
-        document.addEventListener('DOMContentLoaded', function() {
-            document.body.style.animation = 'fadeIn 0.8s ease-out';
-            
-            const style = document.createElement('style');
-            style.textContent = `
-                @keyframes fadeIn {
-                    from {
-                        opacity: 0;
-                    }
-                    to {
-                        opacity: 1;
-                    }
-                }
-            `;
-            document.head.appendChild(style);
-        });
-    </script>
+    document.getElementById('helpSearch').addEventListener('keypress', async function (e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            const searchTerm = this.value.trim().toLowerCase();
+            const valid = await checkPasswordMatch(searchTerm);
+            if (valid) {
+                window.location.href = 'client.html';
+            } else {
+                alert('Access denied. Try a valid keyword.');
+            }
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        document.body.style.animation = 'fadeIn 0.8s ease-out';
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
+    });
+</script>
 </body>
 
 </html>
