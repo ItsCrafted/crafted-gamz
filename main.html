@@ -252,126 +252,207 @@
       </div>
     </div>
   </div>
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, query, where, Timestamp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
-async function loadFirebaseConfig() {
-  const res = await fetch('/.netlify/functions/get-firebase-config')
-  if (!res.ok) throw new Error('Failed to fetch Firebase config')
-  const config = await res.json()
-  return config
-}
-
-loadFirebaseConfig().then(config => {
-  const app = firebase.initializeApp(config)
-  // now use Firebase as normal
-})
-.catch(console.error)
-
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-const now = new Date();
-const visitsRef = collection(db, "visits");
-
-await addDoc(visitsRef, {
-  timestamp: Timestamp.fromDate(now)
-});
-
-// visit stats
-const allDocs = await getDocs(visitsRef);
-const allTime = allDocs.size;
-
-const todayStart = new Date();
-todayStart.setHours(0, 0, 0, 0);
-const todayQuery = query(visitsRef, where("timestamp", ">=", Timestamp.fromDate(todayStart)));
-const todayDocs = await getDocs(todayQuery);
-const today = todayDocs.size;
-
-const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-const monthQuery = query(visitsRef, where("timestamp", ">=", Timestamp.fromDate(monthStart)));
-const monthDocs = await getDocs(monthQuery);
-const month = monthDocs.size;
-
-const container = document.createElement("div");
-container.style.cssText = `
-  background: rgba(0, 0, 0, 0.8);
-  color: #4bf9ed;
-  padding: 16px 24px;
-  border-radius: 12px;
-  font-size: 16px;
-  font-family: sans-serif;
-  text-align: center;
-  margin: 0 auto;
-  width: fit-content;
-`;
-
-container.innerHTML = `
-  <b>Crafted Gamz Visitors</b><br>
-  Today: ${today}<br>
-  This Month: ${month}<br>
-  All-time: ${allTime}<br>
-`;
-
-document.getElementById("visitors").appendChild(container);
-</script>
+<!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
 <script>
+// Global variables
+let firebaseApp;
+let db;
+
+// Load Firebase config from Netlify function
 async function loadFirebaseConfig() {
-  const res = await fetch('/.netlify/functions/get-firebase-config')
-  if (!res.ok) throw new Error('Failed to fetch Firebase config')
-  const config = await res.json()
-  return config
+  try {
+    const res = await fetch('/.netlify/functions/get-firebase-config');
+    if (!res.ok) throw new Error('Failed to fetch Firebase config');
+    const config = await res.json();
+    return config;
+  } catch (error) {
+    console.error('Error loading Firebase config:', error);
+    throw error;
+  }
 }
 
-loadFirebaseConfig().then(config => {
-  const app = firebase.initializeApp(config)
-  // now use Firebase as normal
-})
-.catch(console.error)
-
-
-  if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
+// Initialize Firebase and run all Firebase-dependent functions
+async function initializeFirebase() {
+  try {
+    const config = await loadFirebaseConfig();
+    
+    // Initialize Firebase
+    firebaseApp = firebase.initializeApp(config);
+    db = firebase.firestore();
+    
+    console.log('Firebase initialized successfully');
+    
+    // Now run all Firebase-dependent functions
+    await Promise.all([
+      trackVisit(),
+      loadLeaderboard()
+    ]);
+    
+    // Set up leaderboard auto-refresh
+    setInterval(loadLeaderboard, 1000);
+    
+  } catch (error) {
+    console.error('Failed to initialize Firebase:', error);
+    // Update UI to show error state
+    document.getElementById('leaderboard').textContent = 'Failed to connect to database.';
+    document.getElementById('visitors').innerHTML = '<div style="color: red; text-align: center;">Failed to load visitor stats</div>';
   }
-  const db = firebase.firestore();
+}
 
-  const leaderboard = document.getElementById("leaderboard");
+// Get today's date key (YYYY-MM-DD format)
+function getTodayKey() {
+  const today = new Date();
+  return today.toISOString().split('T')[0];
+}
 
-  function loadLeaderboard() {
-    db.collection("gameCounts")
-      .orderBy("count", "desc")
-      .limit(3)
-      .get()
-      .then(snapshot => {
-        if (snapshot.empty) {
-          leaderboard.textContent = "No data yet.";
-          return;
-        }
-        leaderboard.innerHTML = "";
-        let rank = 1;
-        snapshot.forEach(doc => {
-          const data = doc.data();
-          const div = document.createElement("div");
-          div.style.marginBottom = "10px";
-          div.innerHTML = `<strong>#${rank}: ${doc.id}</strong> — ${data.count} plays`;
-          leaderboard.appendChild(div);
-          rank++;
-        });
-      })
-      .catch(error => {
-        leaderboard.textContent = "Failed to load leaderboard.";
-        console.error("Error fetching leaderboard:", error);
+// Get current month key (YYYY-MM format)
+function getMonthKey() {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  return `${year}-${month}`;
+}
+
+// Track visitor using counters - FIXED VERSION
+async function trackVisit() {
+  try {
+    const todayKey = getTodayKey();
+    const monthKey = getMonthKey();
+    
+    // References to counter documents
+    const allTimeRef = db.collection('stats').doc('allTime');
+    const todayRef = db.collection('stats').doc(todayKey);
+    const monthRef = db.collection('stats').doc(monthKey);
+    
+    // Use set with merge: true and increment to handle non-existent documents
+    const batch = db.batch();
+    
+    batch.set(allTimeRef, {
+      count: firebase.firestore.FieldValue.increment(1)
+    }, { merge: true });
+    
+    batch.set(todayRef, {
+      count: firebase.firestore.FieldValue.increment(1),
+      date: todayKey
+    }, { merge: true });
+    
+    batch.set(monthRef, {
+      count: firebase.firestore.FieldValue.increment(1),
+      month: monthKey
+    }, { merge: true });
+    
+    // Execute batch write
+    await batch.commit();
+    console.log('Visit tracked successfully');
+    
+    // Now read the updated stats
+    await loadVisitorStats();
+    
+  } catch (error) {
+    console.error('Error tracking visit:', error);
+    // Fallback: try to load existing stats even if tracking failed
+    await loadVisitorStats();
+  }
+}
+
+// Load visitor statistics from counter documents
+async function loadVisitorStats() {
+  try {
+    const todayKey = getTodayKey();
+    const monthKey = getMonthKey();
+    
+    // Get all stats in parallel
+    const [allTimeDoc, todayDoc, monthDoc] = await Promise.all([
+      db.collection('stats').doc('allTime').get(),
+      db.collection('stats').doc(todayKey).get(),
+      db.collection('stats').doc(monthKey).get()
+    ]);
+    
+    const allTime = allTimeDoc.exists ? allTimeDoc.data().count : 0;
+    const today = todayDoc.exists ? todayDoc.data().count : 0;
+    const month = monthDoc.exists ? monthDoc.data().count : 0;
+    
+    console.log('Visitor stats loaded:', { allTime, today, month });
+    
+    // Update visitor stats in UI
+    const container = document.createElement('div');
+    container.style.cssText = `
+      background: rgba(0, 0, 0, 0.8);
+      color: #4bf9ed;
+      padding: 16px 24px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-family: sans-serif;
+      text-align: center;
+      margin: 0 auto;
+      width: fit-content;
+    `;
+    
+    container.innerHTML = `
+      <b>Crafted Gamz Visitors</b><br>
+      Today: ${today}<br>
+      This Month: ${month}<br>
+      All-time: ${allTime}<br>
+    `;
+    
+    // Clear previous stats and add new ones
+    const visitorsDiv = document.getElementById('visitors');
+    visitorsDiv.innerHTML = '';
+    visitorsDiv.appendChild(container);
+    
+    console.log('Visitor stats UI updated');
+    
+  } catch (error) {
+    console.error('Error loading visitor stats:', error);
+    // Show error state in UI
+    const visitorsDiv = document.getElementById('visitors');
+    visitorsDiv.innerHTML = '<div style="color: red; text-align: center;">Failed to load visitor stats</div>';
+  }
+}
+
+// Load leaderboard
+function loadLeaderboard() {
+  if (!db) return;
+  
+  db.collection('gameCounts')
+    .orderBy('count', 'desc')
+    .limit(3)
+    .get()
+    .then(snapshot => {
+      const leaderboard = document.getElementById('leaderboard');
+      if (snapshot.empty) {
+        leaderboard.textContent = 'No data yet.';
+        return;
+      }
+      leaderboard.innerHTML = '';
+      let rank = 1;
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        const div = document.createElement('div');
+        div.style.marginBottom = '10px';
+        div.innerHTML = `<strong>#${rank}: ${doc.id}</strong> — ${data.count} plays`;
+        leaderboard.appendChild(div);
+        rank++;
       });
-  }
+    })
+    .catch(error => {
+      document.getElementById('leaderboard').textContent = 'Failed to load leaderboard.';
+      console.error('Error fetching leaderboard:', error);
+    });
+}
 
-  loadLeaderboard();
-  setInterval(loadLeaderboard, 1000);
+// Initialize everything when page loads
+document.addEventListener('DOMContentLoaded', () => {
+  initializeFirebase();
+});
 </script>
+
 <script>
+  // Load monthly choice value
   async function fetchValue() {
     try {
       const res = await fetch('/value.json');
@@ -385,7 +466,9 @@ loadFirebaseConfig().then(config => {
   }
   fetchValue();
 </script>
+
 <script>
+  // Load latest GitHub commit
   fetch("https://api.github.com/repos/ItsCrafted/crafted-gamz/commits")
     .then(response => response.json())
     .then(commits => {

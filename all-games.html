@@ -242,72 +242,109 @@
     document.body.insertBefore(counter, document.querySelector(".search-dropdown"));
   </script>
 
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 
-  <script>
+<script>
+// Global variables
+let firebaseApp;
+let db;
+
+// Load Firebase config from environment
 async function loadFirebaseConfig() {
-  const res = await fetch('/.netlify/functions/get-firebase-config')
-  if (!res.ok) throw new Error('Failed to fetch Firebase config')
-  const config = await res.json()
-  return config
+  try {
+    const res = await fetch('/.netlify/functions/get-firebase-config');
+    if (!res.ok) throw new Error('Failed to fetch Firebase config');
+    const config = await res.json();
+    return config;
+  } catch (error) {
+    console.error('Error loading Firebase config:', error);
+    throw error;
+  }
 }
 
-loadFirebaseConfig().then(config => {
-  const app = firebase.initializeApp(config)
-  // now use Firebase as normal
-})
-.catch(console.error)
+// Initialize Firebase and set up event listeners
+async function initializeFirebase() {
+  try {
+    const config = await loadFirebaseConfig();
+    firebaseApp = firebase.initializeApp(config);
+    db = firebase.firestore();
+    
+    console.log('Firebase initialized successfully');
+    
+    // Set up click tracking after Firebase is ready
+    setupClickTracking();
+    
+  } catch (error) {
+    console.error('Failed to initialize Firebase:', error);
+  }
+}
 
+// Set up click tracking for game boxes
+function setupClickTracking() {
+  document.querySelectorAll(".box").forEach(box => {
+    box.addEventListener("click", async (e) => {
+      e.preventDefault();
+      
+      const gameName = box.querySelector("h3")?.textContent.trim();
+      if (!gameName) {
+        window.location.href = box.href;
+        return;
+      }
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
+      console.log(`Tracking click for game: ${gameName}`);
 
-    document.querySelectorAll(".box").forEach(box => {
-        box.addEventListener("click", async (e) => {
-            e.preventDefault();
-            
-            const gameName = box.querySelector("h3")?.textContent.trim();
-            if (!gameName) {
-                window.location.href = box.href;
-                return;
-            }
-
-            console.log(`Tracking click for game: ${gameName}`);
-
-            try {
-                const gameDoc = db.collection("gameCounts").doc(gameName);
-                
-                const docSnapshot = await gameDoc.get();
-                
-                if (docSnapshot.exists) {
-                    const currentCount = docSnapshot.data().count || 0;
-                    await gameDoc.update({ 
-                        count: currentCount + 1,
-                        lastClicked: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                    console.log(`Updated count for ${gameName}: ${currentCount + 1}`);
-                } else {
-                    await gameDoc.set({ 
-                        count: 1,
-                        lastClicked: firebase.firestore.FieldValue.serverTimestamp(),
-                        gameName: gameName
-                    });
-                    console.log(`Created new count for ${gameName}: 1`);
-                }
-                
-            } catch (error) {
-                console.error("Failed to update game count:", error);
-            }
-            
-            setTimeout(() => {
-                window.location.href = box.href;
-            }, 100);
-        });
+      try {
+        const gameDoc = db.collection("gameCounts").doc(gameName);
+        
+        const docSnapshot = await gameDoc.get();
+        
+        if (docSnapshot.exists) {
+          const currentCount = docSnapshot.data().count || 0;
+          await gameDoc.update({ 
+            count: currentCount + 1,
+            lastClicked: firebase.firestore.FieldValue.serverTimestamp()
+          });
+          console.log(`Updated count for ${gameName}: ${currentCount + 1}`);
+        } else {
+          await gameDoc.set({ 
+            count: 1,
+            lastClicked: firebase.firestore.FieldValue.serverTimestamp(),
+            gameName: gameName
+          });
+          console.log(`Created new count for ${gameName}: 1`);
+        }
+        
+      } catch (error) {
+        console.error("Failed to update game count:", error);
+      }
+      
+      setTimeout(() => {
+        window.location.href = box.href;
+      }, 100);
     });
-  </script>
-  
+  });
+}
+
+// Initialize when page loads
+document.addEventListener('DOMContentLoaded', () => {
+  initializeFirebase();
+});
+</script>
+
+<script>
+// Set up game ID tracking for localStorage
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.box').forEach(el => {
+    el.addEventListener('click', e => {
+      const gameId = e.currentTarget.getAttribute('data-id');
+      if (gameId) {
+        localStorage.setItem('gameIds', JSON.stringify([gameId]));
+      }
+    });
+  });
+});
+</script>
 <script>
 document.querySelectorAll('.box').forEach(el => {
   el.addEventListener('click', e => {
