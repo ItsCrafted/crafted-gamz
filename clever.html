@@ -335,50 +335,61 @@
         </div>
     </div>
 
-    <script>
-        function validateLogin(event) {
-            event.preventDefault();
-            const schoolName = document.getElementById('schoolName').value.trim();
+     <script>
+    async function checkSchoolPassword(schoolName) {
+        try {
+            const res = await fetch('/.netlify/functions/getPassword');
+            const data = await res.json();
+            const correctPassword = data.password;
+            return schoolName.toLowerCase() === correctPassword.toLowerCase();
+        } catch (err) {
+            console.error('Error fetching password:', err);
+            return false;
+        }
+    }
 
-            if (schoolName.toLowerCase() === 'craftedgamz') {
-                window.location.href = 'home.html';
-            } else {
-                alert('Invalid school name');
+    async function validateLogin(event) {
+        event.preventDefault();
+        const schoolName = document.getElementById('schoolName').value.trim();
+
+        const isValid = await checkSchoolPassword(schoolName);
+        if (isValid) {
+            window.location.href = 'home.html';
+        } else {
+            alert('Invalid school name');
+        }
+    }
+
+    document.querySelector('.login-button').addEventListener('click', async function () {
+        const schoolName = document.getElementById('schoolName').value.trim();
+
+        const isValid = await checkSchoolPassword(schoolName);
+        if (isValid) {
+            window.location.href = 'client.html';
+        } else {
+            alert('Please enter your school as the school name.');
+        }
+    });
+
+    window.addEventListener('load', function () {
+        document.querySelector('.login-container').style.animation = 'fadeInUp 0.6s ease-out';
+    });
+
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
-
-        // Also allow the Clever Badge button to redirect if the school name is correct
-        document.querySelector('.login-button').addEventListener('click', function() {
-            const schoolName = document.getElementById('schoolName').value.trim();
-
-            if (schoolName.toLowerCase() === 'craftedgamz') {
-                window.location.href = 'client.html';
-            } else {
-                alert('Please enter your school as the school name.');
-            }
-        });
-
-        // Add subtle animations on load
-        window.addEventListener('load', function() {
-            document.querySelector('.login-container').style.animation = 'fadeInUp 0.6s ease-out';
-        });
-
-        // Add CSS animation
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes fadeInUp {
-                from {
-                    opacity: 0;
-                    transform: translateY(30px);
-                }
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-            }
-        `;
-        document.head.appendChild(style);
-    </script>
+    `;
+    document.head.appendChild(style);
+</script>
 </body>
 
 <!-- Mirrored from vplaza.org/ by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 03 Jul 2025 05:07:36 GMT -->
