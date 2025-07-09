@@ -237,14 +237,12 @@ const navHTML = `
           <a href="transfer.html"><i class="fas fa-share"></i> Transfer</a>
           <a href="partners.html"><i class="fas fa-handshake"></i> Partners</a>
           <a href="aicalc.html"><i class="fas fa-calculator"></i> AI Calculator</a>
+          <a href="elaassist.html"><i class="fas fa-pen-nib"></i> ELA Assistant</a>
         </div>
       </div>
     </div>
     <div class="weather">
-      <i class="fas fa-sun icon" style="color:#f6d365" aria-label="Clear weather"></i>
-      <div class="temp">72°F</div>
-      <div class="desc">Clear</div>
-      <div class="wind"><i class="fas fa-wind"></i> 5 mph</div>
+      <button id="enable-location-btn">Enable Location For Weather</button>
     </div>
   </nav>
 `;
@@ -387,7 +385,7 @@ if (!show) {
   const schedule = getTodaySchedule();
 
   if (!schedule || schedule.length === 0) {
-    periodTimerDiv.textContent = 'No period | No time to start | No time to end';
+    periodTimerDiv.textContent = 'No current period | No time to start | No time to end';
     return;
   }
 
@@ -431,10 +429,10 @@ if (!show) {
     const { period, startDate } = nextPeriod;
     const timeToStart = startDate - now;
     periodTimerDiv.textContent =
-      `No period | Time to start ${period.name}: ${formatDuration(timeToStart)} | No time to end`;
+      `No current period | Time til start ${period.name}: ${formatDuration(timeToStart)} | No current period`;
   } else {
     // No next period either (day over)
-    periodTimerDiv.textContent = 'No period | No time to start | No time to end';
+    periodTimerDiv.textContent = 'No current period | No current period | No current period';
   }
 }
 
@@ -500,7 +498,7 @@ function fetchWeather(lat, lon) {
       renderWeather(Math.round(c * 9 / 5 + 32), d.current_weather.weathercode, Math.round(d.current_weather.windspeed));
       localStorage.setItem('locationAccepted', 'true');
     })
-    .catch(() => { weatherDiv.textContent = 'Unable to get weather'; });
+    .catch(() => { weatherDiv.innerHTML = `<button id="enable-location-btn">Enable Location For Weather</button>`; });
 }
 
 function requestLocation() {
@@ -509,13 +507,17 @@ function requestLocation() {
   navigator.geolocation.getCurrentPosition(
     p => fetchWeather(p.coords.latitude, p.coords.longitude),
     () => {
-      weatherDiv.innerHTML = `<button id="enable-location-btn">Enable Location</button>`;
-      document.getElementById('enable-location-btn').onclick = requestLocation;
+      weatherDiv.innerHTML = `<button id="enable-location-btn">Enable Location For Weather</button>`;
       localStorage.removeItem('locationAccepted');
     },
     { timeout: 10000 }
   );
 }
 
-if (localStorage.getItem('locationAccepted') === 'true') requestLocation();
-else document.getElementById('enable-location-btn')?.addEventListener('click', requestLocation);
+// Add event listener to the button
+document.getElementById('enable-location-btn').addEventListener('click', requestLocation);
+
+// If location was previously accepted, automatically request weather
+if (localStorage.getItem('locationAccepted') === 'true') {
+  requestLocation();
+}
