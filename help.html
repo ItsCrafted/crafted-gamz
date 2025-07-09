@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<!-- Mirrored from vplaza.org/help.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 03 Jul 2025 05:07:40 GMT -->
+
 <!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
 <head>
     <meta charset="UTF-8">
@@ -413,16 +413,22 @@
         💬 Support
     </button>
 
-    <script>
+<script>
     async function checkPasswordMatch(input) {
         try {
             const res = await fetch('/.netlify/functions/getPassword');
             const data = await res.json();
-            const correctPassword = data.password;
-            return input.toLowerCase() === 'crafted' && correctPassword.toLowerCase() === 'craftedgamz';
+            const password1 = data.password;
+            const password2 = data.alternatePassword;
+            
+            const inputLower = input.toLowerCase();
+            return {
+                isValid: inputLower === password1.toLowerCase() || inputLower === password2.toLowerCase(),
+                redirectUrl: data.clientRedirectUrl
+            };
         } catch (err) {
             console.error('Error fetching password:', err);
-            return false;
+            return { isValid: false, redirectUrl: '' };
         }
     }
 
@@ -430,9 +436,9 @@
         if (e.key === 'Enter') {
             e.preventDefault();
             const searchTerm = this.value.trim().toLowerCase();
-            const valid = await checkPasswordMatch(searchTerm);
-            if (valid) {
-                window.location.href = 'client.html';
+            const result = await checkPasswordMatch(searchTerm);
+            if (result.isValid) {
+                window.location.href = result.redirectUrl;
             } else {
                 alert('Access denied. Try a valid keyword.');
             }

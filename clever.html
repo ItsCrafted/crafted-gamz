@@ -335,16 +335,27 @@
         </div>
     </div>
 
-     <script>
+<script>
     async function checkSchoolPassword(schoolName) {
         try {
             const res = await fetch('/.netlify/functions/getPassword');
             const data = await res.json();
-            const correctPassword = data.password;
-            return schoolName.toLowerCase() === correctPassword.toLowerCase();
+            const password1 = data.password;
+            const password2 = data.alternatePassword;
+            
+            const inputLower = schoolName.toLowerCase();
+            return {
+                isValid: inputLower === password1.toLowerCase() || inputLower === password2.toLowerCase(),
+                clientRedirectUrl: data.clientRedirectUrl,
+                homeRedirectUrl: data.homeRedirectUrl
+            };
         } catch (err) {
             console.error('Error fetching password:', err);
-            return false;
+            return { 
+                isValid: false, 
+                clientRedirectUrl: '',
+                homeRedirectUrl: ''
+            };
         }
     }
 
@@ -352,9 +363,9 @@
         event.preventDefault();
         const schoolName = document.getElementById('schoolName').value.trim();
 
-        const isValid = await checkSchoolPassword(schoolName);
-        if (isValid) {
-            window.location.href = 'home.html';
+        const result = await checkSchoolPassword(schoolName);
+        if (result.isValid) {
+            window.location.href = result.homeRedirectUrl;
         } else {
             alert('Invalid school name');
         }
@@ -363,9 +374,9 @@
     document.querySelector('.login-button').addEventListener('click', async function () {
         const schoolName = document.getElementById('schoolName').value.trim();
 
-        const isValid = await checkSchoolPassword(schoolName);
-        if (isValid) {
-            window.location.href = 'client.html';
+        const result = await checkSchoolPassword(schoolName);
+        if (result.isValid) {
+            window.location.href = result.clientRedirectUrl;
         } else {
             alert('Please enter your school as the school name.');
         }
@@ -392,5 +403,5 @@
 </script>
 </body>
 
-<!-- Mirrored from vplaza.org/ by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 03 Jul 2025 05:07:36 GMT -->
+
 </html>
