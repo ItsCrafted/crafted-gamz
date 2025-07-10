@@ -7,14 +7,16 @@ nav {
   left: 0;
   width: 100%;
   background: rgba(0, 0, 0, 0.85);
-  padding: 12px 24px;
+  padding: 6px 24px;  /* less vertical padding for smaller height */
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   z-index: 999;
   color: white;
   display: flex;
   align-items: center;
-  /* Remove justify-content: center to avoid shifting */
-  justify-content: space-between;
+  justify-content: flex-start;
+  position: relative;
+  height: auto;  /* auto height based on content */
+  min-height: 40px; /* min height for comfort */
 }
 
 nav .time-wrapper {
@@ -25,33 +27,39 @@ nav .time-wrapper {
   min-width: 220px;
   justify-content: flex-start;
   flex: none;
+  z-index: 10;
 }
 
 nav .links {
   position: absolute;
   left: 50%;
-  transform: translateX(-50%);
-  white-space: nowrap;
+  top: 50%;
+  transform: translate(-50%, -50%);
   display: flex;
   gap: 24px;
-  padding: 15px 0;          /* vertical padding */
-  align-items: center;      /* vertical centering of children */
-  height: 100%;             /* fill nav height to center vertically */
+  white-space: nowrap;
+  align-items: center;
+  height: auto;
+  z-index: 9;
+  padding: 0;
+  margin: 0;
 }
 
 nav .links a {
-  display: inline-flex;      /* inline-flex for vertical centering */
-  align-items: center;       /* center icon + text vertically */
+  display: inline-flex;
+  align-items: center;
   color: white;
   text-decoration: none;
   font-weight: bold;
   font-size: 16px;
   position: relative;
   transition: color 0.2s ease;
-  padding: 0 8px;            /* optional horizontal padding */
-  height: 100%;              /* fill nav height for vertical centering */
+  padding: 0 8px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  height: auto;
+  line-height: 1.2;
 }
-
 
 nav .links a i {
   color: #96f3f5;
@@ -87,6 +95,7 @@ nav .links .more {
   position: relative;
   display: inline-block;
   text-align: center;
+  flex-shrink: 0;
 }
 
 nav .links .more .hamburger {
@@ -140,17 +149,45 @@ nav .links .more .dropdown a:hover {
   background: rgba(0,0,0,0.8);
 }
 
+nav .panic-btn-wrapper {
+  position: absolute;
+  right: 470px; /* 150px (weather right margin) + 220px (weather width) + 100px gap */
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+}
+
+nav #panic-btn {
+  background: #ff3860;
+  border: none;
+  padding: 6px 14px;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 16px;
+  transition: background 0.3s ease;
+  user-select: none;
+}
+
+nav #panic-btn:hover {
+  background: #ff1f4b;
+}
+
 nav .weather {
-  flex: none;
+  position: absolute;
+  right: 150px; /* moved 100px more left */
+  top: 50%;
+  transform: translateY(-50%);
+  width: 220px;
   font-size: 16px;
   text-align: right;
   user-select: none;
-  padding-right: 100px;
   display: flex;
   align-items: center;
   justify-content: flex-end;
   gap: 20px;
-  width: 220px; /* same width as left to keep balance */
+  z-index: 10;
 }
 
 nav .weather button {
@@ -218,12 +255,13 @@ nav .period-timer {
 document.head.appendChild(style);
 
 const navHTML = `
-  <nav>
-    <div class="time-wrapper" style="display:flex; align-items:center; gap:6px;">
-  <div class="time">--:--:-- --</div>
-  <div class="period-timer"></div>
-</div>
+<nav>
+  <div class="time-wrapper" style="display:flex; align-items:center; gap:6px;">
+    <div class="time">--:--:-- --</div>
+    <div class="period-timer"></div>
+  </div>
 
+  <div class="nav-center">
     <div class="links">
       <a href="main.html"><i class="fas fa-house"></i> Home</a>
       <a href="search.html"><i class="fas fa-magnifying-glass"></i> Search</a>
@@ -241,10 +279,16 @@ const navHTML = `
         </div>
       </div>
     </div>
+
+    <div class="panic-btn-wrapper">
+      <button id="panic-btn">PANIC</button>
+    </div>
+
     <div class="weather">
       <button id="enable-location-btn">Enable Location For Weather</button>
     </div>
-  </nav>
+  </div>
+</nav>
 `;
 document.body.insertAdjacentHTML("afterbegin", navHTML);
 
@@ -521,3 +565,33 @@ document.getElementById('enable-location-btn').addEventListener('click', request
 if (localStorage.getItem('locationAccepted') === 'true') {
   requestLocation();
 }
+
+const panicBtnWrapper = document.querySelector('.panic-btn-wrapper');
+const panicBtn = document.getElementById('panic-btn');
+
+const DEFAULT_PANIC_URL = 'https://www.google.com';
+const DEFAULT_SHOW_PANIC = 'true';
+const DEFAULT_PANIC_KEYCODE = 27;  // Escape key code
+
+const showPanic = localStorage.getItem('showPanicButton') ?? DEFAULT_SHOW_PANIC;
+const panicUrl = localStorage.getItem('panicUrl') || DEFAULT_PANIC_URL;
+const panicKeyCode = Number(localStorage.getItem('panicKeyCode')) || DEFAULT_PANIC_KEYCODE;
+
+if (showPanic === 'true') {
+  panicBtnWrapper.style.display = 'block';
+} else {
+  panicBtnWrapper.style.display = 'none';
+}
+
+panicBtn.addEventListener('click', () => {
+  window.location.href = panicUrl;
+});
+
+document.addEventListener('keydown', (e) => {
+  if (showPanic !== 'true') return;
+
+  if (e.keyCode === panicKeyCode) {
+    e.preventDefault();
+    panicBtn.click();
+  }
+});

@@ -235,3 +235,41 @@ periodTimerToggle.addEventListener('change', () => {
 
 // Initialize on page load
 updateStatus();
+
+document.addEventListener('DOMContentLoaded', () => {
+  const panicShowToggle = document.getElementById('panicShowToggle');
+  const panicUrlInput = document.getElementById('panicUrlInput');
+  const panicKeyCodeInput = document.getElementById('panicKeyCodeInput');
+  const saveBtn = document.getElementById('savePanicSettings');
+  const confirmation = document.getElementById('panicSaveConfirmation');
+
+  const DEFAULT_PANIC_URL = 'https://www.google.com';
+  const DEFAULT_SHOW_PANIC = 'true';
+  const DEFAULT_PANIC_KEYCODE = 27;
+
+  // Load saved settings or defaults
+  const savedShow = localStorage.getItem('showPanicButton') ?? DEFAULT_SHOW_PANIC;
+  const savedUrl = localStorage.getItem('panicUrl') || DEFAULT_PANIC_URL;
+  const savedKeyCode = localStorage.getItem('panicKeyCode') || DEFAULT_PANIC_KEYCODE;
+
+  panicShowToggle.checked = (savedShow === 'true');
+  panicUrlInput.value = savedUrl;
+  panicKeyCodeInput.value = savedKeyCode;
+
+  saveBtn.addEventListener('click', () => {
+    localStorage.setItem('showPanicButton', panicShowToggle.checked ? 'true' : 'false');
+    localStorage.setItem('panicUrl', panicUrlInput.value.trim() || DEFAULT_PANIC_URL);
+    let code = parseInt(panicKeyCodeInput.value);
+    if (isNaN(code) || code < 0 || code > 255) {
+      alert('Please enter a valid key code between 0 and 255');
+      return;
+    }
+    localStorage.setItem('panicKeyCode', code.toString());
+
+    confirmation.style.display = 'block';
+    setTimeout(() => {
+      confirmation.style.display = 'none';
+    }, 2500);
+  });
+});
+
