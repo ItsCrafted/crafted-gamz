@@ -7,6 +7,8 @@ headers = []
 [build]
 publish = "C:\\Users\\Bandi\\Main\\All things Crafted\\GitHub\\crafted-gamz"
 publishOrigin = "config"
+commandOrigin = "ui"
+command = "node update-version.js"
 functions = "C:\\Users\\Bandi\\Main\\All things Crafted\\GitHub\\crafted-gamz\\netlify\\functions"
 
 [build.environment]

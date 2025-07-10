@@ -1,18 +1,32 @@
-const fs = require('fs');
+import fetch from 'node-fetch';
 
-const file = './version.json';
-const version = JSON.parse(fs.readFileSync(file, 'utf8'));
+const netlifyFunctionUrl = process.env.VERSION_API_URL;
+const password = process.env.VERSION_API_PASSWORD;
 
-version.patch += 1;
-
-if (version.patch > 9) {
-  version.patch = 0;
-  version.minor += 1;
+if (!netlifyFunctionUrl || !password) {
+  console.error('Missing VERSION_API_URL or VERSION_API_PASSWORD environment variables.');
+  process.exit(1);
 }
 
-// Save new version
-fs.writeFileSync(file, JSON.stringify(version, null, 2));
+async function incrementVersion() {
+  try {
+    const response = await fetch(netlifyFunctionUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password }),
+    });
 
-// Output string version (optional, for use in version.js)
-const versionStr = `${version.major}.${version.minor}.${version.patch}`;
-fs.writeFileSync('./version.js', `const version = 'v${versionStr}';`);
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(`Failed to increment version: ${response.status} ${text}`);
+    }
+
+    const versionText = await response.text();  // <-- change here, not .json()
+    console.log('Version incremented to:', versionText);
+  } catch (error) {
+    console.error('Error incrementing version:', error.message);
+    process.exit(1);
+  }
+}
+
+incrementVersion();

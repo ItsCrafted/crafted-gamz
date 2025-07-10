@@ -186,6 +186,14 @@
   .icon:hover {
     color: #4bf9ed; /* a brighter blue on hover */
   }
+
+  #cg-version {
+  font-size: 25px;
+  color: #96f3f5; /* Crafted blue */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin-top: 10px;
+}
+
   </style>
 </head>
 <body>
@@ -214,12 +222,7 @@
 <div class="box box2">
     <h2>Newest Feature</h2>
     <h2>Current Version:</h2>
-    <div id="version"></div>
-<script src="version.js"></script>
-<script>
-  document.getElementById('version').innerText = version;
-</script>
-
+    <div id="cg-version">Loading version...</div>
   <p id="latest-feature">Loading latest update...</p>
 </div>
 <div class="box box3">
@@ -545,6 +548,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
   updateStatus();
   setInterval(updateStatus, 50000);
+</script>
+<script>
+fetch('/.netlify/functions/version')
+  .then(res => res.json())
+  .then(data => {
+    if (data.version) {
+      document.getElementById('cg-version').innerText = `Version: ${data.version}`;
+    } else {
+      document.getElementById('cg-version').innerText = 'Version info unavailable';
+    }
+  })
+  .catch(() => {
+    document.getElementById('cg-version').innerText = 'Version info unavailable';
+  });
+
+</script>
+<script>
+  window.addEventListener('load', function () {
+    localStorage.setItem('loggedIn', 'true');
+  });
 </script>
 
 </body>

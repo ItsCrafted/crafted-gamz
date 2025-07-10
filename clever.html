@@ -336,72 +336,90 @@
     </div>
 
 <script>
-    async function checkSchoolPassword(schoolName) {
-        try {
-            const res = await fetch('/.netlify/functions/getPassword');
-            const data = await res.json();
-            const password1 = data.password;
-            const password2 = data.alternatePassword;
-            
-            const inputLower = schoolName.toLowerCase();
-            return {
-                isValid: inputLower === password1.toLowerCase() || inputLower === password2.toLowerCase(),
-                clientRedirectUrl: data.clientRedirectUrl,
-                homeRedirectUrl: data.homeRedirectUrl
-            };
-        } catch (err) {
-            console.error('Error fetching password:', err);
-            return { 
-                isValid: false, 
-                clientRedirectUrl: '',
-                homeRedirectUrl: ''
-            };
-        }
+  async function getLocalStorageKey() {
+    try {
+      const res = await fetch('/.netlify/functions/getStorageKey');
+      if (!res.ok) throw new Error('Failed to fetch storage key');
+      const data = await res.json();
+      return data.keyName;
+    } catch (err) {
+      console.error('Error getting localStorage key:', err);
+      return 'loggedIn'; // fallback
+    }
+  }
+
+  async function checkSchoolPassword(schoolName) {
+    try {
+      const res = await fetch('/.netlify/functions/getPassword');
+      const data = await res.json();
+      const password1 = data.password;
+      const password2 = data.alternatePassword;
+      
+      const inputLower = schoolName.toLowerCase();
+      return {
+        isValid: inputLower === password1.toLowerCase() || inputLower === password2.toLowerCase(),
+        clientRedirectUrl: data.clientRedirectUrl,
+        homeRedirectUrl: data.homeRedirectUrl
+      };
+    } catch (err) {
+      console.error('Error fetching password:', err);
+      return { 
+        isValid: false, 
+        clientRedirectUrl: '',
+        homeRedirectUrl: ''
+      };
+    }
+  }
+
+  async function validateLogin(event) {
+    event.preventDefault();
+    const schoolName = document.getElementById('schoolName').value.trim();
+
+    const result = await checkSchoolPassword(schoolName);
+    if (result.isValid) {
+      window.location.href = result.homeRedirectUrl;
+    } else {
+      alert('Invalid school name');
+    }
+  }
+
+  document.querySelector('.login-button').addEventListener('click', async function () {
+    const schoolName = document.getElementById('schoolName').value.trim();
+
+    const result = await checkSchoolPassword(schoolName);
+    if (result.isValid) {
+      const keyName = await getLocalStorageKey();
+      localStorage.setItem(keyName, 'true');
+      window.location.href = result.clientRedirectUrl;
+    } else {
+      alert('Please enter your school as the school name.');
+    }
+  });
+
+  window.addEventListener('load', async function () {
+    const keyName = await getLocalStorageKey();
+    if (localStorage.getItem(keyName) === 'true') {
+      window.location.href = 'client.html';
+      return;
     }
 
-    async function validateLogin(event) {
-        event.preventDefault();
-        const schoolName = document.getElementById('schoolName').value.trim();
+    document.querySelector('.login-container').style.animation = 'fadeInUp 0.6s ease-out';
+  });
 
-        const result = await checkSchoolPassword(schoolName);
-        if (result.isValid) {
-            window.location.href = result.homeRedirectUrl;
-        } else {
-            alert('Invalid school name');
-        }
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
-
-    document.querySelector('.login-button').addEventListener('click', async function () {
-        const schoolName = document.getElementById('schoolName').value.trim();
-
-        const result = await checkSchoolPassword(schoolName);
-        if (result.isValid) {
-            window.location.href = result.clientRedirectUrl;
-        } else {
-            alert('Please enter your school as the school name.');
-        }
-    });
-
-    window.addEventListener('load', function () {
-        document.querySelector('.login-container').style.animation = 'fadeInUp 0.6s ease-out';
-    });
-
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-    `;
-    document.head.appendChild(style);
+  `;
+  document.head.appendChild(style);
 </script>
 </body>
-
-
 </html>

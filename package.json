@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.7.2",
+    "node-fetch": "^3.3.2",
     "stats.js": "^0.17.0"
   },
   "devDependencies": {
