@@ -177,6 +177,15 @@
   transform: scale(1.05);
 }
 
+  .icon {
+    font-size: 40px;
+    color: #96f3f5;
+    margin: 0 12px;
+    transition: color 0.3s ease;
+  }
+  .icon:hover {
+    color: #4bf9ed; /* a brighter blue on hover */
+  }
   </style>
 </head>
 <body>
@@ -203,21 +212,27 @@
   </div>
 </div>
 <div class="box box2">
+    <h2>Newest Feature</h2>
+    <h2>Current Version:</h2>
+    <div id="version"></div>
+<script src="version.js"></script>
+<script>
+  document.getElementById('version').innerText = version;
+</script>
+
+  <p id="latest-feature">Loading latest update...</p>
+</div>
+<div class="box box3">
+<h2>CGPUP Status</h2>
+<div id="uptime-status" style="margin-top: 10px; font-size: 1.2rem; color: #96f3f5;">
+  Checking status...
+</div>
+
+</div>
+    <div class="box box4">
   <h2>Choice Of The Month</h2>
   <h3>This Month's Pick:</h3>
   <div id="value" style="font-size: 2.5rem; font-weight: 700; margin-top: 0.5rem;">Loading...</div>
-</div>
-<div class="box box3">
-  <h2>Newest Feature</h2>
-  <p id="latest-feature">Loading latest update...</p>
-</div>
-    <div class="box box4">
-      <h2>Credits And Thanks</h2>
-      <p>Website coded by Crafted, Under Crafted Gamz, with help from ai 💀💀.</p>
-      <p>Website files hosted on Github and deployed with Netlifty.</p>
-      <p>Idea came from LJH Web Games, Jordan's Math Work, and T.P.E.</p>
-      <p>Credit and thanks to 3kh0 for most of the games.</p>
-      <p>Random text inspired from US4</p>
     </div>
     <div class="box box5">
       <h2>Do it Yourself</h2>
@@ -237,17 +252,18 @@
     <div class="box box6">
       <h2>Social & Contact</h2>
       <div class="social-icons">
-        <a href="https://discordid.netlify.app/?id=1216168493213552660" target="_blank">
-          <img src="img/discord.png" alt="Discord" class="icon">
-        </a>
-        <a href="mailto:crafted@craftedgamz.com" target="_blank">
-          <img src="img/email.png" alt="Email" class="icon">
-        </a>
-        <a href="https://github.com/ItsCrafted" target="_blank">
-          <img src="img/github.png" alt="GitHub" class="icon">
-        </a>
-        <a href="https://youtube.com/@its_crafted" target="_blank">
-          <img src="img/youtube.png" alt="YouTube" class="icon">
+<a href="https://discordid.netlify.app/?id=1216168493213552660" target="_blank" aria-label="Discord">
+  <i class="fab fa-discord icon"></i>
+</a>
+<a href="mailto:crafted@craftedgamz.com" target="_blank" aria-label="Email">
+  <i class="fas fa-envelope icon"></i>
+</a>
+<a href="https://github.com/ItsCrafted" target="_blank" aria-label="GitHub">
+  <i class="fab fa-github icon"></i>
+</a>
+<a href="https://youtube.com/@its_crafted" target="_blank" aria-label="YouTube">
+  <i class="fab fa-youtube icon"></i>
+</a>
         </a>
       </div>
     </div>
@@ -485,6 +501,50 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById("latest-feature").innerText = "Could not load latest commit.";
       console.error(error);
     });
+</script>
+<script>
+  const statusEl = document.getElementById('uptime-status');
+
+  function updateStatus() {
+    fetch('https://api.uptimerobot.com/v2/getMonitors', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        api_key: 'm800913241-525531581fb67985a2b338b2',
+        format: 'json'
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (!data.monitors || data.monitors.length === 0) {
+        statusEl.innerHTML = 'No monitors found.';
+        return;
+      }
+
+      const monitor = data.monitors[0];
+      const status = monitor.status;
+
+      const statusMap = {
+        0: '<span style="color: gray;"><i class="fa fa-pause-circle"></i> Paused</span>',
+        1: '<span style="color: gray;"><i class="fa fa-clock"></i> Not Checked Yet</span>',
+        2: '<span style="color: #00ff99;"><i class="fa fa-circle-check"></i> Up</span>',
+        8: '<span style="color: #ffc107;"><i class="fa fa-exclamation-triangle"></i> Seems Down</span>',
+        9: '<span style="color: #ff4d4d;"><i class="fa fa-circle-xmark"></i> Down</span>'
+      };
+
+      statusEl.innerHTML = `
+        <div>Status: ${statusMap[status]}</div>
+        <div style="margin-top: 8px; color: #ccc;">Checks every 5 minutes</div>
+      `;
+    })
+    .catch(err => {
+      statusEl.innerHTML = '<span style="color: red;">Error loading status</span>';
+      console.error('UptimeRobot error:', err);
+    });
+  }
+
+  updateStatus();
+  setInterval(updateStatus, 50000);
 </script>
 
 </body>

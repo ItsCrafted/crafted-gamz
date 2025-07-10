@@ -235,7 +235,7 @@ const navHTML = `
         <div class="dropdown">
           <a href="tools.html"><i class="fas fa-wrench"></i> Tools</a>
           <a href="transfer.html"><i class="fas fa-share"></i> Transfer</a>
-          <a href="partners.html"><i class="fas fa-handshake"></i> Partners</a>
+          <a href="aboutus.html"><i class="fas fa-users"></i> About Us</a>
           <a href="aicalc.html"><i class="fas fa-calculator"></i> AI Calculator</a>
           <a href="elaassist.html"><i class="fas fa-pen-nib"></i> ELA Assistant</a>
         </div>
