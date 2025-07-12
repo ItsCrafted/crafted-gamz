@@ -298,5 +298,13 @@ function expandOverlay(box) {
       }
     });
   </script>
+  <script>
+    if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').catch(err => {
+    console.log('SW registration failed:', err);
+  });
+}
+
+  </script>
 </body>
 </html>
