@@ -1,8 +1,0 @@
-{
-  "name": "crafted-gamz",
-  "compatibility_date": "2026-01-13",
-  "main": "src/index.js",
-  "assets": {
-    "directory": "./src"
-  }
-}
