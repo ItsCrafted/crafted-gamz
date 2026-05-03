@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crafted Gamz: Your Look</title>
+  <link rel="stylesheet" href="../css/onboarding.css">
+<link rel="shortcut icon" href="../img/icon.png" type="image/x-icon">
+  <style>
+    .option-card.coming-soon {
+      opacity: 0.35;
+      cursor: not-allowed;
+      position: relative;
+    }
+    .option-card.coming-soon:hover {
+      background: none;
+      transform: none;
+      border-color: rgba(255,255,255,0.08);
+    }
+    .coming-soon-badge {
+      display: inline-block;
+      margin-top: 8px;
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 4px;
+      padding: 2px 6px;
+    }
+  </style>
+</head>
+<body>
+    <canvas id="bg-canvas"></canvas>
+  <div class="shell">
+
+    <header class="topbar">
+      <span class="logo">Crafted <span>Gamz</span></span>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div class="step-indicator">
+          <div class="step-pip done"></div>
+          <div class="step-pip active"></div>
+          <div class="step-pip"></div>
+          <div class="step-pip"></div>
+          <div class="step-pip"></div>
+        </div>
+        <span class="step-label">02 / 05</span>
+      </div>
+    </header>
+
+    <main class="main">
+      <div class="card">
+
+        <div class="card-eyebrow">Personalize</div>
+        <h1 class="card-title">How do you want it?</h1>
+        <p class="card-sub">Choose how Crafted Gamz feels. You can change this later in settings.</p>
+
+        <div class="option-grid" id="option-grid">
+
+          <button class="option-card" data-value="desktop" onclick="select(this)">
+            <div class="option-title">Desktop</div>
+            <div class="option-desc">A native-feeling window with a sidebar, panels, and a full workspace. Best for power users.</div>
+          </button>
+
+          <button class="option-card coming-soon" data-value="tabbed" disabled>
+            <div class="option-title">Tabbed</div><div class="coming-soon-badge">Coming Soon</div>
+            <div class="option-desc">Browser-style tabs across the top. Familiar and fast if you live in your browser.</div>
+          </button>
+
+          <button class="option-card coming-soon" data-value="website" disabled>
+            <div class="option-title">Website</div><div class="coming-soon-badge">Coming Soon</div>
+            <div class="option-desc">A clean, scrollable page layout. Simple and accessible from any device.</div>
+          </button>
+
+        </div>
+
+        <div class="error-msg" id="error-msg"></div>
+
+        <div class="action-row">
+          <span></span>
+          <button class="btn btn-primary" id="next-btn" disabled>Continue</button>
+        </div>
+
+      </div>
+    </main>
+
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="../js/2.js"></script>
+  <script src="../js/bg.js"></script>
+</body>
+</html>

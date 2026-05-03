@@ -1,0 +1,159 @@
+
+.card {
+  max-width: 440px;
+  text-align: center;
+}
+
+.card-eyebrow { text-align: center; }
+
+@keyframes titleBurst {
+  0%   {
+    opacity: 0;
+    transform: scale(0.6) rotate(-3deg);
+    filter: blur(14px);
+    letter-spacing: -0.08em;
+  }
+  55%  {
+    transform: scale(1.06) rotate(0.4deg);
+    filter: blur(0);
+    letter-spacing: -0.025em;
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+    filter: blur(0);
+    letter-spacing: -0.03em;
+  }
+}
+
+.card-title {
+  font-size: 42px;
+  letter-spacing: -0.03em;
+  animation: titleBurst 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+}
+
+@keyframes subFloat {
+  from { opacity: 0; transform: translateY(14px); filter: blur(2px); }
+  to   { opacity: 1; transform: translateY(0);    filter: blur(0); }
+}
+
+.card-sub {
+  text-align: center;
+  animation: subFloat 0.65s ease 0.28s both;
+}
+
+@keyframes expandLine {
+  from { width: 0; opacity: 0; }
+  to   { width: 40px; opacity: 1; }
+}
+
+.accent-line {
+  width: 40px;
+  height: 1px;
+  background: var(--accent);
+  margin: 0 auto 32px;
+  animation: expandLine 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.35s both;
+}
+
+@keyframes dotPop {
+  0%   { opacity: 0; transform: scale(0) translateY(6px); }
+  65%  { transform: scale(1.35) translateY(-2px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 36px;
+}
+
+.dot {
+  width: 4px;
+  height: 4px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: dotPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.dot:nth-child(1) { animation-delay: 0.15s; }
+.dot:nth-child(2) { opacity: 0.5; animation-delay: 0.25s; }
+.dot:nth-child(3) { opacity: 0.2; animation-delay: 0.35s; }
+
+@keyframes badgeReveal {
+  from { opacity: 0; transform: translateY(10px) scale(0.95); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);    }
+}
+
+@keyframes badgeDotPulse {
+  0%, 100% { box-shadow: 0 0 0 0px rgba(255,255,255,0.6); }
+  50%       { box-shadow: 0 0 0 5px rgba(255,255,255,0);   }
+}
+
+.env-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+  padding: 5px 12px;
+  margin-bottom: 32px;
+  animation: badgeReveal 0.55s cubic-bezier(0.16, 1, 0.3, 1) 0.25s both;
+  transition: border-color 0.3s ease;
+}
+
+.env-badge:hover { border-color: var(--border-active); }
+
+.env-badge-dot {
+  width: 5px;
+  height: 5px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: badgeDotPulse 2.4s ease-in-out infinite;
+}
+
+@keyframes launchBtnReveal {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.94);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+.launch-btn-wrap {
+  animation: launchBtnReveal 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.42s both;
+}
+
+.btn-primary.large {
+  padding: 14px 36px;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+}
+
+@keyframes greetingIn {
+  from { opacity: 0; transform: translateY(-6px); letter-spacing: 0.04em; }
+  to   { opacity: 1; transform: translateY(0);    letter-spacing: 0; }
+}
+
+.name-greeting {
+  font-size: 13px;
+  color: var(--text-mid);
+  font-weight: 300;
+  margin-bottom: 6px;
+  min-height: 20px;
+  animation: greetingIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.05s both;
+}
+
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(20px) scale(0.98); filter: blur(4px); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);    filter: blur(0); }
+}

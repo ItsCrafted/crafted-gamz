@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crafted Gamz: Legal</title>
+  <link rel="stylesheet" href="../css/onboarding.css">
+  <link rel="stylesheet" href="../css/4.css">
+  <link rel="shortcut icon" href="../img/icon.png" type="image/x-icon">
+</head>
+<body>
+    <canvas id="bg-canvas"></canvas>
+  <div class="shell">
+
+    <header class="topbar">
+      <span class="logo">Crafted <span>Gamz</span></span>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div class="step-indicator">
+          <div class="step-pip done"></div>
+          <div class="step-pip done"></div>
+          <div class="step-pip done"></div>
+          <div class="step-pip active"></div>
+          <div class="step-pip"></div>
+        </div>
+        <span class="step-label">04 / 05</span>
+      </div>
+    </header>
+
+    <main class="main">
+      <div class="card">
+
+        <div class="card-eyebrow">The boring stuff</div>
+        <h1 class="card-title">Terms & Privacy</h1>
+        <p class="card-sub">Read through both. We kept them short on purpose.</p>
+
+        <div class="tab-row">
+          <div class="tab-pill" id="tab-pill"></div>
+          <button class="tab-btn active" id="tos-tab" onclick="switchTab('tos')">Terms of Service</button>
+          <button class="tab-btn" id="pp-tab" onclick="switchTab('pp')">Privacy Policy</button>
+        </div>
+
+        <div class="scroll-hint" id="scroll-hint">scroll to read ↓</div>
+
+        <div class="tos-box" id="scroll-box">
+          <div class="tos-content" id="tos-content">Loading…</div>
+        </div>
+
+        <div class="divider"></div>
+
+        <label class="check-row">
+          <input type="checkbox" id="tos-check">
+          <span>I have read and agree to the <a href="#" onclick="switchTab('tos');return false;">Terms of Service</a></span>
+        </label>
+        <label class="check-row">
+          <input type="checkbox" id="pp-check">
+          <span>I have read and agree to the <a href="#" onclick="switchTab('pp');return false;">Privacy Policy</a></span>
+        </label>
+
+        <div class="error-msg" id="error-msg" style="margin-top:12px;"></div>
+
+        <div class="action-row" style="margin-top:20px;">
+          <button class="btn btn-ghost" onclick="window.location.href='3.html'">Back</button>
+          <button class="btn btn-primary" id="next-btn">Agree & Continue</button>
+        </div>
+
+      </div>
+    </main>
+
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="../js/4.js"></script>
+  <script src="../js/bg.js"></script>
+</body>
+</html>

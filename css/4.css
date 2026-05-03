@@ -1,0 +1,64 @@
+.card { max-width: 560px; }
+
+.tab-pill {
+  position: absolute;
+  inset: 0;
+  width: 50%;
+  border-radius: var(--radius);
+  background: #fff;
+  pointer-events: none;
+  transform: translateX(0%);
+  transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 0;
+}
+
+.tab-pill.right {
+  transform: translateX(100%);
+}
+
+.tab-btn {
+  position: relative;
+  z-index: 1;
+  color: rgba(255,255,255,0.45);
+  transition: color 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tab-btn.active {
+  color: #000;
+  background: none !important;
+  transform: none !important;
+}
+
+@keyframes scrollHintFloat {
+  0%, 100% { opacity: 0.55; transform: translateY(0px); }
+  50%       { opacity: 1;   transform: translateY(-3px); }
+}
+
+.scroll-hint {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 0.08em;
+  text-align: right;
+  margin-bottom: 6px;
+  transition: opacity 0.3s;
+  animation: scrollHintFloat 2.2s ease-in-out infinite;
+}
+.scroll-hint.hidden { opacity: 0; animation: none; }
+
+@keyframes tosRevealStep4 {
+  from { opacity: 0; clip-path: inset(0 100% 0 0 round 20px); }
+  to   { opacity: 1; clip-path: inset(0 0%   0 0 round 20px); }
+}
+
+.tos-box {
+  height: 240px;
+  animation: tosRevealStep4 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.65s both;
+}
+
+.tos-content {
+  transition: opacity 0.18s ease;
+}
+.tos-content.fading {
+  opacity: 0;
+}
