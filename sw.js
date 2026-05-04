@@ -8,7 +8,6 @@ if (navigator.userAgent.includes("Firefox")) {
 importScripts("/sj/scramjet.all.js");
 
 const { ScramjetServiceWorker } = $scramjetLoadWorker();
-const scramjet = new ScramjetServiceWorker();
 
 self.addEventListener("install", () => {
 	self.skipWaiting();
@@ -82,6 +81,79 @@ const CONFIG = {
 	},
 };
 
+const SCRAMJET_DB_NAME = "$scramjet";
+const SCRAMJET_REQUIRED_STORES = [
+	"config",
+	"cookies",
+	"redirectTrackers",
+	"referrerPolicies",
+	"publicSuffixList",
+];
+
+let scramjetPromise = null;
+
+function openIndexedDb(name, version) {
+	return new Promise((resolve, reject) => {
+		const request =
+			typeof version === "number" ? indexedDB.open(name, version) : indexedDB.open(name);
+
+		request.onsuccess = () => resolve(request.result);
+		request.onerror = () =>
+			reject(request.error || new Error(`Failed to open IndexedDB database: ${name}`));
+		request.onblocked = () => reject(new Error(`IndexedDB open blocked for ${name}`));
+	});
+}
+
+function deleteIndexedDb(name) {
+	return new Promise((resolve, reject) => {
+		const request = indexedDB.deleteDatabase(name);
+		request.onsuccess = () => resolve(true);
+		request.onerror = () =>
+			reject(request.error || new Error(`Failed to delete IndexedDB database: ${name}`));
+		request.onblocked = () => reject(new Error(`IndexedDB delete blocked for ${name}`));
+	});
+}
+
+async function repairScramjetDatabase() {
+	let db;
+
+	try {
+		db = await openIndexedDb(SCRAMJET_DB_NAME);
+	} catch (error) {
+		console.warn("Unable to inspect Scramjet database in service worker:", error);
+		return;
+	}
+
+	const missingStores = SCRAMJET_REQUIRED_STORES.filter(
+		(storeName) => !db.objectStoreNames.contains(storeName)
+	);
+
+	if (missingStores.length === 0) {
+		db.close();
+		return;
+	}
+
+	console.warn("Repairing Scramjet database in service worker, missing stores:", missingStores);
+	db.close();
+	await deleteIndexedDb(SCRAMJET_DB_NAME);
+}
+
+async function getScramjet() {
+	if (!scramjetPromise) {
+		scramjetPromise = (async () => {
+			await repairScramjetDatabase();
+			const scramjet = new ScramjetServiceWorker();
+			scramjet.addEventListener("request", handleScramjetRequest);
+			return scramjet;
+		})().catch((error) => {
+			scramjetPromise = null;
+			throw error;
+		});
+	}
+
+	return scramjetPromise;
+}
+
 /** @type {{ origin: string, html: string, css: string, js: string } | undefined} */
 let playgroundData;
 
@@ -137,6 +209,7 @@ function inject(html) {
  * @returns {Promise<Response>}
  */
 async function handleRequest(event) {
+	const scramjet = await getScramjet();
 	await scramjet.loadConfig();
 
 	if (scramjet.route(event)) {
@@ -184,7 +257,7 @@ self.addEventListener("message", ({ data }) => {
 	}
 });
 
-scramjet.addEventListener("request", (e) => {
+function handleScramjetRequest(e) {
 	if (isBlocked(e.url.hostname, e.url.pathname)) {
 		e.response = new Response("Site Blocked", { status: 403 });
 		return;
@@ -220,5 +293,5 @@ scramjet.addEventListener("request", (e) => {
 			e.response = new Response("empty response", { headers: {} });
 		}
 	}
-});
+}
 

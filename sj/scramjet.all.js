@@ -3158,7 +3158,30 @@
             let e = indexedDB.open("$scramjet", 1);
             return new Promise((t, r) => {
               (e.onsuccess = async () => {
-                (this.db = e.result), await this.#e(), t(e.result);
+                let n = e.result,
+                  i = [
+                    "config",
+                    "cookies",
+                    "redirectTrackers",
+                    "referrerPolicies",
+                    "publicSuffixList",
+                  ].filter((e) => !n.objectStoreNames.contains(e));
+                if (i.length) {
+                  n.close();
+                  let o = indexedDB.deleteDatabase("$scramjet");
+                  return void (
+                    (o.onsuccess = () => {
+                      this.openIDB().then(t, r);
+                    }),
+                    (o.onerror = () => r(o.error)),
+                    (o.onblocked = () =>
+                      r(
+                        o.error ||
+                          new Error("IndexedDB delete blocked for $scramjet")
+                      ))
+                  );
+                }
+                (this.db = n), await this.#e(), t(n);
               }),
                 (e.onupgradeneeded = () => {
                   let t = e.result;

@@ -227,7 +227,6 @@
                     files: CONFIG.files,
                 });
 
-                await repairScramjetDatabase();
                 await scramjet.init();
                 scramjetFrame = scramjet.createFrame(proxyFrame);
                 console.log("Scramjet initialized with prefix:", CONFIG.prefix);
@@ -246,6 +245,15 @@
 
             try {
                 updateLoadingText('Registering service workers...');
+
+                if (backend === 'scramjet') {
+                    updateLoadingText('Repairing Scramjet database...');
+                    try {
+                        await repairScramjetDatabase();
+                    } catch (e) {
+                        console.warn('Scramjet database repair deferred to service worker:', e);
+                    }
+                }
                 
                 if (backend === 'ultraviolet' || backend === 'uv') {
                     const swCheck = await fetch('/uv/sw.js', { method: 'HEAD' }).catch(() => null);
