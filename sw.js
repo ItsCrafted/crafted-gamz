@@ -10,6 +10,10 @@ importScripts("/sj/scramjet.all.js");
 const { ScramjetServiceWorker } = $scramjetLoadWorker();
 const scramjet = new ScramjetServiceWorker();
 
+self.addEventListener("install", () => {
+	self.skipWaiting();
+});
+
 const CONFIG = {
 	blocked: [
 		"youtube.com/get_video_info?*adformat=*",
@@ -168,6 +172,10 @@ self.addEventListener("fetch", (event) => {
   	}
 
 	event.respondWith(handleRequest(event));
+});
+
+self.addEventListener("activate", (event) => {
+	event.waitUntil(self.clients.claim());
 });
 
 self.addEventListener("message", ({ data }) => {

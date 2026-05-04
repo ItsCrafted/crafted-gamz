@@ -31,8 +31,18 @@
         const errorDiv = document.getElementById('error');
         const loadingDiv = document.getElementById('loading');
 
+        const SCRAMJET_DB_NAME = '$scramjet';
+        const SCRAMJET_REQUIRED_STORES = [
+            'config',
+            'cookies',
+            'redirectTrackers',
+            'referrerPolicies',
+            'publicSuffixList',
+        ];
+
         let connection;
         let scramjet;
+        let scramjetFrame;
         let isInitialized = false;
 
         function showError(message) {
@@ -119,7 +129,83 @@
             }
         }
 
-        function initScramjet() {
+        function waitForRegistrationActive(registration, timeout = 10000) {
+            if (registration.active) {
+                return Promise.resolve(registration);
+            }
+
+            const worker = registration.installing || registration.waiting;
+            if (!worker) {
+                return Promise.resolve(registration);
+            }
+
+            return new Promise((resolve, reject) => {
+                const timer = setTimeout(() => {
+                    worker.removeEventListener('statechange', onStateChange);
+                    reject(new Error('Service worker timeout'));
+                }, timeout);
+
+                function onStateChange() {
+                    if (worker.state === 'activated') {
+                        clearTimeout(timer);
+                        worker.removeEventListener('statechange', onStateChange);
+                        resolve(registration);
+                    }
+                }
+
+                worker.addEventListener('statechange', onStateChange);
+            });
+        }
+
+        function openIndexedDb(name, version) {
+            return new Promise((resolve, reject) => {
+                const request = typeof version === 'number'
+                    ? indexedDB.open(name, version)
+                    : indexedDB.open(name);
+
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => reject(request.error || new Error(`Failed to open IndexedDB database: ${name}`));
+                request.onblocked = () => reject(new Error(`IndexedDB open blocked for ${name}`));
+            });
+        }
+
+        function deleteIndexedDb(name) {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.deleteDatabase(name);
+                request.onsuccess = () => resolve(true);
+                request.onerror = () => reject(request.error || new Error(`Failed to delete IndexedDB database: ${name}`));
+                request.onblocked = () => reject(new Error(`IndexedDB delete blocked for ${name}`));
+            });
+        }
+
+        async function repairScramjetDatabase() {
+            if (!('indexedDB' in window)) {
+                return;
+            }
+
+            let db;
+            try {
+                db = await openIndexedDb(SCRAMJET_DB_NAME);
+            } catch (e) {
+                console.warn('Unable to inspect Scramjet database before init:', e);
+                return;
+            }
+
+            const missingStores = SCRAMJET_REQUIRED_STORES.filter(
+                storeName => !db.objectStoreNames.contains(storeName)
+            );
+
+            if (missingStores.length === 0) {
+                db.close();
+                return;
+            }
+
+            console.warn('Repairing Scramjet database, missing stores:', missingStores);
+            db.close();
+            await deleteIndexedDb(SCRAMJET_DB_NAME);
+        }
+
+        async function initScramjet() {
             try {
                 if (!window.$scramjetLoadController) {
                     console.warn("Scramjet not available");
@@ -140,7 +226,10 @@
                     prefix: CONFIG.prefix,
                     files: CONFIG.files,
                 });
-                scramjet.init();
+
+                await repairScramjetDatabase();
+                await scramjet.init();
+                scramjetFrame = scramjet.createFrame(proxyFrame);
                 console.log("Scramjet initialized with prefix:", CONFIG.prefix);
                 return scramjet;
             } catch (e) {
@@ -172,34 +261,24 @@
                     console.log('✓ Scramjet service worker file exists');
                 }
                 
-                const registrations = await navigator.serviceWorker.getRegistrations();
-                for (const registration of registrations) {
-                    await registration.unregister();
-                    console.log('Unregistered old SW:', registration.scope);
-                }
-                
-                await new Promise(resolve => setTimeout(resolve, 300));
-                
+                let registration;
                 if (backend === 'ultraviolet' || backend === 'uv') {
-                    const uvReg = await navigator.serviceWorker.register("/uv/sw.js", {
+                    registration = await navigator.serviceWorker.register("/uv/sw.js", {
                         scope: "/uv/"
                     });
-                    console.log("UV service worker registered:", uvReg.scope);
+                    console.log("UV service worker registered:", registration.scope);
                 } else if (backend === 'scramjet') {
-                    const sjReg = await navigator.serviceWorker.register("/sw.js", {
+                    registration = await navigator.serviceWorker.register("/sw.js", {
                         scope: "/"
                     });
-                    console.log("Scramjet service worker registered:", sjReg.scope);
+                    console.log("Scramjet service worker registered:", registration.scope);
                 }
                 
                 updateLoadingText('Waiting for service worker...');
                 
-                const swReady = await Promise.race([
-                    navigator.serviceWorker.ready,
-                    new Promise((_, reject) => 
-                        setTimeout(() => reject(new Error('Service worker timeout')), 10000)
-                    )
-                ]).catch(e => {
+                const swReady = await Promise.resolve(registration)
+                    .then(reg => waitForRegistrationActive(reg, 10000))
+                    .catch(e => {
                     console.error('Service worker failed to become ready:', e);
                     return null;
                 });
@@ -223,12 +302,11 @@
                     console.log('Service worker is now controlling the page');
 
                     updateLoadingText('Initializing Scramjet...');
-                    await new Promise(resolve => setTimeout(resolve, 1000));
                     
-                    initScramjet();
-
-                    updateLoadingText('Setting up Scramjet database...');
-                    await new Promise(resolve => setTimeout(resolve, 2000));
+                    const scramjetReady = await initScramjet();
+                    if (!scramjetReady || !scramjetFrame) {
+                        throw new Error('Scramjet controller failed to initialize');
+                    }
                 } else {
                     await new Promise(resolve => setTimeout(resolve, 500));
                 }
@@ -258,24 +336,6 @@
                     }
                 }
                 
-                let proxyUrl;
-                
-                if (backend === 'scramjet' && scramjet) {
-                    proxyUrl = scramjet.encodeUrl(url);
-                    console.log("Using Scramjet:", proxyUrl);
-                } else {
-                    if (typeof __uv$config === 'undefined') {
-                        showError("Ultraviolet config not loaded. Check if /uv/uv.config.js exists.");
-                        hideLoading();
-                        return;
-                    }
-                    proxyUrl = __uv$config.prefix + __uv$config.encodeUrl(url);
-                    console.log("Using Ultraviolet:", proxyUrl);
-                }
-
-                updateLoadingText('Loading page...');
-                proxyFrame.src = proxyUrl;
-                
                 proxyFrame.onload = function() {
                     bgFrame.style.display = 'none';
                     proxyFrame.classList.add('active');
@@ -286,6 +346,22 @@
                     showError("Failed to load proxied page");
                     hideLoading();
                 };
+                
+                if (backend === 'scramjet' && scramjet && scramjetFrame) {
+                    console.log("Using Scramjet:", url);
+                    scramjetFrame.go(url);
+                } else {
+                    if (typeof __uv$config === 'undefined') {
+                        showError("Ultraviolet config not loaded. Check if /uv/uv.config.js exists.");
+                        hideLoading();
+                        return;
+                    }
+                    const proxyUrl = __uv$config.prefix + __uv$config.encodeUrl(url);
+                    console.log("Using Ultraviolet:", proxyUrl);
+                    proxyFrame.src = proxyUrl;
+                }
+
+                updateLoadingText('Loading page...');
                 
             } catch (e) {
                 showError("Navigation error: " + e.message);

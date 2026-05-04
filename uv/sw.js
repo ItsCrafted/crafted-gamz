@@ -7,6 +7,10 @@ let config = {
     blocklist: new Set(),
 }
 
+self.addEventListener("install", () => {
+    self.skipWaiting();
+});
+
 async function handleRequest(event) {
     if (uv.route(event)) {
         if (config.blocklist.size !== 0) {
@@ -35,7 +39,10 @@ self.addEventListener("message", (event) => {
     config = event.data;
 });
 
-self.addEventListener("activate", () => {
-    const bc = new BroadcastChannel("UvServiceWorker");
-    bc.postMessage("Active");
+self.addEventListener("activate", (event) => {
+    event.waitUntil((async () => {
+        await self.clients.claim();
+        const bc = new BroadcastChannel("UvServiceWorker");
+        bc.postMessage("Active");
+    })());
 });
