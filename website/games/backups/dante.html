@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dante - Crafted Gamz</title>
+    <link rel="shortcut icon" href="../favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/ui.css">
+</head>
+<body>
+    <div class="bg-container"></div>
+
+    <svg id="svg-filters">
+        <defs>
+            <filter id="lg-dist">
+                <feTurbulence type="turbulence" baseFrequency="0.05" numOctaves="2" result="turbulence"/>
+                <feDisplacementMap in2="turbulence" in="SourceGraphic" scale="5" xChannelSelector="R" yChannelSelector="G"/>
+            </filter>
+        </defs>
+    </svg>
+
+    <div class="game-player-container">
+        <div class="game-header">
+            <div class="glass-filter"></div>
+            <div class="glass-overlay"></div>
+            <div class="glass-specular"></div>
+            <div class="glass-content">
+                <div class="game-title-section">
+                    <h1 class="game-title" id="gameTitle">Dante</h1>
+                    <p class="game-subtitle">Platformer</p>
+                </div>
+                <div class="game-controls">
+                    <button class="control-btn" id="reloadBtn">
+                        <i class="fas fa-redo"></i>
+                        <span>Reload</span>
+                    </button>
+                    <button class="control-btn" id="fullscreenBtn">
+                        <i class="fas fa-expand"></i>
+                        <span>Fullscreen</span>
+                    </button>
+                    <button class="control-btn" id="backToGamesBtn">
+                        <i class="fas fa-th"></i>
+                        <span>Back to Games</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-frame-container">
+            <div class="glass-filter"></div>
+            <div class="glass-overlay"></div>
+            <div class="glass-specular"></div>
+            <div class="glass-content">
+                <iframe 
+                    id="game-frame" 
+                    src="https://gamz-cdn.cgamz.site/dante"
+                    allowfullscreen
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                ></iframe>
+            </div>
+        </div>
+
+        <div class="game-footer">
+            <div class="glass-filter"></div>
+            <div class="glass-overlay"></div>
+            <div class="glass-specular"></div>
+            <div class="glass-content">
+                <p class="game-description" id="gameDescription">
+                    Navigate through challenging platformer levels inspired by Dante's Inferno! Precise jumping and timing required.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="fullscreen-container" id="fullscreenContainer">
+        <button class="exit-fullscreen" id="exitFullscreenBtn">
+            <i class="fas fa-compress"></i>
+            <span>Exit Fullscreen</span>
+        </button>
+        <iframe 
+            id="fullscreen-frame" 
+            allowfullscreen
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        ></iframe>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<script src="../js/o-tracker.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="../js/account.js"></script>
+    <script>
+        document.getElementById('reloadBtn').addEventListener('click', () => {
+            const iframe = document.getElementById('game-frame');
+            iframe.src = iframe.src;
+        });
+
+        document.getElementById('fullscreenBtn').addEventListener('click', () => {
+            const container = document.getElementById('fullscreenContainer');
+            const fullscreenFrame = document.getElementById('fullscreen-frame');
+            const gameFrame = document.getElementById('game-frame');
+            
+            fullscreenFrame.src = gameFrame.src;
+            container.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        document.getElementById('exitFullscreenBtn').addEventListener('click', () => {
+            const container = document.getElementById('fullscreenContainer');
+            container.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        });
+
+        document.getElementById('backToGamesBtn').addEventListener('click', () => {
+            window.location.href = '../g.html';
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const container = document.getElementById('fullscreenContainer');
+                if (container.classList.contains('active')) {
+                    container.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                }
+            }
+        });
+    </script>
+    <script src="../js/loading.js"></script>
+</body>
+</html>

@@ -1,1619 +1,220 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Crafted Gamz — v15</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:ital,opsz,wght@0,9..40,200;0,9..40,300;0,9..40,400;1,9..40,200&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-:root {
-  --bg: #000;
-  --border: rgba(255,255,255,0.10);
-  --border-active: rgba(255,255,255,0.28);
-  --text: #ffffff;
-  --text-dim: rgba(255,255,255,0.38);
-  --text-mid: rgba(255,255,255,0.65);
-  --accent: #ffffff;
-  --accent-dim: rgba(255,255,255,0.12);
-  --error: #ff5f57;
-  --mono: 'DM Mono', monospace;
-  --sans: 'DM Sans', sans-serif;
-  --radius: 50px;
-  --radius-sm: 20px;
-  --radius-xs: 10px;
-  --transition: 0.18s ease;
-  --glass-bg: rgba(10,10,10,0.45);
-  --glass-highlight: rgba(255,255,255,0.09);
-  --glass-blur: 28px;
-  --nav-w: 220px;
-}
-
-html, body {
-  height: 100%;
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--sans);
-  font-size: 15px;
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
-  overflow: hidden;
-}
-
-@keyframes pageReveal {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-html { animation: pageReveal 0.9s cubic-bezier(0.16,1,0.3,1) both; }
-
-#bg-canvas {
-  position: fixed; inset: 0; width: 100%; height: 100%;
-  z-index: 0; pointer-events: none;
-  animation: canvasBreathe 10s ease-in-out infinite;
-}
-@keyframes canvasBreathe {
-  0%,100% { opacity: 0.75; transform: scale(1); }
-  50%      { opacity: 1;    transform: scale(1.018); }
-}
-
-.shell { display: flex; height: 100vh; width: 100vw; position: relative; z-index: 1; }
-
-@keyframes sidebarSlide {
-  from { opacity: 0; transform: translateX(-24px); }
-  to   { opacity: 1; transform: translateX(0); }
-}
-.sidebar {
-  width: var(--nav-w);
-  flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
-  border-right: 1px solid var(--border);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  background: rgba(0,0,0,0.3);
-  padding: 28px 16px;
-  gap: 4px;
-  animation: sidebarSlide 0.7s cubic-bezier(0.16,1,0.3,1) 0.1s both;
-  overflow-y: auto;
-}
-.sidebar::-webkit-scrollbar { width: 2px; }
-.sidebar::-webkit-scrollbar-thumb { background: var(--border-active); border-radius: 2px; }
-
-@keyframes logoShimmer {
-  0%   { background-position: -200% center; }
-  100% { background-position:  200% center; }
-}
-.logo {
-  font-family: var(--mono);
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  text-decoration: none;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: 0 12px;
-  margin-bottom: 28px;
-}
-.logo-name {
-  background: linear-gradient(90deg, rgba(255,255,255,0.45) 0%, #fff 40%, rgba(255,255,255,0.45) 60%, #fff 100%);
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  animation: logoShimmer 3.5s linear 1.5s infinite;
-  font-size: 13px;
-  letter-spacing: 0.1em;
-}
-.logo-ver {
-  color: var(--text-dim);
-  font-size: 9px;
-  letter-spacing: 0.2em;
-}
-
-.nav-section { margin-top: 8px; margin-bottom: 4px; }
-.nav-section-label {
-  font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  padding: 0 12px;
-  margin-bottom: 4px;
-}
-
-.nav-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 9px 12px;
-  border-radius: var(--radius);
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: 300;
-  color: var(--text-mid);
-  border: 1px solid transparent;
-  transition: all 0.2s cubic-bezier(0.16,1,0.3,1);
-  text-decoration: none;
-  position: relative;
-  white-space: nowrap;
-}
-.nav-item:hover {
-  color: #fff;
-  background: rgba(255,255,255,0.06);
-  border-color: var(--border);
-}
-.nav-item.active {
-  color: #fff;
-  background: rgba(255,255,255,0.10);
-  border-color: var(--border-active);
-}
-.nav-item.active::before {
-  content: '';
-  position: absolute;
-  left: 0; top: 50%;
-  transform: translateY(-50%);
-  width: 2px; height: 60%;
-  background: #fff;
-  border-radius: 0 2px 2px 0;
-}
-.nav-icon {
-  font-size: 13px;
-  width: 18px;
-  text-align: center;
-  flex-shrink: 0;
-  opacity: 0.7;
-}
-.nav-item.active .nav-icon,
-.nav-item:hover .nav-icon { opacity: 1; }
-
-.nav-spacer { flex: 1; }
-
-@keyframes topbarDrop {
-  from { opacity: 0; transform: translateY(-100%); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-.topbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 32px;
-  height: 52px;
-  border-bottom: 1px solid var(--border);
-  flex-shrink: 0;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  background: rgba(0,0,0,0.15);
-  animation: topbarDrop 0.6s cubic-bezier(0.16,1,0.3,1) 0.15s both;
-}
-.topbar-title {
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--text-mid);
-}
-.topbar-right { display: flex; align-items: center; gap: 12px; }
-.topbar-avatar {
-  width: 28px; height: 28px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.12);
-  border: 1px solid var(--border-active);
-  display: flex; align-items: center; justify-content: center;
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.05em;
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-.topbar-avatar:hover { background: rgba(255,255,255,0.2); }
-
-.content-wrap { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
-.content {
-  flex: 1;
-  overflow-y: auto;
-  padding: 40px;
-  position: relative;
-}
-.content::-webkit-scrollbar { width: 3px; }
-.content::-webkit-scrollbar-thumb { background: var(--border-active); border-radius: 2px; }
-
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-.page { display: none; animation: fadeUp 0.5s cubic-bezier(0.16,1,0.3,1) both; }
-.page.active { display: block; }
-
-.page-eyebrow {
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  margin-bottom: 6px;
-}
-.page-title {
-  font-size: 28px;
-  font-weight: 200;
-  letter-spacing: -0.02em;
-  color: #fff;
-  margin-bottom: 6px;
-}
-.page-sub {
-  font-size: 13px;
-  color: var(--text-mid);
-  font-weight: 300;
-  margin-bottom: 36px;
-}
-
-.search-wrap { position: relative; margin-bottom: 32px; }
-.search-input {
-  width: 100%;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 12px 20px 12px 48px;
-  font-family: var(--sans);
-  font-size: 14px;
-  font-weight: 300;
-  color: #fff;
-  outline: none;
-  transition: border-color 0.2s ease, background 0.2s ease;
-}
-.search-input::placeholder { color: var(--text-dim); }
-.search-input:focus {
-  border-color: var(--border-active);
-  background: rgba(255,255,255,0.08);
-}
-.search-icon {
-  position: absolute;
-  left: 18px; top: 50%;
-  transform: translateY(-50%);
-  color: var(--text-dim);
-  font-size: 15px;
-  pointer-events: none;
-}
-
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
-.grid-sm { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
-
-@keyframes cardIn {
-  from { opacity: 0; transform: translateY(20px) scale(0.97); filter: blur(4px); }
-  to   { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
-}
-.card {
-  background: var(--glass-bg);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 24px;
-  cursor: pointer;
-  transition: border-color 0.25s ease, background 0.25s ease, transform 0.3s cubic-bezier(0.16,1,0.3,1);
-  position: relative;
-  overflow: hidden;
-  animation: cardIn 0.5s cubic-bezier(0.16,1,0.3,1) both;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-}
-.card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: -50%;
-  width: 40%; height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent);
-  animation: scanSweep 7s cubic-bezier(0.4,0,0.6,1) 4s infinite;
-}
-@keyframes scanSweep {
-  0%       { left: -50%; opacity: 0; }
-  10%, 90% { opacity: 1; }
-  100%     { left: 160%; opacity: 0; }
-}
-.card:hover {
-  border-color: var(--border-active);
-  background: rgba(255,255,255,0.07);
-  transform: translateY(-3px);
-}
-.card-thumb {
-  width: 100%; height: 120px;
-  background: rgba(255,255,255,0.05);
-  border-radius: 12px;
-  margin-bottom: 16px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 36px;
-  border: 1px solid var(--border);
-}
-.card-label {
-  font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  margin-bottom: 4px;
-}
-.card-name { font-size: 14px; font-weight: 300; color: #fff; margin-bottom: 4px; }
-.card-meta { font-size: 11px; color: var(--text-dim); }
-.card:nth-child(1) { animation-delay: 0.05s; }
-.card:nth-child(2) { animation-delay: 0.1s; }
-.card:nth-child(3) { animation-delay: 0.15s; }
-.card:nth-child(4) { animation-delay: 0.2s; }
-.card:nth-child(5) { animation-delay: 0.25s; }
-.card:nth-child(6) { animation-delay: 0.3s; }
-
-.hero {
-  background: rgba(255,255,255,0.04);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 40px 44px;
-  margin-bottom: 32px;
-  position: relative;
-  overflow: hidden;
-  animation: cardIn 0.6s cubic-bezier(0.16,1,0.3,1) 0.1s both;
-  backdrop-filter: blur(16px);
-}
-.hero::after {
-  content: '';
-  position: absolute;
-  right: -60px; top: -60px;
-  width: 240px; height: 240px;
-  background: radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 70%);
-  pointer-events: none;
-}
-.hero-badge {
-  font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  border: 1px solid var(--border);
-  border-radius: 50px;
-  padding: 4px 12px;
-  display: inline-block;
-  margin-bottom: 16px;
-}
-.hero-title {
-  font-size: 36px;
-  font-weight: 200;
-  letter-spacing: -0.03em;
-  color: #fff;
-  margin-bottom: 10px;
-  line-height: 1.1;
-}
-.hero-desc { font-size: 14px; color: var(--text-mid); font-weight: 300; max-width: 480px; }
-.hero-actions { display: flex; gap: 10px; margin-top: 24px; flex-wrap: wrap; }
-
-.btn {
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  border-radius: var(--radius);
-  padding: 9px 22px;
-  cursor: pointer;
-  border: 1px solid var(--border-active);
-  background: transparent;
-  color: var(--text-mid);
-  transition: all 0.2s ease;
-  display: inline-flex; align-items: center; gap: 7px;
-}
-.btn:hover { color: #fff; background: rgba(255,255,255,0.08); border-color: #fff; }
-.btn-primary { background: #fff; color: #000; border-color: #fff; }
-.btn-primary:hover { background: rgba(255,255,255,0.88); }
-.btn-sm { padding: 6px 16px; font-size: 10px; }
-.btn-danger { border-color: var(--error); color: var(--error); }
-.btn-danger:hover { background: rgba(255,95,87,0.12); border-color: var(--error); color: var(--error); }
-
-.stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px,1fr)); gap: 12px; margin-bottom: 32px; }
-.stat-card {
-  background: rgba(255,255,255,0.04);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 20px 22px;
-  animation: cardIn 0.5s cubic-bezier(0.16,1,0.3,1) both;
-}
-.stat-card:nth-child(1) { animation-delay: 0.1s; }
-.stat-card:nth-child(2) { animation-delay: 0.16s; }
-.stat-card:nth-child(3) { animation-delay: 0.22s; }
-.stat-card:nth-child(4) { animation-delay: 0.28s; }
-.stat-num { font-size: 26px; font-weight: 200; color: #fff; letter-spacing: -0.02em; }
-.stat-label { font-family: var(--mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-dim); margin-top: 4px; }
-
-.divider { height: 1px; background: var(--border); margin: 28px 0; }
-
-.section-title {
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  margin-bottom: 16px;
-  display: flex; align-items: center; gap: 12px;
-}
-.section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-
-.settings-group { margin-bottom: 32px; }
-.settings-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px 0;
-  border-bottom: 1px solid var(--border);
-}
-.settings-row:last-child { border-bottom: none; }
-.settings-row-info { flex: 1; }
-.settings-row-label { font-size: 14px; color: #fff; font-weight: 300; margin-bottom: 2px; }
-.settings-row-desc { font-size: 12px; color: var(--text-dim); font-weight: 300; }
-.toggle {
-  width: 40px; height: 22px;
-  background: rgba(255,255,255,0.1);
-  border: 1px solid var(--border-active);
-  border-radius: 50px;
-  cursor: pointer;
-  position: relative;
-  transition: background 0.25s ease;
-  flex-shrink: 0;
-}
-.toggle.on { background: rgba(255,255,255,0.9); }
-.toggle::after {
-  content: '';
-  position: absolute;
-  left: 2px; top: 2px;
-  width: 16px; height: 16px;
-  background: rgba(255,255,255,0.5);
-  border-radius: 50%;
-  transition: transform 0.25s cubic-bezier(0.16,1,0.3,1), background 0.25s ease;
-}
-.toggle.on::after { transform: translateX(18px); background: #000; }
-.input-field {
-  background: rgba(255,255,255,0.05);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 8px 16px;
-  font-family: var(--sans);
-  font-size: 13px;
-  color: #fff;
-  outline: none;
-  transition: border-color 0.2s ease;
-  min-width: 180px;
-}
-.input-field:focus { border-color: var(--border-active); }
-.input-field::placeholder { color: var(--text-dim); }
-
-.about-block {
-  background: var(--glass-bg);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 32px;
-  backdrop-filter: blur(16px);
-  margin-bottom: 16px;
-  animation: cardIn 0.5s cubic-bezier(0.16,1,0.3,1) both;
-}
-.about-version-tag {
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  border: 1px solid var(--border);
-  border-radius: 50px;
-  padding: 4px 14px;
-  display: inline-block;
-  margin-bottom: 18px;
-}
-
-.account-card {
-  background: var(--glass-bg);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 28px 32px;
-  backdrop-filter: blur(16px);
-  margin-bottom: 16px;
-  animation: cardIn 0.5s cubic-bezier(0.16,1,0.3,1) both;
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-.account-avatar {
-  width: 52px; height: 52px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.1);
-  border: 1px solid var(--border-active);
-  display: flex; align-items: center; justify-content: center;
-  font-family: var(--mono);
-  font-size: 14px;
-  flex-shrink: 0;
-}
-.account-info { flex: 1; }
-.account-name { font-size: 15px; color: #fff; font-weight: 300; margin-bottom: 3px; }
-.account-role {
-  font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--text-dim);
-}
-.account-actions { display: flex; gap: 8px; }
-
-.users-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
-.users-table th {
-  font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  padding: 8px 12px;
-  text-align: left;
-  border-bottom: 1px solid var(--border);
-}
-.users-table td {
-  padding: 12px;
-  font-size: 13px;
-  color: var(--text-mid);
-  font-weight: 300;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-}
-.users-table tr:last-child td { border-bottom: none; }
-.users-table tr:hover td { color: #fff; background: rgba(255,255,255,0.025); }
-.role-badge {
-  font-family: var(--mono);
-  font-size: 8px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 3px 10px;
-  border-radius: 50px;
-  border: 1px solid;
-  display: inline-block;
-}
-.role-owner { border-color: rgba(255,255,255,0.4); color: #fff; }
-.role-admin { border-color: rgba(255,255,255,0.2); color: var(--text-mid); }
-.role-member { border-color: var(--border); color: var(--text-dim); }
-.status-dot {
-  display: inline-block; width: 6px; height: 6px;
-  border-radius: 50%; margin-right: 6px;
-}
-.status-online { background: #4ade80; box-shadow: 0 0 6px #4ade8088; }
-.status-offline { background: rgba(255,255,255,0.2); }
-
-.ai-prompt-wrap {
-  background: rgba(255,255,255,0.04);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 4px;
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  margin-bottom: 24px;
-  transition: border-color 0.2s ease;
-}
-.ai-prompt-wrap:focus-within { border-color: var(--border-active); }
-.ai-input {
-  flex: 1;
-  background: none;
-  border: none;
-  outline: none;
-  font-family: var(--sans);
-  font-size: 14px;
-  font-weight: 300;
-  color: #fff;
-  padding: 10px 16px;
-}
-.ai-input::placeholder { color: var(--text-dim); }
-
-.ai-feature-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); gap: 12px; }
-.ai-feature-card {
-  background: rgba(255,255,255,0.03);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 20px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  animation: cardIn 0.5s cubic-bezier(0.16,1,0.3,1) both;
-}
-.ai-feature-card:hover { border-color: var(--border-active); background: rgba(255,255,255,0.06); }
-.ai-feature-icon { font-size: 18px; margin-bottom: 10px; color: var(--text-mid); }
-.ai-feature-name { font-size: 13px; color: #fff; font-weight: 300; margin-bottom: 4px; }
-.ai-feature-desc { font-size: 11px; color: var(--text-dim); }
-
-.vm-card {
-  background: var(--glass-bg);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 20px 24px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  animation: cardIn 0.5s cubic-bezier(0.16,1,0.3,1) both;
-  margin-bottom: 10px;
-  backdrop-filter: blur(16px);
-}
-.vm-card:hover { border-color: var(--border-active); background: rgba(255,255,255,0.06); }
-.vm-status-light { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-.vm-running { background: #4ade80; box-shadow: 0 0 8px #4ade8066; }
-.vm-stopped { background: rgba(255,255,255,0.2); }
-.vm-info { flex: 1; }
-.vm-name { font-size: 14px; color: #fff; font-weight: 300; margin-bottom: 2px; }
-.vm-spec { font-family: var(--mono); font-size: 10px; color: var(--text-dim); letter-spacing: 0.06em; }
-.vm-actions { display: flex; gap: 8px; }
-
-.chip-row { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
-.chip {
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 6px 16px;
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-  color: var(--text-dim);
-  background: transparent;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-.chip:hover { color: var(--text-mid); border-color: var(--border-active); }
-.chip.active { color: #fff; border-color: #fff; background: rgba(255,255,255,0.08); }
-
-.search-results { margin-top: 8px; }
-.search-result-item {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 14px 0;
-  border-bottom: 1px solid var(--border);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  animation: fadeUp 0.3s cubic-bezier(0.16,1,0.3,1) both;
-}
-.search-result-item:last-child { border-bottom: none; }
-.search-result-item:hover .search-result-name { color: #fff; }
-.search-result-thumb {
-  width: 44px; height: 44px;
-  border-radius: 10px;
-  background: rgba(255,255,255,0.06);
-  border: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 20px;
-  flex-shrink: 0;
-}
-.search-result-info { flex: 1; }
-.search-result-name { font-size: 14px; color: var(--text-mid); font-weight: 300; transition: color 0.2s ease; }
-.search-result-type {
-  font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  margin-top: 2px;
-}
-.search-empty {
-  text-align: center;
-  padding: 60px 0;
-  color: var(--text-dim);
-  font-size: 13px;
-  font-weight: 300;
-}
-.search-empty i { font-size: 28px; display: block; margin-bottom: 12px; opacity: 0.3; }
-
-.log-list { font-family: var(--mono); font-size: 11px; color: var(--text-dim); line-height: 2; }
-.log-list span { color: var(--text-mid); }
-.log-list .ok { color: #4ade80; }
-.log-list .warn { color: #facc15; }
-.log-list .err { color: var(--error); }
-
-.progress-bar-wrap {
-  background: rgba(255,255,255,0.07);
-  border-radius: 50px;
-  height: 4px;
-  overflow: hidden;
-  margin-top: 8px;
-}
-.progress-bar {
-  height: 100%;
-  border-radius: 50px;
-  background: #fff;
-  transition: width 0.6s cubic-bezier(0.16,1,0.3,1);
-}
-
-.tag {
-  font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 3px 10px;
-  border-radius: 50px;
-  border: 1px solid var(--border);
-  color: var(--text-dim);
-  display: inline-block;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crafted Gamz</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-
-<canvas id="bg-canvas"></canvas>
-
-<div class="shell">
-  <nav class="sidebar">
-    <div class="logo">
-      <span class="logo-name">Crafted Gamz</span>
-      <span class="logo-ver">Version 15</span>
+    <div class="bg-container">
+        <iframe src="bg.html" class="bg"></iframe>
     </div>
 
-    <div class="nav-section">
-      <div class="nav-section-label">Main</div>
-      <a class="nav-item active" data-page="home">
-        <span class="nav-icon"><i class="fa-solid fa-house"></i></span> Home
-      </a>
-      <a class="nav-item" data-page="search">
-        <span class="nav-icon"><i class="fa-solid fa-magnifying-glass"></i></span> Search
-      </a>
+    <svg id="svg-filters" style="display: none">
+        <filter id="lg-dist" x="0%" y="0%" width="100%" height="100%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.008 0.008" numOctaves="2" seed="92" result="noise" />
+            <feGaussianBlur in="noise" stdDeviation="2" result="blurred" />
+            <feDisplacementMap in="SourceGraphic" in2="blurred" scale="70" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+    </svg>
+
+    <div id="name-modal">
+        <div class="name-input-container">
+            <div class="glass-filter"></div>
+            <div class="glass-overlay"></div>
+            <div class="glass-specular"></div>
+            <div class="glass-content">
+                <h2>Welcome to Crafted Gamz</h2>
+                <input type="text" id="name-input" placeholder="What's your name?" />
+                <br>
+                <button id="name-submit">Continue</button>
+            </div>
+        </div>
     </div>
-
-    <div class="nav-section">
-      <div class="nav-section-label">Explore</div>
-      <a class="nav-item" data-page="games">
-        <span class="nav-icon"><i class="fa-solid fa-gamepad"></i></span> Games
-      </a>
-      <a class="nav-item" data-page="movies">
-        <span class="nav-icon"><i class="fa-solid fa-film"></i></span> Movies
-      </a>
-      <a class="nav-item" data-page="ai">
-        <span class="nav-icon"><i class="fa-solid fa-microchip"></i></span> AI
-      </a>
-      <a class="nav-item" data-page="vms">
-        <span class="nav-icon"><i class="fa-solid fa-server"></i></span> VMs
-      </a>
-    </div>
-
-    <div class="nav-spacer"></div>
-
-    <div class="nav-section">
-      <div class="nav-section-label">System</div>
-      <a class="nav-item" data-page="control">
-        <span class="nav-icon"><i class="fa-solid fa-sliders"></i></span> Control
-      </a>
-      <a class="nav-item" data-page="settings">
-        <span class="nav-icon"><i class="fa-solid fa-gear"></i></span> Settings
-      </a>
-      <a class="nav-item" data-page="about">
-        <span class="nav-icon"><i class="fa-solid fa-circle-info"></i></span> About
-      </a>
-    </div>
-  </nav>
-
-  <div class="content-wrap">
-    <div class="topbar">
-      <span class="topbar-title" id="topbar-title">Home</span>
-      <div class="topbar-right">
-        <div class="topbar-avatar" title="Your account">CG</div>
-      </div>
-    </div>
-
-    <div class="content">
-
-      <!-- HOME -->
-      <div class="page active" id="page-home">
-        <div class="hero">
-          <div class="hero-badge">Crafted Gamz · v15</div>
-          <div class="hero-title">Your games,<br>your universe.</div>
-          <div class="hero-desc">Discover, play, and explore across games, movies, AI tools, and cloud VMs — all in one place.</div>
-          <div class="hero-actions">
-            <button class="btn btn-primary" onclick="nav('games')"><i class="fa-solid fa-gamepad"></i> Browse Games</button>
-            <button class="btn" onclick="nav('search')"><i class="fa-solid fa-magnifying-glass"></i> Search Everything</button>
-          </div>
+    <aside id="sidebar">
+        <div class="glass-filter"></div>
+        <div class="glass-overlay"></div>
+        <div class="glass-specular"></div>
+        <div style="position: relative; z-index: 3;">
+            <img class="sidebar-logo visible" src="logo.png" alt="Crafted Gamz Logo">
+            <ul class="sidebar-nav">
+                <li class="nav-item active">
+                    <a href="index.html">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="g.html">
+                        <i class="fas fa-gamepad"></i>
+                        <span>Games</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="s.html">
+                        <i class="fas fa-search"></i>
+                        <span>Search</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="ai.html">
+                        <i class="fas fa-robot"></i>
+                        <span>AI</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="a.html">
+                        <i class="fas fa-th"></i>
+                        <span>Apps</span>
+                    </a>
+                </li>
+                <li class="nav-item visible">
+                    <a href="music.html">
+                        <i class="fas fa-music"></i>
+                        <span>Music</span>
+                    </a>
+                </li>
+                <li class="nav-item visible">
+                    <a href="m.html">
+                        <i class="fas fa-film"></i>
+                        <span>Movies</span>
+                    </a>
+                </li>
+                <li class="nav-item visible">
+                    <a href="specialty.html">
+                        <i class="fas fa-star"></i>
+                        <span>Specialty Features</span>
+                    </a>
+                <li class="nav-item">
+                    <a href="vm.html">
+                        <i class="fas fa-desktop"></i>
+                        <span>Virtual Machines</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="credits.html">
+                        <i class="fas fa-question"></i>
+                        <span>About & Credits</span>
+                    </a>
+                </li>
+                <li class="nav-separator"></li>
+                <li class="nav-item">
+                    <a href="settings.html">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </aside>
+    <main id="main-content">
+        <div class="welcome-section">
+            <h1 class="welcome-text" id="welcome-text"></h1>
         </div>
 
-        <div class="stats-row">
-          <div class="stat-card"><div class="stat-num">1,248</div><div class="stat-label">Games</div></div>
-          <div class="stat-card"><div class="stat-num">340</div><div class="stat-label">Movies</div></div>
-          <div class="stat-card"><div class="stat-num">12</div><div class="stat-label">AI Tools</div></div>
-          <div class="stat-card"><div class="stat-num">4</div><div class="stat-label">VMs Active</div></div>
+        <div class="action-boxes">
+            <a href="g.html" class="action-box">
+                <div class="glass-filter"></div>
+                <div class="glass-overlay"></div>
+                <div class="glass-specular"></div>
+                <div class="glass-content">
+                    <div class="action-box-icon">
+                        <i class="fas fa-gamepad"></i>
+                    </div>
+                    <div class="action-box-title">Play Games?</div>
+                    <div class="action-box-desc">Browse our collection of over 50 browser games such as Snow Rider 3D, Slope, Retro Bowl, and more!</div>
+                </div>
+            </a>
+
+            <a href="a.html" class="action-box">
+                <div class="glass-filter"></div>
+                <div class="glass-overlay"></div>
+                <div class="glass-specular"></div>
+                <div class="glass-content">
+                    <div class="action-box-icon">
+                        <i class="fas fa-th"></i>
+                    </div>
+                    <div class="action-box-title">Explore Apps?</div>
+                    <div class="action-box-desc">Access apps such as ChatGPT, Claude by Anthropic, Google, and more!</div>
+                </div>
+            </a>
+
+            <a href="s.html" class="action-box">
+                <div class="glass-filter"></div>
+                <div class="glass-overlay"></div>
+                <div class="glass-specular"></div>
+                <div class="glass-content">
+                    <div class="action-box-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <div class="action-box-title">Search Anything?</div>
+                    <div class="action-box-desc">Pr0xy anything on the internet over Ultraviolet or Scramjet.</div>
+                </div>
+            </a>
+
+            <a href="ai.html" class="action-box">
+                <div class="glass-filter"></div>
+                <div class="glass-overlay"></div>
+                <div class="glass-specular"></div>
+                <div class="glass-content">
+                    <div class="action-box-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="action-box-title">Use Crafted AI?</div>
+                    <div class="action-box-desc">Use our AI service to connect and chat with various high-power LLM models such as LLaMA 3.3 70B, GPT OSS 120B, and more.</div>
+                </div>
+            </a>
         </div>
 
-        <div class="section-title">Recently Added</div>
-        <div class="grid">
-          <div class="card" onclick="nav('games')">
-            <div class="card-thumb"><i class="fa-solid fa-gamepad" style="font-size:32px;color:var(--text-dim)"></i></div>
-            <div class="card-label">Action</div>
-            <div class="card-name">Void Protocol</div>
-            <div class="card-meta">Added 2h ago</div>
-          </div>
-          <div class="card" onclick="nav('games')">
-            <div class="card-thumb"><i class="fa-solid fa-puzzle-piece" style="font-size:32px;color:var(--text-dim)"></i></div>
-            <div class="card-label">Puzzle</div>
-            <div class="card-name">Mirror Maze</div>
-            <div class="card-meta">Added 5h ago</div>
-          </div>
-          <div class="card" onclick="nav('movies')">
-            <div class="card-thumb"><i class="fa-solid fa-film" style="font-size:32px;color:var(--text-dim)"></i></div>
-            <div class="card-label">Sci-Fi</div>
-            <div class="card-name">The Last Signal</div>
-            <div class="card-meta">Added 8h ago</div>
-          </div>
-          <div class="card" onclick="nav('ai')">
-            <div class="card-thumb"><i class="fa-solid fa-robot" style="font-size:32px;color:var(--text-dim)"></i></div>
-            <div class="card-label">AI Tool</div>
-            <div class="card-name">SynthGen v2</div>
-            <div class="card-meta">Added 1d ago</div>
-          </div>
-          <div class="card" onclick="nav('games')">
-            <div class="card-thumb"><i class="fa-solid fa-dragon" style="font-size:32px;color:var(--text-dim)"></i></div>
-            <div class="card-label">RPG</div>
-            <div class="card-name">Ember Realm</div>
-            <div class="card-meta">Added 2d ago</div>
-          </div>
-          <div class="card" onclick="nav('movies')">
-            <div class="card-thumb"><i class="fa-solid fa-clapperboard" style="font-size:32px;color:var(--text-dim)"></i></div>
-            <div class="card-label">Thriller</div>
-            <div class="card-name">Echo Chamber</div>
-            <div class="card-meta">Added 3d ago</div>
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="section-title">System Status</div>
-        <div class="stats-row">
-          <div class="stat-card">
-            <div class="stat-num" style="font-size:18px;color:#4ade80"><i class="fa-solid fa-circle-check"></i> Nominal</div>
-            <div class="stat-label">Platform Health</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-num">99.9%</div>
-            <div class="stat-label">Uptime (30d)</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-num">14ms</div>
-            <div class="stat-label">Avg Latency</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-num">2.4 TB</div>
-            <div class="stat-label">Storage Used</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- SEARCH -->
-      <div class="page" id="page-search">
-        <div class="page-eyebrow">Explore</div>
-        <div class="page-title">Search</div>
-        <div class="page-sub">Find anything across games, movies, AI tools, and more.</div>
-
-        <div class="search-wrap">
-          <span class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
-          <input class="search-input" id="main-search" type="text" placeholder="Search games, movies, AI tools…" oninput="handleSearch(this.value)">
-        </div>
-
-        <div class="chip-row">
-          <div class="chip active" onclick="filterSearch(this,'all')">All</div>
-          <div class="chip" onclick="filterSearch(this,'game')">Games</div>
-          <div class="chip" onclick="filterSearch(this,'movie')">Movies</div>
-          <div class="chip" onclick="filterSearch(this,'ai')">AI Tools</div>
-          <div class="chip" onclick="filterSearch(this,'vm')">VMs</div>
-        </div>
-
-        <div class="search-results" id="search-results">
-          <div class="search-empty">
-            <i class="fa-solid fa-magnifying-glass"></i>
-            Start typing to search everything
-          </div>
-        </div>
-      </div>
-
-      <!-- GAMES -->
-      <div class="page" id="page-games">
-        <div class="page-eyebrow">Library</div>
-        <div class="page-title">Games</div>
-        <div class="page-sub">Your full collection — 1,248 titles across all genres.</div>
-
-        <div class="search-wrap">
-          <span class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
-          <input class="search-input" type="text" placeholder="Search games…">
-        </div>
-
-        <div class="chip-row">
-          <div class="chip active">All</div>
-          <div class="chip">Action</div>
-          <div class="chip">RPG</div>
-          <div class="chip">Puzzle</div>
-          <div class="chip">Strategy</div>
-          <div class="chip">Simulation</div>
-          <div class="chip">Horror</div>
-        </div>
-
-        <div class="section-title">Featured</div>
-        <div class="grid" style="margin-bottom:32px">
-          <div class="card">
-            <div class="card-thumb"><i class="fa-solid fa-gamepad" style="font-size:32px;color:var(--text-dim)"></i></div>
-            <div class="card-label">Action</div><div class="card-name">Void Protocol</div><div class="card-meta">★ 4.8 · 2h ago</div>
-          </div>
-          <div class="card">
-            <div class="card-thumb"><i class="fa-solid fa-dragon" style="font-size:32px;color:var(--text-dim)"></i></div>
-            <div class="card-label">RPG</div><div class="card-name">Ember Realm</div><div class="card-meta">★ 4.6 · 2d ago</div>
-          </div>
-          <div class="card">
-            <div class="card-thumb"><i class="fa-solid fa-puzzle-piece" style="font-size:32px;color:var(--text-dim)"></i></div>
-            <div class="card-label">Puzzle</div><div class="card-name">Mirror Maze</div><div class="card-meta">★ 4.5 · 5h ago</div>
-          </div>
-          <div class="card">
-            <div class="card-thumb"><i class="fa-solid fa-chess" style="font-size:32px;color:var(--text-dim)"></i></div>
-            <div class="card-label">Strategy</div><div class="card-name">Iron Doctrine</div><div class="card-meta">★ 4.7 · 4d ago</div>
-          </div>
-          <div class="card">
-            <div class="card-thumb"><i class="fa-solid fa-skull" style="font-size:32px;color:var(--text-dim)"></i></div>
-            <div class="card-label">Horror</div><div class="card-name">Pale Echo</div><div class="card-meta">★ 4.3 · 1d ago</div>
-          </div>
-          <div class="card">
-            <div class="card-thumb"><i class="fa-solid fa-car" style="font-size:32px;color:var(--text-dim)"></i></div>
-            <div class="card-label">Racing</div><div class="card-name">Asphalt Zero</div><div class="card-meta">★ 4.4 · 3d ago</div>
-          </div>
-        </div>
-
-        <div class="section-title">All Games</div>
-        <div class="grid">
-          <div class="card">
-            <div class="card-thumb"><i class="fa-solid fa-satellite" style="font-size:32px;color:var(--text-dim)"></i></div>
-            <div class="card-label">Sci-Fi</div><div class="card-name">Deep Orbit</div><div class="card-meta">★ 4.2</div>
-          </div>
-          <div class="card">
-            <div class="card-thumb"><i class="fa-solid fa-shield-halved" style="font-size:32px;color:var(--text-dim)"></i></div>
-            <div class="card-label">Action</div><div class="card-name">Bastion Null</div><div class="card-meta">★ 4.1</div>
-          </div>
-          <div class="card">
-            <div class="card-thumb"><i class="fa-solid fa-wand-sparkles" style="font-size:32px;color:var(--text-dim)"></i></div>
-            <div class="card-label">Fantasy</div><div class="card-name">Arcane Weave</div><div class="card-meta">★ 4.5</div>
-          </div>
-          <div class="card">
-            <div class="card-thumb"><i class="fa-solid fa-city" style="font-size:32px;color:var(--text-dim)"></i></div>
-            <div class="card-label">Simulation</div><div class="card-name">Metro Architect</div><div class="card-meta">★ 4.6</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- MOVIES -->
-      <div class="page" id="page-movies">
-        <div class="page-eyebrow">Library</div>
-        <div class="page-title">Movies</div>
-        <div class="page-sub">340 films across every genre. Stream, save, revisit.</div>
-
-        <div class="search-wrap">
-          <span class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
-          <input class="search-input" type="text" placeholder="Search movies…">
-        </div>
-
-        <div class="chip-row">
-          <div class="chip active">All</div>
-          <div class="chip">Sci-Fi</div>
-          <div class="chip">Thriller</div>
-          <div class="chip">Drama</div>
-          <div class="chip">Horror</div>
-          <div class="chip">Documentary</div>
-          <div class="chip">Action</div>
-        </div>
-
-        <div class="section-title">New Arrivals</div>
-        <div class="grid" style="margin-bottom:32px">
-          <div class="card">
-            <div class="card-thumb"><i class="fa-solid fa-satellite-dish" style="font-size:32px;color:var(--text-dim)"></i></div>
-            <div class="card-label">Sci-Fi</div><div class="card-name">The Last Signal</div><div class="card-meta">2h 14m · 2024</div>
-          </div>
-          <div class="card">
-            <div class="card-thumb"><i class="fa-solid fa-microphone" style="font-size:32px;color:var(--text-dim)"></i></div>
-            <div class="card-label">Thriller</div><div class="card-name">Echo Chamber</div><div class="card-meta">1h 52m · 2024</div>
-          </div>
-          <div class="card">
-            <div class="card-thumb"><i class="fa-solid fa-eye" style="font-size:32px;color:var(--text-dim)"></i></div>
-            <div class="card-label">Drama</div><div class="card-name">Glass Houses</div><div class="card-meta">2h 02m · 2023</div>
-          </div>
-          <div class="card">
-            <div class="card-thumb"><i class="fa-solid fa-moon" style="font-size:32px;color:var(--text-dim)"></i></div>
-            <div class="card-label">Horror</div><div class="card-name">Hollow Night</div><div class="card-meta">1h 44m · 2024</div>
-          </div>
-          <div class="card">
-            <div class="card-thumb"><i class="fa-solid fa-rocket" style="font-size:32px;color:var(--text-dim)"></i></div>
-            <div class="card-label">Action</div><div class="card-name">Freefall</div><div class="card-meta">2h 08m · 2023</div>
-          </div>
-          <div class="card">
-            <div class="card-thumb"><i class="fa-solid fa-book" style="font-size:32px;color:var(--text-dim)"></i></div>
-            <div class="card-label">Documentary</div><div class="card-name">Code & Chaos</div><div class="card-meta">1h 30m · 2024</div>
-          </div>
-        </div>
-
-        <div class="section-title">Continue Watching</div>
-        <div class="grid">
-          <div class="card">
-            <div class="card-thumb" style="position:relative">
-              <i class="fa-solid fa-play" style="font-size:28px;color:var(--text-dim)"></i>
+        <div id="stats-board">
+            <div class="glass-filter"></div>
+            <div class="glass-overlay"></div>
+            <div class="glass-specular"></div>
+            <div class="glass-content">
+                <h2 class="stats-title">Platform Statistics</h2>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value" id="stat-games-played">0</div>
+                        <div class="stat-label">Games Played</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="stat-online-users">0</div>
+                        <div class="stat-label">Online Now</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="stat-users-today">0</div>
+                        <div class="stat-label">Users Today</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="stat-users-month">0</div>
+                        <div class="stat-label">Users This Month</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="stat-users-total">0</div>
+                        <div class="stat-label">Total Users Ever</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label" style="margin-bottom: 10px;">Top 5 Games</div>
+                        <div class="top-games-list" id="top-games-list">
+                            <div class="top-game-item">
+                                <span class="top-game-name">Loading...</span>
+                                <span class="top-game-plays"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="card-label">Sci-Fi · 58% watched</div>
-            <div class="card-name">Event Horizon II</div>
-            <div class="card-meta">51m remaining</div>
-            <div class="progress-bar-wrap"><div class="progress-bar" style="width:58%"></div></div>
-          </div>
-          <div class="card">
-            <div class="card-thumb">
-              <i class="fa-solid fa-play" style="font-size:28px;color:var(--text-dim)"></i>
-            </div>
-            <div class="card-label">Thriller · 22% watched</div>
-            <div class="card-name">Null Point</div>
-            <div class="card-meta">1h 28m remaining</div>
-            <div class="progress-bar-wrap"><div class="progress-bar" style="width:22%"></div></div>
-          </div>
         </div>
-      </div>
-
-      <!-- AI -->
-      <div class="page" id="page-ai">
-        <div class="page-eyebrow">Tools</div>
-        <div class="page-title">AI</div>
-        <div class="page-sub">12 integrated AI tools. Build, generate, analyze, and automate.</div>
-
-        <div class="ai-prompt-wrap">
-          <input class="ai-input" type="text" placeholder="Ask anything or describe a task…">
-          <button class="btn btn-primary btn-sm"><i class="fa-solid fa-paper-plane"></i> Run</button>
-        </div>
-
-        <div class="section-title">Tools</div>
-        <div class="ai-feature-grid">
-          <div class="ai-feature-card">
-            <div class="ai-feature-icon"><i class="fa-solid fa-pen-nib"></i></div>
-            <div class="ai-feature-name">Copywriter</div>
-            <div class="ai-feature-desc">Generate marketing copy, taglines, and descriptions at scale.</div>
-          </div>
-          <div class="ai-feature-card">
-            <div class="ai-feature-icon"><i class="fa-solid fa-image"></i></div>
-            <div class="ai-feature-name">SynthGen v2</div>
-            <div class="ai-feature-desc">AI image synthesis from text prompts and style references.</div>
-          </div>
-          <div class="ai-feature-card">
-            <div class="ai-feature-icon"><i class="fa-solid fa-code"></i></div>
-            <div class="ai-feature-name">CodeAssist</div>
-            <div class="ai-feature-desc">Smart code completion, review, and debugging across languages.</div>
-          </div>
-          <div class="ai-feature-card">
-            <div class="ai-feature-icon"><i class="fa-solid fa-chart-line"></i></div>
-            <div class="ai-feature-name">DataLens</div>
-            <div class="ai-feature-desc">Analyze datasets and generate visualizations automatically.</div>
-          </div>
-          <div class="ai-feature-card">
-            <div class="ai-feature-icon"><i class="fa-solid fa-language"></i></div>
-            <div class="ai-feature-name">Translator Pro</div>
-            <div class="ai-feature-desc">Real-time translation across 90+ languages with tone awareness.</div>
-          </div>
-          <div class="ai-feature-card">
-            <div class="ai-feature-icon"><i class="fa-solid fa-music"></i></div>
-            <div class="ai-feature-name">SoundForge AI</div>
-            <div class="ai-feature-desc">Generate ambient, lofi, or custom soundscapes for projects.</div>
-          </div>
-          <div class="ai-feature-card">
-            <div class="ai-feature-icon"><i class="fa-solid fa-shield"></i></div>
-            <div class="ai-feature-name">ThreatScan</div>
-            <div class="ai-feature-desc">AI-powered security analysis and vulnerability detection.</div>
-          </div>
-          <div class="ai-feature-card">
-            <div class="ai-feature-icon"><i class="fa-solid fa-comments"></i></div>
-            <div class="ai-feature-name">Chat NPC</div>
-            <div class="ai-feature-desc">Build conversational game characters with memory and personality.</div>
-          </div>
-          <div class="ai-feature-card">
-            <div class="ai-feature-icon"><i class="fa-solid fa-file-alt"></i></div>
-            <div class="ai-feature-name">DocSummarize</div>
-            <div class="ai-feature-desc">Condense long documents, PDFs, and reports into key insights.</div>
-          </div>
-          <div class="ai-feature-card">
-            <div class="ai-feature-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
-            <div class="ai-feature-name">Style Transfer</div>
-            <div class="ai-feature-desc">Apply artistic styles to assets and textures in your library.</div>
-          </div>
-          <div class="ai-feature-card">
-            <div class="ai-feature-icon"><i class="fa-solid fa-map"></i></div>
-            <div class="ai-feature-name">World Builder</div>
-            <div class="ai-feature-desc">Generate lore, maps, and characters for your game worlds.</div>
-          </div>
-          <div class="ai-feature-card">
-            <div class="ai-feature-icon"><i class="fa-solid fa-bug"></i></div>
-            <div class="ai-feature-name">QA Bot</div>
-            <div class="ai-feature-desc">Automated testing scripts and edge-case generation for apps.</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- VMs -->
-      <div class="page" id="page-vms">
-        <div class="page-eyebrow">Cloud</div>
-        <div class="page-title">Virtual Machines</div>
-        <div class="page-sub">Manage your cloud instances — 4 running, 2 stopped.</div>
-
-        <div class="stats-row" style="margin-bottom:28px">
-          <div class="stat-card"><div class="stat-num" style="color:#4ade80">4</div><div class="stat-label">Running</div></div>
-          <div class="stat-card"><div class="stat-num">2</div><div class="stat-label">Stopped</div></div>
-          <div class="stat-card"><div class="stat-num">48 vCPU</div><div class="stat-label">Total Cores</div></div>
-          <div class="stat-card"><div class="stat-num">192 GB</div><div class="stat-label">Total RAM</div></div>
-        </div>
-
-        <div class="section-title">Instances</div>
-
-        <div class="vm-card">
-          <div class="vm-status-light vm-running"></div>
-          <div class="vm-info">
-            <div class="vm-name">prod-game-server-01</div>
-            <div class="vm-spec">16 vCPU · 64 GB RAM · Ubuntu 24.04 · us-east-1</div>
-          </div>
-          <div class="vm-actions">
-            <button class="btn btn-sm"><i class="fa-solid fa-terminal"></i> SSH</button>
-            <button class="btn btn-sm btn-danger"><i class="fa-solid fa-stop"></i> Stop</button>
-          </div>
-        </div>
-        <div class="vm-card">
-          <div class="vm-status-light vm-running"></div>
-          <div class="vm-info">
-            <div class="vm-name">ai-inference-02</div>
-            <div class="vm-spec">8 vCPU · 32 GB RAM · Debian 12 · us-west-2</div>
-          </div>
-          <div class="vm-actions">
-            <button class="btn btn-sm"><i class="fa-solid fa-terminal"></i> SSH</button>
-            <button class="btn btn-sm btn-danger"><i class="fa-solid fa-stop"></i> Stop</button>
-          </div>
-        </div>
-        <div class="vm-card">
-          <div class="vm-status-light vm-running"></div>
-          <div class="vm-info">
-            <div class="vm-name">media-cdn-03</div>
-            <div class="vm-spec">8 vCPU · 16 GB RAM · Ubuntu 22.04 · eu-central-1</div>
-          </div>
-          <div class="vm-actions">
-            <button class="btn btn-sm"><i class="fa-solid fa-terminal"></i> SSH</button>
-            <button class="btn btn-sm btn-danger"><i class="fa-solid fa-stop"></i> Stop</button>
-          </div>
-        </div>
-        <div class="vm-card">
-          <div class="vm-status-light vm-running"></div>
-          <div class="vm-info">
-            <div class="vm-name">dev-build-04</div>
-            <div class="vm-spec">16 vCPU · 64 GB RAM · Arch Linux · us-east-1</div>
-          </div>
-          <div class="vm-actions">
-            <button class="btn btn-sm"><i class="fa-solid fa-terminal"></i> SSH</button>
-            <button class="btn btn-sm btn-danger"><i class="fa-solid fa-stop"></i> Stop</button>
-          </div>
-        </div>
-        <div class="vm-card">
-          <div class="vm-status-light vm-stopped"></div>
-          <div class="vm-info">
-            <div class="vm-name">staging-app-05</div>
-            <div class="vm-spec">4 vCPU · 8 GB RAM · Ubuntu 22.04 · us-east-1</div>
-          </div>
-          <div class="vm-actions">
-            <button class="btn btn-sm"><i class="fa-solid fa-play"></i> Start</button>
-            <button class="btn btn-sm"><i class="fa-solid fa-trash"></i> Delete</button>
-          </div>
-        </div>
-        <div class="vm-card">
-          <div class="vm-status-light vm-stopped"></div>
-          <div class="vm-info">
-            <div class="vm-name">backup-store-06</div>
-            <div class="vm-spec">2 vCPU · 8 GB RAM · Debian 11 · ap-southeast-1</div>
-          </div>
-          <div class="vm-actions">
-            <button class="btn btn-sm"><i class="fa-solid fa-play"></i> Start</button>
-            <button class="btn btn-sm"><i class="fa-solid fa-trash"></i> Delete</button>
-          </div>
-        </div>
-
-        <div style="margin-top:24px">
-          <button class="btn btn-primary"><i class="fa-solid fa-plus"></i> New Instance</button>
-        </div>
-      </div>
-
-      <!-- CONTROL -->
-      <div class="page" id="page-control">
-        <div class="page-eyebrow">System</div>
-        <div class="page-title">Control</div>
-        <div class="page-sub">Manage accounts, permissions, and platform access.</div>
-
-        <div class="account-card">
-          <div class="account-avatar">CG</div>
-          <div class="account-info">
-            <div class="account-name">Crafted</div>
-            <div class="account-role"><span class="role-badge role-owner">Owner</span></div>
-          </div>
-          <div class="account-actions">
-            <button class="btn btn-sm"><i class="fa-solid fa-pen"></i> Edit Profile</button>
-            <button class="btn btn-sm btn-danger"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out</button>
-          </div>
-        </div>
-
-        <div class="section-title">Team Members</div>
-        <div class="about-block" style="padding:0;overflow:hidden">
-          <table class="users-table">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Role</th>
-                <th>Status</th>
-                <th>Last Active</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Crafted</td>
-                <td><span class="role-badge role-owner">Owner</span></td>
-                <td><span class="status-dot status-online"></span>Online</td>
-                <td>Now</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td>Nova_Dev</td>
-                <td><span class="role-badge role-admin">Admin</span></td>
-                <td><span class="status-dot status-online"></span>Online</td>
-                <td>3m ago</td>
-                <td><button class="btn btn-sm">Manage</button></td>
-              </tr>
-              <tr>
-                <td>pixel.witch</td>
-                <td><span class="role-badge role-member">Member</span></td>
-                <td><span class="status-dot status-offline"></span>Offline</td>
-                <td>2h ago</td>
-                <td><button class="btn btn-sm">Manage</button></td>
-              </tr>
-              <tr>
-                <td>rz_builds</td>
-                <td><span class="role-badge role-member">Member</span></td>
-                <td><span class="status-dot status-offline"></span>Offline</td>
-                <td>1d ago</td>
-                <td><button class="btn btn-sm">Manage</button></td>
-              </tr>
-              <tr>
-                <td>ghost_qa</td>
-                <td><span class="role-badge role-member">Member</span></td>
-                <td><span class="status-dot status-online"></span>Online</td>
-                <td>12m ago</td>
-                <td><button class="btn btn-sm">Manage</button></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div style="margin-top:20px;margin-bottom:32px">
-          <button class="btn"><i class="fa-solid fa-user-plus"></i> Invite Member</button>
-        </div>
-
-        <div class="section-title">System Logs</div>
-        <div class="about-block">
-          <div class="log-list">
-            <div><span class="ok">[OK]</span> &nbsp;Platform booted — v15.0.0 · <span>today 09:12:04</span></div>
-            <div><span class="ok">[OK]</span> &nbsp;AI inference node connected · <span>today 09:12:08</span></div>
-            <div><span class="ok">[OK]</span> &nbsp;4 VM instances confirmed running · <span>today 09:13:01</span></div>
-            <div><span class="warn">[WARN]</span> &nbsp;staging-app-05 stopped unexpectedly · <span>today 10:44:22</span></div>
-            <div><span class="ok">[OK]</span> &nbsp;backup-store-06 gracefully shut down · <span>today 11:02:55</span></div>
-            <div><span class="ok">[OK]</span> &nbsp;New game added: Void Protocol · <span>today 13:18:40</span></div>
-            <div><span class="ok">[OK]</span> &nbsp;SynthGen v2 deployed to AI toolchain · <span>today 14:05:11</span></div>
-            <div><span class="err">[ERR]</span> &nbsp;CDN latency spike detected (eu-central-1) · <span>today 15:33:07</span></div>
-            <div><span class="ok">[OK]</span> &nbsp;CDN latency resolved · <span>today 15:41:29</span></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- SETTINGS -->
-      <div class="page" id="page-settings">
-        <div class="page-eyebrow">System</div>
-        <div class="page-title">Settings</div>
-        <div class="page-sub">Configure platform behaviour, notifications, and integrations.</div>
-
-        <div class="settings-group">
-          <div class="section-title">Appearance</div>
-          <div class="settings-row">
-            <div class="settings-row-info">
-              <div class="settings-row-label">Animated Background</div>
-              <div class="settings-row-desc">Live particle canvas rendered in the background.</div>
-            </div>
-            <div class="toggle on" onclick="this.classList.toggle('on')"></div>
-          </div>
-          <div class="settings-row">
-            <div class="settings-row-info">
-              <div class="settings-row-label">Reduced Motion</div>
-              <div class="settings-row-desc">Minimise transitions and animations throughout the UI.</div>
-            </div>
-            <div class="toggle" onclick="this.classList.toggle('on')"></div>
-          </div>
-          <div class="settings-row">
-            <div class="settings-row-info">
-              <div class="settings-row-label">Compact Layout</div>
-              <div class="settings-row-desc">Tighter spacing for denser information display.</div>
-            </div>
-            <div class="toggle" onclick="this.classList.toggle('on')"></div>
-          </div>
-          <div class="settings-row">
-            <div class="settings-row-info">
-              <div class="settings-row-label">Display Name</div>
-              <div class="settings-row-desc">Shown in topbar and team member list.</div>
-            </div>
-            <input class="input-field" type="text" value="Crafted" placeholder="Your display name">
-          </div>
-        </div>
-
-        <div class="settings-group">
-          <div class="section-title">Notifications</div>
-          <div class="settings-row">
-            <div class="settings-row-info">
-              <div class="settings-row-label">VM Alerts</div>
-              <div class="settings-row-desc">Notify when instances stop, crash, or spike in resource usage.</div>
-            </div>
-            <div class="toggle on" onclick="this.classList.toggle('on')"></div>
-          </div>
-          <div class="settings-row">
-            <div class="settings-row-info">
-              <div class="settings-row-label">New Content Alerts</div>
-              <div class="settings-row-desc">Alert when new games or movies are added to the library.</div>
-            </div>
-            <div class="toggle on" onclick="this.classList.toggle('on')"></div>
-          </div>
-          <div class="settings-row">
-            <div class="settings-row-info">
-              <div class="settings-row-label">AI Job Completion</div>
-              <div class="settings-row-desc">Notify when background AI tasks finish processing.</div>
-            </div>
-            <div class="toggle" onclick="this.classList.toggle('on')"></div>
-          </div>
-          <div class="settings-row">
-            <div class="settings-row-info">
-              <div class="settings-row-label">Team Activity</div>
-              <div class="settings-row-desc">Show when team members come online or make changes.</div>
-            </div>
-            <div class="toggle" onclick="this.classList.toggle('on')"></div>
-          </div>
-        </div>
-
-        <div class="settings-group">
-          <div class="section-title">Integrations</div>
-          <div class="settings-row">
-            <div class="settings-row-info">
-              <div class="settings-row-label">Webhook Endpoint</div>
-              <div class="settings-row-desc">POST events to your external endpoint on platform actions.</div>
-            </div>
-            <input class="input-field" type="text" placeholder="https://your-endpoint.com/hook">
-          </div>
-          <div class="settings-row">
-            <div class="settings-row-info">
-              <div class="settings-row-label">API Access</div>
-              <div class="settings-row-desc">Allow external apps to interact with this platform via API.</div>
-            </div>
-            <div class="toggle on" onclick="this.classList.toggle('on')"></div>
-          </div>
-          <div class="settings-row">
-            <div class="settings-row-info">
-              <div class="settings-row-label">Telemetry</div>
-              <div class="settings-row-desc">Send anonymous usage data to improve the platform.</div>
-            </div>
-            <div class="toggle" onclick="this.classList.toggle('on')"></div>
-          </div>
-        </div>
-
-        <div style="padding-top:8px;display:flex;gap:10px">
-          <button class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Save Changes</button>
-          <button class="btn"><i class="fa-solid fa-rotate-left"></i> Reset Defaults</button>
-        </div>
-      </div>
-
-      <!-- ABOUT -->
-      <div class="page" id="page-about">
-        <div class="page-eyebrow">System</div>
-        <div class="page-title">About</div>
-        <div class="page-sub">Platform info, credits, and build details.</div>
-
-        <div class="about-block">
-          <div class="about-version-tag">Crafted Gamz · v15.0.0</div>
-          <div style="font-size:22px;font-weight:200;color:#fff;margin-bottom:10px;letter-spacing:-0.02em">Built by Crafted.</div>
-          <div style="font-size:13px;color:var(--text-mid);font-weight:300;max-width:520px;line-height:1.7">
-            Crafted Gamz is a unified platform for games, movies, AI tools, and cloud infrastructure — designed and maintained under Crafted Gamz. Version 15 introduces a fully redesigned UI, expanded AI tooling, and improved VM management.
-          </div>
-          <div style="margin-top:24px;display:flex;gap:8px;flex-wrap:wrap">
-            <span class="tag"><i class="fa-solid fa-code"></i> JS / HTML / CSS</span>
-            <span class="tag"><i class="fa-solid fa-palette"></i> DM Mono · DM Sans</span>
-            <span class="tag"><i class="fa-brands fa-font-awesome"></i> Font Awesome 6</span>
-            <span class="tag"><i class="fa-solid fa-cloud"></i> Cloud-Native</span>
-          </div>
-        </div>
-
-        <div class="about-block" style="animation-delay:0.1s">
-          <div class="section-title" style="margin-bottom:20px">Build Info</div>
-          <div class="log-list">
-            <div>Version &nbsp;<span>15.0.0</span></div>
-            <div>Build &nbsp;<span>#2025.05.03.001</span></div>
-            <div>Environment &nbsp;<span>Production</span></div>
-            <div>Renderer &nbsp;<span>Canvas 2D · WebGL fallback</span></div>
-            <div>AI Engine &nbsp;<span>SynthCore v4</span></div>
-            <div>VM Orchestrator &nbsp;<span>CraftedCloud 3.1</span></div>
-          </div>
-        </div>
-
-        <div class="about-block" style="animation-delay:0.2s">
-          <div class="section-title" style="margin-bottom:20px">Changelog · v15</div>
-          <div style="font-size:13px;color:var(--text-mid);font-weight:300;line-height:2">
-            <div><span style="color:#4ade80;font-family:var(--mono);font-size:10px">NEW</span> &nbsp;Full UI redesign — glass morphism, DM type system, animated canvas</div>
-            <div><span style="color:#4ade80;font-family:var(--mono);font-size:10px">NEW</span> &nbsp;12 AI tools integrated into unified toolchain</div>
-            <div><span style="color:#4ade80;font-family:var(--mono);font-size:10px">NEW</span> &nbsp;VM dashboard with live status and SSH shortcuts</div>
-            <div><span style="color:#facc15;font-family:var(--mono);font-size:10px">IMP</span> &nbsp;Search rewritten with real-time filtering across all content</div>
-            <div><span style="color:#facc15;font-family:var(--mono);font-size:10px">IMP</span> &nbsp;Sidebar navigation with section labels and active indicators</div>
-            <div><span style="color:#facc15;font-family:var(--mono);font-size:10px">IMP</span> &nbsp;Staggered card animations and page transitions</div>
-            <div><span style="color:var(--text-dim);font-family:var(--mono);font-size:10px">FIX</span> &nbsp;Scrollbar visibility in nested content areas</div>
-            <div><span style="color:var(--text-dim);font-family:var(--mono);font-size:10px">FIX</span> &nbsp;Toggle state persistence within session</div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</div>
-
-<script>
-const pages = {
-  home: 'Home',
-  search: 'Search',
-  games: 'Games',
-  movies: 'Movies',
-  ai: 'AI',
-  vms: 'VMs',
-  control: 'Control',
-  settings: 'Settings',
-  about: 'About'
-};
-
-function nav(id) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  const page = document.getElementById('page-' + id);
-  if (page) {
-    page.classList.add('active');
-    page.style.animation = 'none';
-    requestAnimationFrame(() => {
-      page.style.animation = '';
-    });
-  }
-  document.querySelectorAll('.nav-item').forEach(n => {
-    if (n.dataset.page === id) n.classList.add('active');
-  });
-  document.getElementById('topbar-title').textContent = pages[id] || id;
-}
-
-document.querySelectorAll('.nav-item').forEach(item => {
-  item.addEventListener('click', () => nav(item.dataset.page));
-});
-
-document.querySelectorAll('.chip').forEach(chip => {
-  chip.addEventListener('click', function() {
-    this.closest('.chip-row').querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-    this.classList.add('active');
-  });
-});
-
-const searchData = [
-  { name: 'Void Protocol', type: 'game', icon: 'fa-gamepad' },
-  { name: 'Mirror Maze', type: 'game', icon: 'fa-puzzle-piece' },
-  { name: 'Ember Realm', type: 'game', icon: 'fa-dragon' },
-  { name: 'Iron Doctrine', type: 'game', icon: 'fa-chess' },
-  { name: 'Pale Echo', type: 'game', icon: 'fa-skull' },
-  { name: 'Asphalt Zero', type: 'game', icon: 'fa-car' },
-  { name: 'Deep Orbit', type: 'game', icon: 'fa-satellite' },
-  { name: 'Bastion Null', type: 'game', icon: 'fa-shield-halved' },
-  { name: 'Arcane Weave', type: 'game', icon: 'fa-wand-sparkles' },
-  { name: 'Metro Architect', type: 'game', icon: 'fa-city' },
-  { name: 'The Last Signal', type: 'movie', icon: 'fa-satellite-dish' },
-  { name: 'Echo Chamber', type: 'movie', icon: 'fa-microphone' },
-  { name: 'Glass Houses', type: 'movie', icon: 'fa-eye' },
-  { name: 'Hollow Night', type: 'movie', icon: 'fa-moon' },
-  { name: 'Freefall', type: 'movie', icon: 'fa-rocket' },
-  { name: 'Code & Chaos', type: 'movie', icon: 'fa-book' },
-  { name: 'SynthGen v2', type: 'ai', icon: 'fa-image' },
-  { name: 'CodeAssist', type: 'ai', icon: 'fa-code' },
-  { name: 'DataLens', type: 'ai', icon: 'fa-chart-line' },
-  { name: 'World Builder', type: 'ai', icon: 'fa-map' },
-  { name: 'prod-game-server-01', type: 'vm', icon: 'fa-server' },
-  { name: 'ai-inference-02', type: 'vm', icon: 'fa-server' },
-  { name: 'media-cdn-03', type: 'vm', icon: 'fa-server' },
-];
-
-let searchFilter = 'all';
-
-function filterSearch(el, type) {
-  searchFilter = type;
-  el.closest('.chip-row').querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-  el.classList.add('active');
-  handleSearch(document.getElementById('main-search').value);
-}
-
-function handleSearch(query) {
-  const container = document.getElementById('search-results');
-  const q = query.trim().toLowerCase();
-  if (!q) {
-    container.innerHTML = '<div class="search-empty"><i class="fa-solid fa-magnifying-glass"></i>Start typing to search everything</div>';
-    return;
-  }
-  const filtered = searchData.filter(item => {
-    const matchType = searchFilter === 'all' || item.type === searchFilter;
-    const matchQ = item.name.toLowerCase().includes(q);
-    return matchType && matchQ;
-  });
-  if (!filtered.length) {
-    container.innerHTML = '<div class="search-empty"><i class="fa-solid fa-face-frown"></i>No results found for "' + query + '"</div>';
-    return;
-  }
-  container.innerHTML = filtered.map((item, i) => `
-    <div class="search-result-item" style="animation-delay:${i * 0.04}s">
-      <div class="search-result-thumb"><i class="fa-solid ${item.icon}"></i></div>
-      <div class="search-result-info">
-        <div class="search-result-name">${item.name}</div>
-        <div class="search-result-type">${item.type}</div>
-      </div>
-      <i class="fa-solid fa-chevron-right" style="color:var(--text-dim);font-size:11px"></i>
-    </div>
-  `).join('');
-}
-
-const canvas = document.getElementById('bg-canvas');
-const ctx = canvas.getContext('2d');
-let W, H, particles = [];
-
-function resize() {
-  W = canvas.width = window.innerWidth;
-  H = canvas.height = window.innerHeight;
-}
-
-function mkParticle() {
-  return {
-    x: Math.random() * W,
-    y: Math.random() * H,
-    r: Math.random() * 1.4 + 0.3,
-    vx: (Math.random() - 0.5) * 0.25,
-    vy: (Math.random() - 0.5) * 0.25,
-    a: Math.random() * 0.4 + 0.1
-  };
-}
-
-function initParticles() {
-  particles = Array.from({ length: 90 }, mkParticle);
-}
-
-function drawFrame() {
-  ctx.clearRect(0, 0, W, H);
-  for (let i = 0; i < particles.length; i++) {
-    const p = particles[i];
-    p.x += p.vx;
-    p.y += p.vy;
-    if (p.x < 0) p.x = W;
-    if (p.x > W) p.x = 0;
-    if (p.y < 0) p.y = H;
-    if (p.y > H) p.y = 0;
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(255,255,255,${p.a})`;
-    ctx.fill();
-    for (let j = i + 1; j < particles.length; j++) {
-      const q = particles[j];
-      const dx = p.x - q.x, dy = p.y - q.y;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      if (dist < 120) {
-        ctx.beginPath();
-        ctx.moveTo(p.x, p.y);
-        ctx.lineTo(q.x, q.y);
-        ctx.strokeStyle = `rgba(255,255,255,${0.06 * (1 - dist / 120)})`;
-        ctx.lineWidth = 0.5;
-        ctx.stroke();
-      }
-    }
-  }
-  requestAnimationFrame(drawFrame);
-}
-
-resize();
-initParticles();
-drawFrame();
-window.addEventListener('resize', () => { resize(); initParticles(); });
-</script>
+    </main>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+    <script src="js/script.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="js/account.js"></script>
+    <script src="js/loading.js"></script>
 </body>
 </html>

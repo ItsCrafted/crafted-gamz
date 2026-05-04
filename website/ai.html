@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crafted AI - Crafted Gamz</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+<link rel="stylesheet" href="css/ai.css">
+</head>
+<body>
+    <div class="bg-container">
+        <iframe src="bg.html" class="bg"></iframe>
+    </div>
+
+    <svg id="svg-filters" style="display: none">
+        <filter id="lg-dist" x="0%" y="0%" width="100%" height="100%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.008 0.008" numOctaves="2" seed="92" result="noise" />
+            <feGaussianBlur in="noise" stdDeviation="2" result="blurred" />
+            <feDisplacementMap in="SourceGraphic" in2="blurred" scale="70" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+    </svg>
+
+    <aside id="sidebar">
+        <div class="glass-filter"></div>
+        <div class="glass-overlay"></div>
+        <div class="glass-specular"></div>
+        <div style="position: relative; z-index: 3;">
+            <img class="sidebar-logo visible" src="logo.png" alt="Crafted Gamz Logo">
+            <ul class="sidebar-nav">
+                <li class="nav-item visible">
+                    <a href="index.html">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                </li>
+                <li class="nav-item visible">
+                    <a href="g.html">
+                        <i class="fas fa-gamepad"></i>
+                        <span>Games</span>
+                    </a>
+                </li>
+                <li class="nav-item visible">
+                    <a href="s.html">
+                        <i class="fas fa-search"></i>
+                        <span>Search</span>
+                    </a>
+                </li>
+                <li class="nav-item visible active">
+                    <a href="ai.html">
+                        <i class="fas fa-robot"></i>
+                        <span>AI</span>
+                    </a>
+                </li>
+                <li class="nav-item visible">
+                    <a href="a.html">
+                        <i class="fas fa-th"></i>
+                        <span>Apps</span>
+                    </a>
+                </li>
+<li class="nav-item visible">
+                    <a href="music.html">
+                        <i class="fas fa-music"></i>
+                        <span>Music</span>
+                    </a>
+                </li>
+                <li class="nav-item visible">
+                    <a href="m.html">
+                        <i class="fas fa-film"></i>
+                        <span>Movies</span>
+                    </a>
+                </li>
+                <li class="nav-item visible">
+                    <a href="specialty.html">
+                        <i class="fas fa-star"></i>
+                        <span>Specialty Features</span>
+                    </a>
+                <li class="nav-item visible">
+                    <a href="vm.html">
+                        <i class="fas fa-desktop"></i>
+                        <span>Virtual Machines</span>
+                    </a>
+                </li>
+                <li class="nav-item visible">
+                    <a href="credits.html">
+                        <i class="fas fa-question"></i>
+                        <span>About & Credits</span>
+                    </a>
+                </li>
+                <li class="nav-separator"></li>
+                <li class="nav-item visible">
+                    <a href="settings.html">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </aside>
+
+    <main id="main-content">
+        <div class="welcome-section">
+            <h1 class="welcome-text">Crafted AI</h1>
+            <p style="color: rgba(255,255,255,0.7); margin-top: 1rem;">Connect with powerful LLM models</p>
+        </div>
+
+        <div class="chat-interface">
+            <div class="glass-filter"></div>
+            <div class="glass-overlay"></div>
+            <div class="glass-specular"></div>
+            
+            <div style="position: relative; z-index: 3; display: flex; flex-direction: column; height: 100%;">
+                <div class="chat-header">
+                    <div class="chat-title">AI Chat Assistant</div>
+                    <div class="model-selector">
+                        <div class="custom-select" id="customSelect">
+                            <span id="selectedModel">LLaMA 3.3 70B Versatile</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chat-container" id="chatContainer">
+                    <div class="welcome-screen">
+                        <div class="welcome-title">Welcome to Crafted AI</div>
+                        <div class="welcome-subtitle">Your intelligent AI companion ready to assist with any task.</div>
+                        <div class="suggestion-cards">
+                            <div class="suggestion-card" onclick="useSuggestion('Write a Python script to analyze CSV data')">
+                                <div class="suggestion-card-title">Code Helper</div>
+                                <div class="suggestion-card-text">Write a Python script to analyze CSV data</div>
+                            </div>
+                            <div class="suggestion-card" onclick="useSuggestion('Explain quantum computing in simple terms')">
+                                <div class="suggestion-card-title">Learn Something</div>
+                                <div class="suggestion-card-text">Explain quantum computing in simple terms</div>
+                            </div>
+                            <div class="suggestion-card" onclick="useSuggestion('Create a creative story about time travel')">
+                                <div class="suggestion-card-title">Creative Writing</div>
+                                <div class="suggestion-card-text">Create a creative story about time travel</div>
+                            </div>
+                            <div class="suggestion-card" onclick="useSuggestion('Help me plan a productive daily routine')">
+                                <div class="suggestion-card-title">Productivity</div>
+                                <div class="suggestion-card-text">Help me plan a productive daily routine</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-area">
+                    <div class="input-wrapper">
+                        <button class="voice-input-btn" id="voiceInputBtn" onclick="toggleVoiceInput()">
+                            <i class="fas fa-microphone"></i>
+                        </button>
+                        <textarea id="userInput" class="input-field" placeholder="Let's talk about..." rows="1" onkeydown="handleKeyPress(event)" oninput="autoResize(this)"></textarea>
+                        <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="model-overlay" id="modelOverlay">
+        <div class="model-modal">
+            <div class="model-modal-title">Select Model</div>
+            <div class="model-modal-subtitle">Choose the AI model for your conversation</div>
+            <div class="model-option selected" data-value="llama-3.3-70b-versatile">
+                <div class="model-option-name">LLaMA 3.3 70B Versatile</div>
+                <div class="model-option-desc">Most capable, best for complex tasks</div>
+            </div>
+            <div class="model-option" data-value="llama-3.1-8b-instant">
+                <div class="model-option-name">LLaMA 3.1 8B Instant</div>
+                <div class="model-option-desc">Fast and efficient for quick responses</div>
+            </div>
+            <div class="model-option" data-value="openai/gpt-oss-120b">
+                <div class="model-option-name">ChatGPT OSS 120B</div>
+                <div class="model-option-desc">Google's efficient language model</div>
+            </div>
+            <div class="model-option" data-value="groq/compound">
+                <div class="model-option-name">Groq Compound</div>
+                <div class="model-option-desc">Powerful mixture of experts model</div>
+            </div>
+        </div>
+    </div>
+
+<script src="js/ai.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<script src="js/o-tracker.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="js/account.js"></script>
+    <script src="js/loading.js"></script>
+</body>
+</html>

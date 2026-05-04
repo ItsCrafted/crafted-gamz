@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Crafted Gamz</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/settings.css">
+</head>
+<body>
+    <div class="bg-container">
+        <iframe src="bg.html" class="bg"></iframe>
+    </div>
+
+    <svg id="svg-filters" style="display: none">
+        <filter id="lg-dist" x="0%" y="0%" width="100%" height="100%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.008 0.008" numOctaves="2" seed="92" result="noise" />
+            <feGaussianBlur in="noise" stdDeviation="2" result="blurred" />
+            <feDisplacementMap in="SourceGraphic" in2="blurred" scale="70" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+    </svg>
+
+    <aside id="sidebar">
+        <div class="glass-filter"></div>
+        <div class="glass-overlay"></div>
+        <div class="glass-specular"></div>
+        <div style="position: relative; z-index: 3;">
+            <img class="sidebar-logo visible" src="logo.png" alt="Crafted Gamz Logo">
+            <ul class="sidebar-nav">
+                <li class="nav-item visible">
+                    <a href="index.html">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                </li>
+                <li class="nav-item visible">
+                    <a href="g.html">
+                        <i class="fas fa-gamepad"></i>
+                        <span>Games</span>
+                    </a>
+                </li>
+                <li class="nav-item visible">
+                    <a href="s.html">
+                        <i class="fas fa-search"></i>
+                        <span>Search</span>
+                    </a>
+                </li>
+                <li class="nav-item visible">
+                    <a href="ai.html">
+                        <i class="fas fa-robot"></i>
+                        <span>AI</span>
+                    </a>
+                </li>
+                <li class="nav-item visible">
+                    <a href="a.html">
+                        <i class="fas fa-th"></i>
+                        <span>Apps</span>
+                    </a>
+                </li>
+<li class="nav-item visible">
+                    <a href="music.html">
+                        <i class="fas fa-music"></i>
+                        <span>Music</span>
+                    </a>
+                </li>
+                <li class="nav-item visible">
+                    <a href="m.html">
+                        <i class="fas fa-film"></i>
+                        <span>Movies</span>
+                    </a>
+                </li>
+                <li class="nav-item visible">
+                    <a href="specialty.html">
+                        <i class="fas fa-star"></i>
+                        <span>Specialty Features</span>
+                    </a>
+                <li class="nav-item visible">
+                    <a href="vm.html">
+                        <i class="fas fa-desktop"></i>
+                        <span>Virtual Machines</span>
+                    </a>
+                </li>
+                <li class="nav-item visible">
+                    <a href="credits.html">
+                        <i class="fas fa-question"></i>
+                        <span>About & Credits</span>
+                    </a>
+                </li>
+                <li class="nav-separator"></li>
+                <li class="nav-item visible active">
+                    <a href="settings.html">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </aside>
+
+    <main id="main-content">
+        <div class="welcome-section">
+            <h1 class="welcome-text">Settings</h1>
+            <p style="color: rgba(255,255,255,0.7); margin-top: 1rem;">Customize your experience</p>
+        </div>
+
+        <div class="settings-container">
+            <div class="settings-section">
+                <div class="glass-filter"></div>
+                <div class="glass-overlay"></div>
+                <div class="glass-specular"></div>
+                <div class="glass-content" style="padding: 2rem;">
+                    <h2 style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem;">
+                        <i class="fas fa-user-circle"></i>
+                        Account
+                    </h2>
+                    
+                    <div class="setting-item" style="margin-bottom: 1.5rem;">
+                        <label style="display: block; margin-bottom: 0.5rem;">Account Status:</label>
+                        <div id="account-status" class="status-display">
+                            <i class="fas fa-spinner fa-spin"></i> Loading...
+                        </div>
+                    </div>
+
+                    <div class="setting-item" style="margin-bottom: 1.5rem;">
+                        <label>Name:</label>
+                        <div style="display: flex; gap: 12px;">
+                            <input type="text" id="username-display" readonly style="flex: 1;">
+                            <button id="change-name-btn" class="settings-btn settings-btn-primary">
+                                <i class="fas fa-edit"></i> Change
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="setting-item" style="margin-bottom: 1.5rem;">
+                        <label>Email:</label>
+                        <div id="email-display" class="status-display">
+                            Not signed in
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button id="logout-btn" class="settings-btn settings-btn-secondary" style="display: none;">
+                            <i class="fas fa-sign-out-alt"></i> Sign Out
+                        </button>
+                        <button id="signin-btn" class="settings-btn settings-btn-primary" style="display: none;">
+                            <i class="fas fa-sign-in-alt"></i> Sign In
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-section" style="margin-top: 2rem;">
+    <div class="glass-filter"></div>
+    <div class="glass-overlay"></div>
+    <div class="glass-specular"></div>
+    <div class="glass-content" style="padding: 2rem;">
+        <h2 style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem;">
+            <i class="fas fa-image"></i>
+            Background
+        </h2>
+        
+        <div class="setting-item" style="margin-bottom: 1.5rem;">
+            <label style="display: block; margin-bottom: 0.5rem;">Background Collection:</label>
+            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                <button class="bg-option-btn" data-collection="minimal">
+                    <i class="fas fa-circle"></i> Minimal
+                </button>
+                <button class="bg-option-btn" data-collection="nature">
+                    <i class="fas fa-leaf"></i> Nature
+                </button>
+                <button class="bg-option-btn" data-collection="infrastructure">
+                    <i class="fas fa-building"></i> Infrastructure
+                </button>
+                <button class="bg-option-btn" data-collection="none">
+                    <i class="fas fa-ban"></i> None (Default)
+                </button>
+            </div>
+            <p class="setting-description" style="margin-top: 12px;">
+                Choose a background collection or use the default rotating backgrounds
+            </p>
+        </div>
+    </div>
+</div>
+
+            <div class="settings-section" style="margin-top: 2rem;">
+                <div class="glass-filter"></div>
+                <div class="glass-overlay"></div>
+                <div class="glass-specular"></div>
+                <div class="glass-content" style="padding: 2rem;">
+                    <h2 style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem;">
+                        <i class="fas fa-database"></i>
+                        Data Management
+                    </h2>
+                    
+                    <div class="setting-item" style="margin-bottom: 20px;">
+                        <button id="view-data-btn" class="settings-btn settings-btn-secondary">
+                            <i class="fas fa-eye"></i> View All Data
+                        </button>
+                        <p class="setting-description">
+                            See all your stored localStorage data in a readable format
+                        </p>
+                    </div>
+
+                    <div class="setting-item" style="margin-bottom: 20px;">
+                        <button id="clear-local-data-btn" class="settings-btn settings-btn-danger">
+                            <i class="fas fa-trash"></i> Clear Local Data
+                        </button>
+                        <p class="setting-description">
+                            Clears all local data (does not affect synced account data on server)
+                        </p>
+                    </div>
+
+                    <div class="setting-item">
+                        <button id="clear-server-data-btn" class="settings-btn settings-btn-danger" style="display: none;">
+                            <i class="fas fa-server"></i> Clear Server Data
+                        </button>
+                        <p class="setting-description">
+                            Clears all synced data stored on the server (keeps account but removes all localStorage data)
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-section danger-zone">
+                <div class="glass-filter"></div>
+                <div class="glass-overlay"></div>
+                <div class="glass-specular"></div>
+                <div class="glass-content">
+                    <h2 style="color: #ff6b6b;">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Danger Zone
+                    </h2>
+                    
+                    <div class="setting-item">
+                        <button id="delete-account-btn" class="settings-btn settings-btn-danger" style="display: none;">
+                            <i class="fas fa-user-times"></i> Delete Account
+                        </button>
+                        <p class="setting-description">
+                            Permanently delete your account and all synced data. This cannot be undone.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+
+    <div id="data-modal">
+        <div class="modal-container">
+            <div class="glass-filter"></div>
+            <div class="glass-overlay"></div>
+            <div class="glass-specular"></div>
+            <div class="glass-content" style="padding: 40px;">
+                <div class="modal-header">
+                    <h2>Your Data</h2>
+                    <button id="close-data-modal" class="modal-close-btn">×</button>
+                </div>
+                <div id="data-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="js/account.js"></script>
+    <script src="js/settings.js"></script>
+   
+    <script src="js/loading.js"></script>
+</body>
+</html>
