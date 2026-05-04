@@ -1,135 +1,171 @@
 <!DOCTYPE html>
-<html lang="en">
+
+<!-- Ultimate Game Stash file--> 
+<!-- For the regularly updating doc go to https://docs.google.com/document/d/1_FmH3BlSBQI7FGgAQL59-ZPe8eCxs35wel6JUyVaG8Q/ -->
+
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>9007199254740992 - Crafted Gamz</title>
-    <link rel="shortcut icon" href="../favicon.png" type="image/x-icon">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="../css/ui.css">
+  <meta charset="utf-8">
+  <title>9007199254740992</title>
+
+  <link href="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@e616c471a5549070137f9e6dfbdc03e5c396d467/big%202048/style/main.css" rel="stylesheet" type="text/css">
+  <link href="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@e616c471a5549070137f9e6dfbdc03e5c396d467/big%202048/style/ai.css" rel="stylesheet" type="text/css">
+  <link rel="shortcut icon" href="favicon.ico">
+
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+
+  <meta property="og:title" content="2048 game" />
+  <meta property="og:site_name" content="2048 game" />
+  <meta property="og:description" content="Join the numbers and get to the 2048 tile! Careful: this game is extremely addictive!" />
 </head>
+
 <body>
-        <div class="bg-container">
-<iframe src="../bg.html" class="bg"></iframe>
-        
+  <div class="container">
+    <div class="heading">
+      <h1 class="title">9007199254740992</h1>
+      <div class="scores-container">
+        <img src="9007199254740992_files/tmp9.png" height="0px" width="0px">
+        <!--Don't worry. This is just use to record how many people visit this. XD-->
+        <div class="score-container">0</div>
+        <div class="best-container">0</div>
+      </div>
+    </div>
+    <p class="game-intro">Join the numbers and get to the <strong>9007199254740992 tile!</strong></p>
+
+    <div class='controls'>
+      <div id='hint-button-container'>
+        <button id='hint-button' class='ai-button'>Get Hint</button>
+      </div>
+      <div id='feedback-container'> </div>
+      <div id='run-button-container'>
+        <button id='run-button' class='ai-button'>Auto-run</button>
+      </div>
     </div>
 
-    <svg id="svg-filters">
-        <defs>
-            <filter id="lg-dist">
-                <feTurbulence type="turbulence" baseFrequency="0.05" numOctaves="2" result="turbulence"/>
-                <feDisplacementMap in2="turbulence" in="SourceGraphic" scale="5" xChannelSelector="R" yChannelSelector="G"/>
-            </filter>
-        </defs>
-    </svg>
-
-    <div class="game-player-container">
-        <div class="game-header">
-            <div class="glass-filter"></div>
-            <div class="glass-overlay"></div>
-            <div class="glass-specular"></div>
-            <div class="glass-content">
-                <div class="game-title-section">
-                    <h1 class="game-title" id="gameTitle">9007199254740992</h1>
-                    <p class="game-subtitle">Puzzle</p>
-                </div>
-                <div class="game-controls">
-                    <button class="control-btn" id="reloadBtn">
-                        <i class="fas fa-redo"></i>
-                        <span>Reload</span>
-                    </button>
-                    <button class="control-btn" id="fullscreenBtn">
-                        <i class="fas fa-expand"></i>
-                        <span>Fullscreen</span>
-                    </button>
-                    <button class="control-btn" id="backToGamesBtn">
-                        <i class="fas fa-th"></i>
-                        <span>Back to Games</span>
-                    </button>
-                </div>
-            </div>
+    <div class="game-container">
+      <div class="game-message">
+        <p></p>
+        <div class="lower">
+          <a class="retry-button">Try again</a>
+          <div class="score-sharing"></div>
         </div>
+      </div>
 
-        <div class="game-frame-container">
-            <div class="glass-filter"></div>
-            <div class="glass-overlay"></div>
-            <div class="glass-specular"></div>
-            <div class="glass-content">
-                <iframe 
-                    id="game-frame" 
-                    src="https://gamz-cdn.cgamz.site/9007199254740992"
-                    allowfullscreen
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                ></iframe>
-            </div>
+      <div class="grid-container">
+        <div class="grid-row">
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
         </div>
-
-        <div class="game-footer">
-            <div class="glass-filter"></div>
-            <div class="glass-overlay"></div>
-            <div class="glass-specular"></div>
-            <div class="glass-content">
-                <p class="game-description" id="gameDescription">
-                    Push 2048 to its absolute limits! Reach the maximum number JavaScript can handle in this extreme puzzle challenge.
-                </p>
-            </div>
+        <div class="grid-row">
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
         </div>
-    </div>
+        <div class="grid-row">
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+        </div>
+        <div class="grid-row">
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+        </div>
+        <div class="grid-row">
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+        </div>
+        <div class="grid-row">
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+        </div>
+        <div class="grid-row">
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+        </div>
+        <div class="grid-row">
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+          <div class="grid-cell"></div>
+        </div>
+      </div>
 
-    <div class="fullscreen-container" id="fullscreenContainer">
-        <button class="exit-fullscreen" id="exitFullscreenBtn">
-            <i class="fas fa-compress"></i>
-            <span>Exit Fullscreen</span>
-        </button>
-        <iframe 
-            id="fullscreen-frame" 
-            allowfullscreen
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        ></iframe>
-    </div>
+      <div class="tile-container">
 
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
-<script src="../js/o-tracker.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-<script src="../js/account.js"></script>
-    <script>
-        document.getElementById('reloadBtn').addEventListener('click', () => {
-            const iframe = document.getElementById('game-frame');
-            iframe.src = iframe.src;
-        });
+      </div>
 
-        document.getElementById('fullscreenBtn').addEventListener('click', () => {
-            const container = document.getElementById('fullscreenContainer');
-            const fullscreenFrame = document.getElementById('fullscreen-frame');
-            const gameFrame = document.getElementById('game-frame');
-            
-            fullscreenFrame.src = gameFrame.src;
-            container.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        });
+  <script src="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@e616c471a5549070137f9e6dfbdc03e5c396d467/big%202048/js/animframe_polyfill.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@e616c471a5549070137f9e6dfbdc03e5c396d467/big%202048/js/hammer.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@e616c471a5549070137f9e6dfbdc03e5c396d467/big%202048/js/keyboard_input_manager.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@e616c471a5549070137f9e6dfbdc03e5c396d467/big%202048/js/html_actuator.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@e616c471a5549070137f9e6dfbdc03e5c396d467/big%202048/js/grid.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@e616c471a5549070137f9e6dfbdc03e5c396d467/big%202048/js/tile.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@e616c471a5549070137f9e6dfbdc03e5c396d467/big%202048/js/ai.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@e616c471a5549070137f9e6dfbdc03e5c396d467/big%202048/js/game_manager.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@e616c471a5549070137f9e6dfbdc03e5c396d467/big%202048/js/application.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@e616c471a5549070137f9e6dfbdc03e5c396d467/big%202048/js/local_score_manager.js"></script>
+  <script>
+    (function(i, s, o, g, r, a, m) {
+      i["GoogleAnalyticsObject"] = r;
+      i[r] = i[r] || function() {
+        (i[r].q = i[r].q || []).push(arguments)
+      }, i[r].l = 1 * new Date();
+      a = s.createElement(o),
+        m = s.getElementsByTagName(o)[0];
+      a.async = 1;
+      a.src = g;
+      m.parentNode.insertBefore(a, m)
+    })(window, document, "script", "//www.google-analytics.com/analytics.js", "ga");
 
-        document.getElementById('exitFullscreenBtn').addEventListener('click', () => {
-            const container = document.getElementById('fullscreenContainer');
-            container.classList.remove('active');
-            document.body.style.overflow = 'auto';
-        });
-
-        document.getElementById('backToGamesBtn').addEventListener('click', () => {
-            window.location.href = '../g.html';
-        });
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                const container = document.getElementById('fullscreenContainer');
-                if (container.classList.contains('active')) {
-                    container.classList.remove('active');
-                    document.body.style.overflow = 'auto';
-                }
-            }
-        });
-    </script>
-    <script src="../js/loading.js"></script>
+    ga("create", "UA-32899358-1", "");
+    ga("send", "pageview");
+  </script>
 </body>
+
 </html>
