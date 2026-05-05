@@ -41,9 +41,9 @@ const FIREBASE_CONFIG_URL = 'https://firebase.cdn.cgamz.online';
           const envMap = {
             desktop: 'desktop/index.html',
             tabbed:  'tabbed/index.html',
-            website: 'website/index.html'
+            website: 'site/index.html'
           };
-          redirect(envMap[env] || 'website/index.html');
+          redirect(envMap[env] || 'site/index.html');
 
         } catch (e) {
           redirect('onboarding/1.html');
