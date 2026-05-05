@@ -6,7 +6,7 @@ const searchInput = document.getElementById('searchInput');
         const browserUrlInput = document.getElementById('browserUrlInput');
         const mainContent = document.getElementById('main-content');
 
-        wispSelect.value = localStorage.getItem('wisp_server') || 'wss://wisp.rhw.one/';
+        wispSelect.value = localStorage.getItem('wisp_server') || 'wss://pale-pen-crafted-gamz-b0390771.koyeb.app/';
         backendSelect.value = localStorage.getItem('backend') || 'ultraviolet';
 
         wispSelect.addEventListener('change', () => {
