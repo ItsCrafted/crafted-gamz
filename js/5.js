@@ -6,7 +6,7 @@ const FIREBASE_CONFIG_URL = 'https://firebase.cdn.cgamz.online';
 
     const envMap = {
       desktop: { label: 'Desktop mode',  path: '../desktop/index.html' },
-      tabbed:  { label: 'Tabbed mode',   path: '../tabbed/index.html'  },
+      browser:  { label: 'browser mode',   path: '../browser/index.html'  },
       website: { label: 'Website mode',  path: '../site/index.html' }
     };
 

@@ -40,7 +40,7 @@ const FIREBASE_CONFIG_URL = 'https://firebase.cdn.cgamz.online';
           const env = data.environment || 'website';
           const envMap = {
             desktop: 'desktop/index.html',
-            tabbed:  'tabbed/index.html',
+            browser:  'browser/index.html',
             website: 'site/index.html'
           };
           redirect(envMap[env] || 'site/index.html');
