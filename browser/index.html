@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Browser</title>
+<style>
+/* ═══════════════════════════════════════════════
+   chrome-tabs.css — verbatim from the library
+   ═══════════════════════════════════════════════ */
+.chrome-tabs {
+  box-sizing: border-box;
+  position: relative;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 12px;
+  height: 46px;
+  padding: 8px 3px 4px 3px;
+  background: #dee1e6;
+  border-radius: 5px 5px 0 0;
+  overflow: hidden;
+}
+.chrome-tabs * { box-sizing: inherit; font: inherit; }
+.chrome-tabs .chrome-tabs-content { position: relative; width: 100%; height: 100%; }
+.chrome-tabs .chrome-tab {
+  position: absolute; left: 0; height: 36px; width: 240px;
+  border: 0; margin: 0; z-index: 1; pointer-events: none;
+}
+.chrome-tabs .chrome-tab,
+.chrome-tabs .chrome-tab * { user-select: none; cursor: default; }
+.chrome-tabs .chrome-tab .chrome-tab-dividers {
+  position: absolute; top: 7px; bottom: 7px;
+  left: var(--tab-content-margin); right: var(--tab-content-margin);
+}
+.chrome-tabs .chrome-tab .chrome-tab-dividers,
+.chrome-tabs .chrome-tab .chrome-tab-dividers::before,
+.chrome-tabs .chrome-tab .chrome-tab-dividers::after { pointer-events: none; }
+.chrome-tabs .chrome-tab .chrome-tab-dividers::before,
+.chrome-tabs .chrome-tab .chrome-tab-dividers::after {
+  content: ""; display: block; position: absolute;
+  top: 0; bottom: 0; width: 1px; background: #a9adb0; opacity: 1; transition: opacity 0.2s ease;
+}
+.chrome-tabs .chrome-tab .chrome-tab-dividers::before { left: 0; }
+.chrome-tabs .chrome-tab .chrome-tab-dividers::after { right: 0; }
+.chrome-tabs .chrome-tab:first-child .chrome-tab-dividers::before,
+.chrome-tabs .chrome-tab:last-child .chrome-tab-dividers::after { opacity: 0; }
+.chrome-tabs .chrome-tab .chrome-tab-background {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  overflow: hidden; pointer-events: none;
+}
+.chrome-tabs .chrome-tab .chrome-tab-background > svg { width: 100%; height: 100%; }
+.chrome-tabs .chrome-tab .chrome-tab-background > svg .chrome-tab-geometry { fill: #f4f5f6; }
+.chrome-tabs .chrome-tab[active] { z-index: 5; }
+.chrome-tabs .chrome-tab[active] .chrome-tab-background > svg .chrome-tab-geometry { fill: #fff; }
+.chrome-tabs .chrome-tab:not([active]) .chrome-tab-background { transition: opacity 0.2s ease; opacity: 0; }
+@media (hover: hover) {
+  .chrome-tabs .chrome-tab:not([active]):hover { z-index: 2; }
+  .chrome-tabs .chrome-tab:not([active]):hover .chrome-tab-background { opacity: 1; }
+}
+.chrome-tabs .chrome-tab.chrome-tab-was-just-added {
+  top: 10px; animation: chrome-tab-was-just-added 120ms forwards ease-in-out;
+}
+.chrome-tabs .chrome-tab .chrome-tab-content {
+  position: absolute; display: flex; top: 0; bottom: 0;
+  left: var(--tab-content-margin); right: var(--tab-content-margin);
+  padding: 9px 8px; border-top-left-radius: 8px; border-top-right-radius: 8px;
+  overflow: hidden; pointer-events: all;
+}
+.chrome-tabs .chrome-tab[is-mini] .chrome-tab-content { padding-left: 2px; padding-right: 2px; }
+.chrome-tabs .chrome-tab .chrome-tab-favicon {
+  position: relative; flex-shrink: 0; flex-grow: 0;
+  height: 16px; width: 16px; background-size: 16px; margin-left: 4px;
+}
+.chrome-tabs .chrome-tab[is-small] .chrome-tab-favicon { margin-left: 0; }
+.chrome-tabs .chrome-tab[is-mini]:not([active]) .chrome-tab-favicon { margin-left: auto; margin-right: auto; }
+.chrome-tabs .chrome-tab[is-mini][active] .chrome-tab-favicon { display: none; }
+.chrome-tabs .chrome-tab .chrome-tab-title {
+  flex: 1; vertical-align: top; overflow: hidden; white-space: nowrap; margin-left: 4px; color: #5f6368;
+  -webkit-mask-image: linear-gradient(90deg, #000 0%, #000 calc(100% - 24px), transparent);
+  mask-image: linear-gradient(90deg, #000 0%, #000 calc(100% - 24px), transparent);
+}
+.chrome-tabs .chrome-tab[is-small] .chrome-tab-title { margin-left: 0; }
+.chrome-tabs .chrome-tab .chrome-tab-favicon + .chrome-tab-title,
+.chrome-tabs .chrome-tab[is-small] .chrome-tab-favicon + .chrome-tab-title { margin-left: 8px; }
+.chrome-tabs .chrome-tab[is-smaller] .chrome-tab-favicon + .chrome-tab-title,
+.chrome-tabs .chrome-tab[is-mini] .chrome-tab-title { display: none; }
+.chrome-tabs .chrome-tab[active] .chrome-tab-title { color: #45474a; }
+.chrome-tabs .chrome-tab .chrome-tab-drag-handle {
+  position: absolute; top: 0; bottom: 0; right: 0; left: 0;
+  border-top-left-radius: 8px; border-top-right-radius: 8px;
+}
+.chrome-tabs .chrome-tab .chrome-tab-close {
+  flex-grow: 0; flex-shrink: 0; position: relative; width: 16px; height: 16px;
+  border-radius: 50%;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path stroke='rgba(0, 0, 0, .65)' stroke-linecap='square' stroke-width='1.5' d='M0 0 L8 8 M8 0 L0 8'></path></svg>");
+  background-position: center center; background-repeat: no-repeat; background-size: 8px 8px;
+}
+@media (hover: hover) {
+  .chrome-tabs .chrome-tab .chrome-tab-close:hover { background-color: #e8eaed; }
+  .chrome-tabs .chrome-tab .chrome-tab-close:hover:active { background-color: #dadce0; }
+}
+@media not all and (hover: hover) {
+  .chrome-tabs .chrome-tab .chrome-tab-close:active { background-color: #dadce0; }
+}
+@media (hover: hover) {
+  .chrome-tabs .chrome-tab:not([active]) .chrome-tab-close:not(:hover):not(:active) { opacity: 0.8; }
+}
+.chrome-tabs .chrome-tab[is-smaller] .chrome-tab-close { margin-left: auto; }
+.chrome-tabs .chrome-tab[is-mini]:not([active]) .chrome-tab-close { display: none; }
+.chrome-tabs .chrome-tab[is-mini][active] .chrome-tab-close { margin-left: auto; margin-right: auto; }
+@keyframes chrome-tab-was-just-added { to { top: 0; } }
+.chrome-tabs.chrome-tabs-is-sorting .chrome-tab:not(.chrome-tab-is-dragging),
+.chrome-tabs:not(.chrome-tabs-is-sorting) .chrome-tab.chrome-tab-was-just-dragged {
+  transition: transform 120ms ease-in-out;
+}
+.chrome-tabs .chrome-tabs-bottom-bar {
+  position: absolute; bottom: 0; height: 4px; left: 0; width: 100%; background: #fff; z-index: 10;
+}
+.chrome-tabs-optional-shadow-below-bottom-bar {
+  position: relative; height: 1px; width: 100%;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1' viewBox='0 0 1 1'><rect x='0' y='0' width='1' height='1' fill='rgba(0, 0, 0, .17)'></rect></svg>");
+  background-size: 1px 1px; background-repeat: repeat-x; background-position: 0% 0%;
+}
+
+/* ═══════════════════════════════════════════════
+   chrome-tabs-dark-theme.css — verbatim
+   ═══════════════════════════════════════════════ */
+.chrome-tabs.chrome-tabs-dark-theme { background: #202124; }
+.chrome-tabs.chrome-tabs-dark-theme .chrome-tab .chrome-tab-dividers::before,
+.chrome-tabs.chrome-tabs-dark-theme .chrome-tab .chrome-tab-dividers::after { background: #4a4d51; }
+.chrome-tabs.chrome-tabs-dark-theme .chrome-tab .chrome-tab-background > svg .chrome-tab-geometry { fill: #292b2e; }
+.chrome-tabs.chrome-tabs-dark-theme .chrome-tab[active] .chrome-tab-background > svg .chrome-tab-geometry { fill: #323639; }
+.chrome-tabs.chrome-tabs-dark-theme .chrome-tab .chrome-tab-title { color: #9ca1a7; }
+.chrome-tabs.chrome-tabs-dark-theme .chrome-tab[active] .chrome-tab-title { color: #f1f3f4; }
+.chrome-tabs.chrome-tabs-dark-theme .chrome-tab .chrome-tab-close {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path stroke='rgba(154, 160, 166, .8)' stroke-linecap='square' stroke-width='1.5' d='M0 0 L8 8 M8 0 L0 8'></path></svg>");
+}
+.chrome-tabs.chrome-tabs-dark-theme .chrome-tab .chrome-tab-close:hover {
+  background-color: #5f6368;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path stroke='rgba(255, 255, 255, .7)' stroke-linecap='square' stroke-width='1.5' d='M0 0 L8 8 M8 0 L0 8'></path></svg>");
+}
+.chrome-tabs.chrome-tabs-dark-theme .chrome-tab .chrome-tab-close:hover:active {
+  background-color: #80868b;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path stroke='rgba(255, 255, 255, .9)' stroke-linecap='square' stroke-width='1.5' d='M0 0 L8 8 M8 0 L0 8'></path></svg>");
+}
+.chrome-tabs.chrome-tabs-dark-theme .chrome-tabs-bottom-bar { background: #323639; }
+
+/* ═══════════════════════════════════════════════
+   Browser chrome UI
+   ═══════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; width: 100%; overflow: hidden; background: #202124; }
+
+#browser-top {
+  display: flex; align-items: flex-end;
+  background: #dee1e6; padding: 0 4px 0 0;
+  transition: background 0.2s;
+}
+html.dark-theme #browser-top { background: #202124; }
+
+#window-controls {
+  display: flex; align-items: center; gap: 7px;
+  padding: 0 10px 10px 14px; flex-shrink: 0;
+}
+.wc { width: 13px; height: 13px; border-radius: 50%; border: none; cursor: pointer; }
+.wc-close { background: #ff5f57; }
+.wc-min   { background: #febc2e; }
+.wc-max   { background: #28c840; }
+
+#tab-strip-wrap { flex: 1; min-width: 0; overflow: hidden; }
+#tab-strip-wrap .chrome-tabs { border-radius: 0; width: 100%; }
+
+#new-tab-btn {
+  flex-shrink: 0; width: 28px; height: 28px; margin-bottom: 5px; margin-left: 2px;
+  background: transparent; border: none; border-radius: 50%;
+  color: #5f6368; font-size: 20px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s;
+}
+#new-tab-btn:hover { background: rgba(0,0,0,0.1); }
+html.dark-theme #new-tab-btn { color: #9aa0a6; }
+html.dark-theme #new-tab-btn:hover { background: rgba(255,255,255,0.1); }
+
+#toolbar {
+  display: flex; align-items: center; gap: 4px;
+  padding: 6px 8px;
+  background: #f1f3f4; border-bottom: 1px solid #dadce0;
+  transition: background 0.2s, border-color 0.2s;
+}
+html.dark-theme #toolbar { background: #292b2e; border-bottom-color: #3c4043; }
+
+.nav-btn {
+  flex-shrink: 0; width: 32px; height: 32px; border: none; border-radius: 50%;
+  background: transparent; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: #5f6368; transition: background 0.12s;
+}
+.nav-btn svg { width: 18px; height: 18px; fill: currentColor; }
+.nav-btn:hover:not(:disabled) { background: rgba(0,0,0,0.08); }
+.nav-btn:disabled { opacity: 0.35; cursor: default; }
+html.dark-theme .nav-btn { color: #9aa0a6; }
+html.dark-theme .nav-btn:hover:not(:disabled) { background: rgba(255,255,255,0.08); }
+
+#omnibox {
+  flex: 1; display: flex; align-items: center; gap: 6px;
+  background: #fff; border: 1px solid #dfe1e5; border-radius: 22px;
+  padding: 0 14px; height: 32px; min-width: 0;
+  transition: border-color 0.15s, box-shadow 0.15s, background 0.2s;
+}
+#omnibox:focus-within { border-color: #1a73e8; box-shadow: 0 0 0 2px rgba(26,115,232,0.25); }
+html.dark-theme #omnibox { background: #3c4043; border-color: #5f6368; }
+html.dark-theme #omnibox:focus-within { border-color: #8ab4f8; box-shadow: 0 0 0 2px rgba(138,180,248,0.25); }
+#lock { font-size: 13px; flex-shrink: 0; }
+#url-input {
+  flex: 1; border: none; outline: none; background: transparent;
+  font-size: 14px; color: #202124; font-family: inherit; min-width: 0;
+}
+html.dark-theme #url-input { color: #e8eaed; }
+#url-input::placeholder { color: #80868b; }
+
+#content {
+  position: absolute; left: 0; right: 0;
+  top: 91px; /* 46px tabs + 1px shadow + 44px toolbar */
+  bottom: 0; background: #fff;
+}
+html.dark-theme #content { background: #202124; }
+
+.tab-frame {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  border: none; display: none;
+}
+.tab-frame.active { display: block; }
+
+/* New tab page */
+.ntp {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 28px; background: #f8f9fa;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+html.dark-theme .ntp { background: #202124; }
+.ntp-logo { font-size: 66px; font-weight: 700; letter-spacing: -2px; line-height: 1; }
+.ntp-search-box {
+  display: flex; align-items: center; gap: 10px;
+  background: #fff; border: 1px solid #dfe1e5; border-radius: 24px;
+  padding: 10px 18px; width: 480px; max-width: 90vw;
+  box-shadow: 0 2px 8px rgba(32,33,36,.18); transition: background 0.2s;
+}
+html.dark-theme .ntp-search-box { background: #303134; border-color: #5f6368; }
+.ntp-search-box input {
+  flex: 1; border: none; outline: none; font-size: 16px;
+  background: transparent; color: #202124; font-family: inherit;
+}
+html.dark-theme .ntp-search-box input { color: #e8eaed; }
+.ntp-shortcuts { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; max-width: 520px; }
+.ntp-shortcut {
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  padding: 12px; border-radius: 12px; cursor: pointer; width: 84px; transition: background 0.12s;
+}
+.ntp-shortcut:hover { background: rgba(0,0,0,0.06); }
+html.dark-theme .ntp-shortcut:hover { background: rgba(255,255,255,0.06); }
+.ntp-shortcut-icon {
+  width: 48px; height: 48px; border-radius: 50%; background: #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2); display: flex; align-items: center;
+  justify-content: center; font-size: 22px;
+}
+html.dark-theme .ntp-shortcut-icon { background: #303134; }
+.ntp-shortcut-label { font-size: 12px; color: #3c4043; text-align: center; }
+html.dark-theme .ntp-shortcut-label { color: #bdc1c6; }
+
+/* Blocked overlay */
+.blocked-overlay {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 12px; background: #f8f9fa; color: #5f6368;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  text-align: center; padding: 40px;
+}
+html.dark-theme .blocked-overlay { background: #292b2e; color: #9aa0a6; }
+.blocked-overlay h2 { font-size: 22px; color: #3c4043; margin-bottom: 4px; }
+html.dark-theme .blocked-overlay h2 { color: #e8eaed; }
+.blocked-overlay p { font-size: 14px; max-width: 420px; line-height: 1.6; }
+.blocked-overlay a {
+  display: inline-block; margin-top: 8px; padding: 8px 22px;
+  background: #1a73e8; color: #fff; text-decoration: none; border-radius: 20px; font-size: 14px;
+}
+.blocked-overlay a:hover { background: #1765cc; }
+</style>
+</head>
+<body>
+
+<div id="browser-top">
+  <div id="window-controls">
+    <button class="wc wc-close"></button>
+    <button class="wc wc-min"></button>
+    <button class="wc wc-max"></button>
+  </div>
+  <div id="tab-strip-wrap">
+    <div class="chrome-tabs" id="ct" style="--tab-content-margin: 9px">
+      <div class="chrome-tabs-content" id="ct-content"></div>
+      <div class="chrome-tabs-bottom-bar"></div>
+    </div>
+  </div>
+  <button id="new-tab-btn" title="New tab">+</button>
+</div>
+<div class="chrome-tabs-optional-shadow-below-bottom-bar"></div>
+
+<div id="toolbar">
+  <button class="nav-btn" id="btn-back" title="Back" disabled>
+    <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+  </button>
+  <button class="nav-btn" id="btn-fwd" title="Forward" disabled>
+    <svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
+  </button>
+  <button class="nav-btn" id="btn-reload" title="Reload">
+    <svg viewBox="0 0 24 24"><path d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+  </button>
+  <button class="nav-btn" id="btn-home" title="Home">
+    <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+  </button>
+  <div id="omnibox">
+    <span id="lock">🔒</span>
+    <input id="url-input" type="text" placeholder="Search or enter address" spellcheck="false" autocomplete="off"/>
+  </div>
+  <button class="nav-btn" id="btn-theme" title="Toggle dark theme">
+    <svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 100 18A9 9 0 0012 3zm0 16a7 7 0 010-14v14z"/></svg>
+  </button>
+  <button class="nav-btn" title="Menu">
+    <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+  </button>
+</div>
+
+<div id="content"></div>
+
+<script src="https://unpkg.com/draggabilly@2.2.0/dist/draggabilly.pkgd.min.js"></script>
+<script>
+/* chrome-tabs.js — verbatim source from adamschwartz/chrome-tabs@gh-pages */
+((window, factory) => {
+  if (typeof define == 'function' && define.amd) {
+    define(['draggabilly'], Draggabilly => factory(window, Draggabilly))
+  } else if (typeof module == 'object' && module.exports) {
+    module.exports = factory(window, require('draggabilly'))
+  } else {
+    window.ChromeTabs = factory(window, window.Draggabilly)
+  }
+})(window, (window, Draggabilly) => {
+  const TAB_CONTENT_MARGIN = 9
+  const TAB_CONTENT_OVERLAP_DISTANCE = 1
+  const TAB_OVERLAP_DISTANCE = (TAB_CONTENT_MARGIN * 2) + TAB_CONTENT_OVERLAP_DISTANCE
+  const TAB_CONTENT_MIN_WIDTH = 24
+  const TAB_CONTENT_MAX_WIDTH = 240
+  const TAB_SIZE_SMALL = 84
+  const TAB_SIZE_SMALLER = 60
+  const TAB_SIZE_MINI = 48
+  const noop = _ => {}
+
+  const closest = (value, array) => {
+    let closest = Infinity, closestIndex = -1
+    array.forEach((v, i) => {
+      if (Math.abs(value - v) < closest) { closest = Math.abs(value - v); closestIndex = i }
+    })
+    return closestIndex
+  }
+
+  const tabTemplate = `
+    <div class="chrome-tab">
+      <div class="chrome-tab-dividers"></div>
+      <div class="chrome-tab-background">
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg"><defs><symbol id="chrome-tab-geometry-left" viewBox="0 0 214 36"><path d="M17 0h197v36H0v-2c4.5 0 9-3.5 9-8V8c0-4.5 3.5-8 8-8z"/></symbol><symbol id="chrome-tab-geometry-right" viewBox="0 0 214 36"><use xlink:href="#chrome-tab-geometry-left"/></symbol><clipPath id="crop"><rect class="mask" width="100%" height="100%" x="0"/></clipPath></defs><svg width="52%" height="100%"><use xlink:href="#chrome-tab-geometry-left" width="214" height="36" class="chrome-tab-geometry"/></svg><g transform="scale(-1, 1)"><svg width="52%" height="100%" x="-100%" y="0"><use xlink:href="#chrome-tab-geometry-right" width="214" height="36" class="chrome-tab-geometry"/></svg></g></svg>
+      </div>
+      <div class="chrome-tab-content">
+        <div class="chrome-tab-favicon"></div>
+        <div class="chrome-tab-title"></div>
+        <div class="chrome-tab-drag-handle"></div>
+        <div class="chrome-tab-close"></div>
+      </div>
+    </div>
+  `
+
+  const defaultTapProperties = { title: 'New tab', favicon: false }
+  let instanceId = 0
+
+  class ChromeTabs {
+    constructor() { this.draggabillies = [] }
+
+    init(el) {
+      this.el = el
+      this.instanceId = instanceId
+      this.el.setAttribute('data-chrome-tabs-instance-id', this.instanceId)
+      instanceId += 1
+      this.setupCustomProperties()
+      this.setupStyleEl()
+      this.setupEvents()
+      this.layoutTabs()
+      this.setupDraggabilly()
+    }
+
+    emit(eventName, data) { this.el.dispatchEvent(new CustomEvent(eventName, { detail: data })) }
+    setupCustomProperties() { this.el.style.setProperty('--tab-content-margin', `${TAB_CONTENT_MARGIN}px`) }
+    setupStyleEl() { this.styleEl = document.createElement('style'); this.el.appendChild(this.styleEl) }
+
+    setupEvents() {
+      window.addEventListener('resize', _ => { this.cleanUpPreviouslyDraggedTabs(); this.layoutTabs() })
+      this.el.addEventListener('dblclick', event => { if ([this.el, this.tabContentEl].includes(event.target)) this.addTab() })
+      this.tabEls.forEach(tabEl => this.setTabCloseEventListener(tabEl))
+    }
+
+    get tabEls() { return Array.prototype.slice.call(this.el.querySelectorAll('.chrome-tab')) }
+    get tabContentEl() { return this.el.querySelector('.chrome-tabs-content') }
+
+    get tabContentWidths() {
+      const numberOfTabs = this.tabEls.length
+      const tabsContentWidth = this.tabContentEl.clientWidth
+      const tabsCumulativeOverlappedWidth = (numberOfTabs - 1) * TAB_CONTENT_OVERLAP_DISTANCE
+      const targetWidth = (tabsContentWidth - (2 * TAB_CONTENT_MARGIN) + tabsCumulativeOverlappedWidth) / numberOfTabs
+      const clampedTargetWidth = Math.max(TAB_CONTENT_MIN_WIDTH, Math.min(TAB_CONTENT_MAX_WIDTH, targetWidth))
+      const flooredClampedTargetWidth = Math.floor(clampedTargetWidth)
+      const totalTabsWidthUsingTarget = (flooredClampedTargetWidth * numberOfTabs) + (2 * TAB_CONTENT_MARGIN) - tabsCumulativeOverlappedWidth
+      const totalExtraWidthDueToFlooring = tabsContentWidth - totalTabsWidthUsingTarget
+      const widths = []
+      let extraWidthRemaining = totalExtraWidthDueToFlooring
+      for (let i = 0; i < numberOfTabs; i += 1) {
+        const extraWidth = flooredClampedTargetWidth < TAB_CONTENT_MAX_WIDTH && extraWidthRemaining > 0 ? 1 : 0
+        widths.push(flooredClampedTargetWidth + extraWidth)
+        if (extraWidthRemaining > 0) extraWidthRemaining -= 1
+      }
+      return widths
+    }
+
+    get tabContentPositions() {
+      const positions = []
+      const tabContentWidths = this.tabContentWidths
+      let position = TAB_CONTENT_MARGIN
+      tabContentWidths.forEach((width, i) => {
+        positions.push(position - (i * TAB_CONTENT_OVERLAP_DISTANCE))
+        position += width
+      })
+      return positions
+    }
+
+    get tabPositions() { return this.tabContentPositions.map(p => p - TAB_CONTENT_MARGIN) }
+
+    layoutTabs() {
+      const tabContentWidths = this.tabContentWidths
+      this.tabEls.forEach((tabEl, i) => {
+        const contentWidth = tabContentWidths[i]
+        const width = contentWidth + (2 * TAB_CONTENT_MARGIN)
+        tabEl.style.width = width + 'px'
+        tabEl.removeAttribute('is-small'); tabEl.removeAttribute('is-smaller'); tabEl.removeAttribute('is-mini')
+        if (contentWidth < TAB_SIZE_SMALL) tabEl.setAttribute('is-small', '')
+        if (contentWidth < TAB_SIZE_SMALLER) tabEl.setAttribute('is-smaller', '')
+        if (contentWidth < TAB_SIZE_MINI) tabEl.setAttribute('is-mini', '')
+      })
+      let styleHTML = ''
+      this.tabPositions.forEach((position, i) => {
+        styleHTML += `.chrome-tabs[data-chrome-tabs-instance-id="${this.instanceId}"] .chrome-tab:nth-child(${i + 1}) { transform: translate3d(${position}px, 0, 0) } `
+      })
+      this.styleEl.innerHTML = styleHTML
+    }
+
+    createNewTabEl() { const div = document.createElement('div'); div.innerHTML = tabTemplate; return div.firstElementChild }
+
+    addTab(tabProperties, { animate = true, background = false } = {}) {
+      const tabEl = this.createNewTabEl()
+      if (animate) { tabEl.classList.add('chrome-tab-was-just-added'); setTimeout(() => tabEl.classList.remove('chrome-tab-was-just-added'), 500) }
+      tabProperties = Object.assign({}, defaultTapProperties, tabProperties)
+      this.tabContentEl.appendChild(tabEl)
+      this.setTabCloseEventListener(tabEl)
+      this.updateTab(tabEl, tabProperties)
+      this.emit('tabAdd', { tabEl })
+      if (!background) this.setCurrentTab(tabEl)
+      this.cleanUpPreviouslyDraggedTabs()
+      this.layoutTabs()
+      this.setupDraggabilly()
+    }
+
+    setTabCloseEventListener(tabEl) {
+      tabEl.querySelector('.chrome-tab-close').addEventListener('click', _ => this.removeTab(tabEl))
+    }
+
+    get activeTabEl() { return this.el.querySelector('.chrome-tab[active]') }
+    hasActiveTab() { return !!this.activeTabEl }
+
+    setCurrentTab(tabEl) {
+      const activeTabEl = this.activeTabEl
+      if (activeTabEl === tabEl) return
+      if (activeTabEl) activeTabEl.removeAttribute('active')
+      tabEl.setAttribute('active', '')
+      this.emit('activeTabChange', { tabEl })
+    }
+
+    removeTab(tabEl) {
+      if (tabEl === this.activeTabEl) {
+        if (tabEl.nextElementSibling) this.setCurrentTab(tabEl.nextElementSibling)
+        else if (tabEl.previousElementSibling) this.setCurrentTab(tabEl.previousElementSibling)
+      }
+      tabEl.parentNode.removeChild(tabEl)
+      this.emit('tabRemove', { tabEl })
+      this.cleanUpPreviouslyDraggedTabs()
+      this.layoutTabs()
+      this.setupDraggabilly()
+    }
+
+    updateTab(tabEl, tabProperties) {
+      tabEl.querySelector('.chrome-tab-title').textContent = tabProperties.title
+      const faviconEl = tabEl.querySelector('.chrome-tab-favicon')
+      if (tabProperties.favicon) {
+        faviconEl.style.backgroundImage = `url('${tabProperties.favicon}')`
+        faviconEl.removeAttribute('hidden')
+      } else {
+        faviconEl.setAttribute('hidden', '')
+        faviconEl.removeAttribute('style')
+      }
+      if (tabProperties.id) tabEl.setAttribute('data-tab-id', tabProperties.id)
+    }
+
+    cleanUpPreviouslyDraggedTabs() { this.tabEls.forEach(tabEl => tabEl.classList.remove('chrome-tab-was-just-dragged')) }
+
+    setupDraggabilly() {
+      const tabEls = this.tabEls
+      const tabPositions = this.tabPositions
+      if (this.isDragging) {
+        this.isDragging = false
+        this.el.classList.remove('chrome-tabs-is-sorting')
+        this.draggabillyDragging.element.classList.remove('chrome-tab-is-dragging')
+        this.draggabillyDragging.element.style.transform = ''
+        this.draggabillyDragging.dragEnd()
+        this.draggabillyDragging.isDragging = false
+        this.draggabillyDragging.positionDrag = noop
+        this.draggabillyDragging.destroy()
+        this.draggabillyDragging = null
+      }
+      this.draggabillies.forEach(d => d.destroy())
+      tabEls.forEach((tabEl, originalIndex) => {
+        const originalTabPositionX = tabPositions[originalIndex]
+        const draggabilly = new Draggabilly(tabEl, { axis: 'x', handle: '.chrome-tab-drag-handle', containment: this.tabContentEl })
+        this.draggabillies.push(draggabilly)
+        draggabilly.on('pointerDown', _ => this.setCurrentTab(tabEl))
+        draggabilly.on('dragStart', _ => {
+          this.isDragging = true; this.draggabillyDragging = draggabilly
+          tabEl.classList.add('chrome-tab-is-dragging'); this.el.classList.add('chrome-tabs-is-sorting')
+        })
+        draggabilly.on('dragEnd', _ => {
+          this.isDragging = false
+          const finalTranslateX = parseFloat(tabEl.style.left, 10)
+          tabEl.style.transform = `translate3d(0, 0, 0)`
+          requestAnimationFrame(_ => {
+            tabEl.style.left = '0'
+            tabEl.style.transform = `translate3d(${finalTranslateX}px, 0, 0)`
+            requestAnimationFrame(_ => {
+              tabEl.classList.remove('chrome-tab-is-dragging')
+              this.el.classList.remove('chrome-tabs-is-sorting')
+              tabEl.classList.add('chrome-tab-was-just-dragged')
+              requestAnimationFrame(_ => { tabEl.style.transform = ''; this.layoutTabs(); this.setupDraggabilly() })
+            })
+          })
+        })
+        draggabilly.on('dragMove', (event, pointer, moveVector) => {
+          const tabEls = this.tabEls
+          const currentIndex = tabEls.indexOf(tabEl)
+          const currentTabPositionX = originalTabPositionX + moveVector.x
+          const destinationIndexTarget = closest(currentTabPositionX, tabPositions)
+          const destinationIndex = Math.max(0, Math.min(tabEls.length, destinationIndexTarget))
+          if (currentIndex !== destinationIndex) this.animateTabMove(tabEl, currentIndex, destinationIndex)
+        })
+      })
+    }
+
+    animateTabMove(tabEl, originIndex, destinationIndex) {
+      if (destinationIndex < originIndex) tabEl.parentNode.insertBefore(tabEl, this.tabEls[destinationIndex])
+      else tabEl.parentNode.insertBefore(tabEl, this.tabEls[destinationIndex + 1])
+      this.emit('tabReorder', { tabEl, originIndex, destinationIndex })
+      this.layoutTabs()
+    }
+  }
+
+  return ChromeTabs
+})
+</script>
+
+<script>
+/* ── Browser application logic ── */
+const SHORTCUTS = [
+  { label: 'Google',    url: 'https://www.google.com',       icon: '🔍' },
+  { label: 'YouTube',   url: 'https://www.youtube.com',      icon: '▶️' },
+  { label: 'Wikipedia', url: 'https://en.wikipedia.org',     icon: '📖' },
+  { label: 'GitHub',    url: 'https://github.com',           icon: '🐙' },
+  { label: 'HN',        url: 'https://news.ycombinator.com', icon: '📰' },
+  { label: 'Maps',      url: 'https://maps.google.com',      icon: '🗺️' },
+]
+
+const tabData = new Map()  // tabEl → { url, title }
+const _uids = new WeakMap(); let _uidNext = 1
+function uid(el) { if (!_uids.has(el)) _uids.set(el, 'tab-' + _uidNext++); return _uids.get(el) }
+function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;') }
+
+// Init chrome-tabs library
+const ctEl = document.getElementById('ct')
+const chromeTabs = new ChromeTabs()
+chromeTabs.init(ctEl)
+
+// Open first tab
+addBrowserTab()
+
+// Tab events
+ctEl.addEventListener('activeTabChange', ({ detail: { tabEl } }) => {
+  showFrame(tabEl)
+  syncOmnibox(tabEl)
+})
+ctEl.addEventListener('tabRemove', ({ detail: { tabEl } }) => {
+  removeFrame(tabEl)
+  tabData.delete(tabEl)
+  if (chromeTabs.tabEls.length === 0) addBrowserTab()
+})
+
+// New tab button
+document.getElementById('new-tab-btn').addEventListener('click', () => addBrowserTab())
+
+// Keyboard shortcuts
+window.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 't') { e.preventDefault(); addBrowserTab() }
+  if ((e.ctrlKey || e.metaKey) && e.key === 'w') { e.preventDefault(); if (chromeTabs.activeTabEl) chromeTabs.removeTab(chromeTabs.activeTabEl) }
+})
+
+// Omnibox
+const urlInput = document.getElementById('url-input')
+urlInput.addEventListener('keydown', e => { if (e.key === 'Enter') navigate(chromeTabs.activeTabEl, urlInput.value.trim()) })
+urlInput.addEventListener('focus', () => urlInput.select())
+
+// Nav buttons
+document.getElementById('btn-back').addEventListener('click', () => {
+  const f = frameFor(chromeTabs.activeTabEl); if (f?.tagName === 'IFRAME') try { f.contentWindow.history.back() } catch {}
+})
+document.getElementById('btn-fwd').addEventListener('click', () => {
+  const f = frameFor(chromeTabs.activeTabEl); if (f?.tagName === 'IFRAME') try { f.contentWindow.history.forward() } catch {}
+})
+document.getElementById('btn-reload').addEventListener('click', () => {
+  const f = frameFor(chromeTabs.activeTabEl); if (f?.tagName === 'IFRAME') f.src = f.src
+})
+document.getElementById('btn-home').addEventListener('click', () => {
+  const t = chromeTabs.activeTabEl; if (t) goHome(t)
+})
+
+// Dark theme
+document.getElementById('btn-theme').addEventListener('click', () => {
+  const dark = document.documentElement.classList.toggle('dark-theme')
+  ctEl.classList.toggle('chrome-tabs-dark-theme', dark)
+})
+
+// ── Core functions ──────────────────────────────────────────────
+
+function addBrowserTab() {
+  chromeTabs.addTab({ title: 'New Tab', favicon: false })
+  const tabEl = chromeTabs.activeTabEl
+  tabData.set(tabEl, { url: null, title: 'New Tab' })
+  goHome(tabEl)
+}
+
+function goHome(tabEl) {
+  removeFrame(tabEl)
+  tabData.set(tabEl, { url: null, title: 'New Tab' })
+  chromeTabs.updateTab(tabEl, { title: 'New Tab', favicon: false })
+  createNTP(tabEl)
+  if (tabEl === chromeTabs.activeTabEl) { showFrame(tabEl); syncOmnibox(tabEl) }
+}
+
+function navigate(tabEl, raw) {
+  if (!tabEl || !raw) return
+  let url = raw.trim()
+  const looksLikeUrl = /^https?:\/\//i.test(url) || /^[a-z0-9-]+\.[a-z]{2,}(\/|$)/i.test(url)
+  if (!looksLikeUrl) url = 'https://www.google.com/search?q=' + encodeURIComponent(url)
+  else if (!/^https?:\/\//i.test(url)) url = 'https://' + url
+
+  tabData.set(tabEl, { url, title: 'Loading…' })
+  chromeTabs.updateTab(tabEl, { title: 'Loading…', favicon: false })
+  syncOmnibox(tabEl)
+  removeFrame(tabEl)
+
+  const iframe = document.createElement('iframe')
+  iframe.dataset.tab = uid(tabEl)
+  iframe.className = 'tab-frame'
+  iframe.setAttribute('sandbox', 'allow-same-origin allow-scripts allow-forms allow-popups allow-top-navigation')
+  document.getElementById('content').appendChild(iframe)
+
+  iframe.addEventListener('load', () => {
+    let title = ''
+    try { title = iframe.contentDocument.title } catch {}
+    if (!title) { try { title = new URL(url).hostname } catch { title = url } }
+    tabData.set(tabEl, { url, title })
+    chromeTabs.updateTab(tabEl, { title, favicon: false })
+    if (tabEl === chromeTabs.activeTabEl) syncOmnibox(tabEl)
+
+    // Detect X-Frame-Options blocked (body will be empty)
+    setTimeout(() => {
+      try {
+        if (iframe.contentDocument && iframe.contentDocument.body && iframe.contentDocument.body.innerHTML === '') {
+          showBlockedOverlay(tabEl, url)
+        }
+      } catch { /* cross-origin, likely loaded fine */ }
+    }, 1500)
+  })
+
+  // Fallback title
+  setTimeout(() => {
+    const d = tabData.get(tabEl)
+    if (d && d.title === 'Loading…') {
+      try { const h = new URL(url).hostname; tabData.set(tabEl, { url, title: h }); chromeTabs.updateTab(tabEl, { title: h, favicon: false }); if (tabEl === chromeTabs.activeTabEl) syncOmnibox(tabEl) } catch {}
+    }
+  }, 5000)
+
+  iframe.src = url
+  if (tabEl === chromeTabs.activeTabEl) showFrame(tabEl)
+}
+
+function showBlockedOverlay(tabEl, url) {
+  const old = frameFor(tabEl); if (!old || old.classList.contains('blocked-overlay')) return
+  old.remove()
+  const div = document.createElement('div')
+  div.dataset.tab = uid(tabEl)
+  div.className = 'tab-frame blocked-overlay'
+  try {
+    const h = new URL(url).hostname
+    div.innerHTML = `<h2>Can't display this page here</h2><p><strong>${escHtml(h)}</strong> has blocked embedding.<br>This is normal — open it in your real browser instead.</p><a href="${escHtml(url)}" target="_blank" rel="noopener noreferrer">Open ${escHtml(h)} →</a>`
+  } catch {
+    div.innerHTML = `<h2>Can't display this page</h2><a href="${escHtml(url)}" target="_blank" rel="noopener noreferrer">Open in browser →</a>`
+  }
+  document.getElementById('content').appendChild(div)
+  if (tabEl === chromeTabs.activeTabEl) { div.classList.add('active') }
+}
+
+function createNTP(tabEl) {
+  const div = document.createElement('div')
+  div.dataset.tab = uid(tabEl)
+  div.className = 'tab-frame ntp'
+  div.innerHTML = `
+    <div class="ntp-logo"><span style="color:#4285F4">G</span><span style="color:#EA4335">o</span><span style="color:#FBBC05">o</span><span style="color:#4285F4">g</span><span style="color:#34A853">l</span><span style="color:#EA4335">e</span></div>
+    <div class="ntp-search-box">
+      <span style="font-size:18px;color:#9aa0a6">🔍</span>
+      <input class="ntp-input" type="text" placeholder="Search Google or type a URL"/>
+    </div>
+    <div class="ntp-shortcuts">
+      ${SHORTCUTS.map(s => `<div class="ntp-shortcut" data-url="${s.url}"><div class="ntp-shortcut-icon">${s.icon}</div><div class="ntp-shortcut-label">${escHtml(s.label)}</div></div>`).join('')}
+    </div>
+  `
+  document.getElementById('content').appendChild(div)
+  div.querySelector('.ntp-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && e.target.value.trim()) navigate(tabEl, e.target.value.trim())
+  })
+  div.querySelectorAll('.ntp-shortcut').forEach(sc => sc.addEventListener('click', () => navigate(tabEl, sc.dataset.url)))
+  return div
+}
+
+function frameFor(tabEl) {
+  if (!tabEl) return null
+  return document.querySelector(`.tab-frame[data-tab="${uid(tabEl)}"]`)
+}
+function removeFrame(tabEl) { const f = frameFor(tabEl); if (f) f.remove() }
+function showFrame(tabEl) {
+  document.querySelectorAll('.tab-frame.active').forEach(f => f.classList.remove('active'))
+  const f = frameFor(tabEl); if (f) f.classList.add('active')
+}
+function syncOmnibox(tabEl) {
+  const d = tabData.get(tabEl) || {}
+  urlInput.value = d.url || ''
+  document.getElementById('lock').textContent = (d.url || '').startsWith('https://') ? '🔒' : '🔓'
+}
+</script>
+</body>
+</html>
