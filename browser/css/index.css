@@ -1,18 +1,18 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;background:#202124;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;overflow:hidden}
+html,body{height:100%;background:transparent;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;overflow:hidden}
 
-.browser{display:flex;flex-direction:column;height:100vh;background:#202124}
+.browser{display:flex;flex-direction:column;height:100vh;background:transparent}
 
 .titlebar{
   display:flex;align-items:flex-end;
-  background:#202124;height:46px;
+  background:#1a1a1a;height:46px;
 }
 
 .chrome-tabs{
   box-sizing:border-box;position:relative;
   font-family:inherit;font-size:12px;
   height:46px;padding:8px 3px 4px 3px;
-  background:#202124;border-radius:5px 5px 0 0;overflow:hidden;
+  background:transparent;border-radius:5px 5px 0 0;overflow:hidden;
   flex:1;min-width:0;
 }
 .chrome-tabs *{box-sizing:inherit;font:inherit}
@@ -33,7 +33,7 @@ html,body{height:100%;background:#202124;font-family:-apple-system,BlinkMacSyste
 .chrome-tabs .chrome-tab .chrome-tab-dividers::before,
 .chrome-tabs .chrome-tab .chrome-tab-dividers::after{
   content:"";display:block;position:absolute;top:0;bottom:0;
-  width:1px;background:#4a4d51;opacity:1;transition:opacity .2s ease;
+  width:1px;background:rgba(255,255,255,0.15);opacity:0;transition:opacity .2s ease;
 }
 .chrome-tabs .chrome-tab .chrome-tab-dividers::before{left:0}
 .chrome-tabs .chrome-tab .chrome-tab-dividers::after{right:0}
@@ -46,9 +46,9 @@ html,body{height:100%;background:#202124;font-family:-apple-system,BlinkMacSyste
   position:absolute;top:0;left:0;width:100%;height:100%;overflow:hidden;pointer-events:none;
 }
 .chrome-tabs .chrome-tab .chrome-tab-background>svg{width:100%;height:100%}
-.chrome-tabs .chrome-tab .chrome-tab-background>svg .chrome-tab-geometry{fill:#292b2e}
+.chrome-tabs .chrome-tab .chrome-tab-background>svg .chrome-tab-geometry{fill:#1a1a1a}
 .chrome-tabs .chrome-tab[active]{z-index:5}
-.chrome-tabs .chrome-tab[active] .chrome-tab-background>svg .chrome-tab-geometry{fill:#323639}
+.chrome-tabs .chrome-tab[active] .chrome-tab-background>svg .chrome-tab-geometry{fill:#2e2e2e}
 .chrome-tabs .chrome-tab:not([active]) .chrome-tab-background{transition:opacity .2s ease;opacity:0}
 @media(hover:hover){
   .chrome-tabs .chrome-tab:not([active]):hover{z-index:2}
@@ -74,7 +74,7 @@ html,body{height:100%;background:#202124;font-family:-apple-system,BlinkMacSyste
 
 .chrome-tabs .chrome-tab .chrome-tab-title{
   flex:1;vertical-align:top;overflow:hidden;white-space:nowrap;
-  margin-left:4px;color:#9ca1a7;
+  margin-left:4px;color:rgba(255,255,255,0.7);
   -webkit-mask-image:linear-gradient(90deg,#000 0%,#000 calc(100% - 24px),transparent);
   mask-image:linear-gradient(90deg,#000 0%,#000 calc(100% - 24px),transparent);
 }
@@ -83,7 +83,7 @@ html,body{height:100%;background:#202124;font-family:-apple-system,BlinkMacSyste
 .chrome-tabs .chrome-tab[is-small] .chrome-tab-favicon+.chrome-tab-title{margin-left:8px}
 .chrome-tabs .chrome-tab[is-smaller] .chrome-tab-favicon+.chrome-tab-title,
 .chrome-tabs .chrome-tab[is-mini] .chrome-tab-title{display:none}
-.chrome-tabs .chrome-tab[active] .chrome-tab-title{color:#f1f3f4}
+.chrome-tabs .chrome-tab[active] .chrome-tab-title{color:#ffffff}
 
 .chrome-tabs .chrome-tab .chrome-tab-drag-handle{
   position:absolute;top:0;bottom:0;right:0;left:0;
@@ -92,21 +92,21 @@ html,body{height:100%;background:#202124;font-family:-apple-system,BlinkMacSyste
 
 .chrome-tabs .chrome-tab .chrome-tab-close{
   flex-grow:0;flex-shrink:0;position:relative;width:16px;height:16px;border-radius:50%;
-  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path stroke='rgba(154,160,166,.8)' stroke-linecap='square' stroke-width='1.5' d='M0 0 L8 8 M8 0 L0 8'/></svg>");
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path stroke='rgba(255,255,255,.5)' stroke-linecap='square' stroke-width='1.5' d='M0 0 L8 8 M8 0 L0 8'/></svg>");
   background-position:center;background-repeat:no-repeat;background-size:8px 8px;
 }
 @media(hover:hover){
   .chrome-tabs .chrome-tab .chrome-tab-close:hover{
-    background-color:#5f6368;
+    background-color:rgba(255,255,255,0.2);
     background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path stroke='rgba(255,255,255,.7)' stroke-linecap='square' stroke-width='1.5' d='M0 0 L8 8 M8 0 L0 8'/></svg>");
   }
   .chrome-tabs .chrome-tab .chrome-tab-close:hover:active{
-    background-color:#80868b;
+    background-color:rgba(255,255,255,0.3);
     background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path stroke='rgba(255,255,255,.9)' stroke-linecap='square' stroke-width='1.5' d='M0 0 L8 8 M8 0 L0 8'/></svg>");
   }
 }
 @media not all and (hover:hover){
-  .chrome-tabs .chrome-tab .chrome-tab-close:active{background-color:#dadce0}
+  .chrome-tabs .chrome-tab .chrome-tab-close:active{background-color:rgba(255,255,255,0.2)}
 }
 @media(hover:hover){
   .chrome-tabs .chrome-tab:not([active]) .chrome-tab-close:not(:hover):not(:active){opacity:.8}
@@ -119,7 +119,7 @@ html,body{height:100%;background:#202124;font-family:-apple-system,BlinkMacSyste
 .chrome-tabs:not(.chrome-tabs-is-sorting) .chrome-tab.chrome-tab-was-just-dragged{transition:transform 120ms ease-in-out}
 
 .chrome-tabs .chrome-tabs-bottom-bar{
-  position:absolute;bottom:0;height:4px;left:0;width:100%;background:#323639;z-index:10;
+  position:absolute;bottom:0;height:4px;left:0;width:100%;background:rgba(50,50,50,0.8);z-index:10;
 }
 
 .newtab-btn{
@@ -128,7 +128,7 @@ html,body{height:100%;background:#202124;font-family:-apple-system,BlinkMacSyste
   width:30px;height:30px;margin:0;padding:0;
   margin-top:-1px;
   border:none;border-radius:50%;background:transparent;
-  color:#9ca1a7;cursor:pointer;font-size:14px;
+  color:rgba(255,255,255,0.7);cursor:pointer;font-size:14px;
   transition:background .15s,color .15s;
 }
 .newtab-btn i{
@@ -136,69 +136,70 @@ html,body{height:100%;background:#202124;font-family:-apple-system,BlinkMacSyste
   width:100%;height:100%;
   font-size:18px;line-height:1;
 }
-.newtab-btn:hover{background:#3c3f43;color:#e8eaed}
-.newtab-btn:active{background:#4a4d51}
+.newtab-btn:hover{background:rgba(255,255,255,0.1);color:#ffffff}
+.newtab-btn:active{background:rgba(255,255,255,0.2)}
 
-.titlebar-spacer{flex:0 0 0;width:0;background:#202124}
+.titlebar-spacer{flex:0 0 0;width:0;background:transparent}
 
 .toolbar{
   display:flex;align-items:center;gap:4px;
-  background:#323639;padding:6px 10px;height:48px;
-  border-bottom:1px solid #1a1b1e;
+  background:#1a1a1a;padding:6px 10px;height:48px;
+  border-bottom:1px solid rgba(0,0,0,0.4);
+  position:relative;z-index:100;
 }
 
 .nav-btn{
   display:flex;align-items:center;justify-content:center;
   width:32px;height:32px;border:none;border-radius:50%;
-  background:transparent;color:#9ca1a7;cursor:pointer;
+  background:transparent;color:rgba(255,255,255,0.7);cursor:pointer;
   font-size:14px;transition:background .15s,color .15s;flex-shrink:0;
 }
-.nav-btn:hover:not(:disabled){background:#3c3f43;color:#e8eaed}
-.nav-btn:active:not(:disabled){background:#4a4d51}
+.nav-btn:hover:not(:disabled){background:rgba(255,255,255,0.1);color:#ffffff}
+.nav-btn:active:not(:disabled){background:rgba(255,255,255,0.2)}
 .nav-btn:disabled{opacity:.35;cursor:default}
 
 .address-bar-wrap{
   flex:1;display:flex;align-items:center;
-  background:#202124;border-radius:20px;height:34px;
+  background:rgba(60,60,60,0.55);border-radius:20px;height:34px;
   padding:0 12px;gap:8px;
-  border:1px solid transparent;
+  border:1px solid rgba(255,255,255,0.2);
   transition:border-color .15s,background .15s;cursor:text;
   position:relative;
 }
-.address-bar-wrap:focus-within{background:#292b2e;border-color:#5f6368}
-.address-bar-wrap .lock-icon{color:#9ca1a7;font-size:12px;flex-shrink:0}
+.address-bar-wrap:focus-within{background:rgba(75,75,75,0.65);border-color:rgba(255,255,255,0.4)}
+.address-bar-wrap .lock-icon{color:rgba(255,255,255,0.7);font-size:12px;flex-shrink:0}
 .address-bar-wrap .lock-icon.secure{color:#81c995}
 .lock-icon-btn{
   width:18px;height:18px;border:none;background:transparent;padding:0;
   display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;
 }
-.lock-icon-btn:hover .lock-icon{color:#e8eaed}
+.lock-icon-btn:hover .lock-icon{color:#ffffff}
 #url-input{
   flex:1;background:transparent;border:none;outline:none;
-  color:#e8eaed;font-size:13px;font-family:inherit;min-width:0;
+  color:#ffffff;font-size:13px;font-family:inherit;min-width:0;
 }
-#url-input::selection{background:#4a90d9;color:#fff}
-#url-input::placeholder{color:#5f6368}
+#url-input::selection{background:rgba(255,255,255,0.2);color:#fff}
+#url-input::placeholder{color:rgba(255,255,255,0.3)}
 .connection-popup{
-  position:absolute;top:40px;left:8px;z-index:30;
+  position:absolute;top:40px;left:8px;z-index:200;
   width:min(320px,calc(100vw - 32px));
-  background:#2b2d31;border:1px solid #3c4043;border-radius:10px;
-  box-shadow:0 10px 28px rgba(0,0,0,.35);
+  background:rgba(40,40,40,0.9);border:1px solid rgba(255,255,255,0.1);border-radius:10px;
+  box-shadow:0 10px 28px rgba(0,0,0,0.35);
   padding:10px 12px;
 }
-.connection-popup-title{color:#e8eaed;font-size:12px;font-weight:600;margin-bottom:4px}
-.connection-popup-desc{color:#bdc1c6;font-size:12px;line-height:1.35}
+.connection-popup-title{color:#ffffff;font-size:12px;font-weight:600;margin-bottom:4px}
+.connection-popup-desc{color:rgba(255,255,255,0.7);font-size:12px;line-height:1.35}
 
 .toolbar-right{display:flex;align-items:center;gap:2px}
 .url-shortcuts{display:flex;align-items:center;gap:2px;margin-left:6px}
 .url-shortcut-btn{
   display:flex;align-items:center;justify-content:center;
   width:30px;height:30px;border:none;border-radius:50%;
-  background:transparent;color:#9ca1a7;cursor:pointer;
+  background:transparent;color:rgba(255,255,255,0.7);cursor:pointer;
   font-size:13px;transition:background .15s,color .15s;
 }
-.url-shortcut-btn:hover{background:#3c3f43;color:#e8eaed}
-.url-shortcut-btn:active{background:#4a4d51}
+.url-shortcut-btn:hover{background:rgba(255,255,255,0.1);color:#ffffff}
+.url-shortcut-btn:active{background:rgba(255,255,255,0.2)}
 
 .content-area{flex:1;position:relative;overflow:hidden}
 #page-frame{width:100%;height:100%;border:none;display:block;background:#fff}
@@ -206,37 +207,38 @@ html,body{height:100%;background:#202124;font-family:-apple-system,BlinkMacSyste
 .new-tab-page{
   position:absolute;inset:0;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:32px;background:#202124;
+  gap:32px;background:rgba(20,20,20,0.45);backdrop-filter:blur(2px);
 }
 .new-tab-page .logo{
   font-size:64px;font-weight:700;letter-spacing:-2px;
-  background:linear-gradient(135deg,#4285f4,#34a853,#fbbc05,#ea4335);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  color:#ffffff;
+  padding:0 24px;
+  overflow:visible;
 }
 .new-tab-page .search-box{
   display:flex;align-items:center;
-  background:#303134;border:1px solid #5f6368;border-radius:24px;
+  background:rgba(40,40,40,0.3);border:1px solid rgba(255,255,255,0.15);border-radius:24px;
   padding:10px 18px;gap:12px;width:min(560px,90vw);
   transition:border-color .15s,box-shadow .15s;
 }
-.new-tab-page .search-box:focus-within{border-color:#8ab4f8;box-shadow:0 0 0 3px rgba(138,180,248,.15)}
-.new-tab-page .search-box i{color:#9ca1a7;font-size:16px}
+.new-tab-page .search-box:focus-within{border-color:rgba(255,255,255,0.4);box-shadow:0 0 0 3px rgba(255,255,255,0.08)}
+.new-tab-page .search-box i{color:rgba(255,255,255,0.7);font-size:16px}
 .new-tab-page .search-box input{
   flex:1;background:transparent;border:none;outline:none;
-  color:#e8eaed;font-size:16px;font-family:inherit;
+  color:#ffffff;font-size:16px;font-family:inherit;
 }
-.new-tab-page .search-box input::placeholder{color:#9ca1a7}
+.new-tab-page .search-box input::placeholder{color:rgba(255,255,255,0.5)}
 .shortcuts{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;max-width:600px}
 .shortcut{
   display:flex;flex-direction:column;align-items:center;gap:8px;
   width:80px;cursor:pointer;padding:10px 6px;border-radius:8px;transition:background .15s;
 }
-.shortcut:hover{background:#303134}
+.shortcut:hover{background:rgba(255,255,255,0.1)}
 .shortcut .icon{
-  width:48px;height:48px;border-radius:12px;background:#303134;
+  width:48px;height:48px;border-radius:12px;background:rgba(60,60,60,0.92);
   display:flex;align-items:center;justify-content:center;font-size:20px;
 }
-.shortcut span{color:#bdc1c6;font-size:12px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%}
+.shortcut span{color:rgba(255,255,255,0.7);font-size:12px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%}
 
-.status-bar{height:20px;background:#323639;display:flex;align-items:center;padding:0 12px}
-.status-bar span{color:#9ca1a7;font-size:11px}
+.status-bar{height:20px;background:rgba(28,28,28,0.45);backdrop-filter:blur(12px);display:flex;align-items:center;padding:0 12px}
+.status-bar span{color:rgba(255,255,255,0.5);font-size:11px}

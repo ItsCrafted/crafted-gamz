@@ -1,3 +1,5 @@
+javascript
+
 ((window, factory) => {
   window.ChromeTabs = factory(window, window.Draggabilly)
 })(window, (window, Draggabilly) => {
@@ -173,8 +175,8 @@
         faviconEl.style.backgroundImage = `url('${tabProperties.favicon}')`
         faviconEl.removeAttribute('hidden')
       } else {
-        faviconEl.setAttribute('hidden', '')
-        faviconEl.removeAttribute('style')
+        faviconEl.style.backgroundImage = `url('img/favicon.png')`
+        faviconEl.removeAttribute('hidden')
       }
       if (tabProperties.id) tabEl.setAttribute('data-tab-id', tabProperties.id)
     }
@@ -243,6 +245,68 @@
   return ChromeTabs
 })
 
+// ── BOOKMARKS MANAGER ────────────────────────────────────────────────────────
+const Bookmarks = (() => {
+  const LS_KEY = 'cg_bookmarks'
+
+  function load() {
+    try { return JSON.parse(localStorage.getItem(LS_KEY)) || [] } catch { return [] }
+  }
+  function save(list) {
+    localStorage.setItem(LS_KEY, JSON.stringify(list))
+  }
+  function getAll() { return load() }
+  function find(url) { return load().find(b => b.url === url) }
+  function add(bookmark) {
+    const list = load().filter(b => b.url !== bookmark.url)
+    list.push(bookmark)
+    save(list)
+  }
+  function remove(url) {
+    save(load().filter(b => b.url !== url))
+  }
+  function isBookmarked(url) { return !!find(url) }
+
+  // Fetch the favicon via the proxy URL, convert to base64, store it
+  async function fetchAndCacheFavicon(url) {
+    const existing = find(url)
+    if (!existing) return
+    // If we already have a b64 favicon saved, skip
+    if (existing.favicon && existing.favicon.startsWith('data:')) return
+
+    // Try Google favicon service through the proxy if available
+    const faviconUrl = `https://www.google.com/s2/favicons?sz=32&domain_url=${encodeURIComponent(url)}`
+    try {
+      const proxyUrl = (typeof __uv$config !== 'undefined')
+        ? __uv$config.prefix + __uv$config.encodeUrl(faviconUrl)
+        : faviconUrl
+
+      const res = await fetch(proxyUrl)
+      if (!res.ok) return
+      const blob = await res.blob()
+      const b64 = await new Promise((resolve, reject) => {
+        const reader = new FileReader()
+        reader.onload = () => resolve(reader.result)
+        reader.onerror = reject
+        reader.readAsDataURL(blob)
+      })
+      // Re-read in case it changed while we were fetching
+      const current = find(url)
+      if (current) {
+        current.favicon = b64
+        const list = load().map(b => b.url === url ? current : b)
+        save(list)
+        renderBookmarksBar()
+      }
+    } catch (e) {
+      console.warn('Favicon fetch failed:', e)
+    }
+  }
+
+  return { getAll, find, add, remove, isBookmarked, fetchAndCacheFavicon }
+})()
+
+// ── BROWSER INIT ─────────────────────────────────────────────────────────────
 const tabsEl = document.getElementById('tabs-el')
 const chromeTabs = new ChromeTabs()
 chromeTabs.init(tabsEl)
@@ -262,6 +326,8 @@ const btnHome = document.getElementById('btn-home')
 const btnSystemSettings = document.getElementById('btn-system-settings')
 const btnUserPage = document.getElementById('btn-user-page')
 const statusText = document.getElementById('status-text')
+const bookmarkStarBtn = document.getElementById('btn-bookmark-star')
+const bookmarksBar = document.getElementById('bookmarks-bar')
 const DOUBLE_KEY_SHORTCUT_INTERVAL = 300
 const recentShortcutKeys = new Map()
 
@@ -311,34 +377,20 @@ function setAddressIndicator(url) {
 }
 function getConnectionDetails(url) {
   if (url === 'newtab') {
-    return {
-      title: 'New Tab',
-      desc: 'This is a local new-tab screen. No website connection is active.'
-    }
+    return { title: 'New Tab', desc: 'This is a local new-tab screen. No website connection is active.' }
   }
   if (/^cg:\/\//i.test(url)) {
-    return {
-      title: 'Local System Page',
-      desc: 'This page is loaded from local files in browser/pages and is not proxied.'
-    }
+    return { title: 'Local System Page', desc: 'This page is loaded from local files and is not proxied.' }
   }
   if (url.startsWith('https://')) {
-    return {
-      title: 'Secure HTTPS',
-      desc: 'Your connection uses HTTPS encryption. In this browser shell, content may still be routed through your proxy stack.'
-    }
+    return { title: 'Secure HTTPS', desc: 'Your connection uses HTTPS encryption. In this browser shell, content may still be routed through our proxy.' }
   }
-  return {
-    title: 'Not Fully Secure',
-    desc: 'This page is not using HTTPS encryption. Avoid entering sensitive information.'
-  }
+  return { title: 'Not Fully Secure', desc: 'This page is not using HTTPS encryption. Avoid entering sensitive information.' }
 }
 function currentAddressValue() {
   return (urlInput.value || '').trim() || 'newtab'
 }
-function hideConnectionPopup() {
-  connectionPopup.hidden = true
-}
+function hideConnectionPopup() { connectionPopup.hidden = true }
 function showConnectionPopup() {
   const details = getConnectionDetails(currentAddressValue())
   connectionPopupTitle.textContent = details.title
@@ -358,6 +410,157 @@ function getDisplayUrl(rawUrl) {
   return rawUrl
 }
 
+// ── BOOKMARK STAR ─────────────────────────────────────────────────────────────
+function updateBookmarkStar(url) {
+  if (!bookmarkStarBtn) return
+  const bookmarkable = url && url !== 'newtab' && !url.startsWith('cg://')
+  bookmarkStarBtn.style.display = bookmarkable ? 'flex' : 'none'
+  if (!bookmarkable) return
+  const starred = Bookmarks.isBookmarked(url)
+  bookmarkStarBtn.title = starred ? 'Remove bookmark' : 'Bookmark this page'
+  bookmarkStarBtn.setAttribute('aria-label', starred ? 'Remove bookmark' : 'Bookmark this page')
+  bookmarkStarBtn.classList.toggle('starred', starred)
+  // Star icon: solid when bookmarked, regular when not
+  const icon = bookmarkStarBtn.querySelector('i')
+  if (icon) {
+    icon.className = starred ? 'fa-solid fa-star' : 'fa-regular fa-star'
+  }
+}
+
+bookmarkStarBtn && bookmarkStarBtn.addEventListener('click', () => {
+  const url = currentAddressValue()
+  if (!url || url === 'newtab' || url.startsWith('cg://')) return
+
+  if (Bookmarks.isBookmarked(url)) {
+    Bookmarks.remove(url)
+    updateBookmarkStar(url)
+    renderBookmarksBar()
+    showBookmarkToast('Bookmark removed')
+  } else {
+    // Build title from current tab or hostname
+    const tab = getActiveTab()
+    let title = ''
+    if (tab) title = tab.dataset.title || tab.querySelector('.chrome-tab-title').textContent || ''
+    if (!title || title === 'New Tab') {
+      try { title = new URL(url).hostname.replace(/^www\./, '') } catch { title = url }
+    }
+    // Use Google favicon as initial placeholder; b64 fetch happens after save
+    const favicon = `https://www.google.com/s2/favicons?sz=32&domain_url=${encodeURIComponent(url)}`
+    Bookmarks.add({ url, title, favicon, addedAt: Date.now() })
+    renderBookmarksBar()
+    updateBookmarkStar(url)
+    showBookmarkToast('Bookmark added')
+    // Kick off background b64 favicon fetch
+    Bookmarks.fetchAndCacheFavicon(url)
+  }
+})
+
+// ── BOOKMARK TOAST ────────────────────────────────────────────────────────────
+function showBookmarkToast(msg) {
+  let toast = document.getElementById('bm-toast')
+  if (!toast) {
+    toast = document.createElement('div')
+    toast.id = 'bm-toast'
+    document.body.appendChild(toast)
+  }
+  toast.textContent = msg
+  toast.classList.add('show')
+  clearTimeout(toast._hideTimer)
+  toast._hideTimer = setTimeout(() => toast.classList.remove('show'), 1800)
+}
+
+// ── BOOKMARKS BAR RENDER ─────────────────────────────────────────────────────
+function renderBookmarksBar() {
+  if (!bookmarksBar) return
+  const bookmarks = Bookmarks.getAll()
+  bookmarksBar.innerHTML = ''
+
+  if (bookmarks.length === 0) {
+    const hint = document.createElement('span')
+    hint.className = 'bm-bar-hint'
+    hint.textContent = 'Bookmarks you add will appear here'
+    bookmarksBar.appendChild(hint)
+    return
+  }
+
+  bookmarks.forEach(bm => {
+    const item = document.createElement('button')
+    item.className = 'bm-item'
+    item.title = bm.url
+
+    // Favicon
+    const img = document.createElement('span')
+    img.className = 'bm-item-favicon'
+    if (bm.favicon) {
+      img.style.backgroundImage = `url('${bm.favicon}')`
+    } else {
+      img.innerHTML = '<i class="fa-solid fa-globe"></i>'
+    }
+
+    // Label
+    const label = document.createElement('span')
+    label.className = 'bm-item-label'
+    label.textContent = bm.title || bm.url
+
+    // Context menu (right-click to remove)
+    item.addEventListener('contextmenu', e => {
+      e.preventDefault()
+      showBookmarkContextMenu(e.clientX, e.clientY, bm.url, bm.title)
+    })
+
+    item.addEventListener('click', () => navigate(bm.url))
+    item.appendChild(img)
+    item.appendChild(label)
+    bookmarksBar.appendChild(item)
+  })
+}
+
+// ── BOOKMARK CONTEXT MENU ─────────────────────────────────────────────────────
+function showBookmarkContextMenu(x, y, url, title) {
+  removeBookmarkContextMenu()
+  const menu = document.createElement('div')
+  menu.id = 'bm-ctx-menu'
+  menu.innerHTML = `
+    <div class="bm-ctx-title">${title || url}</div>
+    <button class="bm-ctx-btn" id="bm-ctx-open">Open in new tab</button>
+    <button class="bm-ctx-btn bm-ctx-remove" id="bm-ctx-remove">Remove bookmark</button>
+  `
+  // Position within viewport
+  document.body.appendChild(menu)
+  const mw = menu.offsetWidth, mh = menu.offsetHeight
+  menu.style.left = Math.min(x, window.innerWidth - mw - 8) + 'px'
+  menu.style.top = Math.min(y, window.innerHeight - mh - 8) + 'px'
+
+  document.getElementById('bm-ctx-open').addEventListener('click', () => {
+    removeBookmarkContextMenu()
+    openNewTab()
+    navigate(url)
+  })
+  document.getElementById('bm-ctx-remove').addEventListener('click', () => {
+    removeBookmarkContextMenu()
+    Bookmarks.remove(url)
+    renderBookmarksBar()
+    updateBookmarkStar(currentAddressValue())
+    showBookmarkToast('Bookmark removed')
+  })
+
+  setTimeout(() => {
+    document.addEventListener('click', removeBookmarkContextMenu, { once: true })
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') removeBookmarkContextMenu() }, { once: true })
+  }, 0)
+}
+function removeBookmarkContextMenu() {
+  const m = document.getElementById('bm-ctx-menu')
+  if (m) m.remove()
+}
+
+// ── SHOW/HIDE BOOKMARKS BAR (only on new tab) ─────────────────────────────────
+function setBookmarksBarVisible(visible) {
+  if (!bookmarksBar) return
+  bookmarksBar.style.display = visible ? 'flex' : 'none'
+}
+
+// ── PROXY STACK ───────────────────────────────────────────────────────────────
 async function initUv() {
   if (!('serviceWorker' in navigator)) return
   if (typeof __uv$config === 'undefined') return
@@ -368,15 +571,11 @@ async function initUv() {
     console.warn('UV service worker registration failed:', e)
   }
 }
-
 async function initBaremux() {
   if (baremuxReady) return true
   if (pendingInitPromise) return pendingInitPromise
   pendingInitPromise = (async () => {
-    if (!window.BareMux) {
-      console.warn('BareMux not loaded')
-      return false
-    }
+    if (!window.BareMux) { console.warn('BareMux not loaded'); return false }
     try {
       baremuxConnection = new BareMux.BareMuxConnection('/baremux/worker.js')
       await baremuxConnection.setTransport('/libcurl/index.mjs', [{ wisp: getWispUrl() }])
@@ -391,17 +590,14 @@ async function initBaremux() {
   })()
   return pendingInitPromise
 }
-
 async function initProxyStack() {
   await initUv()
   await initBaremux()
 }
-
 function getProxyUrl(url) {
   if (!uvReady || typeof __uv$config === 'undefined') return url
   return __uv$config.prefix + __uv$config.encodeUrl(url)
 }
-
 function getRealUrlFromProxy(maybeProxyUrl) {
   if (typeof __uv$config === 'undefined') return maybeProxyUrl
   try {
@@ -414,13 +610,12 @@ function getRealUrlFromProxy(maybeProxyUrl) {
   return maybeProxyUrl
 }
 
+// ── TAB / HISTORY HELPERS ─────────────────────────────────────────────────────
 function getActiveTab() { return chromeTabs.activeTabEl }
 function openNewTab(options) { chromeTabs.addTab({ title: 'New Tab', favicon: false }, options) }
 function ensureTabHistory(tabEl) {
   if (!tabEl) return null
-  if (!tabHistory.has(tabEl)) {
-    tabHistory.set(tabEl, { entries: ['newtab'], index: 0 })
-  }
+  if (!tabHistory.has(tabEl)) tabHistory.set(tabEl, { entries: ['newtab'], index: 0 })
   return tabHistory.get(tabEl)
 }
 function syncNavButtons(tabEl = getActiveTab()) {
@@ -454,13 +649,11 @@ function syncFromFrameLocation() {
   currentUrl = getDisplayUrl(currentUrl)
   if (!currentUrl || currentUrl === lastSyncedFrameUrl) return
   lastSyncedFrameUrl = currentUrl
-
   urlInput.value = currentUrl
   const tab = getActiveTab()
   if (!tab) return
   tab.dataset.url = currentUrl
   pushTabHistory(tab, currentUrl)
-
   let hostname = currentUrl
   try { hostname = new URL(currentUrl).hostname } catch (e) {}
   const fallbackTitle = hostname.replace(/^www\./, '')
@@ -470,6 +663,9 @@ function syncFromFrameLocation() {
   }
   setAddressIndicator(currentUrl)
   syncNavButtons(tab)
+  updateBookmarkStar(currentUrl)
+  // If this page is bookmarked, fetch & cache favicon in background
+  if (Bookmarks.isBookmarked(currentUrl)) Bookmarks.fetchAndCacheFavicon(currentUrl)
 }
 function startUrlSyncLoop() {
   if (urlSyncIntervalId) return
@@ -481,10 +677,7 @@ async function openHistoryEntry(tabEl, index) {
   if (index < 0 || index >= state.entries.length) return
   state.index = index
   const url = state.entries[state.index]
-  if (!url || url === 'newtab') {
-    showNewTabPage()
-    return
-  }
+  if (!url || url === 'newtab') { showNewTabPage(); return }
   const local = resolveCgUrl(url)
   if (local) {
     pageFrame.src = local.target
@@ -493,6 +686,8 @@ async function openHistoryEntry(tabEl, index) {
     urlInput.value = local.display
     setAddressIndicator(local.display)
     syncNavButtons(tabEl)
+    updateBookmarkStar(local.display)
+    setBookmarksBarVisible(false)
     return
   }
   if (!uvReady || !baremuxReady) await initProxyStack()
@@ -502,13 +697,14 @@ async function openHistoryEntry(tabEl, index) {
   urlInput.value = url
   setAddressIndicator(url)
   syncNavButtons(tabEl)
+  updateBookmarkStar(url)
+  setBookmarksBarVisible(false)
 }
+
 function isTypingTarget(target) {
   return !!target && (
-    target.tagName === 'INPUT' ||
-    target.tagName === 'TEXTAREA' ||
-    target.tagName === 'SELECT' ||
-    target.isContentEditable
+    target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' ||
+    target.tagName === 'SELECT' || target.isContentEditable
   )
 }
 function handleDoubleKeyShortcut(key) {
@@ -529,6 +725,9 @@ function showNewTabPage() {
   setAddressIndicator('newtab')
   hideConnectionPopup()
   syncNavButtons()
+  updateBookmarkStar('newtab')
+  setBookmarksBarVisible(true)
+  renderBookmarksBar()
 }
 
 async function navigate(url) {
@@ -555,6 +754,8 @@ async function navigate(url) {
     }
     statusText.textContent = ''
     syncNavButtons(localTab)
+    updateBookmarkStar(full)
+    setBookmarksBarVisible(false)
     return
   }
   if (!/^https?:\/\//i.test(full) && !full.startsWith('about:')) {
@@ -586,31 +787,28 @@ async function navigate(url) {
   }
   statusText.textContent = 'Loading ' + full
   syncNavButtons(tab)
+  updateBookmarkStar(full)
+  setBookmarksBarVisible(false)
+  // If this page is already bookmarked, kick off favicon cache
+  if (Bookmarks.isBookmarked(full)) Bookmarks.fetchAndCacheFavicon(full)
 }
 
 pageFrame.addEventListener('load', () => {
   statusText.textContent = ''
   if (pageFrame.style.display === 'none') return
-
   let currentUrl = pageFrame.src || urlInput.value
-  try {
-    currentUrl = pageFrame.contentWindow.location.href || currentUrl
-  } catch (e) {}
+  try { currentUrl = pageFrame.contentWindow.location.href || currentUrl } catch (e) {}
   currentUrl = getRealUrlFromProxy(currentUrl)
   currentUrl = getDisplayUrl(currentUrl)
   if (currentUrl) lastSyncedFrameUrl = currentUrl
-
   if (currentUrl) urlInput.value = currentUrl
-
   const tab = getActiveTab()
   if (!tab || !currentUrl) return
-
   tab.dataset.url = currentUrl
   pushTabHistory(tab, currentUrl)
   let hostname = currentUrl
   try { hostname = new URL(currentUrl).hostname } catch (e) {}
   const fallbackTitle = hostname.replace(/^www\./, '')
-
   try {
     const iframeTitle = pageFrame.contentDocument && pageFrame.contentDocument.title
     const title = (iframeTitle || fallbackTitle || 'New Tab').trim()
@@ -620,9 +818,10 @@ pageFrame.addEventListener('load', () => {
     tab.querySelector('.chrome-tab-title').textContent = fallbackTitle || 'New Tab'
     tab.dataset.title = fallbackTitle || 'New Tab'
   }
-
   setAddressIndicator(currentUrl)
   syncNavButtons(tab)
+  updateBookmarkStar(currentUrl)
+  if (Bookmarks.isBookmarked(currentUrl)) Bookmarks.fetchAndCacheFavicon(currentUrl)
 })
 
 tabsEl.addEventListener('activeTabChange', async ({ detail }) => {
@@ -632,10 +831,7 @@ tabsEl.addEventListener('activeTabChange', async ({ detail }) => {
     showNewTabPage()
   } else {
     const state = ensureTabHistory(tab)
-    if (!state.entries.length) {
-      state.entries = [url]
-      state.index = 0
-    }
+    if (!state.entries.length) { state.entries = [url]; state.index = 0 }
     await openHistoryEntry(tab, state.index)
     startUrlSyncLoop()
   }
@@ -653,20 +849,13 @@ tabsEl.addEventListener('tabRemove', () => {
   if (chromeTabs.tabEls.length === 0) openNewTab()
 })
 
-document.getElementById('newtab-btn').addEventListener('click', () => {
-  openNewTab()
-})
-
+document.getElementById('newtab-btn').addEventListener('click', () => openNewTab())
 urlInput.addEventListener('keydown', e => { if (e.key === 'Enter') navigate(urlInput.value) })
 urlInput.addEventListener('focus', () => urlInput.select())
 
 btnRefresh.addEventListener('click', () => {
   if (pageFrame.style.display === 'none') return
-  try {
-    pageFrame.contentWindow.location.reload()
-  } catch (e) {
-    pageFrame.src = pageFrame.src
-  }
+  try { pageFrame.contentWindow.location.reload() } catch (e) { pageFrame.src = pageFrame.src }
 })
 
 btnHome.addEventListener('click', () => {
@@ -674,18 +863,16 @@ btnHome.addEventListener('click', () => {
   const tab = getActiveTab()
   if (tab) {
     tab.querySelector('.chrome-tab-title').textContent = 'New Tab'
-    tab.querySelector('.chrome-tab-favicon').setAttribute('hidden', '')
+    const homeFaviconEl = tab.querySelector('.chrome-tab-favicon')
+    homeFaviconEl.style.backgroundImage = `url('img/favicon.png')`
+    homeFaviconEl.removeAttribute('hidden')
     tab.dataset.url = 'newtab'
     tabHistory.set(tab, { entries: ['newtab'], index: 0 })
   }
   syncNavButtons(tab)
 })
-btnSystemSettings.addEventListener('click', () => {
-  navigate('cg://settings')
-})
-btnUserPage.addEventListener('click', () => {
-  navigate('cg://account')
-})
+btnSystemSettings.addEventListener('click', () => navigate('cg://settings'))
+btnUserPage.addEventListener('click', () => navigate('cg://account'))
 
 btnBack.addEventListener('click', async () => {
   const tab = getActiveTab()
@@ -732,10 +919,7 @@ window.addEventListener('keydown', e => {
     e.preventDefault()
     return
   }
-  if (key === 'f5' && pageFrame.style.display !== 'none') {
-    pageFrame.src = pageFrame.src
-    return
-  }
+  if (key === 'f5' && pageFrame.style.display !== 'none') { pageFrame.src = pageFrame.src; return }
   if (e.repeat || e.ctrlKey || e.metaKey || e.altKey || isTypingTarget(e.target)) return
   const now = performance.now()
   const lastPressAt = recentShortcutKeys.get(key) || 0
