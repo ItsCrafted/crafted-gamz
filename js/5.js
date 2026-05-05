@@ -7,7 +7,7 @@ const FIREBASE_CONFIG_URL = 'https://firebase.cdn.cgamz.online';
     const envMap = {
       desktop: { label: 'Desktop mode',  path: '../desktop/index.html' },
       tabbed:  { label: 'Tabbed mode',   path: '../tabbed/index.html'  },
-      website: { label: 'Website mode',  path: '../website/index.html' }
+      website: { label: 'Website mode',  path: '../site/index.html' }
     };
 
     async function init() {
@@ -46,7 +46,7 @@ const FIREBASE_CONFIG_URL = 'https://firebase.cdn.cgamz.online';
     }
 
     document.getElementById('launch-btn').addEventListener('click', () => {
-      const target = envMap[userEnv]?.path || '../website/index.html';
+      const target = envMap[userEnv]?.path || '../site/index.html';
       if (shouldRedirect) window.location.href = target;
     });
 
