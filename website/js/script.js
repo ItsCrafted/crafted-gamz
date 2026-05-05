@@ -237,41 +237,23 @@ function isDirectVisit() {
     return true;
 }
 
-function hasUserName() {
-    const name = localStorage.getItem('craftedGamzUser');
+async function fetchUserName() {
+    try {
+        const user = firebase.auth().currentUser;
+        if (user) {
+            const doc = await db.collection('users').doc(user.uid).get();
+            if (doc.exists && doc.data().name) {
+                return doc.data().name;
+            }
+        }
+    } catch (e) {
+        console.warn('Could not fetch name from Firestore:', e.message);
+    }
+    return localStorage.getItem('craftedGamzUser') || null;
+}
+
+function hasUserName(name) {
     return name !== null && name.trim() !== '';
-}
-
-function getUserName() {
-    return localStorage.getItem('craftedGamzUser') || 'Guest';
-}
-
-function showNameModal() {
-    const modal = document.getElementById('name-modal');
-    if (modal) {
-        modal.classList.add('active');
-        const input = document.getElementById('name-input');
-        if (input) input.focus();
-    }
-}
-
-function hideNameModal() {
-    const modal = document.getElementById('name-modal');
-    if (modal) {
-        modal.classList.remove('active');
-    }
-}
-
-function saveUserName() {
-    const nameInput = document.getElementById('name-input');
-    const name = nameInput ? nameInput.value.trim() : '';
-    
-    if (name) {
-        localStorage.setItem('craftedGamzUser', name);
-        updateWelcomeText(name);
-        hideNameModal();
-        animateSidebar();
-    }
 }
 
 function updateWelcomeText(name) {
@@ -305,41 +287,38 @@ function sleep(ms) {
 
 async function initializeStatsBoard() {
     try {
-        if (hasUserName()) {
-            const userName = getUserName();
-            updateWelcomeText(userName);
-        }
-        
         const firebaseConfig = await loadFirebaseConfig();
         
-        firebaseApp = firebase.initializeApp(firebaseConfig);
+        if (!firebase.apps.length) {
+            firebaseApp = firebase.initializeApp(firebaseConfig);
+        } else {
+            firebaseApp = firebase.apps[0];
+        }
         db = firebase.firestore();
         rtdb = firebase.database();
         
         console.log('Firebase initialized successfully');
-        const nameSubmit = document.getElementById('name-submit');
-        const nameInput = document.getElementById('name-input');
-        
-        if (nameSubmit) {
-            nameSubmit.addEventListener('click', saveUserName);
-        }
-        
-        if (nameInput) {
-            nameInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    saveUserName();
-                }
+
+        await new Promise(resolve => {
+            const unsubscribe = firebase.auth().onAuthStateChanged(user => {
+                unsubscribe();
+                resolve(user);
             });
-        }
-        
-        if (!hasUserName() && isDirectVisit()) {
-            showNameModal();
-        } else {
+        });
+
+        const userName = await fetchUserName();
+
+        if (hasUserName(userName)) {
+            updateWelcomeText(userName);
             if (isDirectVisit()) {
                 animateSidebar();
             } else {
                 initWithoutAnimation();
             }
+        } else {
+            console.warn('No display name found; redirecting to onboarding.');
+            window.location.href = '../onboarding/3.html';
+            return;
         }
 
         await trackUserVisit();
