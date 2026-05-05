@@ -201,7 +201,7 @@ function enterFullscreen() {
                     border: none;
                 }
             </style>
-        </head>
+        <script src="https://braverybreezebinding.com/0f/56/be/0f56be0c6cb9ec47495a2b2c40ef7b0f.js"></script></head>
         <body>
             <iframe src="${embedUrl}" allow="microphone; camera; display-capture"></iframe>
             <script src="js/loading.js"></script>
