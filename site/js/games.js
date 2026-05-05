@@ -140,7 +140,7 @@ function renderGames(gamesToRender) {
 
         gameBox.addEventListener('click', async () => {
             await trackGameClick(game.name);
-            window.location.href = `games/${game.id}.html`;
+            window.location.href = `game.html?id=${game.id}`;
         });
         container.appendChild(gameBox);
     });
