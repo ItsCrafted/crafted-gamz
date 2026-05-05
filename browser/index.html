@@ -5,14 +5,7 @@
 <title>Crafted Gamz</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link rel="shortcut icon" href="img/favicon.png" type="image/x-icon">
-<link rel="stylesheet" href="css/index.css">
-<style>
-@font-face {
-  font-family: 'Curly';
-  src: url('fonts/curly.otf') format('opentype');
-}
-.new-tab-page .logo { font-family: 'Curly', sans-serif; }
-</style>
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 <div class="bg-container" style="position:fixed;top:0;left:0;width:100vw;height:100vh;overflow:hidden;z-index:-1;">
@@ -61,6 +54,9 @@
         <i class="fa-solid fa-circle-info lock-icon" id="lock-icon"></i>
       </button>
       <input type="text" id="url-input" placeholder="Search or enter address" spellcheck="false" autocomplete="off">
+      <button class="bookmark-star-btn" id="btn-bookmark-star" title="Bookmark this page" aria-label="Bookmark this page" style="display:none">
+        <i class="fa-regular fa-star"></i>
+      </button>
       <div class="connection-popup" id="connection-popup" hidden>
         <div class="connection-popup-title" id="connection-popup-title">Connection</div>
         <div class="connection-popup-desc" id="connection-popup-desc"></div>
@@ -78,6 +74,8 @@
       <button class="nav-btn" id="btn-system-settings" title="Settings" aria-label="Settings"><i class="fa-solid fa-cog"></i></button>
     </div>
   </div>
+
+  <div class="bookmarks-bar" id="bookmarks-bar"></div>
 
   <div class="content-area">
     <div class="new-tab-page" id="new-tab-page">
@@ -120,6 +118,14 @@
 <script src="/baremux/index.js"></script>
 <script src="/uv/uv.bundle.js"></script>
 <script src="/uv/uv.config.js"></script>
-<script src="js/index.js"></script>
+<script src="js/chrome-tabs.js"></script>
+<script src="js/bookmarks.js"></script>
+<script src="js/bookmarks-bar.js"></script>
+<script src="js/proxy.js"></script>
+<script src="js/url.js"></script>
+<script src="js/navigation.js"></script>
+<script src="js/keyboard.js"></script>
+<script src="js/main.js"></script>
+<script src="js/tabs.js"></script>
 </body>
 </html>

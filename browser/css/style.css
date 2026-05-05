@@ -161,7 +161,7 @@ html,body{height:100%;background:transparent;font-family:-apple-system,BlinkMacS
 .address-bar-wrap{
   flex:1;display:flex;align-items:center;
   background:rgba(60,60,60,0.55);border-radius:20px;height:34px;
-  padding:0 12px;gap:8px;
+  padding:0 10px 0 12px;gap:6px;
   border:1px solid rgba(255,255,255,0.2);
   transition:border-color .15s,background .15s;cursor:text;
   position:relative;
@@ -242,3 +242,121 @@ html,body{height:100%;background:transparent;font-family:-apple-system,BlinkMacS
 
 .status-bar{height:20px;background:rgba(28,28,28,0.45);backdrop-filter:blur(12px);display:flex;align-items:center;padding:0 12px}
 .status-bar span{color:rgba(255,255,255,0.5);font-size:11px}
+
+.bookmark-star-btn{
+  display:flex;align-items:center;justify-content:center;
+  width:22px;height:22px;flex-shrink:0;
+  border:none;background:transparent;padding:0;cursor:pointer;
+  color:rgba(255,255,255,0.45);font-size:13px;
+  transition:color .15s,transform .15s;
+  border-radius:50%;
+}
+.bookmark-star-btn:hover{color:rgba(255,255,255,0.85)}
+.bookmark-star-btn:active{transform:scale(0.88)}
+.bookmark-star-btn.starred{color:#f5c542}
+.bookmark-star-btn.starred:hover{color:#ffd966}
+.bookmark-star-btn.starred i{
+  animation:star-pop 220ms cubic-bezier(.34,1.56,.64,1) forwards;
+}
+@keyframes star-pop{
+  0%{transform:scale(1)}
+  50%{transform:scale(1.45)}
+  100%{transform:scale(1)}
+}
+
+.bookmarks-bar{
+  display:flex;align-items:center;
+  background:#252525;
+  border-bottom:1px solid rgba(0,0,0,0.35);
+  padding:0 8px;
+  height:34px;
+  gap:1px;
+  overflow:hidden;
+  flex-shrink:0;
+}
+
+.bm-item{
+  display:flex;flex-direction:row;align-items:center;justify-content:center;gap:5px;
+  height:26px;padding:0 10px;
+  border:none;border-radius:5px;background:transparent;
+  color:rgba(255,255,255,0.75);font-size:12px;font-family:inherit;
+  cursor:pointer;white-space:nowrap;max-width:160px;
+  transition:background .12s,color .12s;
+  flex-shrink:0;
+}
+.bm-item:hover{background:rgba(255,255,255,0.1);color:#ffffff}
+.bm-item:active{background:rgba(255,255,255,0.17)}
+
+.bm-item-favicon{
+  width:16px;height:16px;flex-shrink:0;
+  background-size:16px 16px;background-repeat:no-repeat;background-position:center;
+  display:flex;align-items:center;justify-content:center;
+}
+.bm-item-favicon i{font-size:12px;color:rgba(255,255,255,0.45)}
+
+.bm-item-label{
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  max-width:120px;
+  line-height:1;
+}
+
+#bm-toast{
+  position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(8px);
+  background:rgba(50,50,50,0.95);color:#ffffff;
+  font-size:13px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  padding:8px 18px;border-radius:20px;
+  box-shadow:0 4px 16px rgba(0,0,0,0.4);
+  pointer-events:none;z-index:9999;
+  opacity:0;transition:opacity .18s ease,transform .18s ease;
+}
+#bm-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+#bm-ctx-menu{
+  position:fixed;z-index:9998;
+  background:rgba(38,38,38,0.97);
+  border:1px solid rgba(255,255,255,0.1);border-radius:8px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.45);
+  padding:6px;min-width:180px;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+.bm-ctx-title{
+  color:rgba(255,255,255,0.4);font-size:11px;
+  padding:4px 10px 6px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px;
+  border-bottom:1px solid rgba(255,255,255,0.08);margin-bottom:4px;
+}
+.bm-ctx-btn{
+  display:block;width:100%;text-align:left;
+  border:none;background:transparent;
+  color:rgba(255,255,255,0.82);font-size:13px;font-family:inherit;
+  padding:7px 10px;border-radius:5px;cursor:pointer;
+  transition:background .1s,color .1s;
+}
+.bm-ctx-btn:hover{background:rgba(255,255,255,0.1);color:#ffffff}
+.bm-ctx-btn:active{background:rgba(255,255,255,0.17)}
+.bm-ctx-remove{color:rgba(255,100,100,0.85)}
+.bm-ctx-remove:hover{background:rgba(255,80,80,0.12);color:#ff7070}
+.bm-ctx-rename-row{
+  display:flex;align-items:center;gap:6px;
+  padding:6px 10px 4px;
+}
+.bm-ctx-rename-input{
+  flex:1;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);
+  border-radius:5px;color:#ffffff;font-size:13px;font-family:inherit;
+  padding:5px 8px;outline:none;min-width:0;
+  transition:border-color .12s;
+}
+.bm-ctx-rename-input:focus{border-color:rgba(255,255,255,0.45)}
+.bm-ctx-rename-ok{
+  flex-shrink:0;border:none;border-radius:5px;
+  background:rgba(255,255,255,0.12);color:#ffffff;
+  font-size:12px;font-family:inherit;padding:5px 10px;cursor:pointer;
+  transition:background .12s;
+}
+.bm-ctx-rename-ok:hover{background:rgba(255,255,255,0.22)}
+
+@font-face {
+  font-family: 'Curly';
+  src: url('../fonts/curly.otf') format('opentype');
+}
+.new-tab-page .logo { font-family: 'Curly', sans-serif; }

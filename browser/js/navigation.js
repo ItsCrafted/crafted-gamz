@@ -1,0 +1,253 @@
+const pageFrame = document.getElementById('page-frame')
+const newTabPage = document.getElementById('new-tab-page')
+const statusText = document.getElementById('status-text')
+const btnBack = document.getElementById('btn-back')
+const btnForward = document.getElementById('btn-forward')
+const btnRefresh = document.getElementById('btn-refresh')
+const btnHome = document.getElementById('btn-home')
+const btnSystemSettings = document.getElementById('btn-system-settings')
+const btnUserPage = document.getElementById('btn-user-page')
+
+const tabHistory = new WeakMap()
+let urlSyncIntervalId = null
+let lastSyncedFrameUrl = ''
+
+function getActiveTab() { return chromeTabs.activeTabEl }
+function openNewTab(options) { chromeTabs.addTab({ title: 'New Tab', favicon: false }, options) }
+
+function ensureTabHistory(tabEl) {
+  if (!tabEl) return null
+  if (!tabHistory.has(tabEl)) tabHistory.set(tabEl, { entries: ['newtab'], index: 0 })
+  return tabHistory.get(tabEl)
+}
+
+function syncNavButtons(tabEl = getActiveTab()) {
+  const state = ensureTabHistory(tabEl)
+  if (!state || state.entries[state.index] === 'newtab') {
+    btnBack.disabled = true
+    btnForward.disabled = true
+    return
+  }
+  btnBack.disabled = state.index <= 0
+  btnForward.disabled = state.index >= state.entries.length - 1
+}
+
+function pushTabHistory(tabEl, url) {
+  const state = ensureTabHistory(tabEl)
+  if (!state || !url || url === 'newtab') return
+  const current = state.entries[state.index]
+  if (current === url) return
+  state.entries = state.entries.slice(0, state.index + 1)
+  state.entries.push(url)
+  state.index = state.entries.length - 1
+}
+
+function syncFromFrameLocation() {
+  if (pageFrame.style.display === 'none') return
+  let currentUrl = ''
+  try {
+    currentUrl = pageFrame.contentWindow.location.href || ''
+  } catch (e) {
+    currentUrl = pageFrame.src || ''
+  }
+  currentUrl = getRealUrlFromProxy(currentUrl)
+  currentUrl = getDisplayUrl(currentUrl)
+  if (!currentUrl || currentUrl === lastSyncedFrameUrl) return
+  lastSyncedFrameUrl = currentUrl
+  urlInput.value = currentUrl
+  const tab = getActiveTab()
+  if (!tab) return
+  tab.dataset.url = currentUrl
+  pushTabHistory(tab, currentUrl)
+  let hostname = currentUrl
+  try { hostname = new URL(currentUrl).hostname } catch (e) {}
+  const fallbackTitle = hostname.replace(/^www\./, '')
+  if (fallbackTitle) {
+    tab.querySelector('.chrome-tab-title').textContent = fallbackTitle
+    tab.dataset.title = fallbackTitle
+  }
+  setAddressIndicator(currentUrl)
+  syncNavButtons(tab)
+  updateBookmarkStar(currentUrl)
+  if (Bookmarks.isBookmarked(currentUrl)) Bookmarks.refreshFavicon(currentUrl)
+}
+
+function startUrlSyncLoop() {
+  if (urlSyncIntervalId) return
+  urlSyncIntervalId = window.setInterval(syncFromFrameLocation, 350)
+}
+
+async function openHistoryEntry(tabEl, index) {
+  const state = ensureTabHistory(tabEl)
+  if (!state) return
+  if (index < 0 || index >= state.entries.length) return
+  state.index = index
+  const url = state.entries[state.index]
+  if (!url || url === 'newtab') { showNewTabPage(); return }
+  const local = resolveCgUrl(url)
+  if (local) {
+    pageFrame.src = local.target
+    pageFrame.style.display = 'block'
+    newTabPage.style.display = 'none'
+    urlInput.value = local.display
+    setAddressIndicator(local.display)
+    syncNavButtons(tabEl)
+    updateBookmarkStar(local.display)
+    setBookmarksBarVisible(false)
+    return
+  }
+  if (!uvReady || !baremuxReady) await initProxyStack()
+  pageFrame.src = getProxyUrl(url)
+  pageFrame.style.display = 'block'
+  newTabPage.style.display = 'none'
+  urlInput.value = url
+  setAddressIndicator(url)
+  syncNavButtons(tabEl)
+  updateBookmarkStar(url)
+  setBookmarksBarVisible(false)
+}
+
+function showNewTabPage() {
+  newTabPage.style.display = 'flex'
+  pageFrame.style.display = 'none'
+  lastSyncedFrameUrl = ''
+  urlInput.value = ''
+  setAddressIndicator('newtab')
+  hideConnectionPopup()
+  syncNavButtons()
+  updateBookmarkStar('newtab')
+  setBookmarksBarVisible(true)
+  renderBookmarksBar()
+}
+
+async function navigate(url) {
+  if (!uvReady || !baremuxReady) await initProxyStack()
+  let full = url.trim()
+  if (!full) return
+  const local = resolveCgUrl(full)
+  if (local) {
+    full = local.display
+    urlInput.value = full
+    newTabPage.style.display = 'none'
+    pageFrame.style.display = 'block'
+    pageFrame.src = local.target
+    lastSyncedFrameUrl = full
+    startUrlSyncLoop()
+    setAddressIndicator(full)
+    const localTab = getActiveTab()
+    if (localTab) {
+      localTab.querySelector('.chrome-tab-title').textContent = local.key.charAt(0).toUpperCase() + local.key.slice(1)
+      localTab.querySelector('.chrome-tab-favicon').setAttribute('hidden', '')
+      localTab.dataset.url = full
+      localTab.dataset.title = local.key
+      pushTabHistory(localTab, full)
+    }
+    statusText.textContent = ''
+    syncNavButtons(localTab)
+    updateBookmarkStar(full)
+    setBookmarksBarVisible(false)
+    return
+  }
+  if (!/^https?:\/\//i.test(full) && !full.startsWith('about:')) {
+    if (full.includes('.') && !full.includes(' ')) {
+      full = 'https://' + full
+    } else {
+      full = 'https://www.google.com/search?q=' + encodeURIComponent(full)
+    }
+  }
+  urlInput.value = full
+  newTabPage.style.display = 'none'
+  pageFrame.style.display = 'block'
+  pageFrame.src = getProxyUrl(full)
+  lastSyncedFrameUrl = full
+  startUrlSyncLoop()
+  setAddressIndicator(full)
+  const tab = getActiveTab()
+  if (tab) {
+    let hostname = full
+    try { hostname = new URL(full).hostname } catch (e) {}
+    const title = hostname.replace(/^www\./, '')
+    tab.querySelector('.chrome-tab-title').textContent = title
+    const faviconEl = tab.querySelector('.chrome-tab-favicon')
+    faviconEl.style.backgroundImage = `url('https://www.google.com/s2/favicons?sz=16&domain_url=${encodeURIComponent(full)}')`
+    faviconEl.removeAttribute('hidden')
+    tab.dataset.url = full
+    tab.dataset.title = title
+    pushTabHistory(tab, full)
+  }
+  statusText.textContent = 'Loading ' + full
+  syncNavButtons(tab)
+  updateBookmarkStar(full)
+  setBookmarksBarVisible(false)
+  if (Bookmarks.isBookmarked(full)) Bookmarks.refreshFavicon(full)
+}
+
+pageFrame.addEventListener('load', () => {
+  statusText.textContent = ''
+  if (pageFrame.style.display === 'none') return
+  let currentUrl = pageFrame.src || urlInput.value
+  try { currentUrl = pageFrame.contentWindow.location.href || currentUrl } catch (e) {}
+  currentUrl = getRealUrlFromProxy(currentUrl)
+  currentUrl = getDisplayUrl(currentUrl)
+  if (currentUrl) lastSyncedFrameUrl = currentUrl
+  if (currentUrl) urlInput.value = currentUrl
+  const tab = getActiveTab()
+  if (!tab || !currentUrl) return
+  tab.dataset.url = currentUrl
+  pushTabHistory(tab, currentUrl)
+  let hostname = currentUrl
+  try { hostname = new URL(currentUrl).hostname } catch (e) {}
+  const fallbackTitle = hostname.replace(/^www\./, '')
+  try {
+    const iframeTitle = pageFrame.contentDocument && pageFrame.contentDocument.title
+    const title = (iframeTitle || fallbackTitle || 'New Tab').trim()
+    tab.querySelector('.chrome-tab-title').textContent = title
+    tab.dataset.title = title
+  } catch (e) {
+    tab.querySelector('.chrome-tab-title').textContent = fallbackTitle || 'New Tab'
+    tab.dataset.title = fallbackTitle || 'New Tab'
+  }
+  setAddressIndicator(currentUrl)
+  syncNavButtons(tab)
+  updateBookmarkStar(currentUrl)
+  if (Bookmarks.isBookmarked(currentUrl)) Bookmarks.refreshFavicon(currentUrl)
+})
+
+btnRefresh.addEventListener('click', () => {
+  if (pageFrame.style.display === 'none') return
+  try { pageFrame.contentWindow.location.reload() } catch (e) { pageFrame.src = pageFrame.src }
+})
+
+btnHome.addEventListener('click', () => {
+  showNewTabPage()
+  const tab = getActiveTab()
+  if (tab) {
+    tab.querySelector('.chrome-tab-title').textContent = 'New Tab'
+    const homeFaviconEl = tab.querySelector('.chrome-tab-favicon')
+    homeFaviconEl.style.backgroundImage = `url('img/favicon.png')`
+    homeFaviconEl.removeAttribute('hidden')
+    tab.dataset.url = 'newtab'
+    tabHistory.set(tab, { entries: ['newtab'], index: 0 })
+  }
+  syncNavButtons(tab)
+})
+
+btnBack.addEventListener('click', async () => {
+  const tab = getActiveTab()
+  const state = ensureTabHistory(tab)
+  if (!state || state.index <= 0) return
+  await openHistoryEntry(tab, state.index - 1)
+})
+
+btnForward.addEventListener('click', async () => {
+  const tab = getActiveTab()
+  const state = ensureTabHistory(tab)
+  if (!state || state.index >= state.entries.length - 1) return
+  await openHistoryEntry(tab, state.index + 1)
+})
+
+btnSystemSettings.addEventListener('click', () => navigate('cg://settings'))
+btnUserPage.addEventListener('click', () => navigate('cg://account'))
+
+urlInput.addEventListener('keydown', e => { if (e.key === 'Enter') navigate(urlInput.value) })
+urlInput.addEventListener('focus', () => urlInput.select())
