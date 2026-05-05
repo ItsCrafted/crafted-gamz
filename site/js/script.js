@@ -54,6 +54,13 @@ function getUserId() {
     return userId;
 }
 
+function fmtNum(n) {
+    if (n == null || isNaN(n)) return '—';
+    if (n >= 1_000_000) return (n / 1_000_000).toFixed(1) + 'M';
+    if (n >= 1_000)     return (n / 1_000).toFixed(1)     + 'K';
+    return String(n);
+}
+
 function animateValue(element, start, end, duration) {
     if (!element) return;
     
@@ -67,7 +74,7 @@ function animateValue(element, start, end, duration) {
             current = end;
             clearInterval(timer);
         }
-        element.textContent = Math.floor(current).toLocaleString();
+        element.textContent = fmtNum(Math.floor(current));
     }, 16);
 }
 
@@ -76,6 +83,7 @@ async function trackUserVisit() {
         const userId = getUserId();
         const todayKey = getTodayKey();
         const monthKey = getMonthKey();
+
         try {
             const onlineRef = rtdb.ref(`onlineUsers/${userId}`);
             await onlineRef.set({
@@ -95,18 +103,18 @@ async function trackUserVisit() {
         
         const batch = db.batch();
         
-        const allTimeRef = db.collection('stats').doc('allTime');
+        const allTimeRef = db.collection('stats').doc('total');
         batch.set(allTimeRef, {
             count: firebase.firestore.FieldValue.increment(1)
         }, { merge: true });
         
-        const todayRef = db.collection('stats').doc(todayKey);
+        const todayRef = db.collection('stats').doc('daily_' + todayKey);
         batch.set(todayRef, {
             count: firebase.firestore.FieldValue.increment(1),
             date: todayKey
         }, { merge: true });
         
-        const monthRef = db.collection('stats').doc(monthKey);
+        const monthRef = db.collection('stats').doc('monthly_' + monthKey);
         batch.set(monthRef, {
             count: firebase.firestore.FieldValue.increment(1),
             month: monthKey
@@ -131,42 +139,42 @@ async function loadStatsBoard() {
             const onlineCount = snapshot.numChildren();
             const onlineElement = document.getElementById('stat-online-users');
             if (onlineElement) {
-                onlineElement.textContent = onlineCount.toLocaleString();
+                onlineElement.textContent = fmtNum(onlineCount);
             }
         });
         
-        db.collection('stats').doc('allTime').onSnapshot((doc) => {
+        db.collection('stats').doc('total').onSnapshot((doc) => {
             const allTime = doc.exists ? doc.data().count : 0;
             const element = document.getElementById('stat-users-total');
             if (element) {
                 if (isInitialLoad) {
                     setTimeout(() => animateValue(element, 0, allTime, 2500), 1600);
                 } else {
-                    element.textContent = allTime.toLocaleString();
+                    element.textContent = fmtNum(allTime);
                 }
             }
         });
         
-        db.collection('stats').doc(todayKey).onSnapshot((doc) => {
+        db.collection('stats').doc('daily_' + todayKey).onSnapshot((doc) => {
             const today = doc.exists ? doc.data().count : 0;
             const element = document.getElementById('stat-users-today');
             if (element) {
                 if (isInitialLoad) {
                     setTimeout(() => animateValue(element, 0, today, 1800), 1600);
                 } else {
-                    element.textContent = today.toLocaleString();
+                    element.textContent = fmtNum(today);
                 }
             }
         });
         
-        db.collection('stats').doc(monthKey).onSnapshot((doc) => {
+        db.collection('stats').doc('monthly_' + monthKey).onSnapshot((doc) => {
             const month = doc.exists ? doc.data().count : 0;
             const element = document.getElementById('stat-users-month');
             if (element) {
                 if (isInitialLoad) {
                     setTimeout(() => animateValue(element, 0, month, 2200), 1600);
                 } else {
-                    element.textContent = month.toLocaleString();
+                    element.textContent = fmtNum(month);
                 }
             }
         });
@@ -195,7 +203,7 @@ async function loadStatsBoard() {
                     if (isInitialLoad) {
                         setTimeout(() => animateValue(gamesElement, 0, totalGamesPlayed, 2000), 1600);
                     } else {
-                        gamesElement.textContent = totalGamesPlayed.toLocaleString();
+                        gamesElement.textContent = fmtNum(totalGamesPlayed);
                     }
                 }
                 
@@ -204,7 +212,7 @@ async function loadStatsBoard() {
                     topGamesList.innerHTML = topGames.map((game, index) => `
                         <div class="top-game-item">
                             <span class="top-game-name">${index + 1}. ${game.name}</span>
-                            <span class="top-game-plays">${game.plays.toLocaleString()} plays</span>
+                            <span class="top-game-plays">${fmtNum(game.plays)} plays</span>
                         </div>
                     `).join('');
                 } else if (topGamesList) {
@@ -238,18 +246,22 @@ function isDirectVisit() {
 }
 
 async function fetchUserName() {
-    try {
-        const user = firebase.auth().currentUser;
-        if (user) {
-            const doc = await db.collection('users').doc(user.uid).get();
-            if (doc.exists && doc.data().name) {
-                return doc.data().name;
+    return new Promise((resolve) => {
+        const poll = () => {
+            if (window.accountManager && window.accountManager.auth) {
+                window.accountManager.auth.onAuthStateChanged(user => {
+                    if (user) {
+                        resolve(user.displayName || user.email?.split('@')[0] || 'User');
+                    } else {
+                        resolve(localStorage.getItem('craftedGamzUser') || null);
+                    }
+                });
+            } else {
+                setTimeout(poll, 150);
             }
-        }
-    } catch (e) {
-        console.warn('Could not fetch name from Firestore:', e.message);
-    }
-    return localStorage.getItem('craftedGamzUser') || null;
+        };
+        poll();
+    });
 }
 
 function hasUserName(name) {
@@ -298,13 +310,6 @@ async function initializeStatsBoard() {
         rtdb = firebase.database();
         
         console.log('Firebase initialized successfully');
-
-        await new Promise(resolve => {
-            const unsubscribe = firebase.auth().onAuthStateChanged(user => {
-                unsubscribe();
-                resolve(user);
-            });
-        });
 
         const userName = await fetchUserName();
 
