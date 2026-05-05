@@ -13,7 +13,7 @@ const FIREBASE_CONFIG_URL = 'https://firebase.cdn.cgamz.online';
 
     const TOS_HTML = `
 <h1>Terms of Service</h1>
-<p style="color:var(--text-dim);font-size:11px;font-family:var(--mono);margin-bottom:16px;">Last updated: April 11, 2026 &nbsp;·&nbsp; Est. read: 2 min</p>
+<p style="color:var(--text-dim);font-size:11px;font-family:var(--mono);margin-bottom:16px;">Last updated: May 4, 2026 &nbsp;·&nbsp; Est. read: 2 min</p>
 <hr>
 <p>Welcome to Crafted Gamz. By using our services, you agree to these terms.</p>
 <h2>1. Acceptance of Terms</h2>

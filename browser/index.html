@@ -2,230 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Browser</title>
+<title>Crafted Gamz</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;background:#202124;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;overflow:hidden}
-
-.browser{display:flex;flex-direction:column;height:100vh;background:#202124}
-
-.titlebar{
-  display:flex;align-items:flex-end;
-  background:#202124;height:46px;
-}
-
-.chrome-tabs{
-  box-sizing:border-box;position:relative;
-  font-family:inherit;font-size:12px;
-  height:46px;padding:8px 3px 4px 3px;
-  background:#202124;border-radius:5px 5px 0 0;overflow:hidden;
-  flex:1;min-width:0;
-}
-.chrome-tabs *{box-sizing:inherit;font:inherit}
-.chrome-tabs .chrome-tabs-content{position:relative;width:100%;height:100%}
-
-.chrome-tabs .chrome-tab{
-  position:absolute;left:0;height:36px;width:240px;
-  border:0;margin:0;z-index:1;pointer-events:none;
-}
-.chrome-tabs .chrome-tab,.chrome-tabs .chrome-tab *{user-select:none;cursor:default}
-
-.chrome-tabs .chrome-tab .chrome-tab-dividers{
-  position:absolute;top:7px;bottom:7px;
-  left:var(--tab-content-margin);right:var(--tab-content-margin);
-}
-.chrome-tabs .chrome-tab .chrome-tab-dividers,
-.chrome-tabs .chrome-tab .chrome-tab-dividers::before,
-.chrome-tabs .chrome-tab .chrome-tab-dividers::after{pointer-events:none}
-.chrome-tabs .chrome-tab .chrome-tab-dividers::before,
-.chrome-tabs .chrome-tab .chrome-tab-dividers::after{
-  content:"";display:block;position:absolute;top:0;bottom:0;
-  width:1px;background:#4a4d51;opacity:1;transition:opacity .2s ease;
-}
-.chrome-tabs .chrome-tab .chrome-tab-dividers::before{left:0}
-.chrome-tabs .chrome-tab .chrome-tab-dividers::after{right:0}
-.chrome-tabs .chrome-tab:first-child .chrome-tab-dividers::before{opacity:0}
-.chrome-tabs .chrome-tab[active] .chrome-tab-dividers::before,
-.chrome-tabs .chrome-tab[active] .chrome-tab-dividers::after,
-.chrome-tabs .chrome-tab[active]+.chrome-tab .chrome-tab-dividers::before{opacity:0}
-
-.chrome-tabs .chrome-tab .chrome-tab-background{
-  position:absolute;top:0;left:0;width:100%;height:100%;overflow:hidden;pointer-events:none;
-}
-.chrome-tabs .chrome-tab .chrome-tab-background>svg{width:100%;height:100%}
-.chrome-tabs .chrome-tab .chrome-tab-background>svg .chrome-tab-geometry{fill:#292b2e}
-.chrome-tabs .chrome-tab[active]{z-index:5}
-.chrome-tabs .chrome-tab[active] .chrome-tab-background>svg .chrome-tab-geometry{fill:#323639}
-.chrome-tabs .chrome-tab:not([active]) .chrome-tab-background{transition:opacity .2s ease;opacity:0}
-@media(hover:hover){
-  .chrome-tabs .chrome-tab:not([active]):hover{z-index:2}
-  .chrome-tabs .chrome-tab:not([active]):hover .chrome-tab-background{opacity:1}
-}
-.chrome-tabs .chrome-tab.chrome-tab-was-just-added{top:10px;animation:chrome-tab-was-just-added 120ms forwards ease-in-out}
-@keyframes chrome-tab-was-just-added{to{top:0}}
-
-.chrome-tabs .chrome-tab .chrome-tab-content{
-  position:absolute;display:flex;top:0;bottom:0;
-  left:var(--tab-content-margin);right:var(--tab-content-margin);
-  padding:9px 8px;border-top-left-radius:8px;border-top-right-radius:8px;
-  overflow:hidden;pointer-events:all;
-}
-.chrome-tabs .chrome-tab[is-mini] .chrome-tab-content{padding-left:2px;padding-right:2px}
-
-.chrome-tabs .chrome-tab .chrome-tab-favicon{
-  position:relative;flex-shrink:0;flex-grow:0;height:16px;width:16px;background-size:16px;margin-left:4px;
-}
-.chrome-tabs .chrome-tab[is-small] .chrome-tab-favicon{margin-left:0}
-.chrome-tabs .chrome-tab[is-mini]:not([active]) .chrome-tab-favicon{margin-left:auto;margin-right:auto}
-.chrome-tabs .chrome-tab[is-mini][active] .chrome-tab-favicon{display:none}
-
-.chrome-tabs .chrome-tab .chrome-tab-title{
-  flex:1;vertical-align:top;overflow:hidden;white-space:nowrap;
-  margin-left:4px;color:#9ca1a7;
-  -webkit-mask-image:linear-gradient(90deg,#000 0%,#000 calc(100% - 24px),transparent);
-  mask-image:linear-gradient(90deg,#000 0%,#000 calc(100% - 24px),transparent);
-}
-.chrome-tabs .chrome-tab[is-small] .chrome-tab-title{margin-left:0}
-.chrome-tabs .chrome-tab .chrome-tab-favicon+.chrome-tab-title,
-.chrome-tabs .chrome-tab[is-small] .chrome-tab-favicon+.chrome-tab-title{margin-left:8px}
-.chrome-tabs .chrome-tab[is-smaller] .chrome-tab-favicon+.chrome-tab-title,
-.chrome-tabs .chrome-tab[is-mini] .chrome-tab-title{display:none}
-.chrome-tabs .chrome-tab[active] .chrome-tab-title{color:#f1f3f4}
-
-.chrome-tabs .chrome-tab .chrome-tab-drag-handle{
-  position:absolute;top:0;bottom:0;right:0;left:0;
-  border-top-left-radius:8px;border-top-right-radius:8px;
-}
-
-.chrome-tabs .chrome-tab .chrome-tab-close{
-  flex-grow:0;flex-shrink:0;position:relative;width:16px;height:16px;border-radius:50%;
-  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path stroke='rgba(154,160,166,.8)' stroke-linecap='square' stroke-width='1.5' d='M0 0 L8 8 M8 0 L0 8'/></svg>");
-  background-position:center;background-repeat:no-repeat;background-size:8px 8px;
-}
-@media(hover:hover){
-  .chrome-tabs .chrome-tab .chrome-tab-close:hover{
-    background-color:#5f6368;
-    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path stroke='rgba(255,255,255,.7)' stroke-linecap='square' stroke-width='1.5' d='M0 0 L8 8 M8 0 L0 8'/></svg>");
-  }
-  .chrome-tabs .chrome-tab .chrome-tab-close:hover:active{
-    background-color:#80868b;
-    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path stroke='rgba(255,255,255,.9)' stroke-linecap='square' stroke-width='1.5' d='M0 0 L8 8 M8 0 L0 8'/></svg>");
-  }
-}
-@media not all and (hover:hover){
-  .chrome-tabs .chrome-tab .chrome-tab-close:active{background-color:#dadce0}
-}
-@media(hover:hover){
-  .chrome-tabs .chrome-tab:not([active]) .chrome-tab-close:not(:hover):not(:active){opacity:.8}
-}
-.chrome-tabs .chrome-tab[is-smaller] .chrome-tab-close{margin-left:auto}
-.chrome-tabs .chrome-tab[is-mini]:not([active]) .chrome-tab-close{display:none}
-.chrome-tabs .chrome-tab[is-mini][active] .chrome-tab-close{margin-left:auto;margin-right:auto}
-
-.chrome-tabs.chrome-tabs-is-sorting .chrome-tab:not(.chrome-tab-is-dragging),
-.chrome-tabs:not(.chrome-tabs-is-sorting) .chrome-tab.chrome-tab-was-just-dragged{transition:transform 120ms ease-in-out}
-
-.chrome-tabs .chrome-tabs-bottom-bar{
-  position:absolute;bottom:0;height:4px;left:0;width:100%;background:#323639;z-index:10;
-}
-
-.newtab-btn{
-  flex-shrink:0;align-self:flex-end;
-  display:flex;align-items:center;justify-content:center;
-  width:28px;height:28px;margin:0 4px 8px 4px;
-  border:none;border-radius:50%;background:transparent;
-  color:#9ca1a7;cursor:pointer;font-size:14px;
-  transition:background .15s,color .15s;
-}
-.newtab-btn:hover{background:#3c3f43;color:#e8eaed}
-.newtab-btn:active{background:#4a4d51}
-
-.titlebar-spacer{flex:1;background:#202124}
-
-.toolbar{
-  display:flex;align-items:center;gap:4px;
-  background:#323639;padding:6px 10px;height:48px;
-  border-bottom:1px solid #1a1b1e;
-}
-
-.nav-btn{
-  display:flex;align-items:center;justify-content:center;
-  width:32px;height:32px;border:none;border-radius:50%;
-  background:transparent;color:#9ca1a7;cursor:pointer;
-  font-size:14px;transition:background .15s,color .15s;flex-shrink:0;
-}
-.nav-btn:hover:not(:disabled){background:#3c3f43;color:#e8eaed}
-.nav-btn:active:not(:disabled){background:#4a4d51}
-.nav-btn:disabled{opacity:.35;cursor:default}
-
-.address-bar-wrap{
-  flex:1;display:flex;align-items:center;
-  background:#202124;border-radius:20px;height:34px;
-  padding:0 12px;gap:8px;
-  border:1px solid transparent;
-  transition:border-color .15s,background .15s;cursor:text;
-}
-.address-bar-wrap:focus-within{background:#292b2e;border-color:#5f6368}
-.address-bar-wrap .lock-icon{color:#9ca1a7;font-size:12px;flex-shrink:0}
-.address-bar-wrap .lock-icon.secure{color:#81c995}
-#url-input{
-  flex:1;background:transparent;border:none;outline:none;
-  color:#e8eaed;font-size:13px;font-family:inherit;min-width:0;
-}
-#url-input::selection{background:#4a90d9;color:#fff}
-#url-input::placeholder{color:#5f6368}
-.address-bar-wrap .refresh-btn{
-  width:20px;height:20px;border:none;background:transparent;
-  color:#9ca1a7;cursor:pointer;font-size:13px;
-  display:flex;align-items:center;justify-content:center;
-  border-radius:50%;transition:background .15s,color .15s;flex-shrink:0;padding:0;
-}
-.address-bar-wrap .refresh-btn:hover{background:#3c3f43;color:#e8eaed}
-
-.toolbar-right{display:flex;align-items:center;gap:2px}
-
-.content-area{flex:1;position:relative;overflow:hidden}
-#page-frame{width:100%;height:100%;border:none;display:block;background:#fff}
-
-.new-tab-page{
-  position:absolute;inset:0;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:32px;background:#202124;
-}
-.new-tab-page .logo{
-  font-size:64px;font-weight:700;letter-spacing:-2px;
-  background:linear-gradient(135deg,#4285f4,#34a853,#fbbc05,#ea4335);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-}
-.new-tab-page .search-box{
-  display:flex;align-items:center;
-  background:#303134;border:1px solid #5f6368;border-radius:24px;
-  padding:10px 18px;gap:12px;width:min(560px,90vw);
-  transition:border-color .15s,box-shadow .15s;
-}
-.new-tab-page .search-box:focus-within{border-color:#8ab4f8;box-shadow:0 0 0 3px rgba(138,180,248,.15)}
-.new-tab-page .search-box i{color:#9ca1a7;font-size:16px}
-.new-tab-page .search-box input{
-  flex:1;background:transparent;border:none;outline:none;
-  color:#e8eaed;font-size:16px;font-family:inherit;
-}
-.new-tab-page .search-box input::placeholder{color:#9ca1a7}
-.shortcuts{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;max-width:600px}
-.shortcut{
-  display:flex;flex-direction:column;align-items:center;gap:8px;
-  width:80px;cursor:pointer;padding:10px 6px;border-radius:8px;transition:background .15s;
-}
-.shortcut:hover{background:#303134}
-.shortcut .icon{
-  width:48px;height:48px;border-radius:12px;background:#303134;
-  display:flex;align-items:center;justify-content:center;font-size:20px;
-}
-.shortcut span{color:#bdc1c6;font-size:12px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%}
-
-.status-bar{height:20px;background:#323639;display:flex;align-items:center;padding:0 12px}
-.status-bar span{color:#9ca1a7;font-size:11px}
-</style>
+<link rel="stylesheet" href="css/index.css">
 </head>
 <body>
 <div class="browser">
@@ -245,10 +24,10 @@ html,body{height:100%;background:#202124;font-family:-apple-system,BlinkMacSyste
             <div class="chrome-tab-close"></div>
           </div>
         </div>
+        <button class="newtab-btn chrome-tabs-newtab-btn" id="newtab-btn" title="New tab" aria-label="New tab"><i class="fa-solid fa-plus"></i></button>
       </div>
       <div class="chrome-tabs-bottom-bar"></div>
     </div>
-    <button class="newtab-btn" id="newtab-btn" title="New tab"><i class="fa-solid fa-plus"></i></button>
     <div class="titlebar-spacer"></div>
   </div>
 
@@ -258,19 +37,31 @@ html,body{height:100%;background:#202124;font-family:-apple-system,BlinkMacSyste
     <button class="nav-btn" id="btn-refresh"><i class="fa-solid fa-rotate-right"></i></button>
     <button class="nav-btn" id="btn-home"><i class="fa-solid fa-house"></i></button>
     <div class="address-bar-wrap">
-      <i class="fa-solid fa-lock lock-icon" id="lock-icon"></i>
+      <button class="lock-icon-btn" id="lock-icon-btn" type="button" aria-label="Connection info">
+        <i class="fa-solid fa-circle-info lock-icon" id="lock-icon"></i>
+      </button>
       <input type="text" id="url-input" placeholder="Search or enter address" spellcheck="false" autocomplete="off">
-      <button class="refresh-btn" id="inline-refresh"><i class="fa-solid fa-rotate-right"></i></button>
+      <div class="connection-popup" id="connection-popup" hidden>
+        <div class="connection-popup-title" id="connection-popup-title">Connection</div>
+        <div class="connection-popup-desc" id="connection-popup-desc"></div>
+      </div>
+    </div>
+    <div class="url-shortcuts">
+      <button class="url-shortcut-btn" data-local-uri="cg://games" title="Games" aria-label="Games"><i class="fa-solid fa-gamepad"></i></button>
+      <button class="url-shortcut-btn" data-local-uri="cg://movies" title="Movies" aria-label="Movies"><i class="fa-solid fa-film"></i></button>
+      <button class="url-shortcut-btn" data-local-uri="cg://ai" title="AI" aria-label="AI"><i class="fa-solid fa-robot"></i></button>
+      <button class="url-shortcut-btn" data-local-uri="cg://music" title="Music" aria-label="Music"><i class="fa-solid fa-music"></i></button>
+      <button class="url-shortcut-btn" data-local-uri="cg://about" title="About" aria-label="About"><i class="fa-solid fa-circle-info"></i></button>
     </div>
     <div class="toolbar-right">
-      <button class="nav-btn"><i class="fa-solid fa-puzzle-piece"></i></button>
-      <button class="nav-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+      <button class="nav-btn" id="btn-user-page" title="Account" aria-label="Account"><i class="fa-solid fa-user"></i></button>
+      <button class="nav-btn" id="btn-system-settings" title="Settings" aria-label="Settings"><i class="fa-solid fa-cog"></i></button>
     </div>
   </div>
 
   <div class="content-area">
     <div class="new-tab-page" id="new-tab-page">
-      <div class="logo">Browser</div>
+      <div class="logo">Crafted Gamz</div>
       <div class="search-box">
         <i class="fa-solid fa-magnifying-glass"></i>
         <input type="text" id="newtab-search" placeholder="Search the web">
@@ -298,7 +89,7 @@ html,body{height:100%;background:#202124;font-family:-apple-system,BlinkMacSyste
         </div>
       </div>
     </div>
-    <iframe id="page-frame" style="display:none" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
+    <iframe id="page-frame" style="display:none" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-presentation"></iframe>
   </div>
 
   <div class="status-bar"><span id="status-text"></span></div>
@@ -306,348 +97,9 @@ html,body{height:100%;background:#202124;font-family:-apple-system,BlinkMacSyste
 </div>
 
 <script src="https://unpkg.com/draggabilly@2.2.0/dist/draggabilly.pkgd.min.js"></script>
-<script>
-((window, factory) => {
-  window.ChromeTabs = factory(window, window.Draggabilly)
-})(window, (window, Draggabilly) => {
-  const TAB_CONTENT_MARGIN = 9
-  const TAB_CONTENT_OVERLAP_DISTANCE = 1
-  const TAB_OVERLAP_DISTANCE = (TAB_CONTENT_MARGIN * 2) + TAB_CONTENT_OVERLAP_DISTANCE
-  const TAB_CONTENT_MIN_WIDTH = 24
-  const TAB_CONTENT_MAX_WIDTH = 240
-  const TAB_SIZE_SMALL = 84
-  const TAB_SIZE_SMALLER = 60
-  const TAB_SIZE_MINI = 48
-  const noop = _ => {}
-  const closest = (value, array) => {
-    let closest = Infinity, closestIndex = -1
-    array.forEach((v, i) => { if (Math.abs(value - v) < closest) { closest = Math.abs(value - v); closestIndex = i } })
-    return closestIndex
-  }
-  const tabTemplate = `
-    <div class="chrome-tab">
-      <div class="chrome-tab-dividers"></div>
-      <div class="chrome-tab-background">
-        <svg version="1.1" xmlns="http://www.w3.org/2000/svg"><defs><symbol id="chrome-tab-geometry-left" viewBox="0 0 214 36"><path d="M17 0h197v36H0v-2c4.5 0 9-3.5 9-8V8c0-4.5 3.5-8 8-8z"/></symbol><symbol id="chrome-tab-geometry-right" viewBox="0 0 214 36"><use xlink:href="#chrome-tab-geometry-left"/></symbol><clipPath id="crop"><rect class="mask" width="100%" height="100%" x="0"/></clipPath></defs><svg width="52%" height="100%"><use xlink:href="#chrome-tab-geometry-left" width="214" height="36" class="chrome-tab-geometry"/></svg><g transform="scale(-1,1)"><svg width="52%" height="100%" x="-100%" y="0"><use xlink:href="#chrome-tab-geometry-right" width="214" height="36" class="chrome-tab-geometry"/></svg></g></svg>
-      </div>
-      <div class="chrome-tab-content">
-        <div class="chrome-tab-favicon"></div>
-        <div class="chrome-tab-title"></div>
-        <div class="chrome-tab-drag-handle"></div>
-        <div class="chrome-tab-close"></div>
-      </div>
-    </div>
-  `
-  const defaultTapProperties = { title: 'New Tab', favicon: false }
-  let instanceId = 0
-
-  class ChromeTabs {
-    constructor() { this.draggabillies = [] }
-    init(el) {
-      this.el = el
-      this.instanceId = instanceId
-      this.el.setAttribute('data-chrome-tabs-instance-id', this.instanceId)
-      instanceId += 1
-      this.setupCustomProperties()
-      this.setupStyleEl()
-      this.setupEvents()
-      this.layoutTabs()
-      this.setupDraggabilly()
-    }
-    emit(eventName, data) { this.el.dispatchEvent(new CustomEvent(eventName, { detail: data })) }
-    setupCustomProperties() { this.el.style.setProperty('--tab-content-margin', `${TAB_CONTENT_MARGIN}px`) }
-    setupStyleEl() { this.styleEl = document.createElement('style'); this.el.appendChild(this.styleEl) }
-    setupEvents() {
-      window.addEventListener('resize', _ => { this.cleanUpPreviouslyDraggedTabs(); this.layoutTabs() })
-      this.el.addEventListener('dblclick', event => { if ([this.el, this.tabContentEl].includes(event.target)) this.addTab() })
-      this.tabEls.forEach(tabEl => this.setTabCloseEventListener(tabEl))
-    }
-    get tabEls() { return Array.prototype.slice.call(this.el.querySelectorAll('.chrome-tab')) }
-    get tabContentEl() { return this.el.querySelector('.chrome-tabs-content') }
-    get tabContentWidths() {
-      const numberOfTabs = this.tabEls.length
-      const tabsContentWidth = this.tabContentEl.clientWidth
-      const tabsCumulativeOverlappedWidth = (numberOfTabs - 1) * TAB_CONTENT_OVERLAP_DISTANCE
-      const targetWidth = (tabsContentWidth - (2 * TAB_CONTENT_MARGIN) + tabsCumulativeOverlappedWidth) / numberOfTabs
-      const clampedTargetWidth = Math.max(TAB_CONTENT_MIN_WIDTH, Math.min(TAB_CONTENT_MAX_WIDTH, targetWidth))
-      const flooredClampedTargetWidth = Math.floor(clampedTargetWidth)
-      const totalTabsWidthUsingTarget = (flooredClampedTargetWidth * numberOfTabs) + (2 * TAB_CONTENT_MARGIN) - tabsCumulativeOverlappedWidth
-      const totalExtraWidthDueToFlooring = tabsContentWidth - totalTabsWidthUsingTarget
-      const widths = []
-      let extraWidthRemaining = totalExtraWidthDueToFlooring
-      for (let i = 0; i < numberOfTabs; i += 1) {
-        const extraWidth = flooredClampedTargetWidth < TAB_CONTENT_MAX_WIDTH && extraWidthRemaining > 0 ? 1 : 0
-        widths.push(flooredClampedTargetWidth + extraWidth)
-        if (extraWidthRemaining > 0) extraWidthRemaining -= 1
-      }
-      return widths
-    }
-    get tabContentPositions() {
-      const positions = []
-      const tabContentWidths = this.tabContentWidths
-      let position = TAB_CONTENT_MARGIN
-      tabContentWidths.forEach((width, i) => {
-        const offset = i * TAB_CONTENT_OVERLAP_DISTANCE
-        positions.push(position - offset)
-        position += width
-      })
-      return positions
-    }
-    get tabPositions() {
-      const positions = []
-      this.tabContentPositions.forEach(contentPosition => { positions.push(contentPosition - TAB_CONTENT_MARGIN) })
-      return positions
-    }
-    layoutTabs() {
-      const tabContentWidths = this.tabContentWidths
-      this.tabEls.forEach((tabEl, i) => {
-        const contentWidth = tabContentWidths[i]
-        const width = contentWidth + (2 * TAB_CONTENT_MARGIN)
-        tabEl.style.width = width + 'px'
-        tabEl.removeAttribute('is-small')
-        tabEl.removeAttribute('is-smaller')
-        tabEl.removeAttribute('is-mini')
-        if (contentWidth < TAB_SIZE_SMALL) tabEl.setAttribute('is-small', '')
-        if (contentWidth < TAB_SIZE_SMALLER) tabEl.setAttribute('is-smaller', '')
-        if (contentWidth < TAB_SIZE_MINI) tabEl.setAttribute('is-mini', '')
-      })
-      let styleHTML = ''
-      this.tabPositions.forEach((position, i) => {
-        styleHTML += `.chrome-tabs[data-chrome-tabs-instance-id="${this.instanceId}"] .chrome-tab:nth-child(${i + 1}){transform:translate3d(${position}px,0,0)}`
-      })
-      this.styleEl.innerHTML = styleHTML
-    }
-    createNewTabEl() { const div = document.createElement('div'); div.innerHTML = tabTemplate; return div.firstElementChild }
-    addTab(tabProperties, { animate = true, background = false } = {}) {
-      const tabEl = this.createNewTabEl()
-      if (animate) { tabEl.classList.add('chrome-tab-was-just-added'); setTimeout(() => tabEl.classList.remove('chrome-tab-was-just-added'), 500) }
-      tabProperties = Object.assign({}, defaultTapProperties, tabProperties)
-      this.tabContentEl.appendChild(tabEl)
-      this.setTabCloseEventListener(tabEl)
-      this.updateTab(tabEl, tabProperties)
-      this.emit('tabAdd', { tabEl })
-      if (!background) this.setCurrentTab(tabEl)
-      this.cleanUpPreviouslyDraggedTabs()
-      this.layoutTabs()
-      this.setupDraggabilly()
-    }
-    setTabCloseEventListener(tabEl) { tabEl.querySelector('.chrome-tab-close').addEventListener('click', _ => this.removeTab(tabEl)) }
-    get activeTabEl() { return this.el.querySelector('.chrome-tab[active]') }
-    hasActiveTab() { return !!this.activeTabEl }
-    setCurrentTab(tabEl) {
-      const activeTabEl = this.activeTabEl
-      if (activeTabEl === tabEl) return
-      if (activeTabEl) activeTabEl.removeAttribute('active')
-      tabEl.setAttribute('active', '')
-      this.emit('activeTabChange', { tabEl })
-    }
-    removeTab(tabEl) {
-      if (tabEl === this.activeTabEl) {
-        if (tabEl.nextElementSibling) this.setCurrentTab(tabEl.nextElementSibling)
-        else if (tabEl.previousElementSibling) this.setCurrentTab(tabEl.previousElementSibling)
-      }
-      tabEl.parentNode.removeChild(tabEl)
-      this.emit('tabRemove', { tabEl })
-      this.cleanUpPreviouslyDraggedTabs()
-      this.layoutTabs()
-      this.setupDraggabilly()
-    }
-    updateTab(tabEl, tabProperties) {
-      tabEl.querySelector('.chrome-tab-title').textContent = tabProperties.title
-      const faviconEl = tabEl.querySelector('.chrome-tab-favicon')
-      if (tabProperties.favicon) {
-        faviconEl.style.backgroundImage = `url('${tabProperties.favicon}')`
-        faviconEl.removeAttribute('hidden')
-      } else {
-        faviconEl.setAttribute('hidden', '')
-        faviconEl.removeAttribute('style')
-      }
-      if (tabProperties.id) tabEl.setAttribute('data-tab-id', tabProperties.id)
-    }
-    cleanUpPreviouslyDraggedTabs() { this.tabEls.forEach(tabEl => tabEl.classList.remove('chrome-tab-was-just-dragged')) }
-    setupDraggabilly() {
-      const tabEls = this.tabEls
-      const tabPositions = this.tabPositions
-      if (this.isDragging) {
-        this.isDragging = false
-        this.el.classList.remove('chrome-tabs-is-sorting')
-        this.draggabillyDragging.element.classList.remove('chrome-tab-is-dragging')
-        this.draggabillyDragging.element.style.transform = ''
-        this.draggabillyDragging.dragEnd()
-        this.draggabillyDragging.isDragging = false
-        this.draggabillyDragging.positionDrag = noop
-        this.draggabillyDragging.destroy()
-        this.draggabillyDragging = null
-      }
-      this.draggabillies.forEach(d => d.destroy())
-      tabEls.forEach((tabEl, originalIndex) => {
-        const originalTabPositionX = tabPositions[originalIndex]
-        const draggabilly = new Draggabilly(tabEl, { axis: 'x', handle: '.chrome-tab-drag-handle', containment: this.tabContentEl })
-        this.draggabillies.push(draggabilly)
-        draggabilly.on('pointerDown', _ => { this.setCurrentTab(tabEl) })
-        draggabilly.on('dragStart', _ => {
-          this.isDragging = true
-          this.draggabillyDragging = draggabilly
-          tabEl.classList.add('chrome-tab-is-dragging')
-          this.el.classList.add('chrome-tabs-is-sorting')
-        })
-        draggabilly.on('dragEnd', _ => {
-          this.isDragging = false
-          const finalTranslateX = parseFloat(tabEl.style.left, 10)
-          tabEl.style.transform = `translate3d(0,0,0)`
-          requestAnimationFrame(_ => {
-            tabEl.style.left = '0'
-            tabEl.style.transform = `translate3d(${finalTranslateX}px,0,0)`
-            requestAnimationFrame(_ => {
-              tabEl.classList.remove('chrome-tab-is-dragging')
-              this.el.classList.remove('chrome-tabs-is-sorting')
-              tabEl.classList.add('chrome-tab-was-just-dragged')
-              requestAnimationFrame(_ => {
-                tabEl.style.transform = ''
-                this.layoutTabs()
-                this.setupDraggabilly()
-              })
-            })
-          })
-        })
-        draggabilly.on('dragMove', (event, pointer, moveVector) => {
-          const tabEls = this.tabEls
-          const currentIndex = tabEls.indexOf(tabEl)
-          const currentTabPositionX = originalTabPositionX + moveVector.x
-          const destinationIndexTarget = closest(currentTabPositionX, tabPositions)
-          const destinationIndex = Math.max(0, Math.min(tabEls.length, destinationIndexTarget))
-          if (currentIndex !== destinationIndex) this.animateTabMove(tabEl, currentIndex, destinationIndex)
-        })
-      })
-    }
-    animateTabMove(tabEl, originIndex, destinationIndex) {
-      if (destinationIndex < originIndex) tabEl.parentNode.insertBefore(tabEl, this.tabEls[destinationIndex])
-      else tabEl.parentNode.insertBefore(tabEl, this.tabEls[destinationIndex + 1])
-      this.emit('tabReorder', { tabEl, originIndex, destinationIndex })
-      this.layoutTabs()
-    }
-  }
-  return ChromeTabs
-})
-
-const tabsEl = document.getElementById('tabs-el')
-const chromeTabs = new ChromeTabs()
-chromeTabs.init(tabsEl)
-
-const urlInput = document.getElementById('url-input')
-const pageFrame = document.getElementById('page-frame')
-const newTabPage = document.getElementById('new-tab-page')
-const lockIcon = document.getElementById('lock-icon')
-const btnBack = document.getElementById('btn-back')
-const btnForward = document.getElementById('btn-forward')
-const btnRefresh = document.getElementById('btn-refresh')
-const btnHome = document.getElementById('btn-home')
-const statusText = document.getElementById('status-text')
-
-function getActiveTab() { return chromeTabs.activeTabEl }
-
-function showNewTabPage() {
-  newTabPage.style.display = 'flex'
-  pageFrame.style.display = 'none'
-  urlInput.value = ''
-  lockIcon.className = 'fa-solid fa-lock lock-icon'
-  btnBack.disabled = true
-  btnForward.disabled = true
-}
-
-function navigate(url) {
-  let full = url.trim()
-  if (!full) return
-  if (!/^https?:\/\//i.test(full) && !full.startsWith('about:')) {
-    if (full.includes('.') && !full.includes(' ')) {
-      full = 'https://' + full
-    } else {
-      full = 'https://www.google.com/search?q=' + encodeURIComponent(full)
-    }
-  }
-  urlInput.value = full
-  newTabPage.style.display = 'none'
-  pageFrame.style.display = 'block'
-  pageFrame.src = full
-  lockIcon.className = 'fa-solid fa-lock lock-icon' + (full.startsWith('https://') ? ' secure' : '')
-  const tab = getActiveTab()
-  if (tab) {
-    let hostname = full
-    try { hostname = new URL(full).hostname } catch(e) {}
-    const title = hostname.replace(/^www\./, '')
-    tab.querySelector('.chrome-tab-title').textContent = title
-    const faviconEl = tab.querySelector('.chrome-tab-favicon')
-    faviconEl.style.backgroundImage = `url('https://www.google.com/s2/favicons?sz=16&domain_url=${encodeURIComponent(full)}')`
-    faviconEl.removeAttribute('hidden')
-    tab.dataset.url = full
-    tab.dataset.title = title
-  }
-  statusText.textContent = 'Loading ' + full
-  pageFrame.onload = () => { statusText.textContent = '' }
-}
-
-tabsEl.addEventListener('activeTabChange', ({ detail }) => {
-  const tab = detail.tabEl
-  const url = tab.dataset.url || 'newtab'
-  if (url === 'newtab') {
-    showNewTabPage()
-  } else {
-    pageFrame.src = url
-    pageFrame.style.display = 'block'
-    newTabPage.style.display = 'none'
-    urlInput.value = url
-    lockIcon.className = 'fa-solid fa-lock lock-icon' + (url.startsWith('https://') ? ' secure' : '')
-  }
-})
-
-tabsEl.addEventListener('tabAdd', ({ detail }) => {
-  detail.tabEl.dataset.url = 'newtab'
-  detail.tabEl.dataset.title = 'New Tab'
-})
-
-tabsEl.addEventListener('tabRemove', () => {
-  if (chromeTabs.tabEls.length === 0) chromeTabs.addTab({ title: 'New Tab', favicon: false })
-})
-
-document.getElementById('newtab-btn').addEventListener('click', () => {
-  chromeTabs.addTab({ title: 'New Tab', favicon: false })
-})
-
-urlInput.addEventListener('keydown', e => { if (e.key === 'Enter') navigate(urlInput.value) })
-urlInput.addEventListener('focus', () => urlInput.select())
-
-document.getElementById('inline-refresh').addEventListener('click', () => {
-  if (pageFrame.style.display !== 'none') pageFrame.src = pageFrame.src
-})
-btnRefresh.addEventListener('click', () => {
-  if (pageFrame.style.display !== 'none') pageFrame.src = pageFrame.src
-})
-btnHome.addEventListener('click', () => {
-  showNewTabPage()
-  const tab = getActiveTab()
-  if (tab) {
-    tab.querySelector('.chrome-tab-title').textContent = 'New Tab'
-    tab.querySelector('.chrome-tab-favicon').setAttribute('hidden', '')
-    tab.dataset.url = 'newtab'
-  }
-})
-btnBack.addEventListener('click', () => { try { pageFrame.contentWindow.history.back() } catch(e) {} })
-btnForward.addEventListener('click', () => { try { pageFrame.contentWindow.history.forward() } catch(e) {} })
-
-document.getElementById('newtab-search').addEventListener('keydown', e => {
-  if (e.key === 'Enter') navigate(e.target.value)
-})
-document.querySelectorAll('.shortcut').forEach(el => {
-  el.addEventListener('click', () => navigate(el.dataset.nav))
-})
-
-window.addEventListener('keydown', e => {
-  if (e.ctrlKey && e.key === 't') { chromeTabs.addTab({ title: 'New Tab', favicon: false }); e.preventDefault() }
-  if (e.ctrlKey && e.key === 'w') { const a = chromeTabs.activeTabEl; if (a) chromeTabs.removeTab(a); e.preventDefault() }
-  if (e.key === 'F5' && pageFrame.style.display !== 'none') pageFrame.src = pageFrame.src
-})
-
-showNewTabPage()
-</script>
+<script src="/baremux/index.js"></script>
+<script src="/uv/uv.bundle.js"></script>
+<script src="/uv/uv.config.js"></script>
+<script src="js/index.js"></script>
 </body>
 </html>
