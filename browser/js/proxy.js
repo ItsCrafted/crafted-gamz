@@ -23,7 +23,6 @@ function setWispStatus(state) {
     if (label) label.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> Couldn\'t connect'
   }
 }
-// ────────────────────────────────────────────────────────────────────────────
 
 function getWispUrl() {
   const params = new URLSearchParams(window.location.search)

@@ -2,6 +2,7 @@ class AccountManager {
   constructor() {
     this.FIREBASE_CONFIG_URL = 'https://firebase.cdn.cgamz.online'
     this.BM_KEY              = 'cg_bookmarks'
+    this.PINS_KEY            = 'cg_pins'
     this.SYNC_MS             = 8000
 
     this.db            = null
@@ -16,7 +17,6 @@ class AccountManager {
     this._init()
   }
 
-  // ── Bootstrap ───────────────────────────────────────────────────────────────
 
   _loadScript(src) {
     return new Promise((resolve, reject) => {
@@ -51,7 +51,6 @@ class AccountManager {
       this.db   = firebase.firestore()
       this.firebaseLoaded = true
 
-      // Handle post-redirect OAuth
       this.auth.getRedirectResult().then(result => {
         if (result && result.user) this._ensureUserDoc(result.user)
       }).catch(e => console.warn('[Account] Redirect result:', e))
@@ -62,6 +61,7 @@ class AccountManager {
           this.isGuest = false
           console.log('[Account] Signed in:', u.email)
           await this.pullBookmarks()
+          await this.pullPins()
           this._startSync()
           this._hideOverlay()
         } else {
@@ -75,7 +75,6 @@ class AccountManager {
     }
   }
 
-  // ── Firestore user doc ──────────────────────────────────────────────────────
 
   async _ensureUserDoc(u) {
     const ref = this.db.collection('users').doc(u.uid)
@@ -96,8 +95,6 @@ class AccountManager {
     const doc = await this.db.collection('users').doc(this.user.uid).get()
     return doc.exists ? doc.data() : null
   }
-
-  // ── Bookmark sync ───────────────────────────────────────────────────────────
 
   _getBookmarks() {
     try { return JSON.parse(localStorage.getItem(this.BM_KEY)) || [] } catch { return [] }
@@ -138,7 +135,6 @@ class AccountManager {
       const remote = doc.data().bookmarks
       if (!Array.isArray(remote)) return
 
-      // Merge: keep locally cached data: URIs for favicons to avoid re-fetching
       const localMap = Object.fromEntries(this._getBookmarks().map(b => [b.url, b]))
       const merged = remote.map(b => ({
         ...b,
@@ -166,17 +162,67 @@ class AccountManager {
     this.lastSyncHash = ''
   }
 
-  // ── Sign out ────────────────────────────────────────────────────────────────
+
+  _getPins() {
+    try { return JSON.parse(localStorage.getItem(this.PINS_KEY)) || null } catch { return null }
+  }
+
+  _setPins(list) {
+    localStorage.setItem(this.PINS_KEY, JSON.stringify(list))
+    if (typeof renderPins === 'function') renderPins()
+  }
+
+  schedulePinSync() {
+    clearTimeout(this._pinSyncTimer)
+    this._pinSyncTimer = setTimeout(() => this.pushPins(), 2000)
+  }
+
+  async pushPins() {
+    if (!this.user || !this.db) return
+    const pins = this._getPins()
+    if (!pins) return
+    try {
+      await this.db.collection('users').doc(this.user.uid).set(
+        { pins, lastSync: firebase.firestore.FieldValue.serverTimestamp() },
+        { merge: true }
+      )
+      console.log(`[Account] Pushed ${pins.length} pins`)
+    } catch (e) {
+      console.warn('[Account] Pin push failed:', e)
+    }
+  }
+
+  async pullPins() {
+    if (!this.user || !this.db) return
+    try {
+      const doc = await this.db.collection('users').doc(this.user.uid).get()
+      if (!doc.exists) return
+      const remote = doc.data().pins
+      if (!Array.isArray(remote)) return
+      const localMap = Object.fromEntries((this._getPins() || []).map(p => [p.url, p]))
+      const merged = remote.map(p => ({
+        ...p,
+        favicon: (localMap[p.url]?.favicon?.startsWith('data:'))
+          ? localMap[p.url].favicon
+          : p.favicon
+      }))
+      this._setPins(merged)
+      console.log(`[Account] Pulled ${merged.length} pins from Firestore`)
+    } catch (e) {
+      console.warn('[Account] Pin pull failed:', e)
+    }
+  }
+
 
   async signOut() {
-    await this.pushBookmarks()  // final push before leaving
+    await this.pushBookmarks()
+    await this.pushPins()
     this._stopSync()
     await this.auth.signOut()
     this.user    = null
     this.isGuest = false
   }
 
-  // ── Auth overlay ────────────────────────────────────────────────────────────
 
   _showOverlay() {
     if (document.getElementById('cg-auth-overlay')) return
@@ -322,7 +368,6 @@ class AccountManager {
     const setErr   = msg => { errorEl.textContent = msg }
     const clearErr = ()  => { errorEl.textContent = '' }
 
-    // OAuth
     const makeOAuthHandler = (type, btn) => async () => {
       clearErr()
       btn.disabled = true
@@ -354,7 +399,6 @@ class AccountManager {
     googleEl.addEventListener('click', makeOAuthHandler('Google', googleEl))
     githubEl.addEventListener('click', makeOAuthHandler('GitHub', githubEl))
 
-    // Email submit
     submitEl.addEventListener('click', async () => {
       clearErr()
       const email = emailEl.value.trim()
@@ -387,7 +431,6 @@ class AccountManager {
       }
     })
 
-    // Toggle sign-in ↔ sign-up
     toggleEl.addEventListener('click', () => {
       isSignUp = !isSignUp
       nameEl.style.display    = isSignUp ? 'block' : 'none'
@@ -396,13 +439,11 @@ class AccountManager {
       clearErr()
     })
 
-    // Guest
     guestEl.addEventListener('click', () => {
       this.isGuest = true
       this._hideOverlay()
     })
 
-    // Enter key
     const onEnter = e => { if (e.key === 'Enter') submitEl.click() }
     emailEl.addEventListener('keydown', onEnter)
     passEl.addEventListener('keydown',  onEnter)

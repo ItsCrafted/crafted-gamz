@@ -67,11 +67,13 @@ function renderBookmarksBar() {
 
     const img = document.createElement('span')
     img.className = 'bm-item-favicon'
-    if (bm.favicon) {
-      img.style.backgroundImage = `url('${bm.favicon}')`
-    } else {
-      img.innerHTML = '<i class="fa-solid fa-globe"></i>'
-    }
+    const faviconImg = document.createElement('img')
+    faviconImg.src = Bookmarks.getFaviconUrl(bm.url)
+    faviconImg.alt = ''
+    faviconImg.width = 16
+    faviconImg.height = 16
+    faviconImg.onerror = () => { faviconImg.replaceWith(Object.assign(document.createElement('i'), { className: 'fa-solid fa-globe' })) }
+    img.appendChild(faviconImg)
 
     const label = document.createElement('span')
     label.className = 'bm-item-label'

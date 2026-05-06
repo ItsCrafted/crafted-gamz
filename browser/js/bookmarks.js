@@ -29,39 +29,12 @@ const Bookmarks = (() => {
 
   function isBookmarked(url) { return !!find(url) }
 
-  async function fetchAndCacheFavicon(url, force = false) {
-    const existing = find(url)
-    if (!existing) return
-    if (!force && existing.favicon && existing.favicon.startsWith('data:')) return
-
-    const faviconUrl = `https://www.google.com/s2/favicons?sz=32&domain_url=${encodeURIComponent(url)}`
-    try {
-      const proxyUrl = (typeof __uv$config !== 'undefined')
-        ? __uv$config.prefix + __uv$config.encodeUrl(faviconUrl)
-        : faviconUrl
-      const res = await fetch(proxyUrl)
-      if (!res.ok) return
-      const blob = await res.blob()
-      const b64 = await new Promise((resolve, reject) => {
-        const reader = new FileReader()
-        reader.onload = () => resolve(reader.result)
-        reader.onerror = reject
-        reader.readAsDataURL(blob)
-      })
-      const current = find(url)
-      if (current) {
-        current.favicon = b64
-        save(load().map(b => b.url === url ? current : b))
-        renderBookmarksBar()
-      }
-    } catch (e) {
-      console.warn('Favicon fetch failed:', e)
-    }
+  function getFaviconUrl(url) {
+    return `https://www.google.com/s2/favicons?sz=32&domain_url=${encodeURIComponent(url)}`
   }
 
-  function refreshFavicon(url) {
-    return fetchAndCacheFavicon(url, true)
-  }
+  function fetchAndCacheFavicon() { return Promise.resolve() }
+  function refreshFavicon() { return Promise.resolve() }
 
-  return { getAll, find, add, remove, rename, isBookmarked, fetchAndCacheFavicon, refreshFavicon }
+  return { getAll, find, add, remove, rename, isBookmarked, getFaviconUrl, fetchAndCacheFavicon, refreshFavicon }
 })()

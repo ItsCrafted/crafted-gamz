@@ -6,513 +6,173 @@
 <title>Crafted Gamz Account</title>
 <link rel="shortcut icon" href="../img/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    background: #000;
-    color: #e8eaed;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  .page {
-    max-width: 860px;
-    margin: 0 auto;
-    padding: 36px 24px 60px;
-  }
-
-  /* ── Page header ── */
-  .page-header {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    margin-bottom: 32px;
-  }
-  .page-header h1 {
-    font-size: 26px;
-    font-weight: 500;
-    letter-spacing: -.3px;
-  }
-
-  /* ── Cards ── */
-  .card {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.09);
-    border-radius: 14px;
-    padding: 22px 24px;
-    margin-bottom: 18px;
-  }
-  .card-title {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: .8px;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.38);
-    margin-bottom: 16px;
-  }
-
-  /* ── Profile row ── */
-  .profile-row {
-    display: flex;
-    align-items: center;
-    gap: 18px;
-  }
-  .avatar {
-    width: 56px; height: 56px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #4285f4, #9b59b6);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 22px; font-weight: 600; color: #fff;
-    flex-shrink: 0; overflow: hidden;
-  }
-  .avatar img { width: 100%; height: 100%; object-fit: cover; }
-  .profile-info { flex: 1; min-width: 0; }
-  .profile-name {
-    font-size: 18px; font-weight: 500;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-  .profile-email {
-    font-size: 13px; color: rgba(255,255,255,0.5);
-    margin-top: 2px;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-  .profile-provider {
-    display: inline-flex; align-items: center; gap: 5px;
-    margin-top: 6px; font-size: 11px; color: rgba(255,255,255,0.4);
-  }
-
-  /* ── Sync status ── */
-  .sync-row {
-    display: flex; align-items: center; justify-content: space-between;
-    gap: 12px; flex-wrap: wrap;
-  }
-  .sync-info { display: flex; align-items: center; gap: 10px; }
-  .sync-dot {
-    width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0;
-    background: rgba(255,255,255,0.2);
-  }
-  .sync-dot.active { background: #57b45f; box-shadow: 0 0 6px rgba(87,180,95,.6); }
-  .sync-dot.idle   { background: rgba(255,255,255,0.25); }
-  .sync-dot.error  { background: #e05c5c; }
-  .sync-label { font-size: 14px; }
-  .sync-sub   { font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 1px; }
-  .sync-btn {
-    display: flex; align-items: center; gap: 7px;
-    border: 1px solid rgba(255,255,255,0.15); border-radius: 8px;
-    background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.8);
-    font-size: 13px; font-family: inherit; padding: 7px 14px;
-    cursor: pointer; transition: background .15s, border-color .15s;
-    flex-shrink: 0;
-  }
-  .sync-btn:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.3); color: #fff; }
-  .sync-btn:disabled { opacity: .45; cursor: not-allowed; }
-
-  /* ── Stats row ── */
-  .stats-row {
-    display: flex; gap: 12px; flex-wrap: wrap;
-  }
-  .stat-box {
-    flex: 1; min-width: 100px;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 10px; padding: 14px 16px;
-    text-align: center;
-  }
-  .stat-value { font-size: 26px; font-weight: 600; }
-  .stat-label { font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 3px; }
-
-  /* ── Bookmarks list ── */
-  .bm-list { display: flex; flex-direction: column; gap: 6px; }
-  .bm-row {
-    display: flex; align-items: center; gap: 12px;
-    padding: 9px 12px; border-radius: 8px;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.05);
-    transition: background .12s;
-  }
-  .bm-row:hover { background: rgba(255,255,255,0.07); }
-  .bm-fav {
-    width: 18px; height: 18px; flex-shrink: 0;
-    background-size: cover; background-repeat: no-repeat; background-position: center;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .bm-fav i { font-size: 13px; color: rgba(255,255,255,0.35); }
-  .bm-title { flex: 1; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .bm-url   { font-size: 11px; color: rgba(255,255,255,0.35); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 220px; }
-  .bm-remove {
-    width: 26px; height: 26px; border-radius: 50%;
-    border: none; background: transparent; color: rgba(255,100,100,0.5);
-    cursor: pointer; font-size: 12px; flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center;
-    transition: background .12s, color .12s;
-  }
-  .bm-remove:hover { background: rgba(255,80,80,0.12); color: #ff7070; }
-
-  .bm-empty { font-size: 13px; color: rgba(255,255,255,0.35); text-align: center; padding: 20px 0; }
-
-  /* ── Danger zone ── */
-  .danger-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-  .danger-info .danger-title { font-size: 14px; }
-  .danger-info .danger-sub { font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 2px; }
-  .btn-danger {
-    display: flex; align-items: center; gap: 8px;
-    border: 1px solid rgba(220,70,70,.35); border-radius: 8px;
-    background: rgba(220,70,70,.1); color: #f28b82;
-    font-size: 13px; font-family: inherit; padding: 8px 16px;
-    cursor: pointer; transition: background .15s, border-color .15s;
-    flex-shrink: 0;
-  }
-  .btn-danger:hover { background: rgba(220,70,70,.2); border-color: rgba(220,70,70,.55); }
-
-  /* ── Guest state ── */
-  .guest-banner {
-    display: flex; align-items: center; gap: 14px;
-    background: rgba(255,200,60,0.07); border: 1px solid rgba(255,200,60,0.18);
-    border-radius: 12px; padding: 16px 20px; margin-bottom: 20px;
-  }
-  .guest-banner i { font-size: 22px; color: #f5c542; flex-shrink: 0; }
-  .guest-banner-text { flex: 1; }
-  .guest-banner-text strong { display: block; font-size: 14px; margin-bottom: 2px; }
-  .guest-banner-text span { font-size: 12px; color: rgba(255,255,255,0.5); }
-  .btn-signin {
-    display: flex; align-items: center; gap: 8px;
-    border: 1px solid rgba(255,255,255,0.18); border-radius: 8px;
-    background: rgba(255,255,255,0.1); color: #fff;
-    font-size: 13px; font-family: inherit; padding: 8px 16px;
-    cursor: pointer; transition: background .15s; flex-shrink: 0;
-  }
-  .btn-signin:hover { background: rgba(255,255,255,0.18); }
-
-  /* ── Loading skeleton ── */
-  .skeleton {
-    background: linear-gradient(90deg, rgba(255,255,255,.06) 25%, rgba(255,255,255,.10) 50%, rgba(255,255,255,.06) 75%);
-    background-size: 200% 100%;
-    animation: shimmer 1.4s infinite;
-    border-radius: 6px; height: 14px;
-  }
-  @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
-
-  /* ── Toast ── */
-  #acct-toast {
-    position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(8px);
-    background: rgba(50,50,50,.95); color: #fff; font-size: 13px;
-    padding: 8px 20px; border-radius: 20px;
-    box-shadow: 0 4px 16px rgba(0,0,0,.4);
-    pointer-events: none; z-index: 9999;
-    opacity: 0; transition: opacity .18s, transform .18s;
-  }
-  #acct-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-  /* ── Spinner ── */
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .fa-spin-custom { animation: spin .7s linear infinite; display: inline-block; }
-</style>
+<link rel="stylesheet" href="../css/account.css">
 </head>
 <body>
+<div style="position:fixed;top:0;left:0;width:100vw;height:100vh;overflow:hidden;z-index:-1;">
+  <iframe src="https://i.cgamz.site" style="width:100%;height:100%;border:none;"></iframe>
+</div>
 <div class="page">
 
   <div class="page-header">
-    <i class="fa-solid fa-user" style="font-size:22px;color:rgba(255,255,255,.5)"></i>
+    <div class="page-header-icon"><i class="fa-solid fa-user"></i></div>
     <h1>Account</h1>
   </div>
 
-  <!-- Shown while Firebase loads -->
   <div id="loading-state">
-    <div class="card">
-      <div class="profile-row">
-        <div class="avatar" style="background:rgba(255,255,255,.08)"></div>
-        <div style="flex:1">
-          <div class="skeleton" style="width:140px;margin-bottom:8px"></div>
-          <div class="skeleton" style="width:200px;height:11px"></div>
-        </div>
+    <div class="profile-card">
+      <div class="avatar" style="background:rgba(255,255,255,.07)"></div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:8px">
+        <div class="skeleton" style="width:140px;height:14px"></div>
+        <div class="skeleton" style="width:200px;height:11px"></div>
       </div>
     </div>
   </div>
 
-  <!-- Guest banner (hidden by default) -->
   <div id="guest-state" style="display:none">
     <div class="guest-banner">
       <i class="fa-solid fa-circle-info"></i>
       <div class="guest-banner-text">
         <strong>You're browsing as a guest</strong>
-        <span>Sign in to sync bookmarks and settings across devices.</span>
+        <span>Sign in to sync bookmarks, pins, and settings across devices.</span>
       </div>
-      <button class="btn-signin" id="acct-signin-btn"><i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In</button>
+      <button class="btn btn-primary" id="acct-signin-btn"><i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In</button>
+    </div>
+
+    <div class="section-label">Local Data</div>
+    <div class="card">
+      <div class="card-row">
+        <div class="row-icon grey"><i class="fa-solid fa-bookmark"></i></div>
+        <div class="row-body">
+          <div class="row-title">Bookmarks</div>
+          <div class="row-sub" id="guest-bm-count">Loading…</div>
+        </div>
+      </div>
+      <div class="card-row">
+        <div class="row-icon grey"><i class="fa-solid fa-thumbtack"></i></div>
+        <div class="row-body">
+          <div class="row-title">Pins</div>
+          <div class="row-sub" id="guest-pin-count">Loading…</div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- Signed-in state (hidden by default) -->
   <div id="signed-in-state" style="display:none">
 
-    <!-- Profile -->
-    <div class="card">
-      <div class="card-title">Profile</div>
-      <div class="profile-row">
-        <div class="avatar" id="acct-avatar">?</div>
-        <div class="profile-info">
-          <div class="profile-name" id="acct-name">—</div>
-          <div class="profile-email" id="acct-email">—</div>
-          <div class="profile-provider" id="acct-provider"></div>
-        </div>
+    <div class="profile-card" id="profile-card">
+      <div class="avatar" id="acct-avatar">?</div>
+      <div class="profile-info">
+        <div class="profile-name" id="acct-name">—</div>
+        <div class="profile-email" id="acct-email">—</div>
       </div>
     </div>
 
-    <!-- Sync status -->
+    <div class="stats-strip">
+      <div class="stat-box">
+        <div class="stat-value" id="stat-bookmarks">—</div>
+        <div class="stat-label">Bookmarks</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value" id="stat-pins">—</div>
+        <div class="stat-label">Pins</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value" id="stat-storage">—</div>
+        <div class="stat-label">Local Keys</div>
+      </div>
+    </div>
+
+    <div class="section-label">Data</div>
     <div class="card">
-      <div class="card-title">Cloud Sync</div>
-      <div class="sync-row">
-        <div class="sync-info">
-          <div class="sync-dot" id="sync-dot"></div>
-          <div>
-            <div class="sync-label" id="sync-label">Checking…</div>
-            <div class="sync-sub"  id="sync-sub"></div>
-          </div>
+      <div class="card-row">
+        <div class="row-icon blue"><i class="fa-solid fa-bookmark"></i></div>
+        <div class="row-body">
+          <div class="row-title">Bookmarks</div>
+          <div class="row-sub" id="bm-count-label">Loading…</div>
         </div>
-        <button class="sync-btn" id="sync-now-btn">
-          <i class="fa-solid fa-rotate-right"></i> Sync now
+        <div class="row-end">
+          <span id="bm-count-badge" class="badge active"></span>
+        </div>
+      </div>
+      <div id="acct-bm-list" class="bm-list"></div>
+      <div class="export-grid">
+        <button class="export-btn" onclick="exportData('bookmarks')">
+          <i class="fa-solid fa-file-arrow-down"></i>
+          <div class="export-btn-body">
+            <div class="export-btn-title">Export Bookmarks</div>
+            <div class="export-btn-sub">Save as JSON</div>
+          </div>
+        </button>
+        <button class="export-btn" onclick="importData('bookmarks')">
+          <i class="fa-solid fa-file-arrow-up"></i>
+          <div class="export-btn-body">
+            <div class="export-btn-title">Import Bookmarks</div>
+            <div class="export-btn-sub">Load from JSON</div>
+          </div>
+        </button>
+        <button class="export-btn" onclick="exportData('pins')">
+          <i class="fa-solid fa-thumbtack"></i>
+          <div class="export-btn-body">
+            <div class="export-btn-title">Export Pins</div>
+            <div class="export-btn-sub">Save as JSON</div>
+          </div>
+        </button>
+        <button class="export-btn" onclick="clearData('bookmarks')">
+          <i class="fa-solid fa-trash-can" style="color:rgba(242,139,130,0.7)"></i>
+          <div class="export-btn-body">
+            <div class="export-btn-title" style="color:#f28b82">Clear Bookmarks</div>
+            <div class="export-btn-sub">Remove all saved bookmarks</div>
+          </div>
         </button>
       </div>
     </div>
 
-    <!-- Stats -->
+    <div class="section-label">Security</div>
     <div class="card">
-      <div class="card-title">Stats</div>
-      <div class="stats-row">
-        <div class="stat-box">
-          <div class="stat-value" id="stat-bookmarks">—</div>
-          <div class="stat-label">Bookmarks</div>
+      <div class="card-row clickable" id="pw-reset-row">
+        <div class="row-icon grey"><i class="fa-solid fa-key"></i></div>
+        <div class="row-body">
+          <div class="row-title">Change Password</div>
+          <div class="row-sub" id="pw-reset-sub">Send a reset link to your email</div>
         </div>
-        <div class="stat-box">
-          <div class="stat-value" id="stat-syncs">—</div>
-          <div class="stat-label">Syncs this session</div>
+        <div class="row-end"><i class="row-chevron fa-solid fa-chevron-right" id="pw-reset-chevron"></i></div>
+      </div>
+    </div>
+
+    <div class="section-label">Account</div>
+    <div class="card">
+      <div class="card-row">
+        <div class="row-icon grey"><i class="fa-solid fa-arrow-right-from-bracket"></i></div>
+        <div class="row-body">
+          <div class="row-title">Sign Out</div>
+          <div class="row-sub">Your synced data stays in the cloud</div>
         </div>
-        <div class="stat-box">
-          <div class="stat-value" id="stat-storage">—</div>
-          <div class="stat-label">Local keys</div>
+        <div class="row-end">
+          <button class="btn btn-ghost" id="signout-btn"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sign out</button>
+        </div>
+      </div>
+      <div class="card-row">
+        <div class="row-icon red"><i class="fa-solid fa-triangle-exclamation"></i></div>
+        <div class="row-body">
+          <div class="row-title" style="color:#f28b82">Delete Account</div>
+          <div class="row-sub">Permanently remove your account and all data</div>
+        </div>
+        <div class="row-end">
+          <button class="btn btn-danger" id="delete-account-btn"><i class="fa-solid fa-trash-can"></i> Delete</button>
         </div>
       </div>
     </div>
 
-    <!-- Bookmarks -->
-    <div class="card">
-      <div class="card-title" style="display:flex;align-items:center;justify-content:space-between">
-        <span>Bookmarks</span>
-        <span id="bm-count" style="font-weight:400;font-size:11px;color:rgba(255,255,255,.35)"></span>
-      </div>
-      <div class="bm-list" id="acct-bm-list"></div>
+    <div style="text-align:center;font-size:10px;color:rgba(255,255,255,0.15);margin-top:24px;letter-spacing:.5px">
+      CRAFTED GAMZ BROWSER · <span id="app-version">v1.0</span>
     </div>
 
-    <!-- Sign out / danger zone -->
-    <div class="card">
-      <div class="card-title">Account</div>
-      <div class="danger-row">
-        <div class="danger-info">
-          <div class="danger-title">Sign out</div>
-          <div class="danger-sub">Your synced data will remain in the cloud.</div>
-        </div>
-        <button class="btn-danger" id="signout-btn"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sign out</button>
-      </div>
-    </div>
+  </div>
+</div>
 
-  </div><!-- /signed-in-state -->
-
-</div><!-- /page -->
-
+<input type="file" id="import-file-input" accept=".json" style="display:none">
 <div id="acct-toast"></div>
-
-<script>
-  function showToast(msg) {
-    const t = document.getElementById('acct-toast');
-    t.textContent = msg;
-    t.classList.add('show');
-    clearTimeout(t._tid);
-    t._tid = setTimeout(() => t.classList.remove('show'), 2000);
-  }
-
-  function getProviderLabel(user) {
-    if (!user || !user.providerData || !user.providerData.length) return '';
-    const pid = user.providerData[0].providerId;
-    if (pid === 'google.com') return '<i class="fa-brands fa-google" style="color:#4285f4"></i> Google account';
-    if (pid === 'github.com') return '<i class="fa-brands fa-github"></i> GitHub account';
-    if (pid === 'password')   return '<i class="fa-solid fa-envelope"></i> Email account';
-    return pid;
-  }
-
-  function renderBookmarks() {
-    const list = document.getElementById('acct-bm-list');
-    const countEl = document.getElementById('bm-count');
-    let bookmarks = [];
-    try { bookmarks = JSON.parse(localStorage.getItem('cg_bookmarks')) || []; } catch {}
-    document.getElementById('stat-bookmarks').textContent = bookmarks.length;
-    countEl.textContent = bookmarks.length ? `${bookmarks.length} saved` : '';
-
-    if (!bookmarks.length) {
-      list.innerHTML = '<div class="bm-empty">No bookmarks yet</div>';
-      return;
-    }
-
-    list.innerHTML = '';
-    bookmarks.forEach(bm => {
-      const row = document.createElement('div');
-      row.className = 'bm-row';
-
-      const fav = document.createElement('div');
-      fav.className = 'bm-fav';
-      if (bm.favicon && bm.favicon.startsWith('data:')) {
-        fav.style.backgroundImage = `url('${bm.favicon}')`;
-      } else if (bm.favicon) {
-        fav.style.backgroundImage = `url('${bm.favicon}')`;
-      } else {
-        fav.innerHTML = '<i class="fa-solid fa-globe"></i>';
-      }
-
-      const title = document.createElement('div');
-      title.className = 'bm-title';
-      title.textContent = bm.title || bm.url;
-
-      const url = document.createElement('div');
-      url.className = 'bm-url';
-      url.textContent = bm.url;
-
-      const removeBtn = document.createElement('button');
-      removeBtn.className = 'bm-remove';
-      removeBtn.title = 'Remove bookmark';
-      removeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
-      removeBtn.addEventListener('click', () => {
-        try {
-          let bms = JSON.parse(localStorage.getItem('cg_bookmarks')) || [];
-          bms = bms.filter(b => b.url !== bm.url);
-          localStorage.setItem('cg_bookmarks', JSON.stringify(bms));
-        } catch {}
-        renderBookmarks();
-        showToast('Bookmark removed');
-      });
-
-      row.appendChild(fav);
-      row.appendChild(title);
-      row.appendChild(url);
-      row.appendChild(removeBtn);
-      list.appendChild(row);
-    });
-  }
-
-  function updateSyncUI(am) {
-    const dot   = document.getElementById('sync-dot');
-    const label = document.getElementById('sync-label');
-    const sub   = document.getElementById('sync-sub');
-    const count = am.syncCount || 0;
-
-    if (!am.user) return;
-
-    if (am.syncInterval) {
-      dot.className = 'sync-dot active';
-      label.textContent = 'Auto-sync active';
-      sub.textContent = count > 0 ? `${count} sync${count !== 1 ? 's' : ''} this session` : 'Monitoring for changes…';
-    } else {
-      dot.className = 'sync-dot idle';
-      label.textContent = 'Sync paused';
-      sub.textContent = '';
-    }
-
-    document.getElementById('stat-syncs').textContent = count;
-    document.getElementById('stat-storage').textContent = localStorage.length;
-  }
-
-  function fillProfile(am) {
-    const user = am.user;
-    if (!user) return;
-
-    const avatarEl = document.getElementById('acct-avatar');
-    if (user.photoURL) {
-      avatarEl.innerHTML = `<img src="${user.photoURL}" alt="avatar">`;
-    } else {
-      const letter = (user.displayName || user.email || '?')[0].toUpperCase();
-      avatarEl.textContent = letter;
-    }
-
-    // Try to get stored name from Firestore profile, fall back to Firebase user
-    am.getUserProfile().then(profile => {
-      const name = (profile && profile.name) || user.displayName || user.email.split('@')[0];
-      document.getElementById('acct-name').textContent = name;
-    }).catch(() => {
-      document.getElementById('acct-name').textContent = user.displayName || user.email.split('@')[0];
-    });
-
-    document.getElementById('acct-email').textContent = user.email;
-    document.getElementById('acct-provider').innerHTML = getProviderLabel(user);
-  }
-
-  function renderPage() {
-    // Poll until accountManager is available and Firebase is ready
-    const am = window.parent && window.parent.accountManager
-               ? window.parent.accountManager
-               : window.accountManager;
-
-    if (!am || !am.firebaseLoaded) {
-      setTimeout(renderPage, 200);
-      return;
-    }
-
-    document.getElementById('loading-state').style.display = 'none';
-
-    if (!am.user && !am.isGuest) {
-      // Still waiting for auth state
-      setTimeout(renderPage, 200);
-      return;
-    }
-
-    if (!am.user) {
-      // Guest
-      document.getElementById('guest-state').style.display = 'block';
-      document.getElementById('signed-in-state').style.display = 'none';
-
-      document.getElementById('acct-signin-btn').addEventListener('click', () => {
-        am.isGuest = false;
-        am.showAuthPrompt();
-      });
-      return;
-    }
-
-    document.getElementById('guest-state').style.display = 'none';
-    document.getElementById('signed-in-state').style.display = 'block';
-
-    fillProfile(am);
-    renderBookmarks();
-    updateSyncUI(am);
-
-    // Sync now button
-    const syncBtn = document.getElementById('sync-now-btn');
-    syncBtn.addEventListener('click', async () => {
-      syncBtn.disabled = true;
-      syncBtn.innerHTML = '<i class="fa-solid fa-rotate-right fa-spin-custom"></i> Syncing…';
-      try {
-        await am.syncToServer();
-        showToast('Synced successfully');
-      } catch (e) {
-        showToast('Sync failed');
-      }
-      syncBtn.disabled = false;
-      syncBtn.innerHTML = '<i class="fa-solid fa-rotate-right"></i> Sync now';
-      updateSyncUI(am);
-    });
-
-    // Sign out
-    document.getElementById('signout-btn').addEventListener('click', async () => {
-      await am.signOut();
-      showToast('Signed out');
-      setTimeout(() => location.reload(), 600);
-    });
-
-    // Refresh stats every 5s
-    setInterval(() => {
-      updateSyncUI(am);
-      renderBookmarks();
-    }, 5000);
-  }
-
-  renderPage();
-</script>
+<script src="../js/account-page.js"></script>
 </body>
 </html>
