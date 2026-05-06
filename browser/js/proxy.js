@@ -5,7 +5,6 @@ let baremuxConnection = null
 let pendingInitPromise = null
 let wispPreloadSocket = null
 
-// ── Wisp connection bar ──────────────────────────────────────────────────────
 function _wispBar()   { return document.getElementById('wisp-bar') }
 function _wispLabel() { return document.getElementById('wisp-bar-label') }
 
@@ -31,9 +30,6 @@ function getWispUrl() {
   return params.get('wisp') || DEFAULT_WISP
 }
 
-// Opens a raw WebSocket to the Wisp server early so the TCP/TLS handshake is
-// already done by the time BareMux needs the connection. The socket is kept
-// alive; if it fails we surface the error immediately.
 function preloadWispConnection() {
   return new Promise(resolve => {
     setWispStatus('connecting')
@@ -48,7 +44,7 @@ function preloadWispConnection() {
           setWispStatus('err')
           resolve(false)
         }
-      }, 8000)
+      }, 60000)
 
       ws.addEventListener('open', () => {
         clearTimeout(timeout)
@@ -128,8 +124,6 @@ function getRealUrlFromProxy(maybeProxyUrl) {
   return maybeProxyUrl
 }
 
-// Preload the Wisp connection immediately on page load so the TCP/TLS
-// handshake is warmed up before BareMux needs it
 document.addEventListener('DOMContentLoaded', async () => {
   await preloadWispConnection()
   await initProxyStack()
