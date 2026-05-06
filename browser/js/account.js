@@ -109,6 +109,10 @@ class AccountManager {
   }
 
   async pushBookmarks() {
+    if (!this.db) {
+  console.warn('DB not ready')
+  return
+}
     if (!this.user || !this.db) return
     const list = this._getBookmarks()
     const hash = JSON.stringify(list)
