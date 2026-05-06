@@ -1,5 +1,7 @@
 const pageFrame = document.getElementById('page-frame')
 const newTabPage = document.getElementById('new-tab-page')
+const pageLoadingScreen = document.getElementById('page-loading-screen')
+const pageLoadingUrl = document.getElementById('page-loading-url')
 const statusText = document.getElementById('status-text')
 const btnBack = document.getElementById('btn-back')
 const btnForward = document.getElementById('btn-forward')
@@ -40,6 +42,20 @@ function pushTabHistory(tabEl, url) {
   state.entries = state.entries.slice(0, state.index + 1)
   state.entries.push(url)
   state.index = state.entries.length - 1
+}
+
+function showLoadingScreen(url) {
+  if (!pageLoadingScreen) return
+  let display = url
+  try { display = new URL(url).hostname.replace(/^www\./, '') } catch {}
+  pageLoadingUrl.textContent = display
+  newTabPage.style.display = 'none'
+  pageFrame.style.display = 'none'
+  pageLoadingScreen.style.display = 'flex'
+}
+
+function hideLoadingScreen() {
+  if (pageLoadingScreen) pageLoadingScreen.style.display = 'none'
 }
 
 function syncFromFrameLocation() {
@@ -88,6 +104,7 @@ async function openHistoryEntry(tabEl, index) {
   if (local) {
     pageFrame.style.display = 'none'
     newTabPage.style.display = 'none'
+    hideLoadingScreen()
     pageFrame.src = local.target
     urlInput.value = local.display
     setAddressIndicator(local.display)
@@ -99,6 +116,7 @@ async function openHistoryEntry(tabEl, index) {
   if (!uvReady || !baremuxReady) await initProxyStack()
   pageFrame.style.display = 'none'
   newTabPage.style.display = 'none'
+  showLoadingScreen(url)
   pageFrame.src = getProxyUrl(url)
   urlInput.value = url
   setAddressIndicator(url)
@@ -110,6 +128,7 @@ async function openHistoryEntry(tabEl, index) {
 function showNewTabPage() {
   newTabPage.style.display = 'flex'
   pageFrame.style.display = 'none'
+  hideLoadingScreen()
   lastSyncedFrameUrl = ''
   urlInput.value = ''
   setAddressIndicator('newtab')
@@ -130,6 +149,7 @@ async function navigate(url) {
     urlInput.value = full
     newTabPage.style.display = 'none'
     pageFrame.style.display = 'none'
+    pageLoadingScreen && (pageLoadingScreen.style.display = 'none')
     pageFrame.src = local.target
     lastSyncedFrameUrl = full
     startUrlSyncLoop()
@@ -158,6 +178,7 @@ async function navigate(url) {
   urlInput.value = full
   newTabPage.style.display = 'none'
   pageFrame.style.display = 'none'
+  showLoadingScreen(full)
   pageFrame.src = getProxyUrl(full)
   lastSyncedFrameUrl = full
   startUrlSyncLoop()
@@ -184,6 +205,7 @@ async function navigate(url) {
 
 pageFrame.addEventListener('load', () => {
   statusText.textContent = ''
+  hideLoadingScreen()
   const wasHidden = pageFrame.style.display === 'none'
   pageFrame.style.display = 'block'
   if (wasHidden && !pageFrame.src) return

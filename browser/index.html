@@ -85,8 +85,23 @@
         <input type="text" id="newtab-search" placeholder="Search the web">
       </div>
       <div class="shortcuts"></div>
+      <div class="newtab-tip" id="newtab-tip">
+        <i class="fa-solid fa-lightbulb"></i>
+        <span>Double-press <kbd>T</kbd> to open a new tab &nbsp;·&nbsp; Double-press <kbd>W</kbd> to close one</span>
+        <button class="newtab-tip-close" id="newtab-tip-close" title="Dismiss" aria-label="Dismiss tip"><i class="fa-solid fa-xmark"></i></button>
+      </div>
     </div>
     <iframe id="page-frame" style="display:none" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-presentation"></iframe>
+    <div class="page-loading-screen" id="page-loading-screen" style="display:none">
+      <div class="page-loading-spinner">
+        <div class="pls-ring pls-ring-0"></div>
+        <div class="pls-ring pls-ring-1"></div>
+        <div class="pls-ring pls-ring-2"></div>
+        <div class="pls-orb"></div>
+      </div>
+      <div class="page-loading-url" id="page-loading-url"></div>
+      <div class="page-loading-tip" id="page-loading-tip"><i class="fa-solid fa-lightbulb"></i> Double-press <kbd>T</kbd> to open a new tab &nbsp;·&nbsp; Double-press <kbd>W</kbd> to close one</div>
+    </div>
   </div>
 
   <div class="status-bar" id="wisp-bar">
