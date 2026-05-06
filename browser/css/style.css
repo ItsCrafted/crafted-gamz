@@ -210,7 +210,7 @@ html,body{height:100%;background:transparent;font-family:-apple-system,BlinkMacS
   gap:32px;background:rgba(20,20,20,0.45);backdrop-filter:blur(2px);
 }
 .new-tab-page .logo{
-  font-size:64px;font-weight:700;letter-spacing:-2px;
+  font-size:80px;font-weight:700;letter-spacing:-2px;
   color:#ffffff;
   padding:0 24px;
   overflow:visible;
@@ -240,7 +240,8 @@ html,body{height:100%;background:transparent;font-family:-apple-system,BlinkMacS
 }
 .shortcut span{color:rgba(255,255,255,0.7);font-size:12px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%}
 
-.status-bar{height:20px;background:rgba(28,28,28,0.45);backdrop-filter:blur(12px);display:flex;align-items:center;padding:0 12px}
+.status-bar{height:20px;background:rgba(28,28,28,0.45);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:space-between;padding:0 12px;position:relative}
+.wisp-bar-label{position:absolute;left:50%;transform:translateX(-50%)}
 .status-bar span{color:rgba(255,255,255,0.5);font-size:11px}
 
 .bookmark-star-btn{
@@ -354,6 +355,26 @@ html,body{height:100%;background:transparent;font-family:-apple-system,BlinkMacS
   transition:background .12s;
 }
 .bm-ctx-rename-ok:hover{background:rgba(255,255,255,0.22)}
+
+.status-bar{
+  transition:border-color .4s ease;
+  border-top:2px solid transparent;
+}
+.status-bar.wisp-ok{border-top-color:rgba(110,220,140,0.55)}
+.status-bar.wisp-err{border-top-color:rgba(255,90,90,0.55)}
+.status-bar.wisp-connecting{border-top-color:rgba(255,255,255,0.12)}
+
+.wisp-bar-label{
+  position:absolute;left:50%;transform:translateX(-50%);
+  font-size:11px;display:flex;align-items:center;gap:5px;
+  letter-spacing:.2px;white-space:nowrap;
+  transition:color .4s ease,opacity .4s ease;
+  color:rgba(255,255,255,0.35);
+  opacity:1;
+}
+.status-bar.wisp-ok  .wisp-bar-label{color:rgba(110,220,140,0.75)}
+.status-bar.wisp-err .wisp-bar-label{color:rgba(255,110,110,0.75)}
+.status-bar.wisp-connecting .wisp-bar-label{color:rgba(255,255,255,0.4)}
 
 @font-face {
   font-family: 'Curly';

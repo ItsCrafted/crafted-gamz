@@ -3,10 +3,74 @@ let uvReady = false
 let baremuxReady = false
 let baremuxConnection = null
 let pendingInitPromise = null
+let wispPreloadSocket = null
+
+// ── Wisp connection bar ──────────────────────────────────────────────────────
+function _wispBar()   { return document.getElementById('wisp-bar') }
+function _wispLabel() { return document.getElementById('wisp-bar-label') }
+
+function setWispStatus(state) {
+  const bar = _wispBar(), label = _wispLabel()
+  if (!bar) return
+  bar.classList.remove('wisp-ok', 'wisp-err', 'wisp-connecting')
+  if (state === 'connecting') {
+    bar.classList.add('wisp-connecting')
+    if (label) label.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Connecting…'
+  } else if (state === 'ok') {
+    bar.classList.add('wisp-ok')
+    if (label) label.innerHTML = '<i class="fa-solid fa-circle-check"></i> Connected'
+  } else if (state === 'err') {
+    bar.classList.add('wisp-err')
+    if (label) label.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> Couldn\'t connect'
+  }
+}
+// ────────────────────────────────────────────────────────────────────────────
 
 function getWispUrl() {
   const params = new URLSearchParams(window.location.search)
   return params.get('wisp') || DEFAULT_WISP
+}
+
+// Opens a raw WebSocket to the Wisp server early so the TCP/TLS handshake is
+// already done by the time BareMux needs the connection. The socket is kept
+// alive; if it fails we surface the error immediately.
+function preloadWispConnection() {
+  return new Promise(resolve => {
+    setWispStatus('connecting')
+    try {
+      const ws = new WebSocket(getWispUrl())
+      ws.binaryType = 'arraybuffer'
+      wispPreloadSocket = ws
+
+      const timeout = setTimeout(() => {
+        if (ws.readyState !== WebSocket.OPEN) {
+          ws.close()
+          setWispStatus('err')
+          resolve(false)
+        }
+      }, 8000)
+
+      ws.addEventListener('open', () => {
+        clearTimeout(timeout)
+        setWispStatus('ok')
+        resolve(true)
+      })
+
+      ws.addEventListener('error', () => {
+        clearTimeout(timeout)
+        setWispStatus('err')
+        resolve(false)
+      })
+
+      ws.addEventListener('close', () => {
+        if (wispPreloadSocket === ws) wispPreloadSocket = null
+      })
+    } catch (e) {
+      console.warn('Wisp preload failed:', e)
+      setWispStatus('err')
+      resolve(false)
+    }
+  })
 }
 
 async function initUv() {
@@ -24,14 +88,16 @@ async function initBaremux() {
   if (baremuxReady) return true
   if (pendingInitPromise) return pendingInitPromise
   pendingInitPromise = (async () => {
-    if (!window.BareMux) { console.warn('BareMux not loaded'); return false }
+    if (!window.BareMux) { console.warn('BareMux not loaded'); setWispStatus('err'); return false }
     try {
       baremuxConnection = new BareMux.BareMuxConnection('/baremux/worker.js')
       await baremuxConnection.setTransport('/libcurl/index.mjs', [{ wisp: getWispUrl() }])
       baremuxReady = !!(await baremuxConnection.getTransport())
+      if (!baremuxReady) setWispStatus('err')
       return baremuxReady
     } catch (e) {
       console.warn('BareMux transport initialization failed:', e)
+      setWispStatus('err')
       return false
     } finally {
       pendingInitPromise = null
@@ -61,3 +127,10 @@ function getRealUrlFromProxy(maybeProxyUrl) {
   } catch (e) {}
   return maybeProxyUrl
 }
+
+// Preload the Wisp connection immediately on page load so the TCP/TLS
+// handshake is warmed up before BareMux needs it
+document.addEventListener('DOMContentLoaded', async () => {
+  await preloadWispConnection()
+  await initProxyStack()
+})

@@ -86,9 +86,9 @@ async function openHistoryEntry(tabEl, index) {
   if (!url || url === 'newtab') { showNewTabPage(); return }
   const local = resolveCgUrl(url)
   if (local) {
-    pageFrame.src = local.target
-    pageFrame.style.display = 'block'
+    pageFrame.style.display = 'none'
     newTabPage.style.display = 'none'
+    pageFrame.src = local.target
     urlInput.value = local.display
     setAddressIndicator(local.display)
     syncNavButtons(tabEl)
@@ -97,9 +97,9 @@ async function openHistoryEntry(tabEl, index) {
     return
   }
   if (!uvReady || !baremuxReady) await initProxyStack()
-  pageFrame.src = getProxyUrl(url)
-  pageFrame.style.display = 'block'
+  pageFrame.style.display = 'none'
   newTabPage.style.display = 'none'
+  pageFrame.src = getProxyUrl(url)
   urlInput.value = url
   setAddressIndicator(url)
   syncNavButtons(tabEl)
@@ -129,7 +129,7 @@ async function navigate(url) {
     full = local.display
     urlInput.value = full
     newTabPage.style.display = 'none'
-    pageFrame.style.display = 'block'
+    pageFrame.style.display = 'none'
     pageFrame.src = local.target
     lastSyncedFrameUrl = full
     startUrlSyncLoop()
@@ -157,7 +157,7 @@ async function navigate(url) {
   }
   urlInput.value = full
   newTabPage.style.display = 'none'
-  pageFrame.style.display = 'block'
+  pageFrame.style.display = 'none'
   pageFrame.src = getProxyUrl(full)
   lastSyncedFrameUrl = full
   startUrlSyncLoop()
@@ -184,7 +184,9 @@ async function navigate(url) {
 
 pageFrame.addEventListener('load', () => {
   statusText.textContent = ''
-  if (pageFrame.style.display === 'none') return
+  const wasHidden = pageFrame.style.display === 'none'
+  pageFrame.style.display = 'block'
+  if (wasHidden && !pageFrame.src) return
   let currentUrl = pageFrame.src || urlInput.value
   try { currentUrl = pageFrame.contentWindow.location.href || currentUrl } catch (e) {}
   currentUrl = getRealUrlFromProxy(currentUrl)
