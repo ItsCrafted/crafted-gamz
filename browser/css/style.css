@@ -207,10 +207,18 @@ html,body{height:100%;background:transparent;font-family:-apple-system,BlinkMacS
 .new-tab-page{
   position:absolute;inset:0;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:32px;background:rgba(20,20,20,0.45);backdrop-filter:blur(2px);
+  gap:32px;backdrop-filter:blur(2px);
 }
 .new-tab-page .logo{
-overflow: visible;
+  overflow:visible;
+  position:relative;
+  z-index:2;
+  pointer-events:none;
+}
+.new-tab-page .search-box{
+  position:relative;
+  z-index:1;
+  margin-top:0px;
 }
 .new-tab-page .search-box{
   display:flex;align-items:center;
