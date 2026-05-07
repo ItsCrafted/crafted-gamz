@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Crafted AI - Crafted Gamz</title>
+<title>Crafted Gamz AI</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
@@ -468,7 +468,7 @@ function addMessage(content,type){
   hideWelcome();const container=document.getElementById('chatContainer');
   const row=document.createElement('div');row.className=`msg-row ${type}`;
   const avatar=document.createElement('div');avatar.className=`msg-avatar ${type}`;
-  if(type==='ai'){const img=document.createElement('img');img.src='logo.png';img.alt='AI';avatar.appendChild(img)}
+  if(type==='ai'){const img=document.createElement('img');img.src='../img/logo.png';img.alt='AI';avatar.appendChild(img)}
   else{avatar.textContent='U'}
   const bubble=document.createElement('div');bubble.className=`msg-bubble ${type}`;
   if(type==='ai'){
@@ -484,7 +484,7 @@ function showTyping(){
   hideWelcome();const container=document.getElementById('chatContainer');
   const row=document.createElement('div');row.className='msg-row ai';row.id='typingRow';
   const avatar=document.createElement('div');avatar.className='msg-avatar ai';
-  const img=document.createElement('img');img.src='logo.png';img.alt='AI';avatar.appendChild(img);
+  const img=document.createElement('img');img.src='../img/logo.png';img.alt='AI';avatar.appendChild(img);
   const bubble=document.createElement('div');bubble.className='msg-bubble ai';
   bubble.innerHTML='<div class="typing-dots"><span></span><span></span><span></span></div>';
   row.appendChild(avatar);row.appendChild(bubble);container.appendChild(row);scrollBottom();
@@ -526,12 +526,5 @@ window.addEventListener('DOMContentLoaded',async()=>{
   await loadAPIKey();initSpeech();initModelSelect();
 });
 </script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
-<script src="js/o-tracker.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-<script src="js/account.js"></script>
-<script src="js/loading.js"></script>
 </body>
 </html>
