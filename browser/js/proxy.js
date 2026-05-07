@@ -14,13 +14,13 @@ function setWispStatus(state) {
   bar.classList.remove('wisp-ok', 'wisp-err', 'wisp-connecting')
   if (state === 'connecting') {
     bar.classList.add('wisp-connecting')
-    if (label) label.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Connecting…'
+    if (label) label.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Connecting To Server…'
   } else if (state === 'ok') {
     bar.classList.add('wisp-ok')
-    if (label) label.innerHTML = '<i class="fa-solid fa-circle-check"></i> Connected'
+    if (label) label.innerHTML = '<i class="fa-solid fa-circle-check"></i> Connected To Server.'
   } else if (state === 'err') {
     bar.classList.add('wisp-err')
-    if (label) label.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> Couldn\'t connect'
+    if (label) label.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> Couldn\'t connect to server'
   }
 }
 
