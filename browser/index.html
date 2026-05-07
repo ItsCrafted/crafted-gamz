@@ -65,6 +65,12 @@
       <button class="bookmark-star-btn" id="btn-bookmark-star" title="Bookmark this page" aria-label="Bookmark this page" style="display:none">
         <i class="fa-regular fa-star"></i>
       </button>
+      <button class="wisp-switcher-btn" id="wisp-switcher-btn" type="button" title="Choose Wisp server" aria-label="Choose Wisp server" aria-haspopup="true" aria-expanded="false">
+        <span class="wisp-switcher-icon wisp-flag" id="wisp-switcher-icon" aria-hidden="true"></span>
+        <span class="wisp-switcher-current" id="wisp-switcher-current">Auto</span>
+        <i class="fa-solid fa-chevron-down wisp-switcher-caret"></i>
+      </button>
+      <div class="wisp-switcher-menu" id="wisp-switcher-menu" hidden></div>
       <div class="connection-popup" id="connection-popup" hidden>
         <div class="connection-popup-title" id="connection-popup-title">Connection</div>
         <div class="connection-popup-desc" id="connection-popup-desc"></div>

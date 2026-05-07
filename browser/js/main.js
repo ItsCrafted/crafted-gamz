@@ -12,7 +12,6 @@ document.querySelectorAll('.url-shortcut-btn').forEach(btn => {
   btn.addEventListener('click', () => navigate(btn.dataset.localUri))
 })
 
-initProxyStack()
 ensureTabHistory(getActiveTab())
 showNewTabPage()
 

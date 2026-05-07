@@ -16,6 +16,7 @@ let lastSyncedFrameUrl = ''
 
 function getActiveTab() { return chromeTabs.activeTabEl }
 function openNewTab(options) { chromeTabs.addTab({ title: 'New Tab', favicon: false }, options) }
+function isBlankFrameSrc(src) { return !!src && /^about:blank(?:[#?].*)?$/i.test(src) }
 
 function ensureTabHistory(tabEl) {
   if (!tabEl) return null
@@ -56,6 +57,19 @@ function showLoadingScreen(url) {
 
 function hideLoadingScreen() {
   if (pageLoadingScreen) pageLoadingScreen.style.display = 'none'
+}
+
+function unloadPageFrame() {
+  try {
+    if (pageFrame.contentWindow && typeof pageFrame.contentWindow.stop === 'function') {
+      pageFrame.contentWindow.stop()
+    }
+  } catch (e) {}
+
+  lastSyncedFrameUrl = ''
+  statusText.textContent = ''
+  pageFrame.style.display = 'none'
+  pageFrame.src = 'about:blank'
 }
 
 function syncFromFrameLocation() {
@@ -126,10 +140,9 @@ async function openHistoryEntry(tabEl, index) {
 }
 
 function showNewTabPage() {
+  unloadPageFrame()
   newTabPage.style.display = 'flex'
-  pageFrame.style.display = 'none'
   hideLoadingScreen()
-  lastSyncedFrameUrl = ''
   urlInput.value = ''
   setAddressIndicator('newtab')
   hideConnectionPopup()
@@ -206,6 +219,15 @@ async function navigate(url) {
 }
 
 pageFrame.addEventListener('load', () => {
+  const rawFrameSrc = pageFrame.getAttribute('src') || ''
+  const activeTab = getActiveTab()
+  if (isBlankFrameSrc(rawFrameSrc) || !activeTab || (activeTab.dataset.url || 'newtab') === 'newtab') {
+    pageFrame.style.display = 'none'
+    hideLoadingScreen()
+    statusText.textContent = ''
+    return
+  }
+
   statusText.textContent = ''
   hideLoadingScreen()
   const wasHidden = pageFrame.style.display === 'none'
@@ -217,7 +239,7 @@ pageFrame.addEventListener('load', () => {
   currentUrl = getDisplayUrl(currentUrl)
   if (currentUrl) lastSyncedFrameUrl = currentUrl
   if (currentUrl) urlInput.value = currentUrl
-  const tab = getActiveTab()
+  const tab = activeTab
   if (!tab || !currentUrl) return
   tab.dataset.url = currentUrl
   pushTabHistory(tab, currentUrl)

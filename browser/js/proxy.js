@@ -1,92 +1,470 @@
-const DEFAULT_WISP = 'wss://pale-pen-crafted-gamz-b0390771.koyeb.app/'
+const WISP_QUERY_OVERRIDE = new URLSearchParams(window.location.search).get('wisp')
+const DEFAULT_WISP = WISP_QUERY_OVERRIDE || 'wss://pale-pen-crafted-gamz-b0390771.koyeb.app/'
+const WISP_CONNECT_TIMEOUT_MS = 15000
+const WISP_PING_TIMEOUT_MS = 8000
+const WISP_BACKGROUND_PING_MS = 5000
+const WISP_US_EAST_URL = WISP_QUERY_OVERRIDE || 'wss://pale-pen-crafted-gamz-b0390771.koyeb.app/'
+const WISP_US_WEST_URL = WISP_QUERY_OVERRIDE || DEFAULT_WISP
+const WISP_EUROPE_URL = WISP_QUERY_OVERRIDE || 'wss://actual-gisela-eclipsedevelopers-6f1a13cf.koyeb.app/'
+
+const WISP_SERVERS = [
+  { id: 'us-east', label: 'US East', location: 'Washington, DC', flagSrc: 'img/flags/us.png', url: WISP_US_EAST_URL },
+  { id: 'us-west', label: 'US West', location: 'Washington, DC', flagSrc: 'img/flags/us.png', url: WISP_US_WEST_URL },
+  { id: 'europe', label: 'Europe', location: 'Frankfurt, Germany', flagSrc: 'img/flags/eu.png', url: WISP_EUROPE_URL },
+]
+
 let uvReady = false
 let baremuxReady = false
 let baremuxConnection = null
 let pendingInitPromise = null
 let wispPreloadSocket = null
+let currentWispServerId = WISP_SERVERS[0] ? WISP_SERVERS[0].id : ''
+let currentWispLatencyMs = null
+let bestWispServerId = ''
+let currentWispStatus = 'connecting'
+let wispUiReady = false
+let proxyTransportGeneration = 0
+let wispBackgroundPingIntervalId = null
+let wispBackgroundPingInFlight = false
+const wispPingByServerId = new Map()
 
-function _wispBar()   { return document.getElementById('wisp-bar') }
+function _wispBar() { return document.getElementById('wisp-bar') }
 function _wispLabel() { return document.getElementById('wisp-bar-label') }
+function _wispSwitcherButton() { return document.getElementById('wisp-switcher-btn') }
+function _wispSwitcherMenu() { return document.getElementById('wisp-switcher-menu') }
+function _wispSwitcherCurrent() { return document.getElementById('wisp-switcher-current') }
+function _wispSwitcherIcon() { return document.getElementById('wisp-switcher-icon') }
 
-function setWispStatus(state) {
-  const bar = _wispBar(), label = _wispLabel()
+function getConfiguredWispServers() {
+  return WISP_SERVERS.filter(server => typeof server.url === 'string' && server.url.trim())
+}
+
+function getWispServerById(id) {
+  return getConfiguredWispServers().find(server => server.id === id) || null
+}
+
+function getCurrentWispServer() {
+  return getWispServerById(currentWispServerId) || getConfiguredWispServers()[0] || null
+}
+
+function formatWispLatency(latencyMs) {
+  return Number.isFinite(latencyMs) ? `${Math.round(latencyMs)} ms` : 'pending'
+}
+
+function setWispStatus(state, details = {}) {
+  const bar = _wispBar()
+  const label = _wispLabel()
+  const server = details.server || getCurrentWispServer()
+  const serverLabel = details.serverLabel || (server ? server.label : 'server')
+  const latency = details.latency ?? currentWispLatencyMs
+
+  currentWispStatus = state
   if (!bar) return
-  bar.classList.remove('wisp-ok', 'wisp-err', 'wisp-connecting')
+
+  bar.classList.remove('wisp-ok', 'wisp-err', 'wisp-connecting', 'wisp-disconnecting')
   if (state === 'connecting') {
     bar.classList.add('wisp-connecting')
-    if (label) label.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Connecting To Server…'
+    if (label) label.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> Connecting to ${serverLabel}...`
+  } else if (state === 'disconnecting') {
+    bar.classList.add('wisp-disconnecting')
+    if (label) label.innerHTML = `<i class="fa-solid fa-plug"></i> Disconnecting from ${serverLabel}...`
   } else if (state === 'ok') {
     bar.classList.add('wisp-ok')
-    if (label) label.innerHTML = '<i class="fa-solid fa-circle-check"></i> Connected To Server.'
+    if (label) label.innerHTML = `<i class="fa-solid fa-circle-check"></i> Connected: ${serverLabel}${Number.isFinite(latency) ? ` (${formatWispLatency(latency)})` : ''}`
   } else if (state === 'err') {
     bar.classList.add('wisp-err')
-    if (label) label.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> Couldn\'t connect to server'
+    if (label) label.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> Couldn't connect to ${serverLabel}`
   }
 }
 
-function getWispUrl() {
-  const params = new URLSearchParams(window.location.search)
-  return params.get('wisp') || DEFAULT_WISP
+function updateWispSwitcherButton() {
+  const button = _wispSwitcherButton()
+  const currentLabel = _wispSwitcherCurrent()
+  const currentIcon = _wispSwitcherIcon()
+  const server = getCurrentWispServer()
+  if (!button || !currentLabel || !currentIcon || !server) return
+
+  currentLabel.textContent = server.label
+  currentIcon.className = 'wisp-switcher-icon wisp-flag'
+  currentIcon.style.backgroundImage = server.flagSrc ? `url('${server.flagSrc}')` : ''
 }
 
-function preloadWispConnection() {
+function renderWispSwitcherMenu() {
+  const menu = _wispSwitcherMenu()
+  if (!menu) return
+
+  const servers = getConfiguredWispServers()
+  const items = servers.map(server => {
+    const ping = wispPingByServerId.get(server.id)
+    const pingLabel = ping && ping.ok ? formatWispLatency(ping.latency) : ping && !ping.ok ? 'offline' : 'measuring'
+    const activeClass = server.id === currentWispServerId ? ' is-active' : ''
+    const badge = server.id === bestWispServerId ? '<span class="wisp-switcher-badge">Best</span>' : ''
+
+    return `
+      <button class="wisp-switcher-item${activeClass}" type="button" data-wisp-server-id="${server.id}">
+        <span class="wisp-switcher-item-main">
+          <span class="wisp-switcher-item-icon wisp-flag" aria-hidden="true" style="background-image:url('${server.flagSrc || ''}')"></span>
+          <span class="wisp-switcher-item-copy">
+            <span class="wisp-switcher-item-name">${server.label}</span>
+            <span class="wisp-switcher-item-location">${server.location || ''}</span>
+          </span>
+        </span>
+        <span class="wisp-switcher-item-meta">
+          ${badge}
+          <span class="wisp-switcher-ping">${pingLabel}</span>
+        </span>
+      </button>
+    `
+  }).join('')
+
+  menu.innerHTML = `
+    <div class="wisp-switcher-menu-head">
+      <div class="wisp-switcher-menu-title">Wisp Regions</div>
+    </div>
+    ${items}
+  `
+
+  menu.querySelectorAll('[data-wisp-server-id]').forEach(item => {
+    item.addEventListener('click', async event => {
+      event.stopPropagation()
+      const serverId = item.getAttribute('data-wisp-server-id')
+      await switchWispServer(serverId)
+    })
+  })
+}
+
+function showWispSwitcherMenu() {
+  const button = _wispSwitcherButton()
+  const menu = _wispSwitcherMenu()
+  if (!button || !menu) return
+  renderWispSwitcherMenu()
+  menu.hidden = false
+  button.setAttribute('aria-expanded', 'true')
+}
+
+function hideWispSwitcherMenu() {
+  const button = _wispSwitcherButton()
+  const menu = _wispSwitcherMenu()
+  if (!button || !menu) return
+  menu.hidden = true
+  button.setAttribute('aria-expanded', 'false')
+}
+
+function toggleWispSwitcherMenu() {
+  const menu = _wispSwitcherMenu()
+  if (!menu) return
+  if (menu.hidden) showWispSwitcherMenu()
+  else hideWispSwitcherMenu()
+}
+
+function initWispUi() {
+  if (wispUiReady) return
+  const button = _wispSwitcherButton()
+  const menu = _wispSwitcherMenu()
+  if (!button || !menu) return
+
+  button.addEventListener('click', event => {
+    event.stopPropagation()
+    toggleWispSwitcherMenu()
+  })
+
+  document.addEventListener('click', event => {
+    if (menu.hidden) return
+    if (menu.contains(event.target) || button.contains(event.target)) return
+    hideWispSwitcherMenu()
+  })
+
+  updateWispSwitcherButton()
+  renderWispSwitcherMenu()
+  wispUiReady = true
+}
+
+function getWispUrl() {
+  const server = getCurrentWispServer()
+  return server ? server.url : DEFAULT_WISP
+}
+
+function closeSocket(socket) {
+  if (!socket) return Promise.resolve()
+
   return new Promise(resolve => {
-    setWispStatus('connecting')
+    let settled = false
+    const finish = () => {
+      if (settled) return
+      settled = true
+      resolve()
+    }
+
     try {
-      const ws = new WebSocket(getWispUrl())
-      ws.binaryType = 'arraybuffer'
-      wispPreloadSocket = ws
+      if (socket.readyState === WebSocket.CLOSED) {
+        finish()
+        return
+      }
 
-      const timeout = setTimeout(() => {
-        if (ws.readyState !== WebSocket.OPEN) {
-          ws.close()
-          setWispStatus('err')
-          resolve(false)
-        }
-      }, 60000)
-
-      ws.addEventListener('open', () => {
-        clearTimeout(timeout)
-        setWispStatus('ok')
-        resolve(true)
-      })
-
-      ws.addEventListener('error', () => {
-        clearTimeout(timeout)
-        setWispStatus('err')
-        resolve(false)
-      })
-
-      ws.addEventListener('close', () => {
-        if (wispPreloadSocket === ws) wispPreloadSocket = null
-      })
+      socket.addEventListener('close', finish, { once: true })
+      socket.close()
+      window.setTimeout(finish, 1200)
     } catch (e) {
-      console.warn('Wisp preload failed:', e)
-      setWispStatus('err')
-      resolve(false)
+      finish()
     }
   })
 }
 
+function measureWispServer(server, options = {}) {
+  const timeoutMs = options.timeoutMs || WISP_PING_TIMEOUT_MS
+  const keepOpen = !!options.keepOpen
+
+  return new Promise(resolve => {
+    if (!server || !server.url) {
+      resolve({ ok: false, latency: null, socket: null, server })
+      return
+    }
+
+    const startedAt = performance.now()
+    let settled = false
+    let ws = null
+
+    const finalize = result => {
+      if (settled) return
+      settled = true
+      if (!keepOpen && ws) {
+        try {
+          if (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING) ws.close()
+        } catch (e) {}
+      }
+      resolve({ ...result, server, socket: keepOpen && result.ok ? ws : null })
+    }
+
+    try {
+      ws = new WebSocket(server.url)
+      ws.binaryType = 'arraybuffer'
+
+      const timeout = window.setTimeout(() => {
+        finalize({ ok: false, latency: null })
+      }, timeoutMs)
+
+      ws.addEventListener('open', () => {
+        window.clearTimeout(timeout)
+        finalize({ ok: true, latency: Math.max(1, Math.round(performance.now() - startedAt)) })
+      }, { once: true })
+
+      ws.addEventListener('error', () => {
+        window.clearTimeout(timeout)
+        finalize({ ok: false, latency: null })
+      }, { once: true })
+    } catch (e) {
+      finalize({ ok: false, latency: null })
+    }
+  })
+}
+
+async function preloadWispConnection() {
+  const server = getCurrentWispServer()
+  const serverId = server ? server.id : ''
+  setWispStatus('connecting', { server })
+
+  try {
+    const result = await measureWispServer(server, {
+      keepOpen: true,
+      timeoutMs: WISP_CONNECT_TIMEOUT_MS,
+    })
+
+    if (!result.ok || !result.socket) {
+      currentWispLatencyMs = null
+      setWispStatus('err', { server })
+      renderWispSwitcherMenu()
+      return false
+    }
+
+    if (currentWispServerId !== serverId) {
+      await closeSocket(result.socket)
+      return false
+    }
+
+    currentWispLatencyMs = result.latency
+    wispPingByServerId.set(server.id, { ok: true, latency: result.latency })
+    wispPreloadSocket = result.socket
+    wispPreloadSocket.addEventListener('close', () => {
+      if (wispPreloadSocket === result.socket) wispPreloadSocket = null
+    }, { once: true })
+    setWispStatus('ok', { server, latency: result.latency })
+    renderWispSwitcherMenu()
+    return true
+  } catch (e) {
+    console.warn('Wisp preload failed:', e)
+    currentWispLatencyMs = null
+    setWispStatus('err', { server })
+    renderWispSwitcherMenu()
+    return false
+  }
+}
+
+async function disconnectCurrentWispConnection() {
+  const server = getCurrentWispServer()
+  if (wispPreloadSocket || baremuxReady || pendingInitPromise) {
+    setWispStatus('disconnecting', { server })
+  }
+
+  const socketToClose = wispPreloadSocket
+  wispPreloadSocket = null
+  await closeSocket(socketToClose)
+
+  proxyTransportGeneration += 1
+  baremuxReady = false
+  baremuxConnection = null
+  pendingInitPromise = null
+}
+
+async function pingConfiguredWispServers() {
+  const servers = getConfiguredWispServers()
+  if (!servers.length) return null
+
+  const results = await Promise.all(servers.map(server => measureWispServer(server)))
+  results.forEach(result => {
+    wispPingByServerId.set(result.server.id, {
+      ok: result.ok,
+      latency: result.latency,
+    })
+  })
+
+  const best = results
+    .filter(result => result.ok && Number.isFinite(result.latency))
+    .sort((a, b) => a.latency - b.latency)[0] || null
+
+  bestWispServerId = best ? best.server.id : ''
+  renderWispSwitcherMenu()
+  return best
+}
+
+async function refreshWispPingSnapshot() {
+  if (wispBackgroundPingInFlight) return null
+  wispBackgroundPingInFlight = true
+
+  try {
+    const best = await pingConfiguredWispServers()
+    const currentPing = wispPingByServerId.get(currentWispServerId)
+
+    if (currentPing && currentPing.ok && Number.isFinite(currentPing.latency)) {
+      currentWispLatencyMs = currentPing.latency
+      if (currentWispStatus === 'ok') {
+        setWispStatus('ok', {
+          server: getCurrentWispServer(),
+          latency: currentPing.latency,
+        })
+      }
+    }
+
+    return best
+  } finally {
+    wispBackgroundPingInFlight = false
+  }
+}
+
+function startBackgroundWispPingLoop() {
+  if (wispBackgroundPingIntervalId) return
+
+  wispBackgroundPingIntervalId = window.setInterval(() => {
+    refreshWispPingSnapshot().catch(error => {
+      console.warn('Background Wisp ping refresh failed:', error)
+    })
+  }, WISP_BACKGROUND_PING_MS)
+}
+
+async function chooseBestWispServer() {
+  const best = await refreshWispPingSnapshot()
+  if (best && best.server) {
+    currentWispServerId = best.server.id
+    currentWispLatencyMs = best.latency
+  } else {
+    const fallback = getConfiguredWispServers()[0] || null
+    currentWispServerId = fallback ? fallback.id : ''
+    currentWispLatencyMs = null
+  }
+
+  updateWispSwitcherButton()
+  renderWispSwitcherMenu()
+  return getCurrentWispServer()
+}
+
+function currentProxyAddress() {
+  const input = document.getElementById('url-input')
+  const value = typeof currentAddressValue === 'function'
+    ? currentAddressValue()
+    : ((input && input.value) || '').trim() || 'newtab'
+
+  if (!value || value === 'newtab' || /^cg:\/\//i.test(value)) return ''
+  return value
+}
+
+function reconnectActiveProxyPage(url) {
+  if (!url) return
+
+  const frame = document.getElementById('page-frame')
+  const newTabPage = document.getElementById('new-tab-page')
+  const statusText = document.getElementById('status-text')
+
+  if (newTabPage) newTabPage.style.display = 'none'
+  if (frame) frame.style.display = 'none'
+  if (typeof showLoadingScreen === 'function') showLoadingScreen(url)
+  if (frame) frame.src = getProxyUrl(url)
+  if (statusText) statusText.textContent = `Switching server to ${getCurrentWispServer().label}...`
+}
+
+async function switchWispServer(serverId) {
+  const targetServer = getWispServerById(serverId)
+  if (!targetServer) return false
+
+  const sameServer = targetServer.id === currentWispServerId
+  const pageUrl = currentProxyAddress()
+
+  hideWispSwitcherMenu()
+  currentWispServerId = targetServer.id
+  currentWispLatencyMs = wispPingByServerId.get(targetServer.id)?.latency ?? null
+  updateWispSwitcherButton()
+  renderWispSwitcherMenu()
+
+  if (sameServer && wispPreloadSocket && baremuxReady) return true
+
+  await disconnectCurrentWispConnection()
+  const connected = await preloadWispConnection()
+  if (!connected) return false
+
+  const ready = await initBaremux()
+  if (ready && pageUrl) reconnectActiveProxyPage(pageUrl)
+  return ready
+}
+
 async function initUv() {
-  if (!('serviceWorker' in navigator)) return
-  if (typeof __uv$config === 'undefined') return
+  if (uvReady) return true
+  if (!('serviceWorker' in navigator)) return false
+  if (typeof __uv$config === 'undefined') return false
+
   try {
     await navigator.serviceWorker.register('/uv/sw.js', { scope: '/uv/' })
     uvReady = true
+    return true
   } catch (e) {
     console.warn('UV service worker registration failed:', e)
+    return false
   }
 }
 
 async function initBaremux() {
   if (baremuxReady) return true
   if (pendingInitPromise) return pendingInitPromise
+
+  const generation = proxyTransportGeneration
   pendingInitPromise = (async () => {
-    if (!window.BareMux) { console.warn('BareMux not loaded'); setWispStatus('err'); return false }
+    if (!window.BareMux) {
+      console.warn('BareMux not loaded')
+      setWispStatus('err')
+      return false
+    }
+
     try {
       baremuxConnection = new BareMux.BareMuxConnection('/baremux/worker.js')
       await baremuxConnection.setTransport('/libcurl/index.mjs', [{ wisp: getWispUrl() }])
+      if (generation !== proxyTransportGeneration) return false
       baremuxReady = !!(await baremuxConnection.getTransport())
       if (!baremuxReady) setWispStatus('err')
       return baremuxReady
@@ -98,6 +476,7 @@ async function initBaremux() {
       pendingInitPromise = null
     }
   })()
+
   return pendingInitPromise
 }
 
@@ -123,7 +502,23 @@ function getRealUrlFromProxy(maybeProxyUrl) {
   return maybeProxyUrl
 }
 
+function getWispConnectionSummary() {
+  const server = getCurrentWispServer()
+  return {
+    id: server ? server.id : '',
+    label: server ? server.label : 'Unknown',
+    latency: currentWispLatencyMs,
+    latencyText: formatWispLatency(currentWispLatencyMs),
+    status: currentWispStatus,
+  }
+}
+
+window.getWispConnectionSummary = getWispConnectionSummary
+
 document.addEventListener('DOMContentLoaded', async () => {
+  initWispUi()
+  await chooseBestWispServer()
   await preloadWispConnection()
   await initProxyStack()
+  startBackgroundWispPingLoop()
 })

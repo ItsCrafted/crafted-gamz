@@ -47,7 +47,11 @@ function setAddressIndicator(url) {
 function getConnectionDetails(url) {
   if (url === 'newtab') return { title: 'New Tab', desc: 'This is a local new-tab screen. No website connection is active.' }
   if (/^cg:\/\//i.test(url)) return { title: 'Local System Page', desc: 'This page is loaded from local files and is not proxied.' }
-  if (url.startsWith('https://')) return { title: 'Secure HTTPS', desc: 'Your connection uses HTTPS encryption. In this browser shell, content may still be routed through our proxy.' }
+  if (url.startsWith('https://')) {
+    const wisp = typeof getWispConnectionSummary === 'function' ? getWispConnectionSummary() : null
+    const proxyDetails = wisp ? ` Proxied traffic is currently routed through ${wisp.label}${Number.isFinite(wisp.latency) ? ` (${wisp.latencyText})` : ''}.` : ''
+    return { title: 'Secure HTTPS', desc: `Your connection uses HTTPS encryption.${proxyDetails}` }
+  }
   return { title: 'Not Fully Secure', desc: 'This page is not using HTTPS encryption. Avoid entering sensitive information.' }
 }
 

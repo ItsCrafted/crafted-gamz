@@ -190,6 +190,130 @@ html,body{height:100%;background:transparent;font-family:-apple-system,BlinkMacS
 .connection-popup-title{color:#ffffff;font-size:12px;font-weight:600;margin-bottom:4px}
 .connection-popup-desc{color:rgba(255,255,255,0.7);font-size:12px;line-height:1.35}
 
+.wisp-switcher-btn{
+  display:flex;align-items:center;justify-content:center;
+  gap:6px;min-width:0;height:24px;flex-shrink:0;
+  border:none;border-radius:999px;
+  background:rgba(255,255,255,0.06);
+  color:rgba(255,255,255,0.72);
+  padding:0 8px 0 7px;cursor:pointer;
+  transition:background .15s,color .15s,transform .15s;
+}
+.wisp-switcher-btn:hover{
+  background:rgba(255,255,255,0.12);
+  color:#ffffff;
+}
+.wisp-switcher-btn[aria-expanded="true"]{
+  background:rgba(255,255,255,0.16);
+  color:#ffffff;
+}
+.wisp-switcher-btn:active{transform:scale(0.98)}
+.wisp-switcher-icon{font-size:12px}
+.wisp-flag{
+  position:relative;
+  display:inline-block;
+  width:16px;height:12px;
+  border-radius:3px;
+  overflow:hidden;
+  background-position:center;
+  background-repeat:no-repeat;
+  background-size:cover;
+  box-shadow:0 0 0 1px rgba(255,255,255,0.18) inset,0 1px 2px rgba(0,0,0,0.25);
+  flex-shrink:0;
+}
+.wisp-switcher-current{
+  max-width:92px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  font-size:11px;font-weight:600;letter-spacing:.15px;
+}
+.wisp-switcher-caret{
+  font-size:10px;opacity:.7;
+  transition:transform .18s ease,opacity .15s ease;
+}
+.wisp-switcher-btn[aria-expanded="true"] .wisp-switcher-caret{
+  transform:rotate(180deg);
+}
+.wisp-switcher-menu{
+  position:absolute;top:40px;right:8px;z-index:210;
+  width:min(280px,calc(100vw - 32px));
+  display:flex;flex-direction:column;gap:4px;
+  background:rgba(40,40,40,0.94);
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:12px;
+  box-shadow:0 16px 34px rgba(0,0,0,0.35);
+  padding:8px;
+}
+.wisp-switcher-menu[hidden]{display:none !important}
+.wisp-switcher-menu-head{
+  display:flex;align-items:center;
+  padding:2px 4px 6px;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+  margin-bottom:2px;
+}
+.wisp-switcher-menu-title{
+  color:#ffffff;font-size:12px;font-weight:600;
+}
+.wisp-switcher-item{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:10px;width:100%;
+  border:none;border-radius:10px;
+  background:transparent;color:rgba(255,255,255,0.78);
+  padding:10px 11px;cursor:pointer;text-align:left;
+  transition:background .14s,color .14s,transform .14s;
+}
+.wisp-switcher-item:hover{
+  background:rgba(255,255,255,0.08);
+  color:#ffffff;
+}
+.wisp-switcher-item:active{transform:scale(0.99)}
+.wisp-switcher-item.is-active{
+  background:rgba(255,255,255,0.12);
+  color:#ffffff;
+}
+.wisp-switcher-item-main,
+.wisp-switcher-item-meta{
+  display:flex;align-items:center;gap:8px;min-width:0;
+}
+.wisp-switcher-item-main{flex:1}
+.wisp-switcher-item-copy{
+  display:flex;flex-direction:column;min-width:0;
+}
+.wisp-switcher-item-icon{
+  width:18px;text-align:center;font-size:14px;line-height:1;flex-shrink:0;
+}
+.wisp-switcher-item-name{
+  min-width:0;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  font-size:12px;font-weight:600;
+}
+.wisp-switcher-item-location{
+  min-width:0;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  color:rgba(255,255,255,0.45);
+  font-size:10px;
+  line-height:1.2;
+  margin-top:1px;
+}
+.wisp-switcher-item-meta{
+  justify-content:flex-end;
+  color:rgba(255,255,255,0.48);
+  font-size:11px;
+}
+.wisp-switcher-item.is-active .wisp-switcher-item-meta{color:rgba(255,255,255,0.72)}
+.wisp-switcher-item.is-active .wisp-switcher-item-location{color:rgba(255,255,255,0.62)}
+.wisp-switcher-ping{
+  min-width:44px;
+  text-align:right;
+  font-variant-numeric:tabular-nums;
+}
+.wisp-switcher-badge{
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:999px;
+  padding:2px 7px;
+  font-size:10px;
+  letter-spacing:.2px;
+}
+
 .toolbar-right{display:flex;align-items:center;gap:2px}
 .url-shortcuts{display:flex;align-items:center;gap:2px;margin-left:6px}
 .url-shortcut-btn{
@@ -428,6 +552,7 @@ html,body{height:100%;background:transparent;font-family:-apple-system,BlinkMacS
 .status-bar.wisp-ok{border-top-color:rgba(110,220,140,0.55)}
 .status-bar.wisp-err{border-top-color:rgba(255,90,90,0.55)}
 .status-bar.wisp-connecting{border-top-color:rgba(255,255,255,0.12)}
+.status-bar.wisp-disconnecting{border-top-color:#ff0000}
 
 .wisp-bar-label{
   position:absolute;left:50%;transform:translateX(-50%);
@@ -440,6 +565,7 @@ html,body{height:100%;background:transparent;font-family:-apple-system,BlinkMacS
 .status-bar.wisp-ok  .wisp-bar-label{color:rgba(110,220,140,0.75)}
 .status-bar.wisp-err .wisp-bar-label{color:rgba(255,110,110,0.75)}
 .status-bar.wisp-connecting .wisp-bar-label{color:rgba(255,255,255,0.4)}
+.status-bar.wisp-disconnecting .wisp-bar-label{color:#ff0000}
 
 @font-face {
   font-family: 'Curly';
