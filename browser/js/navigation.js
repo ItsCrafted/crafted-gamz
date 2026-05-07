@@ -173,7 +173,7 @@ async function navigate(url) {
     if (full.includes('.') && !full.includes(' ')) {
       full = 'https://' + full
     } else {
-      full = 'https://www.google.com/search?q=' + encodeURIComponent(full)
+      full = 'https://www.duckduckgo.com/search?q=' + encodeURIComponent(full)
     }
   }
   urlInput.value = full
