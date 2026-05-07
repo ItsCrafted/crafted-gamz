@@ -166,6 +166,7 @@ async function navigate(url) {
     syncNavButtons(localTab)
     updateBookmarkStar(full)
     setBookmarksBarVisible(false)
+    saveTabsSnapshot()
     return
   }
   if (!/^https?:\/\//i.test(full) && !full.startsWith('about:')) {
@@ -201,6 +202,7 @@ async function navigate(url) {
   updateBookmarkStar(full)
   setBookmarksBarVisible(false)
   if (Bookmarks.isBookmarked(full)) Bookmarks.refreshFavicon(full)
+  saveTabsSnapshot()
 }
 
 pageFrame.addEventListener('load', () => {
@@ -275,3 +277,44 @@ btnUserPage.addEventListener('click', () => navigate('cg://account'))
 
 urlInput.addEventListener('keydown', e => { if (e.key === 'Enter') navigate(urlInput.value) })
 urlInput.addEventListener('focus', () => urlInput.select())
+
+// ── Tab session persistence ────────────────────────────────────────────────
+
+function saveTabsSnapshot() {
+  if (window.accountManager && typeof window.accountManager.scheduleTabSync === 'function') {
+    window.accountManager.scheduleTabSync()
+  }
+}
+
+async function restoreTabs(tabList) {
+  if (!Array.isArray(tabList) || !tabList.length) return
+
+  // Remove all existing tabs first
+  const existing = [...chromeTabs.tabEls]
+  existing.forEach(t => t.parentNode.removeChild(t))
+
+  let activeTabEl = null
+
+  for (const tabData of tabList) {
+    chromeTabs.addTab({ title: tabData.title || 'New Tab', favicon: false }, { background: true, animate: false })
+    const tabEl = chromeTabs.tabEls[chromeTabs.tabEls.length - 1]
+    tabEl.dataset.url   = tabData.url   || 'newtab'
+    tabEl.dataset.title = tabData.title || 'New Tab'
+    ensureTabHistory(tabEl)
+    if (tabData.active) activeTabEl = tabEl
+  }
+
+  const target = activeTabEl || chromeTabs.tabEls[0]
+  if (target) {
+    chromeTabs.setCurrentTab(target)
+    const url = target.dataset.url || 'newtab'
+    if (url === 'newtab') {
+      showNewTabPage()
+    } else {
+      await navigate(url)
+    }
+  }
+
+  syncNavButtons()
+  console.log('[Tabs] Restored', tabList.length, 'tabs from account')
+}

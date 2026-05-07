@@ -3,6 +3,7 @@ class AccountManager {
     this.FIREBASE_CONFIG_URL = 'https://firebase.cdn.cgamz.online'
     this.BM_KEY              = 'cg_bookmarks'
     this.PINS_KEY            = 'cg_pins'
+    this.TABS_KEY            = 'cg_tabs'
     this.SYNC_MS             = 8000
 
     this.db            = null
@@ -62,6 +63,7 @@ class AccountManager {
           console.log('[Account] Signed in:', u.email)
           await this.pullBookmarks()
           await this.pullPins()
+          await this.pullTabs()
           this._startSync()
           this._hideOverlay()
         } else {
@@ -152,7 +154,10 @@ class AccountManager {
 
   _startSync() {
     if (this.syncIntervalId) return
-    this.syncIntervalId = setInterval(() => this.pushBookmarks(), this.SYNC_MS)
+    this.syncIntervalId = setInterval(() => {
+      this.pushBookmarks()
+      this.pushTabs()
+    }, this.SYNC_MS)
     console.log('[Account] Auto-sync started (every', this.SYNC_MS / 1000, 's, change-based)')
   }
 
@@ -214,9 +219,60 @@ class AccountManager {
   }
 
 
+  _getTabsSnapshot() {
+    if (typeof chromeTabs === 'undefined') return null
+    const tabs = chromeTabs.tabEls.map(tabEl => ({
+      url:    tabEl.dataset.url   || 'newtab',
+      title:  tabEl.dataset.title || 'New Tab',
+      active: tabEl.hasAttribute('active'),
+    }))
+    if (!tabs.length) return null
+    return tabs
+  }
+
+  async pushTabs() {
+    if (!this.user || !this.db) return
+    const tabs = this._getTabsSnapshot()
+    if (!tabs) return
+    const hash = JSON.stringify(tabs)
+    if (hash === this._lastTabsHash) return
+    this._lastTabsHash = hash
+    try {
+      await this.db.collection('users').doc(this.user.uid).set(
+        { tabs, lastSync: firebase.firestore.FieldValue.serverTimestamp() },
+        { merge: true }
+      )
+      console.log(`[Account] Pushed ${tabs.length} tabs`)
+    } catch (e) {
+      console.warn('[Account] Tab push failed:', e)
+    }
+  }
+
+  async pullTabs() {
+    if (!this.user || !this.db) return
+    try {
+      const doc = await this.db.collection('users').doc(this.user.uid).get()
+      if (!doc.exists) return
+      const remote = doc.data().tabs
+      if (!Array.isArray(remote) || !remote.length) return
+      localStorage.setItem(this.TABS_KEY, JSON.stringify(remote))
+      console.log(`[Account] Pulled ${remote.length} tabs from Firestore`)
+      if (typeof restoreTabs === 'function') restoreTabs(remote)
+    } catch (e) {
+      console.warn('[Account] Tab pull failed:', e)
+    }
+  }
+
+  scheduleTabSync() {
+    clearTimeout(this._tabSyncTimer)
+    this._tabSyncTimer = setTimeout(() => this.pushTabs(), 1500)
+  }
+
+
   async signOut() {
     await this.pushBookmarks()
     await this.pushPins()
+    await this.pushTabs()
     this._stopSync()
     await this.auth.signOut()
     this.user    = null

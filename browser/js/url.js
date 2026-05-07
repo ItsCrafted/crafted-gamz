@@ -5,7 +5,8 @@ const LOCAL_PAGES = {
   music: '/browser/pages/music.html',
   about: '/browser/pages/about.html',
   settings: '/browser/pages/settings.html',
-  account: '/browser/pages/account.html'
+  account: '/browser/pages/account.html',
+  vms: '/browser/pages/vms.html',
 }
 
 const lockIcon = document.getElementById('lock-icon')

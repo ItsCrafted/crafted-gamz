@@ -10,6 +10,7 @@ tabsEl.addEventListener('activeTabChange', async ({ detail }) => {
     startUrlSyncLoop()
   }
   syncNavButtons(tab)
+  saveTabsSnapshot()
 })
 
 tabsEl.addEventListener('tabAdd', ({ detail }) => {
@@ -17,8 +18,10 @@ tabsEl.addEventListener('tabAdd', ({ detail }) => {
   detail.tabEl.dataset.title = 'New Tab'
   ensureTabHistory(detail.tabEl)
   syncNavButtons(detail.tabEl)
+  saveTabsSnapshot()
 })
 
 tabsEl.addEventListener('tabRemove', () => {
   if (chromeTabs.tabEls.length === 0) openNewTab()
+  saveTabsSnapshot()
 })
