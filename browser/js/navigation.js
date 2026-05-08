@@ -300,7 +300,6 @@ btnUserPage.addEventListener('click', () => navigate('cg://account'))
 urlInput.addEventListener('keydown', e => { if (e.key === 'Enter') navigate(urlInput.value) })
 urlInput.addEventListener('focus', () => urlInput.select())
 
-// ── Tab session persistence ────────────────────────────────────────────────
 
 function saveTabsSnapshot() {
   if (window.accountManager && typeof window.accountManager.scheduleTabSync === 'function') {
@@ -311,7 +310,6 @@ function saveTabsSnapshot() {
 async function restoreTabs(tabList) {
   if (!Array.isArray(tabList) || !tabList.length) return
 
-  // Remove all existing tabs first
   const existing = [...chromeTabs.tabEls]
   existing.forEach(t => t.parentNode.removeChild(t))
 

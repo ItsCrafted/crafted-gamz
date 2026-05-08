@@ -9,7 +9,7 @@
 </head>
 <body>
 <div class="bg-container" style="position:fixed;top:0;left:0;width:100vw;height:100vh;overflow:hidden;z-index:-1;">
-  <iframe src="https://i.cgamz.site?c=minimal" style="width:100%;height:100%;border:none;"></iframe>
+  <iframe id="browser-bg-frame" src="bg.html" style="width:100%;height:100%;border:none;"></iframe>
 </div>
 
 <svg id="svg-filters" style="display:none;position:absolute;width:0;height:0">
@@ -143,11 +143,11 @@
       <div class="shortcuts"></div>
       <div class="newtab-tip" id="newtab-tip">
         <i class="fa-solid fa-lightbulb"></i>
-        <span>Double-press <kbd>T</kbd> to open a new tab &nbsp;·&nbsp; Double-press <kbd>W</kbd> to close one</span>
+        <span>Double-press <kbd>T</kbd> to open a new tab &nbsp;Â·&nbsp; Double-press <kbd>W</kbd> to close one</span>
         <button class="newtab-tip-close" id="newtab-tip-close" title="Dismiss" aria-label="Dismiss tip"><i class="fa-solid fa-xmark"></i></button>
       </div>
     </div>
-    <iframe id="page-frame" style="display:none" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-presentation"></iframe>
+    <iframe id="page-frame" style="display:none" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-presentation allow-top-navigation-by-user-activation"></iframe>
     <div class="page-loading-screen" id="page-loading-screen" style="display:none">
       <div class="page-loading-spinner">
         <div class="pls-ring pls-ring-0"></div>
@@ -156,13 +156,13 @@
         <div class="pls-orb"></div>
       </div>
       <div class="page-loading-url" id="page-loading-url"></div>
-      <div class="page-loading-tip" id="page-loading-tip"><i class="fa-solid fa-lightbulb"></i> Double-press <kbd>T</kbd> to open a new tab &nbsp;·&nbsp; Double-press <kbd>W</kbd> to close one</div>
+      <div class="page-loading-tip" id="page-loading-tip"><i class="fa-solid fa-lightbulb"></i> Double-press <kbd>T</kbd> to open a new tab &nbsp;Â·&nbsp; Double-press <kbd>W</kbd> to close one</div>
     </div>
   </div>
 
   <div class="status-bar" id="wisp-bar">
     <span id="status-text"></span>
-    <span class="wisp-bar-label" id="wisp-bar-label"><i class="fa-solid fa-circle-notch fa-spin"></i> Connecting…</span>
+    <span class="wisp-bar-label" id="wisp-bar-label"><i class="fa-solid fa-circle-notch fa-spin"></i> Connectingâ€¦</span>
   </div>
 </div>
 <script src="js/account.js"></script>
@@ -178,8 +178,11 @@
 <script src="js/navigation.js"></script>
 <script src="js/keyboard.js"></script>
 <script src="js/pins.js"></script>
+<script src="js/theme-state.js"></script>
+<script src="js/theme.js"></script>
 <script src="js/main.js"></script>
 <script src="js/tabs.js"></script>
 <script src="js/loading.js"></script>
+<script src="js/escape.js"></script>
 </body>
 </html>

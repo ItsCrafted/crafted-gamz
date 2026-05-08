@@ -3,23 +3,67 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>CG System Settings</title>
-<style>
-body{margin:0;background:#202124;color:#e8eaed;font-family:Arial,sans-serif;display:grid;place-items:center;height:100vh}
-.card{background:#2b2d31;border:1px solid #3c4043;border-radius:12px;padding:24px;max-width:700px;width:min(92vw,700px)}
-h1{margin:0 0 8px;font-size:28px}
-p{margin:0 0 14px;color:#bdc1c6}
-.row{padding:10px 0;border-top:1px solid #3c4043}
-.row:first-of-type{border-top:none}
-</style>
+<title>Crafted Gamz Settings</title>
+<link rel="shortcut icon" href="../img/favicon.png" type="image/x-icon">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="../css/settings.css">
 </head>
 <body>
-  <main class="card">
-    <h1>System Settings</h1>
-    <p>This is the local `cg://settings` page in `browser/pages/settings.html`.</p>
-    <div class="row">Appearance</div>
-    <div class="row">Privacy & Security</div>
-    <div class="row">Proxy & Network</div>
-  </main>
+<div style="position:fixed;top:0;left:0;width:100vw;height:100vh;overflow:hidden;z-index:-1;">
+  <iframe src="../bg.html" style="width:100%;height:100%;border:none;"></iframe>
+</div>
+
+<div class="page">
+  <div class="page-header">
+    <div class="page-header-icon"><i class="fa-solid fa-sliders"></i></div>
+    <h1>Settings</h1>
+  </div>
+
+  <div class="section-label">Appearance</div>
+  <div class="card">
+
+    <div class="card-row">
+      <div class="row-icon purple"><i class="fa-solid fa-circle-half-stroke"></i></div>
+      <div class="row-body">
+        <div class="row-title">Theme</div>
+        <div class="row-sub">Dark is the default. Choose between the two supported browser themes.</div>
+      </div>
+      <div class="row-end">
+        <select class="select-pill" id="theme-select">
+          <option value="dark">Dark</option>
+          <option value="light">Light</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="card-row" style="flex-direction:column;align-items:flex-start;gap:0">
+      <div style="display:flex;align-items:center;gap:14px;width:100%">
+        <div class="row-icon teal"><i class="fa-solid fa-image"></i></div>
+        <div class="row-body">
+          <div class="row-title">Background Preset</div>
+          <div class="row-sub" id="bg-row-sub">Each preset owns its preview colors and remote background URL through bg.html</div>
+        </div>
+      </div>
+      <div class="bg-grid" id="bg-grid"></div>
+    </div>
+
+    <div class="card-row clickable" id="switch-layout-row">
+      <div class="row-icon blue"><i class="fa-solid fa-table-columns"></i></div>
+      <div class="row-body">
+        <div class="row-title">Switch Layout</div>
+        <div class="row-sub">Open the layout selector page</div>
+      </div>
+      <div class="row-end">
+        <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:11px;opacity:0.4;"></i>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div id="settings-toast"></div>
+
+<script src="../js/theme-state.js"></script>
+<script src="../js/settings.js"></script>
 </body>
 </html>
