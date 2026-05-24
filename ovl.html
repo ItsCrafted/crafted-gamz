@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="english">
+<head>
+    <title>My Drive - Google Drive</title>
+    <link rel="icon" type="image/x-icon" href="favicon.png">
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <script src="http_cdnjs.cloudflare.com_ajax_libs_font-awesome_6.0.0-beta3_js_all.js"></script>
+</head>
+<body>
+    <!-- iframe to display the webpage with sandbox attribute -->
+    <iframe id="webpageFrame" sandbox="allow-scripts allow-same-origin allow-popups allow-forms"></iframe>
+
+    
+
+    <!-- Text at the bottom of the page with buttons and dynamic search bar class -->
+    <div id="bottomText" class="search-bar-light">
+        <label for="urlInput"></label><input type="text" id="urlInput" placeholder="Enter URL">
+        <button id="loadButton">Search</button>
+        <button id="gamesButton" class="action-button">Games</button>
+        <button id="3khoButton" class="action-button">3kho</button>
+        <button id="disable" class="action-button">Disable Overlay</button>
+    </div>
+
+    <!-- JavaScript code to set the iframe source and handle user interactions -->
+    <script>
+        const webpageFrame = document.getElementById('webpageFrame');
+        const urlInput = document.getElementById('urlInput');
+        const loadButton = document.getElementById('loadButton');
+        const gamesButton = document.getElementById('gamesButton');
+        const k3hoButton = document.getElementById('3khoButton');
+        //const bottomText = document.getElementById('bottomText');
+
+        // Function to load the webpage
+        function loadWebpage() {
+            const url = urlInput.value.trim();
+
+            if (url === '') {
+                alert('Please enter a valid URL or search term.');
+                return;
+            }
+
+            // Check if the input contains a URL-like extension (e.g., ".com")
+            if (/\.\w{2,}/.test(url)) {
+                // Input appears to be a URL; set the iframe source accordingly
+                webpageFrame.src = url.startsWith('http://') || url.startsWith('https://') ? url : `https://${url}`;
+            } else {
+                // Input does not contain an extension; perform a Bing search
+                const searchQuery = encodeURIComponent(url);
+                webpageFrame.src = `https://www.bing.com/search?q=${searchQuery}`;
+            }
+        }
+
+        // Function to resize the iframe to match the window size
+        function resizeIframe() {
+            const windowHeight = window.innerHeight;
+            webpageFrame.style.height = `${windowHeight - 40}px`; // Subtract 40 for the search bar height
+            webpageFrame.src = "Settings/index.html";
+        }
+
+        // Event listeners for loading the webpage
+        loadButton.addEventListener('click', loadWebpage);
+        urlInput.addEventListener('keyup', (event) => {
+            if (event.key === 'Enter') {
+                loadWebpage();
+            }
+        });
+
+        // Load a predefined webpage when the "Games" button is clicked
+        gamesButton.addEventListener('click', () => {
+             // Replace with the URL you want to display
+            webpageFrame.src = 'gameloader.html';
+        });
+
+        // Load a predefined webpage when the "3kho" button is clicked
+        k3hoButton.addEventListener('click', () => {
+            const k3hoUrl = 'https://lambent-gecko-be5c30.netlify.app'; // Replace with the URL you want to display
+            webpageFrame.src = k3hoUrl;
+        });
+
+        disable.addEventListener('click', () => {
+            window.location.href = "gameloader.html";
+        });
+
+        // Call resizeIframe when the window resizes
+        window.addEventListener('resize', resizeIframe);
+
+        // Initial iframe sizing
+        resizeIframe();
+    </script>
+  <script src="Settings/theme-switcher.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

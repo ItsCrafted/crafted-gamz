@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Drive - My Drive</title>
+    <link rel="icon" type="image/x-icon" href="../../favicon.png">
+
+    <link rel="stylesheet" href="http_v8.js-dos.com_latest_js-dos.css">
+    <script src="http_v8.js-dos.com_latest_js-dos.js"></script>
+</head>
+<body>
+<h1></h1>
+<div id="dos" style="width: 100vw; height: 60vw;"></div>
+<script>
+    Dos(document.getElementById("dos"), {
+        dosboxConf: `
+[sdl]
+autolock=false
+mouse_emulation=integration
+
+[dosbox]
+title=Windows 98
+memsize=256
+
+[video]
+vmemsize=8
+vesa modelist width limit=0
+vesa modelist height limit=0
+
+[dos]
+ver=7.1
+hard drive data rate limit=0
+floppy drive data rate limit=0
+
+[cpu]
+cputype=pentium_mmx
+core=normal
+integration device=true
+
+[sblaster]
+sbtype=sb16vibra
+
+[fdc, primary]
+int13fakev86io=true
+
+[ide, primary]
+int13fakeio=true
+int13fakev86io=true
+
+[ide, secondary]
+int13fakeio=true
+int13fakev86io=true
+cd-rom insertion delay=4000
+
+[render]
+scaler=none
+
+[autoexec]
+echo off
+imgmount 2 sockdrive wss://backend.make-vm.com:8001 dos.zone win98
+imgmount 3 sockdrive wss://backend.make-vm.com:8001 dos.zone diablo_109_d
+boot c:
+`,
+    });
+</script>
+</body>
+</html>
