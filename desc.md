@@ -22,6 +22,7 @@ This is v9 of Crafted Gamz, also shown as Crafted Gamz IX on the new opening scr
 
 ## Games and sections included
 
+- A Small World Cup
 - Aquapark.io
 - Basket Bros
 - Chrome Dino Runner
