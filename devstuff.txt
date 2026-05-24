@@ -1,0 +1,17 @@
+https://www.w3schools.com/html/
+
+https://www.w3schools.com/css/
+
+https://www.w3schools.com/js/
+
+https://www.w3schools.com/python/
+
+https://www.w3schools.com/java/
+
+https://www.w3schools.com/cpp/
+
+https://www.w3schools.com/cs/
+
+https://github.com/dotnet/csharp-notebooks
+
+https://learn.microsoft.com/en-us/training/dotnet/
