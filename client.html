@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Checking...</title>
+  <link rel="shortcut icon" href="favicon.png" type="image/x-icon" id="favicon">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    
+    * {
+      box-sizing: border-box;
+    }
+    
+    html, body {
+      margin: 0; 
+      padding: 0; 
+      overflow: hidden; 
+      height: 100%;
+      background: linear-gradient(45deg, #050506, #1b4e52);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, #050506, #1b4e52);
+      pointer-events: none;
+      z-index: 1;
+    }
+    
+    iframe {
+      border: none;
+      width: 100vw;
+      height: 100vh;
+      display: block;
+    }
+    
+    .container {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      padding: 2rem;
+      text-align: center;
+    }
+    
+    .status-card {
+      background: rgba(26, 26, 26, 0.8);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(75, 249, 237, 0.2);
+      border-radius: 24px;
+      padding: 3rem 2.5rem;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      transform: translateY(20px);
+      opacity: 0;
+      animation: slideUp 0.8s ease-out forwards;
+    }
+    
+    @keyframes slideUp {
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    
+    .status-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 1.5rem;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #4bf9ed, #7acbd0);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .status-icon::before {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.3) 50%, transparent 70%);
+      animation: shimmer 2s infinite;
+    }
+    
+    @keyframes shimmer {
+      0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+      100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+    }
+    
+    .status-icon svg {
+      width: 40px;
+      height: 40px;
+      color: #000;
+      z-index: 1;
+    }
+    
+    .status-text {
+      color: #ffffff;
+      font-size: 1.25rem;
+      font-weight: 500;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+      letter-spacing: -0.02em;
+    }
+    
+    .loading-dots {
+      display: inline-block;
+      animation: dots 1.5s infinite;
+    }
+    
+    @keyframes dots {
+      0%, 20% { content: ''; }
+      40% { content: '.'; }
+      60% { content: '..'; }
+      80%, 100% { content: '...'; }
+    }
+    
+    .loading-dots::after {
+      content: '';
+      animation: dots 1.5s infinite;
+    }
+    
+    .cloak-button {
+      background: linear-gradient(135deg, #4bf9ed 0%, #7acbd0 100%);
+      border: none;
+      border-radius: 16px;
+      padding: 16px 32px;
+      font-size: 16px;
+      font-weight: 600;
+      color: #000;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 
+        0 8px 24px rgba(75, 249, 237, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      position: relative;
+      overflow: hidden;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      min-width: 200px;
+    }
+    
+    .cloak-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: left 0.5s;
+    }
+    
+    .cloak-button:hover::before {
+      left: 100%;
+    }
+    
+    .cloak-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 
+        0 12px 32px rgba(75, 249, 237, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+      background: linear-gradient(135deg, #5ffaf0 0%, #8bd5da 100%);
+    }
+    
+    .cloak-button:active {
+      transform: translateY(0);
+      box-shadow: 
+        0 4px 16px rgba(75, 249, 237, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+    
+    .pulse-ring {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 120px;
+      height: 120px;
+      border: 2px solid rgba(75, 249, 237, 0.3);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0% {
+        transform: translate(-50%, -50%) scale(0.8);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(1.4);
+        opacity: 0;
+      }
+    }
+    
+    .grid-pattern {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.02;
+      background-image: 
+        linear-gradient(rgba(75, 249, 237, 0.5) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(75, 249, 237, 0.5) 1px, transparent 1px);
+      background-size: 50px 50px;
+      pointer-events: none;
+      z-index: 0;
+    }
+    
+    @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
+      }
+      
+      .status-card {
+        padding: 2rem 1.5rem;
+        border-radius: 20px;
+      }
+      
+      .status-text {
+        font-size: 1.1rem;
+      }
+      
+      .cloak-button {
+        padding: 14px 28px;
+        font-size: 15px;
+        min-width: 180px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="grid-pattern"></div>
+  
+  <div class="container">
+    <div class="status-card" id="statusCard">
+      <div class="pulse-ring"></div>
+      <div class="status-icon">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+        </svg>
+      </div>
+      <div class="status-text" id="status">
+        Checking cloak status<span class="loading-dots"></span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const cloak = localStorage.getItem('cloak');
+    const disguise = localStorage.getItem('disguise');
+    const disimg = localStorage.getItem('disimg');
+    const distxt = localStorage.getItem('distxt');
+    const status = document.getElementById('status');
+    const statusCard = document.getElementById('statusCard');
+    const favicon = document.getElementById('favicon');
+
+    
+    setTimeout(() => {
+      if (cloak === '1') {
+        status.innerHTML = 'Cloak enabled. Ready to open secure session.';
+        
+        
+        const icon = statusCard.querySelector('.status-icon svg');
+        icon.innerHTML = '<path d="M12,1L3,5V11C3,16.55 6.84,21.74 12,23C17.16,21.74 21,16.55 21,11V5L12,1M12,7C13.4,7 14.8,8.6 14.8,10.5V11.5C15.4,11.5 16,12.4 16,13V16C16,16.6 15.6,17 15,17H9C8.4,17 8,16.6 8,16V13C8,12.4 8.4,11.5 9,11.5V10.5C9,8.6 10.6,7 12,7M12,8.2C11.2,8.2 10.2,8.7 10.2,10.5V11.5H13.8V10.5C13.8,8.7 12.8,8.2 12,8.2Z"/>';
+        
+        const btn = document.createElement('button');
+        btn.className = 'cloak-button';
+        btn.textContent = 'Open Cloaked Tab';
+
+        btn.onclick = () => {
+          const newTab = window.open('about:blank', '_blank');
+          if (!newTab) {
+            alert('Popup blocked! Please allow popups for this site.');
+            return;
+          }
+          newTab.document.write(`
+            <style>html,body{margin:0;padding:0;overflow:hidden;height:100%;}</style>
+            <iframe src="main.html" style="border:none;width:100vw;height:100vh;"></iframe>
+          `);
+          setTimeout(() => window.close(), 69);
+        };
+
+        statusCard.appendChild(btn);
+
+      } else {
+        if (disguise === '1') {
+          if (disimg) {
+            favicon.href = disimg;
+          }
+          if (distxt) {
+            document.title = distxt;
+          }
+          document.querySelector('.container').style.display = 'none';
+
+          const iframe = document.createElement('iframe');
+          iframe.src = 'main.html';
+          document.body.appendChild(iframe);
+
+        } else {
+          location.href = 'main.html';
+        }
+      }
+    }, 800);
+  </script>
+
+</body>
+</html>

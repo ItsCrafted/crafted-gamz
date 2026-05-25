@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>CG Auto Cleanup</title>
+</head>
+<body>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+  import { 
+    getFirestore, 
+    doc, 
+    getDoc, 
+    setDoc 
+  } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js";
+  import { 
+    getDatabase, 
+    ref, 
+    set, 
+    remove 
+  } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
+
+  async function loadFirebaseConfig() {
+    const res = await fetch('/.netlify/functions/get-firebase-config');
+    if (!res.ok) throw new Error('Failed to fetch Firebase config');
+    return await res.json();
+  }
+
+  async function runCleanup() {
+    try {
+      const config = await loadFirebaseConfig();
+      const app = initializeApp(config);
+      
+      const db = getFirestore(app);
+      const rtdb = getDatabase(app);
+
+      
+      const lastResetRef = doc(db, "maintenance", "lastReset");
+      const maintenanceRef = ref(rtdb, "settings/maintenance");
+      const onlineUsersRef = ref(rtdb, "onlineUsers");
+
+      
+      const today = new Date().toISOString().split("T")[0];
+
+      
+      const lastResetSnap = await getDoc(lastResetRef);
+      const lastResetDate = lastResetSnap.exists() ? lastResetSnap.data().date : null;
+
+      if (lastResetDate === today) {
+        console.log("Cleanup already done for today:", today);
+        return;
+      }
+
+      console.log("Starting cleanup for:", today);
+
+      
+      await set(maintenanceRef, true);
+      console.log("Maintenance mode enabled.");
+
+      
+      await remove(onlineUsersRef);
+      console.log("onlineUsers cleared.");
+
+      
+      await set(maintenanceRef, false);
+      console.log("Maintenance mode disabled.");
+
+      
+      await setDoc(lastResetRef, { date: today });
+      console.log("Updated lastReset to:", today);
+
+      console.log("Cleanup complete.");
+
+    } catch (err) {
+      console.error("Cleanup error:", err);
+    }
+  }
+
+  runCleanup();
+</script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+[functions]
+  directory = "netlify/functions"
+
+[build]
+  functions = "netlify/functions"
+  publish = "."
+
+[[redirects]]
+  from = "/value.json"
+  to = "/.netlify/functions/value"
+  status = 200
