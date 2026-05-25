@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="favicon.png">
+  <title>Crafted Gamz | Request a Game</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: sans-serif;
+  overflow-x: hidden;
+}
+
+iframe {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  border: none;
+}
+
+.back-button {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
+  padding: 15px 30px;
+  border-radius: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.03),
+    rgba(255, 255, 255, 0.008)
+  );
+  backdrop-filter: blur(18px) saturate(180%) contrast(120%) brightness(105%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%) contrast(120%) brightness(105%);
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.back-button:hover {
+  transform: scale(1.05);
+  box-shadow: 
+    0 0 15px rgba(255, 255, 255, 0.4), 
+    0 0 30px rgba(255, 255, 255, 0.2),
+    0 8px 30px rgba(0, 0, 0, 0.35);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.back-button i {
+  font-size: 20px;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+  padding-top: 100px;
+}
+
+.form-box {
+  position: relative;
+  border-radius: 32px;
+  padding: 40px;
+  width: 100%;
+  max-width: 600px;
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.03),
+    rgba(255, 255, 255, 0.008)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(18px) saturate(180%) contrast(120%) brightness(105%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%) contrast(120%) brightness(105%);
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.3),
+    inset 0 0 0.5px rgba(255, 255, 255, 0.2),
+    inset 0 0 20px rgba(255, 255, 255, 0.02);
+}
+
+.form-box::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -50%;
+  width: 200%;
+  height: 100%;
+  background: radial-gradient(
+    ellipse at 60% 40%,
+    rgba(255, 255, 255, 0.08),
+    transparent 60%
+  );
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+  z-index: 1;
+}
+
+h1 {
+  font-size: 2.5rem;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+  margin-bottom: 30px;
+  position: relative;
+  z-index: 2;
+}
+
+.form-group {
+  margin-bottom: 25px;
+  position: relative;
+  z-index: 2;
+}
+
+label {
+  display: block;
+  color: white;
+  font-weight: 500;
+  margin-bottom: 8px;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  font-size: 1rem;
+}
+
+.required {
+  color: #ff6b6b;
+}
+
+input, textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.03),
+    rgba(255, 255, 255, 0.008)
+  );
+  backdrop-filter: blur(18px) saturate(180%) contrast(120%) brightness(105%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%) contrast(120%) brightness(105%);
+  color: white;
+  font-size: 16px;
+  outline: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+  box-sizing: border-box;
+}
+
+input:focus, textarea:focus {
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.4), 0 0 30px rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+input::placeholder, textarea::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+textarea {
+  min-height: 100px;
+  resize: vertical;
+  font-family: sans-serif;
+}
+
+.submit-button {
+  width: 100%;
+  padding: 15px;
+  border-radius: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.03),
+    rgba(255, 255, 255, 0.008)
+  );
+  backdrop-filter: blur(18px) saturate(180%) contrast(120%) brightness(105%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%) contrast(120%) brightness(105%);
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  position: relative;
+  z-index: 2;
+}
+
+.submit-button:hover:not(:disabled) {
+  transform: scale(1.02);
+  box-shadow: 
+    0 0 15px rgba(255, 255, 255, 0.4), 
+    0 0 30px rgba(255, 255, 255, 0.2),
+    0 8px 30px rgba(0, 0, 0, 0.35);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.submit-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.message {
+  margin-top: 20px;
+  padding: 15px;
+  border-radius: 12px;
+  text-align: center;
+  font-weight: 500;
+  display: none;
+  position: relative;
+  z-index: 2;
+}
+
+.message.success {
+  background: rgba(76, 175, 80, 0.2);
+  border: 1px solid rgba(76, 175, 80, 0.5);
+  color: #4caf50;
+  display: block;
+}
+
+.message.error {
+  background: rgba(244, 67, 54, 0.2);
+  border: 1px solid rgba(244, 67, 54, 0.5);
+  color: #f44336;
+  display: block;
+}
+
+.message.clash {
+  background: rgba(255, 152, 0, 0.2);
+  border: 1px solid rgba(255, 152, 0, 0.5);
+  color: #ff9800;
+  display: block;
+  font-size: 1.2em;
+}
+
+.loading {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+  margin-right: 10px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: white transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: white;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+@media (max-width: 768px) {
+  .back-button {
+    top: 10px;
+    left: 10px;
+    padding: 12px 20px;
+    font-size: 16px;
+  }
+
+  .container {
+    padding-top: 80px;
+  }
+}
+  </style>
+    <script type='text/javascript' src='//civicmillion.com/c1/20/eb/c120eb7ffae731368e11088d8c95e60c.js'></script>
+</head>
+<body>
+  <iframe src="bg.html"></iframe>
+
+  <a href="main.html" class="back-button">
+    <i class="fas fa-arrow-left"></i>
+    Back to Home
+  </a>
+
+  <div class="container">
+    <div class="form-box">
+      <h1>Request a Game</h1>
+      
+      <form id="gameRequestForm">
+        <div class="form-group">
+          <label for="gameName">Game Name <span class="required">*</span></label>
+          <input type="text" id="gameName" name="gameName" placeholder="Enter the game name" required>
+        </div>
+
+        <div class="form-group">
+          <label for="userName">Your Name (Optional)</label>
+          <input type="text" id="userName" name="userName" placeholder="Enter your name">
+        </div>
+
+        <div class="form-group">
+          <label for="contactInfo">Contact Info (Optional)</label>
+          <input type="text" id="contactInfo" name="contactInfo" placeholder="Email, Discord, etc.">
+        </div>
+
+        <div class="form-group">
+          <label for="gameWebsite">Website/Link (Optional)</label>
+          <input type="url" id="gameWebsite" name="gameWebsite" placeholder="Where can we find this game?">
+        </div>
+
+        <button type="submit" class="submit-button" id="submitBtn">
+          Submit Request
+        </button>
+      </form>
+
+      <div id="message" class="message"></div>
+    </div>
+  </div>
+
+  <script>
+    let firebaseApp;
+    let db;
+
+    async function loadFirebaseConfig() {
+      try {
+        const res = await fetch('/.netlify/functions/get-firebase-config');
+        if (!res.ok) throw new Error('Failed to fetch Firebase config');
+        const config = await res.json();
+        return config;
+      } catch (error) {
+        console.error('Error loading Firebase config:', error);
+        throw error;
+      }
+    }
+
+    async function initializeFirebase() {
+      try {
+        const config = await loadFirebaseConfig();
+        if (firebase.apps.length === 0) {
+          firebaseApp = firebase.initializeApp(config);
+        }
+        db = firebase.firestore();
+        console.log('Firebase initialized successfully');
+      } catch (error) {
+        console.error('Failed to initialize Firebase:', error);
+      }
+    }
+
+    async function validateWithGroq(gameName, userName, contactInfo, gameWebsite) {
+      try {
+        const messages = [
+          {
+            role: "system",
+            content: 'You are a game request validator. Your job is to check if game requests are appropriate and valid. Check for: 1) Inappropriate content, 2) If the user is requesting Clash Royale (respond with EXACTLY "CLASH_ROYALE" if detected), 3) Spam or nonsense requests, 4) Requests that are clearly not games. Respond with "VALID" if the request is good, "CLASH_ROYALE" if they want Clash Royale, or explain the issue if invalid.'
+          },
+          {
+            role: "user",
+            content: `Validate this game request:\nGame Name: ${gameName}\nUser Name: ${userName || 'Not provided'}\nContact: ${contactInfo || 'Not provided'}\nWebsite: ${gameWebsite || 'Not provided'}`
+          }
+        ];
+
+        const response = await fetch("/.netlify/functions/chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            model: "llama-3.3-70b-versatile",
+            messages: messages,
+            temperature: 0.3,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Groq API request failed');
+        }
+
+        const data = await response.json();
+        const validation = data.choices[0].message.content.trim();
+        
+        console.log('Validation response:', validation);
+        
+        return validation;
+      } catch (error) {
+        console.error('Groq validation error:', error);
+        return 'VALID'; 
+      }
+    }
+
+    async function submitGameRequest(gameName, userName, contactInfo, gameWebsite) {
+      try {
+        const requestData = {
+          gameName: gameName.trim(),
+          userName: userName ? userName.trim() : null,
+          contactInfo: contactInfo ? contactInfo.trim() : null,
+          gameWebsite: gameWebsite ? gameWebsite.trim() : null,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+          status: 'pending'
+        };
+
+        const docRef = await db.collection('gameRequests').add(requestData);
+        console.log('Game request submitted with ID:', docRef.id);
+        return true;
+      } catch (error) {
+        console.error('Error submitting game request:', error);
+        throw error;
+      }
+    }
+
+    function showMessage(text, type) {
+      const messageDiv = document.getElementById('message');
+      messageDiv.textContent = text;
+      messageDiv.className = `message ${type}`;
+      messageDiv.style.display = 'block';
+    }
+
+    function hideMessage() {
+      const messageDiv = document.getElementById('message');
+      messageDiv.style.display = 'none';
+    }
+
+    document.getElementById('gameRequestForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const submitBtn = document.getElementById('submitBtn');
+      const gameName = document.getElementById('gameName').value;
+      const userName = document.getElementById('userName').value;
+      const contactInfo = document.getElementById('contactInfo').value;
+      const gameWebsite = document.getElementById('gameWebsite').value;
+
+      if (!gameName.trim()) {
+        showMessage('Please enter a game name', 'error');
+        return;
+      }
+
+      
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<div class="loading"></div>Validating...';
+      hideMessage();
+
+      try {
+        
+        const validation = await validateWithGroq(gameName, userName, contactInfo, gameWebsite);
+        
+        
+        if (validation.toUpperCase().includes('CLASH_ROYALE') || 
+            validation.toLowerCase().includes('clash royale')) {
+          showMessage('no im not adding clash 🙄', 'clash');
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Submit Request';
+          return;
+        }
+
+        
+        if (!validation.toUpperCase().includes('VALID')) {
+          showMessage(validation, 'error');
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Submit Request';
+          return;
+        }
+
+        
+        await submitGameRequest(gameName, userName, contactInfo, gameWebsite);
+        
+        showMessage('✅ Game request submitted successfully!', 'success');
+        document.getElementById('gameRequestForm').reset();
+        
+        setTimeout(() => {
+          hideMessage();
+        }, 5000);
+
+      } catch (error) {
+        showMessage('Error submitting request. Please try again.', 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit Request';
+      }
+    });
+
+    
+    async function initialize() {
+      await initializeFirebase();
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initialize);
+    } else {
+      initialize();
+    }
+  </script>
+</body>
+</html>

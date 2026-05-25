@@ -1,0 +1,1299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="favicon.png">
+  <title>Crafted Gamz | Games</title>
+  <script src="periodSchedule.js"></script>
+<script src="nav.js" defer></script>
+<script type="module" src="reload.js"></script>
+<script src="time-tracker.js"></script>
+<script type="module" src="disable.js"></script>
+<script type="module" src="notification.js"></script>
+<script type="module" src="maintenance.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
+<script src="whatsnew.js"></script>
+  <style>
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: sans-serif;
+  overflow-x: hidden;
+}
+
+iframe {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  border: none;
+}
+
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  padding-top: 5vh;
+}
+
+.box {
+  position: relative;
+  border-radius: 32px;
+  padding: 20px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+  color: white;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 200px;
+  height: 300px;
+  margin: 10px;
+  text-decoration: none;
+  cursor: pointer;
+  overflow: hidden;
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.03),
+    rgba(255, 255, 255, 0.008)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(18px) saturate(180%) contrast(120%) brightness(105%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%) contrast(120%) brightness(105%);
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.3),
+    inset 0 0 0.5px rgba(255, 255, 255, 0.2),
+    inset 0 0 20px rgba(255, 255, 255, 0.02);
+}
+
+.box.blacklisted {
+  opacity: 0.4;
+  filter: grayscale(80%);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.box.blacklisted::after {
+  content: "Game Blacklisted due to Device Management";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.95);
+  color: #ff4444;
+  padding: 15px;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 14px;
+  text-align: center;
+  z-index: 10;
+  width: 80%;
+  border: 2px solid #ff4444;
+  box-shadow: 0 0 20px rgba(255, 68, 68, 0.5);
+}
+
+.box::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -50%;
+  width: 200%;
+  height: 100%;
+  background: radial-gradient(
+    ellipse at 60% 40%,
+    rgba(255, 255, 255, 0.08),
+    transparent 60%
+  );
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.box:hover {
+  transform: scale(1.03);
+  box-shadow:
+    0 8px 30px rgba(0, 0, 0, 0.35),
+    inset 0 0 20px rgba(255, 255, 255, 0.04);
+}
+
+.box.blacklisted:hover {
+  transform: none;
+}
+
+.box img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  position: relative;
+  z-index: 2;
+}
+
+.box .text {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: white;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  position: relative;
+  z-index: 2;
+}
+
+.heart-icon {
+  font-size: 24px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 10;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  margin-top: 10px;
+  position: relative;
+}
+
+.heart-icon:hover {
+  transform: scale(1.2);
+  filter: drop-shadow(0 0 8px white);
+}
+
+.heart-icon.saved {
+  color: white;
+  animation: heartPulse 0.6s ease-out;
+}
+
+.heart-icon.unsaved {
+  color: transparent;
+  -webkit-text-stroke: 2px white;
+  text-stroke: 2px white;
+}
+
+@keyframes heartPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+
+.search-dropdown {
+  width: 500px;
+  margin: 0 auto 10px;
+  position: relative;
+  z-index: 1;
+}
+
+#dropdownSearch {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.03),
+    rgba(255, 255, 255, 0.008)
+  );
+  backdrop-filter: blur(18px) saturate(180%) contrast(120%) brightness(105%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%) contrast(120%) brightness(105%);
+  color: white;
+  font-size: 16px;
+  outline: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+}
+
+#dropdownSearch:focus {
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.4), 0 0 30px rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+#dropdownList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  width: 100%;
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.03),
+    rgba(255, 255, 255, 0.008)
+  );
+  backdrop-filter: blur(18px) saturate(180%) contrast(120%) brightness(105%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%) contrast(120%) brightness(105%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0 0 10px 10px;
+  z-index: 1;
+  max-height: 200px;
+  overflow-y: auto;
+  display: none;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+#dropdownList li {
+  padding: 10px;
+  color: white;
+  cursor: pointer;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+}
+
+#dropdownList li:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+h1 {
+  font-size: 3rem;
+  color: white;
+  font-weight: bold;
+  line-height: 1.2;
+  margin: 3em auto;
+  text-align: center;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+}
+
+h2 {
+  font-size: 3rem;
+  color: white;
+  font-weight: bold;
+  line-height: 1.2;
+  margin: 3em auto;
+  text-align: center;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+}
+
+h6 {
+  font-size: 1.5rem;
+  color: white;
+  font-weight: bold;
+  line-height: 1.2;
+  margin-top: 2em;
+  margin-bottom: .5em;
+  text-align: center;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+}
+
+.button {
+  position: relative;
+  border-radius: 120px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+  color: white;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 500px;
+  height: 50px;
+  text-decoration: none;
+  margin-top: 30px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  overflow: hidden;
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.03),
+    rgba(255, 255, 255, 0.008)
+  );
+  backdrop-filter: blur(18px) saturate(180%) contrast(120%) brightness(105%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%) contrast(120%) brightness(105%);
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.3),
+    inset 0 0 0.5px rgba(255, 255, 255, 0.2),
+    inset 0 0 20px rgba(255, 255, 255, 0.02);
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  font-weight: 500;
+}
+
+.button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -50%;
+  width: 200%;
+  height: 100%;
+  background: radial-gradient(
+    ellipse at 60% 40%,
+    rgba(255, 255, 255, 0.08),
+    transparent 60%
+  );
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.button:hover {
+  transform: scale(1.03);
+  box-shadow: 
+    0 0 15px rgba(255, 255, 255, 0.4), 
+    0 0 30px rgba(255, 255, 255, 0.2),
+    0 8px 30px rgba(0, 0, 0, 0.35);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: white transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: white;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+  </style>
+<style>
+#loader-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  flex-direction: column;
+  transition: opacity 1s ease, transform 1s ease;
+}
+
+#loader-overlay.dissolve {
+  opacity: 0;
+  transform: scale(1.1);
+  pointer-events: none;
+}
+
+.loader-line {
+  display: flex;
+  font-family: monospace;
+  font-size: 2em;
+  color: rgba(255,255,255,0.2);
+  letter-spacing: 0.15em;
+  user-select: none;
+}
+
+.loader-line span {
+  transition: color 0.3s ease;
+}
+
+.loader-line span.active {
+  color: #ffffff;
+  text-shadow: 0 0 8px rgba(255,255,255,0.8);
+}
+
+.loader-text {
+  font-family: sans-serif;
+  color: #ffffff;
+  font-size: 1.5em;
+  margin-top: 24px;
+  text-align: center;
+}
+</style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script type='text/javascript' src='//civicmillion.com/c1/20/eb/c120eb7ffae731368e11088d8c95e60c.js'></script>
+</head>
+
+<script>
+let firebaseApp;
+let db;
+
+const BLACKLISTED_GAMES = [
+  'bacon-may-die',
+  'buckshot-roulette',
+  'creative-kill-chamber',
+  'funny-shooter',
+  'funny-shooter-2',
+  'getaway-shootout',
+  'rooftop-snipers',
+  'super-hot',
+  'ultrakill'
+];
+
+async function getUserIP() {
+  try {
+    console.log('Fetching IP from ipify...');
+    
+    const response = await fetch('https://api.ipify.org?format=json');
+    
+    if (!response.ok) {
+      console.error('Failed to fetch IP from ipify:', response.status);
+      return null;
+    }
+    
+    const data = await response.json();
+    console.log('IP received:', data.ip);
+    return data.ip;
+  } catch (error) {
+    console.error('Error fetching IP:', error);
+    return null;
+  }
+}
+
+async function checkIPBlacklist(userIP) {
+  try {
+    console.log('Checking if IP is blacklisted:', userIP);
+    const response = await fetch('/.netlify/functions/game-blacklist', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ ip: userIP })
+    });
+    
+    if (!response.ok) {
+      console.error('Failed to check IP blacklist:', response.status);
+      return false;
+    }
+    
+    const data = await response.json();
+    console.log('Blacklist check result:', data);
+    
+    return data.isBlacklisted;
+  } catch (error) {
+    console.error('Error checking IP blacklist:', error);
+    return false;
+  }
+}
+
+function applyGameBlacklist() {
+  console.log('Applying game blacklist to games:', BLACKLISTED_GAMES);
+  
+  BLACKLISTED_GAMES.forEach(gameId => {
+    const gameBox = document.querySelector(`.box[data-id="${gameId}"]`);
+    if (gameBox) {
+      gameBox.classList.add('blacklisted');
+      console.log(`Blacklisted game: ${gameId}`);
+    }
+  });
+}
+
+async function loadFirebaseConfig() {
+  try {
+    const res = await fetch('/.netlify/functions/get-firebase-config');
+    if (!res.ok) throw new Error('Failed to fetch Firebase config');
+    const config = await res.json();
+    return config;
+  } catch (error) {
+    console.error('Error loading Firebase config:', error);
+    throw error;
+  }
+}
+
+async function initializeFirebase() {
+  try {
+    const config = await loadFirebaseConfig();
+    if (firebase.apps.length === 0) {
+      firebaseApp = firebase.initializeApp(config);
+    }
+    db = firebase.firestore();
+    console.log('Firebase initialized successfully');
+  } catch (error) {
+    console.error('Failed to initialize Firebase:', error);
+  }
+}
+
+async function trackGameClick(gameName) {
+  if (!db || !gameName) return;
+  
+  try {
+    console.log(`Tracking click for game: ${gameName}`);
+    
+    const gameDoc = db.collection("gameCounts").doc(gameName);
+    const docSnapshot = await gameDoc.get();
+    
+    if (docSnapshot.exists) {
+      const currentCount = docSnapshot.data().count || 0;
+      await gameDoc.update({ 
+        count: currentCount + 1,
+        lastClicked: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      console.log(`Updated count for ${gameName}: ${currentCount + 1}`);
+    } else {
+      await gameDoc.set({ 
+        count: 1,
+        lastClicked: firebase.firestore.FieldValue.serverTimestamp(),
+        gameName: gameName
+      });
+      console.log(`Created new count for ${gameName}: 1`);
+    }
+  } catch (error) {
+    console.error("Failed to update game count:", error);
+  }
+}
+
+class GameSaver {
+  constructor() {
+    this.savedGames = this.getSavedGames();
+    this.initHearts();
+    this.initGameClicks();
+  }
+
+  getSavedGames() {
+    try {
+      const saved = JSON.parse(localStorage.getItem('savedGames') || '[]');
+      return Array.isArray(saved) ? saved : [];
+    } catch {
+      return [];
+    }
+  }
+
+  saveGame(gameId) {
+    if (!this.savedGames.includes(gameId)) {
+      this.savedGames.push(gameId);
+      localStorage.setItem('savedGames', JSON.stringify(this.savedGames));
+      return true;
+    }
+    return false;
+  }
+
+  unsaveGame(gameId) {
+    const index = this.savedGames.indexOf(gameId);
+    if (index > -1) {
+      this.savedGames.splice(index, 1);
+      localStorage.setItem('savedGames', JSON.stringify(this.savedGames));
+      return true;
+    }
+    return false;
+  }
+
+  isGameSaved(gameId) {
+    return this.savedGames.includes(gameId);
+  }
+
+  initHearts() {
+    document.querySelectorAll('.heart-icon').forEach(heart => {
+      const gameId = heart.getAttribute('data-game-id');
+      
+      this.updateHeartVisual(heart, this.isGameSaved(gameId));
+
+      heart.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const isSaved = this.isGameSaved(gameId);
+        
+        if (isSaved) {
+          this.unsaveGame(gameId);
+          this.updateHeartVisual(heart, false);
+          console.log(`Unsaved game: ${gameId}`);
+        } else {
+          this.saveGame(gameId);
+          this.updateHeartVisual(heart, true);
+          console.log(`Saved game: ${gameId}`);
+        }
+      });
+    });
+  }
+
+  updateHeartVisual(heart, isSaved) {
+    if (isSaved) {
+      heart.classList.remove('unsaved');
+      heart.classList.add('saved');
+      heart.style.color = 'white';
+      heart.style.webkitTextStroke = '';
+      heart.style.textStroke = '';
+    } else {
+      heart.classList.remove('saved');
+      heart.classList.add('unsaved');
+      heart.style.color = 'transparent';
+      heart.style.webkitTextStroke = '2px white';
+      heart.style.textStroke = '2px white';
+    }
+  }
+
+  initGameClicks() {
+    document.querySelectorAll('.box').forEach(box => {
+      box.addEventListener('click', async (e) => {
+        if (box.classList.contains('blacklisted')) {
+          e.preventDefault();
+          return;
+        }
+
+        if (e.target.classList.contains('heart-icon') || 
+            e.target.classList.contains('fa-heart')) {
+          return;
+        }
+        
+        e.preventDefault();
+        
+        const gameId = box.getAttribute('data-id');
+        const gameName = box.querySelector("h3")?.textContent.trim();
+
+        if (gameId) {
+          localStorage.setItem('gameIds', JSON.stringify([gameId]));
+
+          if (!window.gameStorage) window.gameStorage = {};
+          window.gameStorage.selectedGame = gameId;
+        }
+
+        if (gameName) {
+          await trackGameClick(gameName);
+        }
+
+        setTimeout(() => {
+          window.location.href = 'game.html';
+        }, 150);
+      });
+    });
+  }
+
+  initSearch() {
+    const searchInput = document.getElementById("dropdownSearch");
+    const dropdownList = document.getElementById("dropdownList");
+    const gameBoxes = document.querySelectorAll(".box h3");
+
+    if (!searchInput || !dropdownList || gameBoxes.length === 0) {
+      console.warn('Search elements not found');
+      return;
+    }
+
+    dropdownList.innerHTML = '';
+
+    gameBoxes.forEach(box => {
+      const li = document.createElement("li");
+      li.textContent = box.textContent; 
+      li.addEventListener("click", () => {
+        const targetBox = Array.from(gameBoxes).find(g => g.textContent === li.textContent);
+        if (targetBox) {
+          const container = targetBox.closest(".box");
+
+          container.scrollIntoView({ behavior: "smooth", block: "center" });
+
+          container.style.boxShadow = "0 0 20px 5px #ffffff";
+          container.style.border = "2px solid #ffffff";
+
+          setTimeout(() => {
+            container.style.boxShadow = "";
+            container.style.border = "";
+          }, 3000);
+        }
+
+        dropdownList.style.display = "none";
+        searchInput.value = "";
+      });
+      dropdownList.appendChild(li);
+    });
+
+    window.filterDropdown = () => {
+      const value = searchInput.value.toLowerCase();
+      const items = dropdownList.getElementsByTagName("li");
+      let matches = 0;
+
+      for (let item of items) {
+        if (item.textContent.toLowerCase().includes(value)) {
+          item.style.display = "";
+          matches++;
+        } else {
+          item.style.display = "none";
+        }
+      }
+
+      dropdownList.style.display = (matches > 0 && value.trim() !== "") ? "block" : "none";
+    };
+
+    document.addEventListener('click', (e) => {
+      if (!searchInput.contains(e.target) && !dropdownList.contains(e.target)) {
+        dropdownList.style.display = "none";
+      }
+    });
+    
+    console.log('Search initialized with decoded text');
+  }
+}
+
+function sortGamesAlphabetically() {
+  const container = document.querySelector('.container');
+  if (!container) return;
+
+  const boxes = Array.from(container.querySelectorAll('.box'));
+
+  boxes.sort((a, b) => {
+    const nameA = a.querySelector('h3').textContent.trim().toLowerCase();
+    const nameB = b.querySelector('h3').textContent.trim().toLowerCase();
+    return nameA.localeCompare(nameB);
+  });
+  
+  container.innerHTML = '';
+  boxes.forEach(box => container.appendChild(box));
+  
+  console.log('Games sorted alphabetically');
+}
+
+function addGameCounter() {
+  const totalGames = document.querySelectorAll(".box").length;
+  if (totalGames > 0) {
+    const counter = document.createElement("div");
+    counter.textContent = `Game Count: ${totalGames}`;
+    counter.style.color = "#ffffff";
+    counter.style.fontWeight = "bold";
+    counter.style.fontSize = "20px";
+    counter.style.textAlign = "center";
+    counter.style.marginTop = "100px";
+    
+    const searchDropdown = document.querySelector(".search-dropdown");
+    if (searchDropdown) {
+      document.body.insertBefore(counter, searchDropdown);
+    } else {
+      document.body.appendChild(counter);
+    }
+  }
+}
+
+async function initializeAll() {
+  sortGamesAlphabetically();
+  addGameCounter();
+  await initializeFirebase();
+  
+  
+  const userIP = await getUserIP();
+  if (userIP) {
+    const isBlacklisted = await checkIPBlacklist(userIP);
+    if (isBlacklisted) {
+      applyGameBlacklist();
+    }
+  } else {
+    console.warn('Could not retrieve user IP, skipping blacklist check');
+  }
+  
+  window.gameSaverInstance = new GameSaver();
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializeAll);
+} else {
+  initializeAll();
+}
+</script>
+
+<body>
+<div id="loader-overlay">
+  <div class="loader-line" id="loader-line"></div>
+  <div class="loader-text">De-Obfuscating Content...</div>
+  <div class="loader-text">Please Stand By</div>
+</div>
+  <iframe src="bg.html"></iframe>
+
+  <h1>Games</h1>
+
+  <div style="color: #ffffff; font-weight: bold; font-size: 20px; text-align: center; margin-top: 100px;"></div>
+  
+  <div class="search-dropdown">
+    <input type="text" id="dropdownSearch" placeholder="Search..." onkeyup="filterDropdown()">
+    <ul id="dropdownList"></ul>
+  </div>
+<h6>Request A Game</h6>
+<div style="text-align: center;">
+  <a href="request-a-game.html" style="
+    background-color: #ffffff;
+    color: #1a1a1a;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    display: inline-block;
+    max-width: 400px;
+  ">Submit A Request</a>
+</div>
+<div class="container">
+        <div class="box" data-id="soccer-random">
+      <img src="img/gicon/soccer-random.png" alt="Soccer Random">
+      <h3 data-encoded="Vrffhu Udqgrp">Vrffhu Udqgrp</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="soccer-random"></i>
+    </div>
+    <div class="box" data-id="10-minutes-till-dawn">
+      <img src="img/gicon/10-minutes-till-dawn.png" alt="10 Minutes Till Dawn">
+      <h3 data-encoded="10 Plqxwhv Wloo Gdzq">10 Plqxwhv Wloo Gdzq</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="10-minutes-till-dawn"></i>
+    </div>
+    
+    <div class="box" data-id="2048">
+      <img src="img/gicon/2048.png" alt="2048">
+      <h3 data-encoded="2048">2048</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="2048"></i>
+    </div>
+    
+    <div class="box" data-id="backrooms">
+      <img src="img/gicon/backrooms.png" alt="Backrooms">
+      <h3 data-encoded="Edfnurrpv">Edfnurrpv</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="backrooms"></i>
+    </div>
+    
+    <div class="box" data-id="backrooms-2d">
+      <img src="img/gicon/backrooms2d.png" alt="Backrooms 2D">
+      <h3 data-encoded="Edfnurrpv 2G">Edfnurrpv 2G</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="backrooms-2d"></i>
+    </div>
+    
+    <div class="box" data-id="bacon-may-die">
+      <img src="img/gicon/bacon-may-die.png" alt="Bacon May Die">
+      <h3 data-encoded="Edfrq Pdb Glh">Edfrq Pdb Glh</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="bacon-may-die"></i>
+    </div>
+    
+    <div class="box" data-id="bad-ice-cream-2">
+      <img src="img/gicon/bad-ice-cream-2.png" alt="Bad Ice Cream 2">
+      <h3 data-encoded="Edg Lfh Fuhdp 2">Edg Lfh Fuhdp 2</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="bad-ice-cream-2"></i>
+    </div>
+    
+    <div class="box" data-id="bad-ice-cream-3">
+      <img src="img/gicon/bad-ice-cream-3.png" alt="Bad Ice Cream 3">
+      <h3 data-encoded="Edg Lfh Fuhdp 3">Edg Lfh Fuhdp 3</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="bad-ice-cream-3"></i>
+    </div>
+    
+    <div class="box" data-id="bad-ice-cream">
+      <img src="img/gicon/bad-ice-cream.png" alt="Bad Ice Cream">
+      <h3 data-encoded="Edg Lfh Fuhdp">Edg Lfh Fuhdp</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="bad-ice-cream"></i>
+    </div>
+    
+    <div class="box" data-id="baldis-basics">
+      <img src="img/gicon/baldis-basics.png" alt="Baldis Basics">
+      <h3 data-encoded="Edoglv Edvlfv">Edoglv Edvlfv</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="baldis-basics"></i>
+    </div>
+    
+    <div class="box" data-id="basket-random">
+      <img src="img/gicon/basket-random.png" alt="Basket Random">
+      <h3 data-encoded="Edvnhw Udqgrp">Edvnhw Udqgrp</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="basket-random"></i>
+    </div>
+    
+    <div class="box" data-id="bitlife">
+      <img src="img/gicon/bitlife.png" alt="Bitlife">
+      <h3 data-encoded="Elwolih">Elwolih</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="bitlife"></i>
+    </div>
+    
+    <div class="box" data-id="btts">
+      <img src="img/gicon/btts.png" alt="Big Tower Tiny Square">
+      <h3 data-encoded="Elj Wrzhu Wlqb Vtxduh">Elj Wrzhu Wlqb Vtxduh</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="btts"></i>
+    </div>
+    
+    <div class="box" data-id="cluster-rush">
+      <img src="img/gicon/cluster-rush.png" alt="Cluster Rush">
+      <h3 data-encoded="Foxvwhu Uxvk">Foxvwhu Uxvk</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="cluster-rush"></i>
+    </div>
+    
+    <div class="box" data-id="death-run-3d">
+      <img src="img/gicon/death-run-3d.png" alt="Death Run 3D">
+      <h3 data-encoded="Ghdwk Uxq 3G">Ghdwk Uxq 3G</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="death-run-3d"></i>
+    </div>
+    
+    <div class="box" data-id="drift-boss">
+      <img src="img/gicon/drift-boss.png" alt="Drift Boss">
+      <h3 data-encoded="Guliw Ervv">Guliw Ervv</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="drift-boss"></i>
+    </div>
+    
+    <div class="box" data-id="drift-hunters">
+      <img src="img/gicon/drift-hunters.png" alt="Drift Hunters">
+      <h3 data-encoded="Guliw Kxqwhuv">Guliw Kxqwhuv</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="drift-hunters"></i>
+    </div>
+    
+    <div class="box" data-id="drive-mad">
+      <img src="img/gicon/drive-mad.png" alt="Drive Mad">
+      <h3 data-encoded="Gulyh Pdg">Gulyh Pdg</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="drive-mad"></i>
+    </div>
+    
+    <div class="box" data-id="ducklife3">
+      <img src="img/gicon/ducklife3.png" alt="Duck Life 3">
+      <h3 data-encoded="Gxfn Olih 3">Gxfn Olih 3</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="ducklife3"></i>
+    </div>
+    
+    <div class="box" data-id="ducklife4">
+      <img src="img/gicon/ducklife4.png" alt="Duck Life 4">
+      <h3 data-encoded="Gxfn Olih 4">Gxfn Olih 4</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="ducklife4"></i>
+    </div>
+    
+    <div class="box" data-id="getaway-shootout">
+      <img src="img/gicon/getaway-shootout.png" alt="Getaway Shootout">
+      <h3 data-encoded="Jhwdzdb Vkrrwrxw">Jhwdzdb Vkrrwrxw</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="getaway-shootout"></i>
+    </div>
+
+    <div class="box" data-id="learn-to-fly-2">
+      <img src="img/gicon/learntofly2.png" alt="Learn To Fly 2">
+      <h3 data-encoded="Ohduq Wr Iob 2">Ohduq Wr Iob 2</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="learn-to-fly-2"></i>
+    </div>
+    
+    <div class="box" data-id="madalin-stunt-cars-2">
+      <img src="img/gicon/madalin-stunt-cars-2.png" alt="Madalin Stunt Cars 2">
+      <h3 data-encoded="Pdgdolq Vwxqw Fduv 2">Pdgdolq Vwxqw Fduv 2</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="madalin-stunt-cars-2"></i>
+    </div>
+    
+    <div class="box" data-id="madalin-stunt-cars-3">
+      <img src="img/gicon/madalin-stunt-cars-3.png" alt="Madalin Stunt Cars 3">
+      <h3 data-encoded="Pdgdolq Vwxqw Fduv 3">Pdgdolq Vwxqw Fduv 3</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="madalin-stunt-cars-3"></i>
+    </div>
+    
+    <div class="box" data-id="motox3m-pool">
+      <img src="img/gicon/motox3m-pool.png" alt="Motox 3M Pool Party">
+      <h3 data-encoded="Prwra 3P Srro Sduwb">Prwra 3P Srro Sduwb</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="motox3m-pool"></i>
+    </div>
+    
+    <div class="box" data-id="motox3m-spooky">
+      <img src="img/gicon/motox3m-spooky.png" alt="Motox 3M Spooky Edition">
+      <h3 data-encoded="Prwra 3P Vsrrnb Hglwlrq">Prwra 3P Vsrrnb Hglwlrq</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="motox3m-spooky"></i>
+    </div>
+    
+    <div class="box" data-id="motox3m-winter">
+      <img src="img/gicon/motox3m-winter.png" alt="Motox 3M Winter Edition">
+      <h3 data-encoded="Prwra 3P Zlqwhu Hglwlrq">Prwra 3P Zlqwhu Hglwlrq</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="motox3m-winter"></i>
+    </div>
+    
+    <div class="box" data-id="motox3m">
+      <img src="img/gicon/motox3m.png" alt="Motox 3M">
+      <h3 data-encoded="Prwra 3P">Prwra 3P</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="motox3m"></i>
+    </div>
+    
+    <div class="box" data-id="motox3m-2">
+      <img src="img/gicon/motox3m2.png" alt="Motox 3M 2">
+      <h3 data-encoded="Prwra 3P 2">Prwra 3P 2</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="motox3m-2"></i>
+    </div>
+    
+    <div class="box" data-id="retro-bowl">
+      <img src="img/gicon/retro-bowl.png" alt="Retro Bowl">
+      <h3 data-encoded="Uhwur Erzo">Uhwur Erzo</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="retro-bowl"></i>
+    </div>
+    
+    <div class="box" data-id="rooftop-snipers">
+      <img src="img/gicon/rooftop-snipers.png" alt="Rooftop Snipers">
+      <h3 data-encoded="Urriwrs Vqlshuv">Urriwrs Vqlshuv</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="rooftop-snipers"></i>
+    </div>
+    
+    <div class="box" data-id="run-3">
+      <img src="img/gicon/run3.png" alt="Run 3">
+      <h3 data-encoded="Uxq 3">Uxq 3</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="run-3"></i>
+    </div>
+    
+    <div class="box" data-id="scrap-metal">
+      <img src="img/gicon/scrapmetal.png" alt="Scrap Metal">
+      <h3 data-encoded="Vfuds Phwdo">Vfuds Phwdo</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="scrap-metal"></i>
+    </div>
+    
+    <div class="box" data-id="slope">
+      <img src="img/gicon/slope.png" alt="Slope">
+      <h3 data-encoded="Vorsh">Vorsh</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="slope"></i>
+    </div>
+    
+    <div class="box" data-id="slope-2">
+      <img src="img/gicon/slope-2.png" alt="Slope 2">
+      <h3 data-encoded="Vorsh 2">Vorsh 2</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="slope-2"></i>
+    </div>
+    
+    <div class="box" data-id="slope-ball">
+      <img src="img/gicon/slope-ball.png" alt="Slope Ball">
+      <h3 data-encoded="Vorsh Preloh">Vorsh Preloh</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="slope-ball"></i>
+    </div>
+    
+    <div class="box" data-id="snow-rider-3d">
+      <img src="img/gicon/snowrider3d.png" alt="Snow Rider 3D">
+      <h3 data-encoded="Vqrz Ulghu 3G">Vqrz Ulghu 3G</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="snow-rider-3d"></i>
+    </div>
+  <div class="box" data-id="2048-multitask">
+      <img src="img/gicon/2048-multitask.png" alt="2048 Multitask">
+      <h3 data-encoded="2048 Pxowlwdvn">2048 Pxowlwdvn</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="2048-multitask"></i>
+    </div>
+    
+    <div class="box" data-id="9007199254740992">
+      <img src="img/gicon/9007199254740992.png" alt="9007199254740992">
+      <h3 data-encoded="9007199254740992">9007199254740992</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="9007199254740992"></i>
+    </div>
+    
+    <div class="box" data-id="a-dance-of-fire-and-ice">
+      <img src="img/gicon/a-dance-of-fire-and-ice.png" alt="A Dance of Fire and Ice">
+      <h3 data-encoded="D Gdqfh ri Iluh dqg Lfh">D Gdqfh ri Iluh dqg Lfh</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="a-dance-of-fire-and-ice"></i>
+    </div>
+    
+    <div class="box" data-id="a-dark-room">
+      <img src="img/gicon/adarkroom.png" alt="A Dark Room">
+      <h3 data-encoded="D Gdun Urrp">D Gdun Urrp</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="a-dark-room"></i>
+    </div>
+    
+    <div class="box" data-id="adrenaline-challenge">
+      <img src="img/gicon/adrenalinechallenge.png" alt="Adrenaline Challenge">
+      <h3 data-encoded="Dguhqdolqh Fkdoohqjh">Dguhqdolqh Fkdoohqjh</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="adrenaline-challenge"></i>
+    </div>
+    
+    <div class="box" data-id="adventure-drivers">
+      <img src="img/gicon/adventure-drivers.png" alt="Adventure Drivers">
+      <h3 data-encoded="Dgyhqwxuh Gulyhuv">Dgyhqwxuh Gulyhuv</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="adventure-drivers"></i>
+    </div>
+    
+    <div class="box" data-id="ages-of-conflict">
+      <img src="img/gicon/ages-of-conflict.png" alt="Ages of Conflict">
+      <h3 data-encoded="Djhv ri Frqiolfw">Djhv ri Frqiolfw</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="ages-of-conflict"></i>
+    </div>
+    
+    <div class="box" data-id="boxing-random">
+      <img src="img/gicon/boxing-random.png" alt="Boxing Random">
+      <h3 data-encoded="Eralqj Udqgrp">Eralqj Udqgrp</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="boxing-random"></i>
+    </div>
+    
+    <div class="box" data-id="core-ball">
+      <img src="img/gicon/core-ball.png" alt="Core Ball">
+      <h3 data-encoded="Fruh Edoo">Fruh Edoo</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="core-ball"></i>
+    </div>
+    
+    <div class="box" data-id="creative-kill-chamber">
+      <img src="img/gicon/creativekillchamber.png" alt="Creative Kill Chamber">
+      <h3 data-encoded="Fuhdwlyh Nloo Fkdpehu">Fuhdwlyh Nloo Fkdpehu</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="creative-kill-chamber"></i>
+    </div>
+    
+    <div class="box" data-id="crossy-road">
+      <img src="img/gicon/crossyroad.png" alt="Crossy Road">
+      <h3 data-encoded="Furvvb Urdg">Furvvb Urdg</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="crossy-road"></i>
+    </div>
+    
+    <div class="box" data-id="cupcake-2048">
+      <img src="img/gicon/cupcake2048.png" alt="Cupcake 2048">
+      <h3 data-encoded="Fxsfdnh 2048">Fxsfdnh 2048</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="cupcake-2048"></i>
+    </div>
+    
+    <div class="box" data-id="dante">
+      <img src="img/gicon/dante.png" alt="Dante">
+      <h3 data-encoded="Gdqwh">Gdqwh</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="dante"></i>
+    </div>
+    
+    <div class="box" data-id="deal-or-no-deal">
+      <img src="img/gicon/deal-or-no-deal.png" alt="Deal or No Deal">
+      <h3 data-encoded="Ghdo ru Qr Ghdo">Ghdo ru Qr Ghdo</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="deal-or-no-deal"></i>
+    </div>
+    
+    <div class="box" data-id="eggy-car">
+      <img src="img/gicon/eggycar.png" alt="Eggy Car">
+      <h3 data-encoded="Hjjb Fdu">Hjjb Fdu</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="eggy-car"></i>
+    </div>
+    
+    <div class="box" data-id="fnaw">
+      <img src="img/gicon/fnaw.png" alt="Five Nights at Winstons">
+      <h3 data-encoded="Ilyh Qljkwv dw Zlqvwrqv">Ilyh Qljkwv dw Zlqvwrqv</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="fnaw"></i>
+    </div>
+    
+    <div class="box" data-id="learn-to-fly">
+      <img src="img/gicon/learntofly.png" alt="Learn to Fly">
+      <h3 data-encoded="Ohduq wr Iob">Ohduq wr Iob</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="learn-to-fly"></i>
+    </div>
+    
+    <div class="box" data-id="monkey-mart">
+      <img src="img/gicon/MonkeyMart.png" alt="Monkey Mart">
+      <h3 data-encoded="Prqnhb Pduw">Prqnhb Pduw</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="monkey-mart"></i>
+    </div>
+    
+    <div class="box" data-id="resent-client">
+      <img src="img/gicon/resent-client.png" alt="Resent Client">
+      <h3 data-encoded="Uhvhqw Folhqw">Uhvhqw Folhqw</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="resent-client"></i>
+    </div>
+    
+    <div class="box" data-id="stickman-hook">
+      <img src="img/gicon/stickman-hook.png" alt="Stickman Hook">
+      <h3 data-encoded="Vwlfnpdq Krrn">Vwlfnpdq Krrn</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="stickman-hook"></i>
+    </div>
+    
+    <div class="box" data-id="super-hot">
+      <img src="img/gicon/superhot.png" alt="Superhot">
+      <h3 data-encoded="Vxshukrw">Vxshukrw</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="super-hot"></i>
+    </div>
+    
+    <div class="box" data-id="tanuki-sunset">
+      <img src="img/gicon/tanuki-sunset.png" alt="Tanuki Sunset">
+      <h3 data-encoded="Wdqxnl Vxqvhw">Wdqxnl Vxqvhw</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="tanuki-sunset"></i>
+    </div>
+    
+    <div class="box" data-id="tunnel-rush">
+      <img src="img/gicon/tunnel-rush.png" alt="Tunnel Rush">
+      <h3 data-encoded="Wxqqho Uxvk">Wxqqho Uxvk</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="tunnel-rush"></i>
+    </div>
+    
+    <div class="box" data-id="vex-3">
+      <img src="img/gicon/vex3.png" alt="Vex 3">
+      <h3 data-encoded="Yha 3">Yha 3</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="vex-3"></i>
+    </div>
+    
+    <div class="box" data-id="vex-4">
+      <img src="img/gicon/vex4.png" alt="Vex 4">
+      <h3 data-encoded="Yha 4">Yha 4</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="vex-4"></i>
+    </div>
+    
+    <div class="box" data-id="vex-5">
+      <img src="img/gicon/vex5.png" alt="Vex 5">
+      <h3 data-encoded="Yha 5">Yha 5</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="vex-5"></i>
+    </div>
+    
+    <div class="box" data-id="vex-6">
+      <img src="img/gicon/vex6.png" alt="Vex 6">
+      <h3 data-encoded="Yha 6">Yha 6</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="vex-6"></i>
+    </div>
+    
+    <div class="box" data-id="vex-7">
+      <img src="img/gicon/vex7.png" alt="Vex 7">
+      <h3 data-encoded="Yha 7">Yha 7</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="vex-7"></i>
+    </div>
+    
+    <div class="box" data-id="volley-random">
+      <img src="img/gicon/volley-random.png" alt="Volley Random">
+      <h3 data-encoded="Yroohb Udqgrp">Yroohb Udqgrp</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="volley-random"></i>
+    </div>
+    
+    <div class="box" data-id="worlds-hardest-game">
+      <img src="img/gicon/worlds-hardest-game.png" alt="Worlds Hardest Game">
+      <h3 data-encoded="Zruogv Kdughvw Jdph">Zruogv Kdughvw Jdph</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="worlds-hardest-game"></i>
+    </div>
+    
+    <div class="box" data-id="worlds-hardest-game-2">
+      <img src="img/gicon/worlds-hardest-game-2.png" alt="Worlds Hardest Game 2">
+      <h3 data-encoded="Zruogv Kdughvw Jdph 2">Zruogv Kdughvw Jdph 2</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="worlds-hardest-game-2"></i>
+    </div>
+
+    <div class="box" data-id="funny-shooter">
+      <img src="img/gicon/funny-shooter.png" alt="Funny Shooter">
+      <h3 data-encoded="Ixqqb Vkrrwhu">Ixqqb Vkrrwhu</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="funny-shooter"></i>
+    </div>
+
+    <div class="box" data-id="funny-shooter-2">
+      <img src="img/gicon/funny-shooter-2.png" alt="Funny Shooter 2">
+      <h3 data-encoded="Ixqqb Vkrrwhu 2">Ixqqb Vkrrwhu 2</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="funny-shooter-2"></i>
+    </div>
+    <div class="box" data-id="ultrakill">
+      <img src="img/gicon/ultrakill.png" alt="ULTRAKILL">
+      <h3 data-encoded="XOWUDNLOO">XOWUDNLOO</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="ultrakill"></i>
+    </div>
+    <div class="box" data-id="buckshot-roulette">
+      <img src="img/gicon/buckshot-roulette.png" alt="Buckshot Roulette">
+      <h3 data-encoded="Exfnvkrw Urxohwwh">Exfnvkrw Urxohwwh</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="buckshot-roulette"></i>
+    </div>
+</div>
+
+<script>
+function caesarDecode(str, shift = 3) {
+  return str.replace(/[a-z]/gi, c => {
+    const code = c.charCodeAt(0);
+    if (code >= 65 && code <= 90) return String.fromCharCode((code - 65 - shift + 26) % 26 + 65);
+    if (code >= 97 && code <= 122) return String.fromCharCode((code - 97 - shift + 26) % 26 + 97);
+    return c;
+  });
+}
+
+const lineLength = 10;
+const loaderLine = document.getElementById("loader-line");
+for (let i = 0; i < lineLength; i++) {
+  const span = document.createElement("span");
+  span.textContent = "-";
+  loaderLine.appendChild(span);
+}
+
+let position = 0;
+let forward = true;
+const spans = loaderLine.querySelectorAll("span");
+
+const lineInterval = setInterval(() => {
+  spans.forEach(s => s.classList.remove("active"));
+  spans[position].classList.add("active");
+
+  if (forward) {
+    position++;
+    if (position === lineLength - 1) forward = false;
+  } else {
+    position--;
+    if (position === 0) forward = true;
+  }
+}, 75);
+
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    
+    document.querySelectorAll('h3[data-encoded]').forEach(h3 => {
+      h3.textContent = caesarDecode(h3.dataset.encoded);
+    });
+    
+    
+    if (window.gameSaverInstance) {
+      window.gameSaverInstance.initSearch();
+    }
+    
+    clearInterval(lineInterval);
+    const overlay = document.getElementById('loader-overlay');
+    if (overlay) {
+      overlay.classList.add('dissolve');
+      setTimeout(() => overlay.remove(), 1000);
+    }
+  }, 5000);
+});
+</script>
+  <h2>That's All Folks 🤓☝️</h2>
+</body>
+</html>

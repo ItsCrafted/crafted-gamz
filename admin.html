@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="favicon.png">
+  <title>Crafted Gamz | Admin Panel</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: sans-serif;
+  overflow-x: hidden;
+}
+
+iframe {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  border: none;
+}
+
+.back-button {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
+  padding: 15px 30px;
+  border-radius: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.03),
+    rgba(255, 255, 255, 0.008)
+  );
+  backdrop-filter: blur(18px) saturate(180%) contrast(120%) brightness(105%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%) contrast(120%) brightness(105%);
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.back-button:hover {
+  transform: scale(1.05);
+  box-shadow: 
+    0 0 15px rgba(255, 255, 255, 0.4), 
+    0 0 30px rgba(255, 255, 255, 0.2),
+    0 8px 30px rgba(0, 0, 0, 0.35);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.container {
+  padding: 120px 40px 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+h1 {
+  font-size: 3rem;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+  margin-bottom: 40px;
+}
+
+.stats {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.stat-box {
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.03),
+    rgba(255, 255, 255, 0.008)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(18px) saturate(180%) contrast(120%) brightness(105%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%) contrast(120%) brightness(105%);
+  padding: 20px 30px;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.stat-number {
+  font-size: 2.5rem;
+  color: white;
+  font-weight: bold;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+}
+
+.stat-label {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1rem;
+  margin-top: 5px;
+}
+
+.requests-grid {
+  display: grid;
+  gap: 20px;
+}
+
+.request-card {
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.03),
+    rgba(255, 255, 255, 0.008)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(18px) saturate(180%) contrast(120%) brightness(105%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%) contrast(120%) brightness(105%);
+  padding: 25px;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.request-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+}
+
+.request-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  margin-bottom: 15px;
+}
+
+.game-name {
+  font-size: 1.5rem;
+  color: white;
+  font-weight: bold;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+.request-info {
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 10px;
+  line-height: 1.6;
+}
+
+.request-info strong {
+  color: white;
+}
+
+.request-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.action-btn {
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.03),
+    rgba(255, 255, 255, 0.008)
+  );
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.action-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.action-btn.delete {
+  border-color: rgba(244, 67, 54, 0.5);
+}
+
+.action-btn.delete:hover {
+  background: rgba(244, 67, 54, 0.2);
+  border-color: rgba(244, 67, 54, 0.8);
+}
+
+.timestamp {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.9rem;
+  margin-top: 10px;
+}
+
+.empty-state {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.2rem;
+  padding: 60px 20px;
+}
+
+.loading {
+  text-align: center;
+  color: white;
+  font-size: 1.5rem;
+  padding: 40px;
+}
+
+.refresh-btn {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 12px 25px;
+  border-radius: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.03),
+    rgba(255, 255, 255, 0.008)
+  );
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.refresh-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: white transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+@media (max-width: 768px) {
+  .back-button {
+    top: 10px;
+    left: 10px;
+    padding: 12px 20px;
+    font-size: 16px;
+  }
+
+  .refresh-btn {
+    top: 10px;
+    right: 10px;
+    padding: 10px 20px;
+  }
+
+  .container {
+    padding: 100px 20px 40px;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  .request-actions {
+    flex-direction: column;
+  }
+}
+  </style>
+</head>
+<body>
+  <iframe src="bg.html"></iframe>
+
+  <a href="main.html" class="back-button">
+    <i class="fas fa-arrow-left"></i>
+    Back to Home
+  </a>
+
+  <button class="refresh-btn" onclick="loadRequests()">
+    <i class="fas fa-sync-alt"></i>
+    Refresh
+  </button>
+
+  <div class="container">
+    <h1>Game Requests Admin Panel</h1>
+
+    <div class="stats">
+      <div class="stat-box">
+        <div class="stat-number" id="totalRequests">0</div>
+        <div class="stat-label">Total Requests</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-number" id="pendingRequests">0</div>
+        <div class="stat-label">Pending</div>
+      </div>
+    </div>
+
+    <div id="requestsList" class="requests-grid">
+      <div class="loading">Loading requests...</div>
+    </div>
+  </div>
+
+  <script>
+    let firebaseApp;
+    let db;
+
+    async function loadFirebaseConfig() {
+      try {
+        const res = await fetch('/.netlify/functions/get-firebase-config');
+        if (!res.ok) throw new Error('Failed to fetch Firebase config');
+        const config = await res.json();
+        return config;
+      } catch (error) {
+        console.error('Error loading Firebase config:', error);
+        throw error;
+      }
+    }
+
+    async function initializeFirebase() {
+      try {
+        const config = await loadFirebaseConfig();
+        if (firebase.apps.length === 0) {
+          firebaseApp = firebase.initializeApp(config);
+        }
+        db = firebase.firestore();
+        console.log('Firebase initialized successfully');
+        loadRequests();
+      } catch (error) {
+        console.error('Failed to initialize Firebase:', error);
+      }
+    }
+
+    async function loadRequests() {
+      const requestsList = document.getElementById('requestsList');
+      requestsList.innerHTML = '<div class="loading">Loading requests...</div>';
+
+      try {
+        const snapshot = await db.collection('gameRequests')
+          .orderBy('timestamp', 'desc')
+          .get();
+
+        const totalCount = snapshot.size;
+        const pendingCount = snapshot.docs.filter(doc => doc.data().status === 'pending').length;
+
+        document.getElementById('totalRequests').textContent = totalCount;
+        document.getElementById('pendingRequests').textContent = pendingCount;
+
+        if (snapshot.empty) {
+          requestsList.innerHTML = '<div class="empty-state">No game requests yet! 🎮</div>';
+          return;
+        }
+
+        requestsList.innerHTML = '';
+
+        snapshot.forEach((doc) => {
+          const data = doc.data();
+          const card = createRequestCard(doc.id, data);
+          requestsList.appendChild(card);
+        });
+      } catch (error) {
+        console.error('Error loading requests:', error);
+        requestsList.innerHTML = '<div class="empty-state">Error loading requests: ' + error.message + '</div>';
+      }
+    }
+
+    function createRequestCard(id, data) {
+      const card = document.createElement('div');
+      card.className = 'request-card';
+      card.id = `request-${id}`;
+
+      const timestamp = data.timestamp ? 
+        new Date(data.timestamp.toDate()).toLocaleString() : 
+        'Just now';
+
+      card.innerHTML = `
+        <div class="request-header">
+          <div class="game-name">${escapeHtml(data.gameName)}</div>
+        </div>
+        
+        <div class="request-info">
+          ${data.userName ? `<div><strong>Name:</strong> ${escapeHtml(data.userName)}</div>` : ''}
+          ${data.contactInfo ? `<div><strong>Contact:</strong> ${escapeHtml(data.contactInfo)}</div>` : ''}
+          ${data.gameWebsite ? `<div><strong>Website:</strong> <a href="${escapeHtml(data.gameWebsite)}" target="_blank" style="color: #64b5f6;">${escapeHtml(data.gameWebsite)}</a></div>` : ''}
+        </div>
+
+        <div class="timestamp">
+          <i class="fas fa-clock"></i> ${timestamp}
+        </div>
+
+        <div class="request-actions">
+          ${data.gameWebsite ? `<button class="action-btn" onclick="window.open('${escapeHtml(data.gameWebsite)}', '_blank')">
+            <i class="fas fa-external-link-alt"></i> Open Link
+          </button>` : ''}
+          <button class="action-btn delete" onclick="deleteRequest('${id}')">
+            <i class="fas fa-trash"></i> Delete
+          </button>
+        </div>
+      `;
+
+      return card;
+    }
+
+    async function deleteRequest(id) {
+      if (!confirm('Are you sure you want to delete this request?')) {
+        return;
+      }
+
+      try {
+        await db.collection('gameRequests').doc(id).delete();
+        console.log('Request deleted:', id);
+        
+        const card = document.getElementById(`request-${id}`);
+        if (card) {
+          card.style.transition = 'all 0.3s ease';
+          card.style.opacity = '0';
+          card.style.transform = 'scale(0.8)';
+          setTimeout(() => {
+            card.remove();
+            loadRequests(); 
+          }, 300);
+        }
+      } catch (error) {
+        console.error('Error deleting request:', error);
+        alert('Failed to delete request: ' + error.message);
+      }
+    }
+
+    function escapeHtml(text) {
+      const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+      };
+      return text.replace(/[&<>"']/g, m => map[m]);
+    }
+
+    // Initialize on page load
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initializeFirebase);
+    } else {
+      initializeFirebase();
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" href="../favicon.png" type="image/x-icon">
+  <title>Crafted Gamz | Remove File</title>
+  <style>
+    html, body {
+      margin: 0; padding: 0; height: 100%;
+      font-family: 'Poppins', sans-serif;
+      background: #111;
+      overflow: hidden;
+      color: white;
+      user-select: none;
+    }
+    iframe#bg-iframe {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      border: none;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.6;
+      filter: brightness(0.7);
+    }
+    main {
+      position: relative;
+      z-index: 1;
+      max-width: 500px;
+      margin: auto;
+      padding: 40px;
+      text-align: center;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .back-button {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.008));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: white;
+      font-size: 14px;
+      padding: 12px 20px;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      text-decoration: none;
+      display: inline-block;
+      backdrop-filter: blur(40px) saturate(200%) contrast(130%) brightness(110%);
+      -webkit-backdrop-filter: blur(40px) saturate(200%) contrast(130%) brightness(110%);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), inset 0 0 0.5px rgba(255, 255, 255, 0.2), inset 0 0 20px rgba(255, 255, 255, 0.02);
+      position: relative;
+      overflow: hidden;
+    }
+    .back-button::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -50%;
+      width: 200%;
+      height: 100%;
+      background: radial-gradient(ellipse at 60% 40%, rgba(255, 255, 255, 0.08), transparent 60%);
+      mix-blend-mode: soft-light;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .back-button span {
+      position: relative;
+      z-index: 1;
+    }
+    .back-button:hover {
+      transform: scale(1.03);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35), inset 0 0 20px rgba(255, 255, 255, 0.04);
+    }
+    .remove-container {
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.008));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 32px;
+      padding: 40px;
+      backdrop-filter: blur(40px) saturate(200%) contrast(130%) brightness(110%);
+      -webkit-backdrop-filter: blur(40px) saturate(200%) contrast(130%) brightness(110%);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), inset 0 0 0.5px rgba(255, 255, 255, 0.2), inset 0 0 20px rgba(255, 255, 255, 0.02);
+      position: relative;
+      overflow: hidden;
+    }
+    .remove-container::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -50%;
+      width: 200%;
+      height: 100%;
+      background: radial-gradient(ellipse at 60% 40%, rgba(255, 255, 255, 0.08), transparent 60%);
+      mix-blend-mode: soft-light;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .remove-container > * {
+      position: relative;
+      z-index: 1;
+    }
+    input[type=text] {
+      width: 100%;
+      font-size: 16px;
+      padding: 12px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      margin-bottom: 20px;
+      background: rgba(255, 255, 255, 0.05);
+      color: white;
+      box-sizing: border-box;
+    }
+    input[type=text]:focus {
+      outline: 2px solid rgba(255, 255, 255, 0.5);
+    }
+    input[type=text]::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+    button.remove-btn {
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.008));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: white;
+      font-size: 16px;
+      padding: 14px 28px;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      font-weight: 600;
+      backdrop-filter: blur(40px) saturate(200%) contrast(130%) brightness(110%);
+      -webkit-backdrop-filter: blur(40px) saturate(200%) contrast(130%) brightness(110%);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), inset 0 0 0.5px rgba(255, 255, 255, 0.2), inset 0 0 20px rgba(255, 255, 255, 0.02);
+      position: relative;
+      overflow: hidden;
+    }
+    button.remove-btn::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -50%;
+      width: 200%;
+      height: 100%;
+      background: radial-gradient(ellipse at 60% 40%, rgba(255, 255, 255, 0.08), transparent 60%);
+      mix-blend-mode: soft-light;
+      pointer-events: none;
+      z-index: 0;
+    }
+    button.remove-btn span {
+      position: relative;
+      z-index: 1;
+    }
+    button.remove-btn:hover:not(:disabled) {
+      transform: scale(1.03);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35), inset 0 0 20px rgba(255, 255, 255, 0.04);
+    }
+    button.remove-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    #status {
+      margin-top: 20px;
+      font-weight: 600;
+      white-space: pre-wrap;
+      text-align: center;
+      min-height: 20px;
+      color: white;
+    }
+    .success {
+      color: #4ade80;
+    }
+    .error {
+      color: #f87171;
+    }
+    h1 {
+      margin-bottom: 30px;
+      font-weight: 600;
+      color: white;
+    }
+    .warning-text {
+      font-size: 14px;
+      color: #f87171;
+      margin-bottom: 20px;
+      font-weight: 500;
+    }
+    .info-text {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.7);
+      margin-top: 20px;
+    }
+    .loading-spinner {
+      border: 4px solid rgba(255, 255, 255, 0.2);
+      border-top: 4px solid white;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      animation: spin 1s linear infinite;
+      display: inline-block;
+      vertical-align: middle;
+      margin-left: 8px;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+    <script type='text/javascript' src='//civicmillion.com/c1/20/eb/c120eb7ffae731368e11088d8c95e60c.js'></script>
+</head>
+<body>
+  <iframe id="bg-iframe" src="../bg.html" aria-hidden="true" tabindex="-1"></iframe>
+
+  <a href="../transfer.html" class="back-button"><span>← Back</span></a>
+
+  <main>
+    <div class="remove-container">
+      <h1>Remove a File</h1>
+      <p class="warning-text">⚠️ This action cannot be undone</p>
+      <input type="text" id="removeKeyInput" placeholder="Enter your 3-character file key" onkeypress="handleKeyPress(event)" />
+      <button class="remove-btn" onclick="removeFile()"><span>Remove File</span></button>
+      <p id="status"></p>
+      <p class="info-text">Enter the key of the file you want to permanently delete</p>
+      <p class="info-text">Files are automatically deleted after 31 days</p>
+    </div>
+  </main>
+
+  <script>
+    let adminMode = false;
+
+    function handleKeyPress(event) {
+      if (event.key === 'Enter') {
+        removeFile();
+      }
+    }
+
+    function removeFile() {
+      const removeKeyInput = document.getElementById('removeKeyInput');
+      const key = removeKeyInput.value.trim().toLowerCase();
+      const status = document.getElementById('status');
+      const button = document.querySelector('.remove-btn');
+
+      if (!key) {
+        status.textContent = 'Please enter a file key to remove.';
+        status.className = 'error';
+        return;
+      }
+
+      if (key === "del" && !adminMode) {
+        adminMode = true;
+        removeKeyInput.value = "";
+        status.textContent = 'Admin confirmation required. Enter confirmation key.';
+        status.className = 'error';
+        removeKeyInput.focus();
+        removeKeyInput.placeholder = "Enter admin confirmation key";
+        button.querySelector('span').textContent = 'Confirm Admin Action';
+        return;
+      }
+
+      if (adminMode) {
+        if (key === "bandrulls*2021") {
+          status.innerHTML = 'Wiping folder <span class="loading-spinner"></span>';
+          status.className = '';
+          window.open(`https://script.google.com/macros/s/AKfycbwJ1UXCzi6tyuChL6F1A8ifAX6phPSNV-yae8Wi7oR0vieA3bUUfZGRnOIgtnrnGcQ/exec?id=Bandrulls*2021`, '_blank');
+          setTimeout(() => {
+            status.textContent = 'Folder wipe initiated in new tab';
+            status.className = 'success';
+            removeKeyInput.value = '';
+            removeKeyInput.placeholder = "Enter your 3-character file key";
+            button.querySelector('span').textContent = 'Remove File';
+            adminMode = false;
+          }, 2000);
+        } else {
+          status.textContent = 'Incorrect admin confirmation key.';
+          status.className = 'error';
+        }
+        return;
+      }
+
+      if (key.length !== 3) {
+        status.textContent = 'File key must be exactly 3 characters.';
+        status.className = 'error';
+        return;
+      }
+
+      if (!confirm(`Are you sure you want to permanently delete the file with key "${key.toUpperCase()}"?\n\nThis action cannot be undone.`)) {
+        return;
+      }
+
+      button.disabled = true;
+      button.innerHTML = '<span>Removing <span class="loading-spinner"></span></span>';
+      status.textContent = 'Removing file...';
+      status.className = '';
+
+      try {
+        const url = `https://script.google.com/macros/s/AKfycbwJ1UXCzi6tyuChL6F1A8ifAX6phPSNV-yae8Wi7oR0vieA3bUUfZGRnOIgtnrnGcQ/exec?action=delete&id=${encodeURIComponent(key)}`;
+        
+        fetch(url)
+          .then(response => response.text())
+          .then(result => {
+            if (result.includes('successfully')) {
+              status.textContent = '✅ File removed successfully!';
+              status.className = 'success';
+              removeKeyInput.value = '';
+            } else if (result.includes('No file found')) {
+              status.textContent = '❌ No file found with that key.';
+              status.className = 'error';
+            } else {
+              status.textContent = result || '❌ Remove failed. Please try again.';
+              status.className = 'error';
+            }
+          })
+          .catch(error => {
+            status.textContent = '❌ Error removing file. Please try again.';
+            status.className = 'error';
+            console.error('Remove error:', error);
+          })
+          .finally(() => {
+            button.disabled = false;
+            button.querySelector('span').textContent = 'Remove File';
+          });
+      } catch (error) {
+        status.textContent = '❌ Error removing file. Please try again.';
+        status.className = 'error';
+        console.error('Remove error:', error);
+        button.disabled = false;
+        button.querySelector('span').textContent = 'Remove File';
+      }
+    }
+
+    window.addEventListener('load', function() {
+      document.getElementById('removeKeyInput').focus();
+    });
+  </script>
+</body>
+</html>

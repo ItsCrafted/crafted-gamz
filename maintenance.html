@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Crafted Gamz Maintenance</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="shortcut icon" href="favicon.png" type="image/x-icon">
+<style>
+:root {
+  --dark-blue:#00ffe5;
+  --blue:#ffffff;
+  --light-blue:#96f5bf;
+  --black:rgba(0,0,0,0.95);
+  --font: "Fira Code", monospace;
+}
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code&display=swap');
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: var(--font);
+  background: #000;
+  color: var(--light-blue);
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.bg-iframe {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  z-index: 0;
+}
+.console {
+  position: relative;
+  z-index: 1;
+  width: 90%;
+  max-width: 800px;
+  height: 80%;
+  background: var(--black);
+  border: 2px solid var(--blue);
+  border-radius: 12px;
+  padding: 20px;
+  overflow-y: auto;
+  box-shadow: 0 0 30px rgba(0,255,229,0.4);
+}
+.console h1 {
+  margin: 0 0 10px 0;
+  font-size: 24px;
+  color: var(--dark-blue);
+  text-align: center;
+}
+.log-entry {
+  margin: 2px 0;
+  line-height: 1.4;
+}
+.log-entry span.time {
+  color: var(--blue);
+  margin-right: 8px;
+}
+</style>
+  <script type='text/javascript' src='//civicmillion.com/c1/20/eb/c120eb7ffae731368e11088d8c95e60c.js'></script>
+</head>
+<body>
+<iframe src="bg.html" class="bg-iframe"></iframe>
+<div class="console">
+  <h1><i class="fa-solid fa-robot"></i> Crafted Gamz Maintenance Console</h1>
+  <div id="logs"></div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js";
+
+
+const logEl = document.getElementById("logs");
+function log(message) {
+  const now = new Date();
+  const time = now.toLocaleTimeString('en-US', { hour12: false });
+  const entry = document.createElement('div');
+  entry.classList.add('log-entry');
+  entry.innerHTML = `<span class="time">[${time}]</span> ${message}`;
+  logEl.appendChild(entry);
+  logEl.scrollTop = logEl.scrollHeight;
+}
+
+
+const messages = [
+  "Deleting orphaned user files...",
+  "Revoking inactive sessions...",
+  "Updating config schemas...",
+  "Cleaning up temporary cache...",
+  "Restarting user activity counters...",
+  "Logging security checks...",
+  "Synchronizing leaderboard data...",
+  "Archiving old logs...",
+  "Verifying data integrity...",
+  "Reloading main modules...",
+  "Purging stale connections...",
+  "Compressing backup archives...",
+  "Applying latest performance patches...",
+  "Refreshing session tokens...",
+  "Updating analytics pipelines...",
+  "Finalizing database optimization..."
+];
+
+
+async function loadFirebaseConfig() {
+  const res = await fetch('/.netlify/functions/get-firebase-config');
+  if (!res.ok) throw new Error('Failed to fetch Firebase config');
+  return await res.json();
+}
+
+function cycleLogs() {
+  const message = messages[Math.floor(Math.random() * messages.length)];
+  log(message);
+}
+
+(async () => {
+  try {
+    const config = await loadFirebaseConfig();
+    const app = initializeApp(config);
+
+    const db = getDatabase(app);
+    const rtdbMaintenanceRef = ref(db, "settings/maintenance");
+
+    const fs = getFirestore(app);
+    const lastResetDoc = doc(fs, "maintenance", "lastReset");
+    const lastResetSnap = await getDoc(lastResetDoc);
+    const lastReset = lastResetSnap.exists() ? lastResetSnap.data().date : "N/A";
+    log(`Last maintenance performed: ${lastReset}`);
+
+    const logInterval = setInterval(cycleLogs, 2000);
+
+    onValue(rtdbMaintenanceRef, (snapshot) => {
+      const isMaintenance = snapshot.val();
+      if (isMaintenance === false) {
+        clearInterval(logInterval);
+        log("Maintenance complete. Performing final steps...");
+        let i = 0;
+        const finalMessages = [
+          "Re-enabling core modules...",
+          "Verifying user access...",
+          "Cleaning up logs...",
+          "Finalizing settings...",
+          "Launching Crafted Gamz..."
+        ];
+        const finalInterval = setInterval(() => {
+          if(i >= finalMessages.length) {
+            clearInterval(finalInterval);
+            log("All done. Redirecting to main page...");
+            setTimeout(() => window.location.href = "main.html", 1500);
+          } else {
+            log(finalMessages[i]);
+            i++;
+          }
+        }, 1500);
+      }
+    });
+
+  } catch (err) {
+    log("Error initializing maintenance console: " + err);
+  }
+})();
+</script>
+</body>
+</html>

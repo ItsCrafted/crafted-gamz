@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>What's New v13</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+<style>
+  :root{
+    --accent:#00ffe5;
+    --accent-2:#96f3f5;
+    --glass: rgba(255,255,255,0.04);
+    --card-bg: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    --glass-border: rgba(255,255,255,0.06);
+    --text:#eafcff;
+    --muted: rgba(234,252,255,0.6);
+    --glass-radius: 14px;
+  }
+  html,body{
+    height:100%;
+    margin:0;
+    font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    color:var(--text);
+    background:transparent;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+  }
+  .page{
+    position:relative;
+    min-height:100vh;
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    padding:48px 20px;
+    box-sizing:border-box;
+    backdrop-filter: blur(8px) saturate(120%);
+  }
+  .container{
+    width:100%;
+    max-width:1100px;
+    display:grid;
+    grid-template-columns: 1fr 360px;
+    gap:24px;
+    align-items:start;
+  }
+  header{
+    grid-column:1/-1;
+    display:flex;
+    gap:16px;
+    align-items:center;
+    margin-bottom:6px;
+  }
+  .logo{
+    width:62px;
+    height:62px;
+    border-radius:12px;
+    background:linear-gradient(135deg,var(--accent),var(--accent-2));
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 6px 30px rgba(0,255,229,0.06), inset 0 -6px 16px rgba(0,0,0,0.35);
+    font-weight:800;
+    color:#031018;
+    font-size:20px;
+    letter-spacing:0.6px;
+  }
+  h1{
+    font-size:20px;
+    margin:0;
+    letter-spacing:0.2px;
+  }
+  .sub{
+    color:var(--muted);
+    font-size:13px;
+  }
+  .main{
+    background:var(--card-bg);
+    border-radius:var(--glass-radius);
+    padding:18px;
+    border:1px solid var(--glass-border);
+    box-shadow: 0 8px 40px rgba(2,6,23,0.5);
+    min-height:320px;
+  }
+  .sidebar{
+    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border-radius:var(--glass-radius);
+    padding:16px;
+    border:1px solid var(--glass-border);
+    height:fit-content;
+    position:sticky;
+    top:24px;
+  }
+  .badge{
+    display:inline-flex;
+    gap:8px;
+    align-items:center;
+    background:rgba(0,0,0,0.25);
+    padding:8px 12px;
+    border-radius:999px;
+    font-weight:600;
+    color:var(--text);
+    font-size:13px;
+  }
+  .controls{
+    margin-left:auto;
+    display:flex;
+    gap:8px;
+    align-items:center;
+  }
+  button.btn{
+    background:transparent;
+    border:1px solid rgba(255,255,255,0.06);
+    color:var(--text);
+    padding:8px 12px;
+    border-radius:10px;
+    cursor:pointer;
+    display:inline-flex;
+    gap:8px;
+    align-items:center;
+    font-weight:600;
+  }
+  .search{
+    margin:12px 0 14px 0;
+    display:flex;
+    gap:8px;
+    align-items:center;
+  }
+  input[type="search"]{
+    width:100%;
+    background:transparent;
+    border:1px solid rgba(255,255,255,0.04);
+    padding:10px 12px;
+    border-radius:10px;
+    color:var(--text);
+    outline:none;
+    font-size:14px;
+  }
+  .timeline{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  .entry{
+    display:grid;
+    grid-template-columns: 86px 1fr;
+    gap:14px;
+    align-items:start;
+    padding:12px;
+    border-radius:12px;
+    background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.0));
+    border:1px solid rgba(255,255,255,0.03);
+  }
+  .ver{
+    font-weight:800;
+    font-size:14px;
+    color:var(--accent);
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    align-items:flex-start;
+  }
+  .date{
+    color:var(--muted);
+    font-size:12px;
+  }
+  .entry h3{
+    margin:0;
+    font-size:15px;
+    letter-spacing:0;
+  }
+  .entry p{
+    margin:8px 0 0 0;
+    color:var(--muted);
+    font-size:13px;
+    line-height:1.45;
+  }
+  .chips{
+    margin-top:10px;
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+  }
+  .chip{
+    background:rgba(255,255,255,0.02);
+    padding:6px 9px;
+    border-radius:999px;
+    font-size:12px;
+    color:var(--muted);
+    border:1px solid rgba(255,255,255,0.02);
+    display:inline-flex;
+    gap:8px;
+    align-items:center;
+  }
+  .details{
+    margin-top:12px;
+    display:none;
+    gap:10px;
+    color:var(--muted);
+    font-size:13px;
+  }
+  .entry.open .details{
+    display:block;
+  }
+  .entry .tog{
+    margin-top:8px;
+    display:inline-flex;
+    gap:8px;
+    align-items:center;
+    cursor:pointer;
+    color:var(--accent-2);
+    font-weight:700;
+    font-size:13px;
+  }
+  .small{
+    font-size:13px;
+    color:var(--muted);
+  }
+  .cta{
+    display:flex;
+    gap:8px;
+    margin-top:12px;
+  }
+  .hr{
+    height:1px;
+    background:linear-gradient(90deg, transparent, rgba(255,255,255,0.02), transparent);
+    margin:10px 0;
+    border-radius:2px;
+  }
+  footer{
+    grid-column:1/-1;
+    margin-top:8px;
+    color:var(--muted);
+    font-size:13px;
+    display:flex;
+    gap:10px;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .muted-block{
+    color:var(--muted);
+    font-size:13px;
+  }
+  .icon{
+    width:38px;
+    height:38px;
+    border-radius:10px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(0,0,0,0.18);
+    border:1px solid rgba(255,255,255,0.03);
+  }
+  @media (max-width:980px){
+    .container{grid-template-columns:1fr; padding-bottom:40px}
+    .sidebar{position:relative; top:auto; order:2}
+  }
+
+      .go-btn {
+    display:block;
+    width:100%;
+    max-width:420px;
+    margin:40px auto 0 auto;
+    padding:16px 28px;
+    text-align:center;
+    font-size:18px;
+    font-weight:800;
+    color:#eafcff;
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:14px;
+    cursor:pointer;
+    text-decoration:none;
+    backdrop-filter: blur(10px) saturate(140%);
+    -webkit-backdrop-filter: blur(10px) saturate(140%);
+    transition:transform .15s ease, box-shadow .15s ease, background .15s ease;
+  }
+  .go-btn:hover {
+    transform:translateY(-2px);
+    background:rgba(255,255,255,0.08);
+  }
+  .go-btn:active {
+    transform:translateY(0);
+    background:rgba(255,255,255,0.06);
+  }
+</style>
+</head>
+<body>
+<iframe src="bg.html" style="position:fixed;inset:0;width:100%;height:100%;border:0;z-index:-1;pointer-events:none;background:transparent;"></iframe>
+<div class="page">
+  <div class="container">
+    <header>
+      <div class="logo">CG</div>
+      <div>
+        <h1>Crafted Gamz Version 13</h1>
+        <div class="sub">Released <span id="releaseDate">October 6, 2025</span> · A focused update: games, search, vibe, and performance improvements.</div>
+      </div>
+      <div class="controls">
+        <div class="badge"><i class="fa-solid fa-bolt"></i> v13.0.0</div>
+      </div>
+    </header>
+
+    <main class="main" id="main">
+
+      <div class="timeline" id="timeline">
+        <div class="entry">
+          <div class="ver">
+          </div>
+          <div>
+            <h3>Glassmorphism Effect (iOS 26)</h3>
+            <p>We have implemented a new glassmorphism effect across the UI, taking inspiration from Apple's iOS 26. You can see this effect on this page as you read.</p>
+            <div class="details">
+              <div class="cta">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="entry" data-tags="cgate,network,portable">
+          <div class="ver">
+          </div>
+          <div>
+            <h3>Backgrounds</h3>
+            <p>If you have ever seen Crafted Gamz Version 9 or 10, you will remember our classic AI backgrounds. We have brought that back, filtered through them, and added even more incredible images. These images cycle daily.</p>
+            <div class="details">
+              <div class="cta">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="entry" data-tags="cgpup,privacy,proxy">
+          <div class="ver">
+          </div>
+          <div>
+            <h3>Games Page</h3>
+            <p>We have removed the All Games page and filtered through the games to find the best ones. we then added them to the main games page. Some of these had trigger words fo GoGuardian, so we have obfuscated the elements as a shot at getting around this.</p>
+            <div class="details">
+              
+              <div class="cta">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="entry" data-tags="games,the-crafted-game,features">
+          <div class="ver">
+          </div>
+          <div>
+            <h3>Search Page</h3>
+            <p>We have removed out old broken pr0xy, and replaced it with a un-proxified search engine for when Google is blocked.</p>
+            <div class="details">
+              <div class="cta">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="entry" data-tags="ui,design,background">
+          <div class="ver">
+          </div>
+          <div>
+            <h3>Apps Page</h3>
+            <p>We have removed our broken apps page and replaced it with a index of external projects.</p>
+            <div class="details">
+              <div class="cta">
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+
+      <footer>
+        <div class="muted-block">Planned maintenance every morning for 30 seconds between 8:00 and 9:00 Mountain Daylight Time (MDT).</div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <div class="icon"><i class="fa-solid fa-flask"></i></div>
+          <div class="muted-block">Want coding info? You know who to ask.</div>
+        </div>
+      </footer>
+      <a href="main.html" class="go-btn">Go To Version 13!</a>
+    </main>
+
+    <aside class="sidebar">
+      <div style="display:flex;gap:10px;align-items:center;margin-bottom:12px">
+        <div style="flex:1">
+          <div style="font-weight:800">Thanks for all the support!</div>
+        </div>
+        <div style="text-align:right">
+          <div class="small">Status</div>
+          <div style="font-weight:800;color:var(--accent)">Stable</div>
+        </div>
+      </div>
+
+      <div class="hr" style="margin-top:12px"></div>
+
+      <div style="margin-top:12px">
+    </aside>
+  </div>
+</div>
+
+<script>
+  const timeline = document.getElementById('timeline')
+  const filter = document.getElementById('filter')
+  const entries = Array.from(timeline.querySelectorAll('.entry'))
+  document.querySelectorAll('.entry .tog').forEach(t=>{
+    t.addEventListener('click', e=>{
+      const entry = e.target.closest('.entry')
+      entry.classList.toggle('open')
+    })
+  })
+  document.getElementById('openAll').addEventListener('click', ()=>entries.forEach(en=>en.classList.add('open')))
+  document.getElementById('closeAll').addEventListener('click', ()=>entries.forEach(en=>en.classList.remove('open')))
+  filter.addEventListener('input', ()=> {
+    const q = filter.value.trim().toLowerCase()
+    entries.forEach(en=>{
+      const text = (en.innerText || '').toLowerCase()
+      if(!q || text.includes(q) || (en.dataset.tags || '').includes(q)) en.style.display = ''
+      else en.style.display = 'none'
+    })
+  })
+
+  const markRead = document.getElementById('markRead')
+  markRead.addEventListener('click', ()=>{
+    localStorage.setItem('cg_v13_read','1')
+    markRead.innerHTML = '<i class="fa-solid fa-check"></i> Marked'
+  })
+  if(localStorage.getItem('cg_v13_read')) markRead.innerHTML = '<i class="fa-solid fa-check"></i> Marked'
+  document.querySelectorAll('.open-note').forEach(b=>{
+    b.addEventListener('click', e=>{
+      const note = e.target.closest('button').dataset.note
+      location.href = `/docs/notes-${note}.md`
+    })
+  })
+  document.getElementById('downloadNotes').addEventListener('click', ()=>{
+    const data = entries.map(e=>{
+      const ver = e.querySelector('.ver > div').innerText
+      const title = e.querySelector('h3').innerText
+      const body = e.querySelector('p').innerText
+      const date = e.querySelector('.date').innerText
+      return {ver,title,body,date}
+    })
+    const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'})
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'crafted-v13-notes.json'
+    document.body.appendChild(a)
+    a.click()
+    a.remove()
+    URL.revokeObjectURL(url)
+  })
+</script>
+</body>
+</html>

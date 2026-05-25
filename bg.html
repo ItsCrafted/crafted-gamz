@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Seasonal Background | Crafted Gamz</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+      background-size: cover;
+      background-position: center;
+      transition: background 1s ease-in-out;
+    }
+  </style>
+</head>
+<body>
+
+<script>
+  const backgrounds = {
+    spring: ['forest', 'sunset', 'volcano', 'pyramaid', 'underground', 'skycity', 'night', 'lunar', 'arch'],
+    summer: ['forest', 'sunset', 'volcano', 'pyramaid', 'underground', 'skycity', 'night', 'lunar', 'arch'],
+    autumn: ['forest', 'sunset', 'volcano', 'pyramaid', 'underground', 'skycity', 'night', 'lunar', 'arch'],
+    winter: ['forest', 'sunset', 'volcano', 'pyramaid', 'underground', 'skycity', 'night', 'lunar', 'arch'],
+  };
+
+  function getSeason() {
+    const month = new Date().getMonth() + 1;
+    if (month >= 3 && month <= 5) return 'spring';
+    if (month >= 6 && month <= 8) return 'summer';
+    if (month >= 9 && month <= 11) return 'autumn';
+    return 'winter';
+  }
+
+  function hashString(str) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      hash = (hash << 5) - hash + str.charCodeAt(i);
+      hash |= 0;
+    }
+    return Math.abs(hash);
+  }
+
+  function chooseBackground() {
+    const season = getSeason();
+    const options = backgrounds[season];
+
+    const today = new Date();
+    const dateStr = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
+    const index = hashString(dateStr) % options.length;
+
+    const choice = options[index];
+    console.log(`Season: ${season}, Background chosen: ${choice}`);
+    document.body.style.backgroundImage = `url('img/background/${choice}.jpg')`;
+  }
+
+  chooseBackground();
+</script>
+
+</body>
+</html>

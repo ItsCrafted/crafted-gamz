@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>404 - Page Not Found</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="shortcut icon" href="favicon.png" type="image/x-icon">
+<script src="periodSchedule.js"></script>
+<script type="module" src="reload.js"></script>
+<script src="time-tracker.js"></script>
+<script type="module" src="disable.js"></script>
+<script type="module" src="notification.js"></script>
+<script type="module" src="maintenance.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
+
+<script src="whatsnew.js"></script>
+<style>
+:root {
+  --white: #ffffff;
+  --white-75: rgba(255, 255, 255, 0.75);
+  --white-85: rgba(255, 255, 255, 0.85);
+  --white-90: rgba(255, 255, 255, 0.9);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  font-family: Inter, sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  overflow: hidden;
+  background: transparent;
+  position: relative;
+}
+
+.bg {
+  position: fixed;
+  inset: 0;
+  border: none;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.particles {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: var(--white);
+  border-radius: 50%;
+  opacity: 0.6;
+  animation: float 6s infinite linear;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+}
+
+@keyframes float {
+  0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+}
+
+.notice {
+  position: relative;
+  z-index: 2;
+  max-width: 650px;
+  padding: 50px;
+  text-align: center;
+  border-radius: 32px;
+  overflow: hidden;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.008));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(18px) saturate(180%) contrast(120%) brightness(105%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%) contrast(120%) brightness(105%);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), inset 0 0 0.5px rgba(255, 255, 255, 0.2), inset 0 0 20px rgba(255, 255, 255, 0.02);
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { 
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), inset 0 0 0.5px rgba(255, 255, 255, 0.2), inset 0 0 20px rgba(255, 255, 255, 0.02);
+  }
+  50% { 
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35), inset 0 0 0.5px rgba(255, 255, 255, 0.25), inset 0 0 30px rgba(255, 255, 255, 0.04);
+  }
+}
+
+.notice::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -50%;
+  width: 200%;
+  height: 100%;
+  background: radial-gradient(ellipse at 60% 40%, rgba(255, 255, 255, 0.08), transparent 60%);
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.notice > * {
+  position: relative;
+  z-index: 2;
+}
+
+.notice .icon-container {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 30px;
+}
+
+.notice i {
+  font-size: 64px;
+  color: var(--white);
+  animation: bounce 2s ease-in-out infinite;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-10px); }
+  60% { transform: translateY(-5px); }
+}
+
+.notice h1 {
+  font-size: 36px;
+  color: var(--white);
+  margin-bottom: 20px;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.error-code {
+  font-size: 72px;
+  font-weight: 900;
+  color: var(--white);
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
+  margin-bottom: 10px;
+  animation: glitch 4s infinite;
+}
+
+@keyframes glitch {
+  0%, 90%, 100% { transform: translate(0); }
+  10% { transform: translate(-2px, 2px); }
+  20% { transform: translate(2px, -2px); }
+  30% { transform: translate(-2px, -2px); }
+  40% { transform: translate(2px, 2px); }
+  50% { transform: translate(-2px, 2px); }
+  60% { transform: translate(2px, -2px); }
+  70% { transform: translate(-2px, -2px); }
+  80% { transform: translate(2px, 2px); }
+}
+
+.notice p {
+  font-size: 20px;
+  line-height: 1.6;
+  color: var(--white-90);
+  min-height: 80px;
+  opacity: 1;
+  transition: opacity 1s ease;
+  margin-bottom: 40px;
+  font-weight: 300;
+}
+
+.btn-container {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.cyber-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--white);
+  text-decoration: none;
+  padding: 15px 30px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  font-weight: 600;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.cyber-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+  transition: left 0.5s;
+  z-index: 1;
+}
+
+.cyber-btn:hover::before {
+  left: 100%;
+}
+
+.cyber-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.cyber-btn:active {
+  transform: translateY(-1px);
+}
+
+.cyber-btn i {
+  font-size: 18px;
+  transition: transform 0.3s ease;
+  position: relative;
+  z-index: 2;
+}
+
+.cyber-btn span {
+  position: relative;
+  z-index: 2;
+}
+
+.cyber-btn:hover i {
+  transform: scale(1.2) rotate(10deg);
+}
+
+.scan-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+  animation: scan 2s linear infinite;
+  z-index: 3;
+}
+
+@keyframes scan {
+  0% { top: 0; opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+</style>
+  <script type='text/javascript' src='//civicmillion.com/c1/20/eb/c120eb7ffae731368e11088d8c95e60c.js'></script>
+</head>
+<body>
+  <iframe src="bg.html" class="bg"></iframe>
+  
+  <div class="particles" id="particles"></div>
+
+  <div class="notice">
+    <div class="scan-line"></div>
+    <div class="icon-container">
+      <i class="fa-solid fa-triangle-exclamation"></i>
+    </div>
+    <div class="error-code">404</div>
+    <h1>System Error Detected</h1>
+    <p id="msg">Sorry, this page is giving a 404 error.</p>
+    
+    <div class="btn-container">
+      <a href="main.html" class="cyber-btn">
+        <i class="fa-solid fa-home"></i>
+        <span>Return Home</span>
+      </a>
+    </div>
+  </div>
+
+<script>
+const messages = [
+  "The digital realm has misplaced your requested data packet.",
+  "ERROR: Page.exe has encountered a critical malfunction.",
+  "Your requested file has been consumed by digital void entities.",
+  "SYSTEM ALERT: The page matrix has experienced a cascade failure.",
+  "Data corruption detected in sector 404 of the web dimension.",
+  "The cyber-spirits have hidden your page in the quantum realm.",
+  "CRITICAL ERROR: Page not found in the neural network database.",
+  "Your requested content has been transported to parallel universe.",
+  "SYSTEM BREACH: The page has been hijacked by rogue algorithms.",
+  "Digital phantoms have encrypted your page beyond recognition.",
+  "ERROR 404: The page AI has achieved sentience and walked away.",
+  "Your data request has been intercepted by cyber-ninjas.",
+  "MALFUNCTION: The page has glitched into the shadow web.",
+  "System overload has caused your page to phase-shift out of reality.",
+  "The requested file has been quarantined by digital antibodies.",
+  "ALERT: Your page is currently being debugged by quantum computers.",
+  "The cyber-matrix has temporarily misallocated your content.",
+  "Digital gremlins have scrambled the location of your page.",
+  "ERROR: Page lost in the infinite loops of cyberspace.",
+  "Your requested data has been archived in the digital afterlife.",
+  "SYSTEM WARNING: Page consumed by a recursive black hole.",
+  "The neural network has temporarily forgotten where it put your page.",
+  "Digital entropy has scattered your page across multiple dimensions.",
+  "CRITICAL: The page has been absorbed by the cyber-consciousness.",
+  "Your content is currently being processed by quantum uncertainty.",
+  "ERROR 404: Page has transcended physical digital existence.",
+  "The algorithmic overlords have deemed your page classified.",
+  "Digital vampires have drained the life force from your page.",
+  "SYSTEM FAULT: Page trapped in an infinite rendering loop.",
+  "Your requested file has been converted to pure energy and dispersed.",
+  "The cyber-kraken has pulled your page into the digital abyss.",
+  "ERROR: Page has been compressed into a singularity point.",
+  "Digital archaeologists are still excavating your lost page.",
+  "The page has been conscripted into the robot uprising.",
+  "MALFUNCTION: Your content has achieved digital enlightenment.",
+  "The quantum entanglement of your page has been severed.",
+  "Digital evolution has caused your page to evolve beyond recognition.",
+  "ERROR 404: Page has been recruited by the cyber-resistance.",
+  "Your data has been fragmented across the multiverse.",
+  "The page has entered witness protection in the dark web."
+]
+
+const msgEl = document.getElementById("msg")
+
+function cycle() {
+  msgEl.style.opacity = 0
+  setTimeout(() => {
+    let randomIndex = Math.floor(Math.random() * messages.length)
+    msgEl.textContent = messages[randomIndex]
+    msgEl.style.opacity = 1
+  }, 1000)
+}
+
+setInterval(cycle, 4000)
+
+function createParticle() {
+  const particle = document.createElement('div')
+  particle.className = 'particle'
+  particle.style.left = Math.random() * 100 + 'vw'
+  particle.style.animationDelay = Math.random() * 2 + 's'
+  particle.style.animationDuration = (Math.random() * 3 + 3) + 's'
+  document.getElementById('particles').appendChild(particle)
+  
+  setTimeout(() => {
+    particle.remove()
+  }, 6000)
+}
+
+setInterval(createParticle, 200)
+
+for(let i = 0; i < 10; i++) {
+  setTimeout(createParticle, i * 100)
+}
+</script>
+</body>
+</html>

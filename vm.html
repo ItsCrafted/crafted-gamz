@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crafted Gamz | VM's</title>
+    <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
+    <script src="periodSchedule.js"></script>
+    <script src="nav.js" defer></script>
+    <script type="module" src="reload.js"></script>
+    <script src="time-tracker.js"></script>
+    <script type="module" src="disable.js"></script>
+    <script type="module" src="notification.js"></script>
+    <script type="module" src="maintenance.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="whatsnew.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scrollbar-width: thin;
+            scrollbar-color: white transparent;
+        }
+
+        *::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        *::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        *::-webkit-scrollbar-thumb {
+            background-color: white;
+            border-radius: 10px;
+            border: 2px solid transparent;
+            box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            min-height: 100%;
+            font-family: sans-serif;
+            overflow-x: hidden;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        iframe {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            border: none;
+        }
+
+        h1 {
+            font-size: 3rem;
+            color: white;
+            font-weight: bold;
+            line-height: 1.2;
+            margin: 3em auto;
+            text-align: center;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        .container {
+            position: relative;
+            border-radius: 32px;
+            padding: 30px;
+            max-width: 1200px;
+            width: 100%;
+            background: linear-gradient(
+                145deg,
+                rgba(255, 255, 255, 0.03),
+                rgba(255, 255, 255, 0.008)
+            );
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(18px) saturate(180%) contrast(120%) brightness(105%);
+            -webkit-backdrop-filter: blur(18px) saturate(180%) contrast(120%) brightness(105%);
+            box-shadow:
+                0 4px 20px rgba(0, 0, 0, 0.3),
+                inset 0 0 0.5px rgba(255, 255, 255, 0.2),
+                inset 0 0 20px rgba(255, 255, 255, 0.02);
+        }
+
+        .container.blacklisted {
+            pointer-events: none;
+        }
+
+        .container.blacklisted::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            border-radius: 32px;
+            z-index: 9;
+        }
+
+        .blacklist-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.95);
+            padding: 30px;
+            border-radius: 16px;
+            z-index: 10;
+            width: 85%;
+            max-width: 600px;
+            border: 2px solid #ff4444;
+            box-shadow: 0 0 30px rgba(255, 68, 68, 0.6);
+            display: none;
+        }
+
+        .blacklist-message.active {
+            display: block;
+        }
+
+        .blacklist-header {
+            color: #ff4444;
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .password-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .password-section p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            text-align: center;
+            margin: 0;
+        }
+
+        .password-input-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .password-input-group input {
+            flex: 1;
+            padding: 10px 14px;
+            font-size: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .password-input-group input:focus {
+            border-color: rgba(255, 255, 255, 0.6);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+        }
+
+        .password-input-group button {
+            padding: 10px 20px;
+            font-size: 14px;
+            border: 2px solid rgba(76, 175, 80, 0.5);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: linear-gradient(145deg, rgba(76, 175, 80, 0.3), rgba(76, 175, 80, 0.1));
+            color: #4caf50;
+            white-space: nowrap;
+        }
+
+        .password-input-group button:hover {
+            background: linear-gradient(145deg, rgba(76, 175, 80, 0.4), rgba(76, 175, 80, 0.2));
+            box-shadow: 0 0 20px rgba(76, 175, 80, 0.4);
+            transform: scale(1.02);
+        }
+
+        .password-error {
+            color: #ff4444;
+            font-size: 13px;
+            text-align: center;
+            display: none;
+            animation: shake 0.3s;
+        }
+
+        .password-error.active {
+            display: block;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -50%;
+            width: 200%;
+            height: 100%;
+            background: radial-gradient(
+                ellipse at 60% 40%,
+                rgba(255, 255, 255, 0.08),
+                transparent 60%
+            );
+            mix-blend-mode: soft-light;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 2;
+        }
+
+        button {
+            position: relative;
+            padding: 12px 30px;
+            font-size: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 120px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: white;
+            background: linear-gradient(
+                145deg,
+                rgba(255, 255, 255, 0.03),
+                rgba(255, 255, 255, 0.008)
+            );
+            backdrop-filter: blur(18px) saturate(180%) contrast(120%) brightness(105%);
+            -webkit-backdrop-filter: blur(18px) saturate(180%) contrast(120%) brightness(105%);
+            box-shadow:
+                0 4px 20px rgba(0, 0, 0, 0.3),
+                inset 0 0 0.5px rgba(255, 255, 255, 0.2);
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+
+        button * {
+            position: relative;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        button::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -50%;
+            width: 200%;
+            height: 100%;
+            background: radial-gradient(
+                ellipse at 60% 40%,
+                rgba(255, 255, 255, 0.08),
+                transparent 60%
+            );
+            mix-blend-mode: soft-light;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        button:hover:not(:disabled) {
+            transform: scale(1.03);
+            box-shadow: 
+                0 0 15px rgba(255, 255, 255, 0.4), 
+                0 0 30px rgba(255, 255, 255, 0.2),
+                0 8px 30px rgba(0, 0, 0, 0.35);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            filter: grayscale(80%);
+        }
+
+        .timer {
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            padding: 10px 20px;
+            background: linear-gradient(
+                145deg,
+                rgba(255, 255, 255, 0.03),
+                rgba(255, 255, 255, 0.008)
+            );
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 120px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+
+        .timer.warning {
+            color: #ff4444;
+            animation: pulse 1s infinite;
+            border-color: rgba(255, 68, 68, 0.5);
+            box-shadow: 0 0 20px rgba(255, 68, 68, 0.5);
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        #hyperbeam-container {
+            position: relative;
+            width: 100%;
+            height: 600px;
+            border-radius: 8px;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            z-index: 2;
+        }
+
+        body.fullscreen-active {
+            overflow: hidden;
+        }
+
+        #exitFullscreenBtn {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 30px;
+            font-size: 16px;
+            z-index: 10000;
+            display: none;
+        }
+
+        #hyperbeam-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .status {
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.7);
+            position: relative;
+            z-index: 2;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+
+        .status.active {
+            color: #4caf50;
+            font-weight: 600;
+            text-shadow: 0 0 15px rgba(76, 175, 80, 0.6);
+        }
+
+        #fullscreenBtn {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <iframe src="bg.html"></iframe>
+    <button id="exitFullscreenBtn"><i class="fas fa-compress"></i> Exit Fullscreen</button>
+    
+    <h1>Virtual Machines</h1>
+    
+    <div class="container" id="vmContainer">
+        <div class="blacklist-message" id="blacklistMessage">
+            <div class="blacklist-header">
+                <i class="fas fa-exclamation-triangle"></i> VM Access Disabled due to Device Management
+            </div>
+            <div class="password-section">
+                <p>Enter bypass password to restore access:</p>
+                <div class="password-input-group">
+                    <input type="password" id="passwordInput" placeholder="Enter password">
+                    <button id="submitBtn"><i class="fas fa-unlock"></i> Unlock</button>
+                </div>
+                <div class="password-error" id="passwordError">
+                    <i class="fas fa-times-circle"></i> Incorrect password. Please try again.
+                </div>
+            </div>
+        </div>
+
+        <div class="status" id="status">No active session</div>
+
+        <div class="controls">
+            <button id="startBtn"><i class="fas fa-play"></i> Start Session</button>
+            <button id="endBtn" disabled><i class="fas fa-stop"></i> End Session</button>
+            <button id="fullscreenBtn" style="display: none;"><i class="fas fa-expand"></i> Fullscreen</button>
+            <div class="timer" id="timer" style="display: none;"><i class="fas fa-clock"></i> Time remaining: 15:00</div>
+        </div>
+
+        <div id="hyperbeam-container">
+            <div id="containerMessage">Click "Start Session" to begin</div>
+        </div>
+    </div>
+
+    <script>
+        const BYPASS_PASSWORD = 'Bandrulls*2021';
+        const BYPASS_KEY = 'vm_bypass_authorized';
+
+        async function getUserIP() {
+            try {
+                console.log('Fetching IP from ipify...');
+                const response = await fetch('https://api.ipify.org?format=json');
+                
+                if (!response.ok) {
+                    console.error('Failed to fetch IP from ipify:', response.status);
+                    return null;
+                }
+                
+                const data = await response.json();
+                console.log('IP received:', data.ip);
+                return data.ip;
+            } catch (error) {
+                console.error('Error fetching IP:', error);
+                return null;
+            }
+        }
+
+        async function checkIPBlacklist(userIP) {
+            try {
+                console.log('Checking if IP is blacklisted:', userIP);
+                const response = await fetch('/.netlify/functions/game-blacklist', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ ip: userIP })
+                });
+                
+                if (!response.ok) {
+                    console.error('Failed to check IP blacklist:', response.status);
+                    return false;
+                }
+                
+                const data = await response.json();
+                console.log('Blacklist check result:', data);
+                
+                return data.isBlacklisted;
+            } catch (error) {
+                console.error('Error checking IP blacklist:', error);
+                return false;
+            }
+        }
+
+        function showPasswordPrompt() {
+            const message = document.getElementById('blacklistMessage');
+            message.classList.add('active');
+            document.getElementById('passwordInput').focus();
+        }
+
+        function hidePasswordPrompt() {
+            const message = document.getElementById('blacklistMessage');
+            message.classList.remove('active');
+            document.getElementById('passwordInput').value = '';
+            document.getElementById('passwordError').classList.remove('active');
+        }
+
+        function verifyPassword() {
+            const input = document.getElementById('passwordInput').value;
+            const errorEl = document.getElementById('passwordError');
+            
+            if (input === BYPASS_PASSWORD) {
+                sessionStorage.setItem(BYPASS_KEY, 'true');
+                removeVMBlacklist();
+                hidePasswordPrompt();
+                return true;
+            } else {
+                errorEl.classList.add('active');
+                document.getElementById('passwordInput').value = '';
+                document.getElementById('passwordInput').focus();
+                return false;
+            }
+        }
+
+        function applyVMBlacklist() {
+            console.log('Applying VM blacklist');
+            const vmContainer = document.getElementById('vmContainer');
+            if (vmContainer) {
+                vmContainer.classList.add('blacklisted');
+                console.log('VM access disabled - showing password prompt');
+                showPasswordPrompt();
+            }
+        }
+
+        function removeVMBlacklist() {
+            console.log('Removing VM blacklist');
+            const vmContainer = document.getElementById('vmContainer');
+            if (vmContainer) {
+                vmContainer.classList.remove('blacklisted');
+                console.log('VM access enabled');
+            }
+        }
+
+        function checkBypassAuthorization() {
+            return sessionStorage.getItem(BYPASS_KEY) === 'true';
+        }
+
+        async function checkAndApplyBlacklist() {
+            if (checkBypassAuthorization()) {
+                console.log('Bypass already authorized this session');
+                return;
+            }
+
+            const userIP = await getUserIP();
+            if (userIP) {
+                const isBlacklisted = await checkIPBlacklist(userIP);
+                if (isBlacklisted) {
+                    applyVMBlacklist();
+                }
+            } else {
+                console.warn('Could not retrieve user IP, skipping blacklist check');
+            }
+        }
+
+        document.getElementById('submitBtn').addEventListener('click', verifyPassword);
+        
+        document.getElementById('passwordInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                verifyPassword();
+            }
+        });
+
+        checkAndApplyBlacklist();
+    </script>
+
+    <script type="module">
+        import Hyperbeam from 'https://unpkg.com/@hyperbeam/web@latest/dist/index.js';
+
+        const CONTAINER_ID = 'hyperbeam-container';
+        const SESSION_DURATION = 900;
+        const API_ENDPOINT = '/.netlify/functions/vmkey';
+
+        let hb = null;
+        let countdownInterval = null;
+        let timeRemaining = SESSION_DURATION;
+        let currentSessionId = null;
+        let fullscreenWindow = null;
+        let embedUrl = null;
+
+        const startBtn = document.getElementById('startBtn');
+        const endBtn = document.getElementById('endBtn');
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
+        const exitFullscreenBtn = document.getElementById('exitFullscreenBtn');
+        const timerEl = document.getElementById('timer');
+        const statusEl = document.getElementById('status');
+        const container = document.getElementById(CONTAINER_ID);
+        const containerMessage = document.getElementById('containerMessage');
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        async function startSession() {
+            try {
+                startBtn.disabled = true;
+                statusEl.textContent = 'Creating session...';
+                containerMessage.textContent = 'Creating Hyperbeam session...';
+
+                const response = await fetch(API_ENDPOINT, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ action: 'create' })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || `API Error: ${response.status}`);
+                }
+
+                const data = await response.json();
+                currentSessionId = data.session_id;
+                embedUrl = data.embed_url;
+
+                statusEl.textContent = 'Loading VM...';
+                containerMessage.textContent = 'Loading virtual machine...';
+                
+                hb = await Hyperbeam(container, embedUrl);
+                
+                containerMessage.style.display = 'none';
+                fullscreenBtn.style.display = 'inline-block';
+                statusEl.innerHTML = '<i class="fas fa-check-circle"></i> Session active';
+                statusEl.classList.add('active');
+                endBtn.disabled = false;
+                timerEl.style.display = 'block';
+                
+                startCountdown();
+
+            } catch (error) {
+                console.error('Error starting session:', error);
+                statusEl.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Error: ' + error.message;
+                startBtn.disabled = false;
+                containerMessage.innerHTML = `<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px;">
+                    <div style="font-size: 24px; margin-bottom: 10px;"><i class="fas fa-times-circle"></i></div>
+                    <div style="margin-bottom: 10px;">Failed to create session</div>
+                    <div style="font-size: 12px; color: rgba(255, 255, 255, 0.6);">${error.message}</div>
+                </div>`;
+            }
+        }
+
+        function startCountdown() {
+            timeRemaining = SESSION_DURATION;
+            updateTimerDisplay();
+
+            countdownInterval = setInterval(() => {
+                timeRemaining--;
+                updateTimerDisplay();
+
+                if (timeRemaining <= 60) {
+                    timerEl.classList.add('warning');
+                }
+
+                if (timeRemaining <= 0) {
+                    endSession(true);
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            timerEl.innerHTML = `<i class="fas fa-clock"></i> Time remaining: ${formatTime(timeRemaining)}`;
+        }
+
+        async function endSession(autoEnded = false) {
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+                countdownInterval = null;
+            }
+
+            if (currentSessionId) {
+                try {
+                    await fetch(API_ENDPOINT, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ 
+                            action: 'delete',
+                            sessionId: currentSessionId
+                        })
+                    });
+                } catch (error) {
+                    console.error('Error terminating session:', error);
+                }
+                currentSessionId = null;
+            }
+
+            if (hb) {
+                hb.destroy();
+                hb = null;
+            }
+
+            if (fullscreenWindow && !fullscreenWindow.closed) {
+                fullscreenWindow.close();
+            }
+
+            containerMessage.style.display = 'flex';
+            fullscreenBtn.style.display = 'none';
+            containerMessage.textContent = autoEnded ? 
+                'Session ended automatically (15 minute timeout)' : 
+                'Session ended. Click "Start Session" to begin a new one';
+            
+            statusEl.textContent = autoEnded ? 'Session auto-ended' : 'No active session';
+            statusEl.classList.remove('active');
+            startBtn.disabled = false;
+            endBtn.disabled = true;
+            timerEl.style.display = 'none';
+            timerEl.classList.remove('warning');
+        }
+
+        function enterFullscreen() {
+            if (!embedUrl) return;
+            
+            fullscreenWindow = window.open(embedUrl, '_blank', 'width=1920,height=1080');
+        }
+
+        function exitFullscreen() {
+            if (fullscreenWindow && !fullscreenWindow.closed) {
+                fullscreenWindow.close();
+            }
+            fullscreenWindow = null;
+        }
+
+        startBtn.addEventListener('click', startSession);
+        endBtn.addEventListener('click', () => endSession(false));
+        fullscreenBtn.addEventListener('click', enterFullscreen);
+        exitFullscreenBtn.addEventListener('click', exitFullscreen);
+
+        window.addEventListener('beforeunload', () => {
+            if (hb) {
+                hb.destroy();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && fullscreenWindow && !fullscreenWindow.closed) {
+                exitFullscreen();
+            }
+        });
+    </script>
+</body>
+</html>

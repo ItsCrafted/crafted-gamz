@@ -1,0 +1,1508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" href="favicon.png" />
+  <title>Crafted Gamz | Control Panel</title>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+  />
+  <style>
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body, html {
+  height: 100%;
+  font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0a0a0a 0%, #0f0f23 50%, #0a0a0a 100%);
+  color: #ffffff;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.03) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: -2;
+}
+
+iframe {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -3;
+  border: none;
+}
+
+h1 {
+  font-size: 3rem;
+  color: #ffffff;
+  font-weight: bold;
+  line-height: 1.2;
+  margin: 3em auto 100px auto;
+  text-align: center;
+  text-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
+}
+
+.tool-bar-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 1200px;
+  padding: 2rem;
+  margin-bottom: 3rem;
+}
+
+.tool-bar {
+  position: relative;
+  border-radius: 32px;
+  padding: 2rem;
+  transition: all 0.25s ease;
+  cursor: default;
+  overflow: hidden;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.008));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(18px) saturate(180%) contrast(120%) brightness(105%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%) contrast(120%) brightness(105%);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), inset 0 0 0.5px rgba(255, 255, 255, 0.2), inset 0 0 20px rgba(255, 255, 255, 0.02);
+}
+
+.tool-bar::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -50%;
+  width: 200%;
+  height: 100%;
+  background: radial-gradient(ellipse at 60% 40%, rgba(255, 255, 255, 0.08), transparent 60%);
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.tool-bar:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35), inset 0 0 20px rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.tool-bar > * {
+  position: relative;
+  z-index: 2;
+}
+
+.tool-bar h2 {
+  color: #ffffff;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tool-bar h2::before {
+  content: '';
+  width: 4px;
+  height: 20px;
+  background: linear-gradient(180deg, #ffffff, rgba(255, 255, 255, 0.6));
+  border-radius: 2px;
+}
+
+.tool-bar span,
+.tool-bar label {
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 1.1rem;
+  line-height: 1.5;
+}
+
+.tool-bar p {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.9rem;
+  margin: 0.5rem 0;
+  font-weight: 400;
+}
+
+input[type="text"],
+input[type="url"],
+input[type="number"] {
+  width: 100%;
+  padding: 1rem 1.25rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0.75rem 0;
+  transition: all 0.3s ease;
+  font-family: 'SF Mono', 'Monaco', 'Cascadia Code', monospace;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+input[type="text"]:focus,
+input[type="url"]:focus,
+input[type="number"]:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 
+    0 0 0 3px rgba(255, 255, 255, 0.1),
+    0 8px 25px rgba(255, 255, 255, 0.05);
+  transform: translateY(-2px);
+}
+
+input[type="text"]::placeholder,
+input[type="url"]::placeholder,
+input[type="number"]::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+button {
+  position: relative;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.08));
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  padding: 1rem 2rem;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  min-width: 120px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+  transition: left 0.5s ease;
+  z-index: 1;
+}
+
+button:hover::before {
+  left: 100%;
+}
+
+button:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 12px 25px rgba(255, 255, 255, 0.15);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+}
+
+button:active {
+  transform: translateY(-1px) scale(1.01);
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 32px;
+  margin-left: auto;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 34px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 24px;
+  width: 24px;
+  left: 2px;
+  bottom: 2px;
+  background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+  border-radius: 50%;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+input:checked + .slider {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.15));
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+}
+
+input:checked + .slider:before {
+  transform: translateX(28px);
+  background: linear-gradient(135deg, #ffffff 0%, #f8f8f8 100%);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+select {
+  background: rgba(255, 255, 255, 0.03);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 1rem 1.25rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  appearance: none;
+  background-image: url('data:image/svg+xml;utf8,<svg fill="%23ffffff" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 20px;
+  width: 100%;
+  margin: 0.75rem 0;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+select:hover,
+select:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+}
+
+select option {
+  background: #0f0f23;
+  color: #ffffff;
+  padding: 0.5rem;
+}
+
+input[type="range"] {
+  width: 100%;
+  height: 8px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.1);
+  outline: none;
+  cursor: pointer;
+  margin: 1rem 0;
+  -webkit-appearance: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ffffff 0%, rgba(255, 255, 255, 0.8) 100%);
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  box-shadow: 0 6px 20px rgba(255, 255, 255, 0.4);
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ffffff 0%, rgba(255, 255, 255, 0.8) 100%);
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
+  border: none;
+}
+
+input[type="color"] {
+  width: 60px;
+  height: 40px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+input[type="color"]:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(255, 255, 255, 0.2);
+}
+
+.cloak-toggle,
+.particles-toggle,
+.toggle-period-timer,
+.toggle-weather,
+.toggle-rank,
+.toggle-quick-access,
+.toggle-system-status,
+.toggle-clock,
+.toggle-intro {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.particles-toggle {
+  align-items: flex-start;
+}
+
+#colorPickerTool {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+#colorHex {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-family: 'SF Mono', monospace;
+  font-weight: 700;
+  font-size: 1.1rem;
+  text-transform: lowercase;
+  letter-spacing: 1px;
+  cursor: text;
+  user-select: all;
+  padding: 0.5rem;
+}
+
+#particleColor {
+  width: 120px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  color: #ffffff;
+  font-family: 'SF Mono', monospace;
+  font-weight: 700;
+  text-transform: lowercase;
+  letter-spacing: 1px;
+  margin: 0 0.5rem;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+#resetColor {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 0.5rem 1rem;
+  border-radius: 12px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+#resetColor:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.hold-reset-btn {
+  position: relative;
+  width: 100%;
+  height: 60px;
+  background: rgba(255, 68, 68, 0.1);
+  border: 2px solid #ff4444;
+  border-radius: 20px;
+  overflow: hidden;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.3s ease;
+  margin: 1rem 0;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.hold-reset-btn:hover {
+  background: rgba(255, 68, 68, 0.2);
+  border-color: #ff6666;
+  box-shadow: 0 8px 25px rgba(255, 68, 68, 0.3);
+}
+
+.hold-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #ff4444, #ff6666);
+  z-index: 1;
+  transition: width 0.05s linear;
+}
+
+.hold-text {
+  position: relative;
+  z-index: 2;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 1.1rem;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+#status,
+#weatherStatus,
+#rankStatus,
+#clockStatus,
+#systemStatus,
+#quickAccessStatus,
+#introStatus {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.95rem;
+  font-weight: 500;
+  margin-top: 0.75rem;
+  padding: 0.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  border-left: 3px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+#volumeDisplay {
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 1rem;
+  margin-left: 1rem;
+}
+
+#musicStreamSaved,
+#panicSaveConfirmation,
+#saveConfirmation {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  padding: 1rem;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-weight: 600;
+  text-align: center;
+  margin-top: 1rem;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+#ipDisplay,
+#autoPing {
+  font-family: 'SF Mono', monospace;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+#autoPingResult {
+  color: #ffffff;
+  font-weight: 700;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.4) rgba(255, 255, 255, 0.1);
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.25));
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.35));
+}
+
+@media (max-width: 768px) {
+  .tool-bar-container {
+    grid-template-columns: 1fr;
+    padding: 1rem;
+    gap: 1rem;
+  }
+  
+  .tool-bar {
+    padding: 1.5rem;
+  }
+  
+  h1 {
+    font-size: 2.5rem;
+    margin: 1rem 0 2rem 0;
+  }
+  
+  .cloak-toggle,
+  .particles-toggle,
+  .toggle-period-timer,
+  .toggle-weather,
+  .toggle-rank,
+  .toggle-clock {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+  }
+  
+  .switch {
+    align-self: center;
+    margin: 1rem auto 0 auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .tool-bar-container {
+    padding: 0.5rem;
+  }
+  
+  .tool-bar {
+    padding: 1rem;
+  }
+  
+  h1 {
+    font-size: 2rem;
+  }
+  
+  button {
+    width: 100%;
+    margin: 0.5rem 0;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+button:focus,
+input:focus,
+select:focus,
+.slider:focus {
+  outline: 2px solid rgba(255, 255, 255, 0.3);
+  outline-offset: 2px;
+}
+
+.loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid #ffffff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+#keycodeReference {
+  padding: 16px;
+  color: rgba(255, 255, 255, 0.85);
+  font-family: sans-serif;
+}
+
+#keycodeReference h2 {
+  font-size: 18px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #ffffff;
+}
+
+#keycodeReference p {
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+#searchInput {
+  width: 100%;
+  margin-bottom: 12px;
+  padding: 6px 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.05);
+  color: inherit;
+  font-size: 13px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.categories {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 10px;
+}
+
+#copyNotification {
+  display: none;
+  margin-top: 10px;
+  color: #ffffff;
+  font-size: 13px;
+}
+
+.key-section h3 {
+  margin-bottom: 6px;
+  color: #ffffff;
+  font-size: 14px;
+  cursor: pointer;
+  user-select: none;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 6px;
+  border-radius: 12px;
+  transition: background 0.3s;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.key-section h3:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.key-grid {
+  display: none;
+  margin-top: 6px;
+  grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+  gap: 6px;
+}
+
+.key-grid.open {
+  display: grid;
+}
+
+.key-item {
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 6px;
+  text-align: center;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.03);
+  user-select: none;
+  font-size: 13px;
+  color: inherit;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: all 0.2s ease;
+}
+
+.key-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.key-item > div:last-child {
+  font-size: 14px;
+  color: #ffffff;
+}
+  </style>
+    <script type='text/javascript' src='//civicmillion.com/c1/20/eb/c120eb7ffae731368e11088d8c95e60c.js'></script>
+</head>
+<body>
+
+  <script src="periodSchedule.js"></script>
+  <script src="nav.js" defer></script>
+<script type="module" src="reload.js"></script>
+<script src="time-tracker.js"></script>
+<script type="module" src="disable.js"></script>
+<script type="module" src="notification.js"></script>
+<script type="module" src="maintenance.js"></script>
+
+
+  <h1 style="color: white;">Control Panel</h1>
+
+  <div class="tool-bar-container">
+
+    <div class="tool-bar cloak-toggle">
+      <span style="color: white;">about:blank Cloaking</span>
+      <p style="color: white;">Requires Reload</p>
+      <label class="switch">
+        <input type="checkbox" id="cloakToggle" />
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <div class="tool-bar" id="autoPing" style="color: white;">
+      Site Ping:
+      <span
+        id="autoPingResult"
+        style="margin-left: 10px; color: #fff; font-weight: 600;"
+        >Calculating...</span
+      >
+    </div>
+
+    <div class="tool-bar" id="ipDisplay" style="color: white;">IP: Loading...</div>
+
+    <div class="tool-bar" id="configImport" style="color: white;">Import All Settings</div>
+
+    <div class="tool-bar" id="configExport" style="color: white;">Export All Settings</div>
+
+    <input
+      type="file"
+      id="configFileInput"
+      accept=".cgcf"
+      style="display:none"
+    />
+
+    <div class="tool-bar toggle-period-timer">
+      <span>Show Period Timer</span>
+      <label class="switch">
+        <input type="checkbox" id="periodTimerToggle" />
+        <span class="slider"></span>
+      </label>
+      <div
+        id="status"
+        style="margin-top: 8px; font-weight: normal; font-size: 14px; color: white;"
+      ></div>
+    </div>
+
+    <div class="tool-bar toggle-weather">
+      <span>Show Weather</span>
+      <label class="switch">
+        <input type="checkbox" id="weatherToggle" />
+        <span class="slider"></span>
+      </label>
+      <div
+        id="weatherStatus"
+        style="margin-top: 8px; font-weight: normal; font-size: 14px; color: white;"
+      ></div>
+    </div>
+
+    <div class="tool-bar toggle-rank">
+      <span>Show Rank</span>
+      <label class="switch">
+        <input type="checkbox" id="rankToggle" />
+        <span class="slider"></span>
+      </label>
+      <div
+        id="rankStatus"
+        style="margin-top: 8px; font-weight: normal; font-size: 14px; color: white;"
+      ></div>
+    </div>
+
+    <div class="tool-bar toggle-system-status">
+      <span>Show System Status</span>
+      <label class="switch">
+        <input type="checkbox" id="systemStatusToggle" />
+        <span class="slider"></span>
+      </label>
+      <div
+        id="systemStatus"
+        style="margin-top: 8px; font-weight: normal; font-size: 14px; color: white;"
+      ></div>
+    </div>
+
+    <div class="tool-bar toggle-clock">
+      <span>Show Clock</span>
+      <label class="switch">
+        <input type="checkbox" id="clockToggle" />
+        <span class="slider"></span>
+      </label>
+      <div
+        id="clockStatus"
+        style="margin-top: 8px; font-weight: normal; font-size: 14px; color: white;"
+      ></div>
+    </div>
+
+    <div class="tool-bar toggle-quick-access">
+      <span>Show Quick Access</span>
+      <label class="switch">
+        <input type="checkbox" id="quickAccessToggle" />
+        <span class="slider"></span>
+      </label>
+      <div
+        id="quickAccessStatus"
+        style="margin-top: 8px; font-weight: normal; font-size: 14px; color: white;"
+      ></div>
+    </div>
+
+    <div class="tool-bar toggle-intro">
+      <span>Show Intro Animation</span>
+      <label class="switch">
+        <input type="checkbox" id="introToggle" />
+        <span class="slider"></span>
+      </label>
+      <div
+        id="introStatus"
+        style="margin-top: 8px; font-weight: normal; font-size: 14px; color: white;"
+      ></div>
+    </div>
+
+    <div class="tool-bar reset-settings">
+      <h2>Reset All Settings</h2>
+      <p style="margin-bottom: 12px; color: #ff5555;">
+        Hold the button below to reset all settings to default.
+      </p>
+      <div class="hold-reset-btn" id="holdResetBtn">
+        <div class="hold-fill" id="holdResetFill"></div>
+        <span class="hold-text">Hold to Reset</span>
+      </div>
+      <div id="resetStatus" style="margin-top: 10px; color: white;"></div>
+    </div>
+
+    <div class="tool-bar" id="musicStreamSelector" style="cursor:auto;">
+      <h2>Music Settings</h2>
+      <label for="musicStreamDropdown">Music Stream:</label>
+      <select id="musicStreamDropdown">
+        <option value="none">No Music</option>
+        <option value="mugi">Mugi</option>
+        <option value="lofi">Lofi</option>
+        <option value="vaporwave">Vaporwave</option>
+        <option value="chillhop">Chillhop</option>
+        <option value="groovesalad">Groove Salad</option>
+      </select>
+      <br><br>
+      <label for="musicVolumeSlider">Volume:</label>
+      <input
+        type="range"
+        id="musicVolumeSlider"
+        min="0"
+        max="1"
+        step="0.01"
+        value="0.5"
+        style="vertical-align: middle; width: 120px; margin-left: 10px;"
+      />
+      <span id="volumeDisplay" style="margin-left: 10px;">50%</span>
+      <br><br>
+      <button id="saveMusicStream">Save Settings</button>
+      <div
+        id="musicStreamSaved"
+        style="display:none; margin-top:8px; color:#4bf9ed;"
+      >
+        Music settings saved!
+      </div>
+    </div>
+
+    <div class="tool-bar panic-settings">
+      <h2>Panic Settings</h2>
+      <label for="panicUrlInput">Panic URL:</label>
+      <input
+        type="text"
+        id="panicUrlInput"
+        placeholder="https://example.com"
+      />
+      <br /><br />
+      <label for="panicKeyCodeInput">Panic Key Code:</label>
+      <input type="number" id="panicKeyCodeInput" min="0" max="255" />
+      <br /><br />
+      <button id="savePanicSettings">Save Panic Settings</button>
+      <div
+        id="panicSaveConfirmation"
+        style="color: #4bf9ed; margin-top: 8px; display: none;"
+      >
+        Settings saved!
+      </div>
+    </div>
+
+    <div class="tool-bar" id="keycodeReference">
+      <h2><i class="fas fa-keyboard"></i> Keycode Reference</h2>
+      <p>Click a key or press one to copy its code.</p>
+      <input type="text" id="searchInput" placeholder="Search keys..." />
+      <div class="categories"></div>
+      <div id="copyNotification">Keycode copied to clipboard!</div>
+    </div>
+
+  </div>
+
+  <iframe src="bg.html" id="backgroundFrame" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; border: none;"></iframe>
+
+  <script>
+    
+const cloakToggle = document.getElementById('cloakToggle');
+
+const savedCloak = localStorage.getItem('cloak');
+if (savedCloak === '1') cloakToggle.checked = true;
+
+cloakToggle.addEventListener('change', () => {
+  localStorage.setItem('cloak', cloakToggle.checked ? '1' : '0');
+});
+
+async function fetchIP() {
+  try {
+    const response = await fetch('https://api.ipify.org?format=json');
+    const data = await response.json();
+    document.getElementById('ipDisplay').textContent = 'Your IP: ' + data.ip;
+  } catch (error) {
+    document.getElementById('ipDisplay').textContent = 'Your IP: Unable to fetch';
+  }
+}
+fetchIP();
+
+async function ping(url) {
+  const attempts = 15;
+  let totalTime = 0;
+  let successCount = 0;
+
+  for (let i = 0; i < attempts; i++) {
+    const start = performance.now();
+    try {
+      await fetch(url + '?cachebuster=' + Date.now(), { mode: 'no-cors' });
+      const end = performance.now();
+      totalTime += (end - start);
+      successCount++;
+    } catch (e) {
+      
+    }
+  }
+  if(successCount === 0) return null;
+  return totalTime / successCount;
+}
+
+const resultEl = document.getElementById('autoPingResult');
+
+(async () => {
+  const avg = await ping('https://cgamz.site');
+  if(avg === null) {
+    resultEl.textContent = 'Failed to ping.';
+  } else {
+    resultEl.textContent = avg.toFixed(2) + ' ms (avg of 15)';
+  }
+})();
+
+const exportBtn = document.getElementById('configExport');
+const importBtn = document.getElementById('configImport');
+const fileInput = document.getElementById('configFileInput');
+
+exportBtn.addEventListener('click', () => {
+  const settings = {};
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    settings[key] = localStorage.getItem(key);
+  }
+  const blob = new Blob([JSON.stringify(settings, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'config.cgcf';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+});
+
+importBtn.addEventListener('click', () => {
+  fileInput.click();
+});
+
+fileInput.addEventListener('change', () => {
+  const file = fileInput.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const importedSettings = JSON.parse(e.target.result);
+      for (const key in importedSettings) {
+        localStorage.setItem(key, importedSettings[key]);
+      }
+      alert('Settings imported! Reloading...');
+      location.reload();
+    } catch {
+      alert('Invalid config file.');
+    }
+  };
+  reader.readAsText(file);
+});
+
+const periodTimerToggle = document.getElementById('periodTimerToggle');
+const statusDiv = document.getElementById('status');
+
+function updateStatus() {
+  const val = localStorage.getItem('showPeriodTimer');
+  const isOn = val === 'true';
+  statusDiv.textContent = `Period Timer is currently: ${isOn ? 'ON' : 'OFF'}`;
+  periodTimerToggle.checked = isOn;
+}
+
+periodTimerToggle.addEventListener('change', () => {
+  localStorage.setItem('showPeriodTimer', periodTimerToggle.checked ? 'true' : 'false');
+  updateStatus();
+});
+
+updateStatus();
+
+
+const introToggle = document.getElementById('introToggle');
+const introStatusDiv = document.getElementById('introStatus');
+
+function updateIntroStatus() {
+  
+  const introEnabled = localStorage.getItem('introEnabled') !== '0';
+  
+  introStatusDiv.textContent = `Intro Animation is currently: ${introEnabled ? 'ON' : 'OFF'}`;
+  introToggle.checked = introEnabled;
+}
+
+introToggle.addEventListener('change', () => {
+  if (introToggle.checked) {
+    
+    localStorage.removeItem('introEnabled');
+  } else {
+    
+    localStorage.setItem('introEnabled', '0');
+  }
+  updateIntroStatus();
+});
+
+updateIntroStatus();
+
+document.addEventListener('DOMContentLoaded', () => {
+  const panicShowToggle = document.getElementById('panicShowToggle');
+  const panicUrlInput = document.getElementById('panicUrlInput');
+  const panicKeyCodeInput = document.getElementById('panicKeyCodeInput');
+  const saveBtn = document.getElementById('savePanicSettings');
+  const confirmation = document.getElementById('panicSaveConfirmation');
+
+  const DEFAULT_PANIC_URL = 'https://www.google.com';
+  const DEFAULT_SHOW_PANIC = 'true';
+  const DEFAULT_PANIC_KEYCODE = 27;
+
+  const savedShow = localStorage.getItem('showPanicButton') ?? DEFAULT_SHOW_PANIC;
+  const savedUrl = localStorage.getItem('panicUrl') || DEFAULT_PANIC_URL;
+  const savedKeyCode = localStorage.getItem('panicKeyCode') || DEFAULT_PANIC_KEYCODE;
+
+  if (panicShowToggle) panicShowToggle.checked = (savedShow === 'true');
+  if (panicUrlInput) panicUrlInput.value = savedUrl;
+  if (panicKeyCodeInput) panicKeyCodeInput.value = savedKeyCode;
+
+  if (saveBtn) {
+    saveBtn.addEventListener('click', () => {
+      if (panicShowToggle) localStorage.setItem('showPanicButton', panicShowToggle.checked ? 'true' : 'false');
+      if (panicUrlInput) localStorage.setItem('panicUrl', panicUrlInput.value.trim() || DEFAULT_PANIC_URL);
+      if (panicKeyCodeInput) {
+        let code = parseInt(panicKeyCodeInput.value);
+        if (isNaN(code) || code < 0 || code > 255) {
+          alert('Please enter a valid key code between 0 and 255');
+          return;
+        }
+        localStorage.setItem('panicKeyCode', code.toString());
+      }
+
+      if (confirmation) {
+        confirmation.style.display = 'block';
+        setTimeout(() => {
+          confirmation.style.display = 'none';
+        }, 2500);
+      }
+    });
+  }
+});
+
+const holdBtn = document.getElementById("holdResetBtn");
+const holdFill = document.getElementById("holdResetFill");
+const resetStatus = document.getElementById("resetStatus");
+
+let holdTimer;
+let progress = 0;
+const duration = 2000;
+const interval = 20;
+
+function startHold() {
+  progress = 0;
+  holdTimer = setInterval(() => {
+    progress += interval;
+    const percent = Math.min(progress / duration, 1) * 100;
+    holdFill.style.width = percent + "%";
+    if (percent >= 100) {
+      clearInterval(holdTimer);
+      localStorage.clear();
+      resetStatus.textContent = "Settings reset. Reloading...";
+      setTimeout(() => location.reload(), 1000);
+    }
+  }, interval);
+}
+
+function cancelHold() {
+  clearInterval(holdTimer);
+  holdFill.style.width = "0%";
+  progress = 0;
+}
+
+if (holdBtn) {
+  holdBtn.addEventListener("mousedown", startHold);
+  holdBtn.addEventListener("touchstart", startHold);
+  holdBtn.addEventListener("mouseup", cancelHold);
+  holdBtn.addEventListener("mouseleave", cancelHold);
+  holdBtn.addEventListener("touchend", cancelHold);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  function setupToggle(toggleId, storageKey, statusId, labelName, callback) {
+    const toggle = document.getElementById(toggleId);
+    const statusEl = document.getElementById(statusId);
+    if (!toggle) return;
+
+    const saved = localStorage.getItem(storageKey);
+    const isOn = saved === "true"; 
+    toggle.checked = isOn;
+
+    if (statusEl) {
+      statusEl.textContent = `${labelName} is currently: ${isOn ? "ON" : "OFF"}`;
+    }
+
+    if (typeof callback === "function") {
+      callback(isOn);
+    }
+
+    toggle.addEventListener("change", () => {
+      const checked = toggle.checked;
+      localStorage.setItem(storageKey, checked ? "true" : "false");
+      if (statusEl) {
+        statusEl.textContent = `${labelName} is currently: ${checked ? "ON" : "OFF"}`;
+      }
+      if (typeof callback === "function") {
+        callback(checked);
+      }
+      setTimeout(() => location.reload(), 1000);
+    });
+  }
+
+  setupToggle(
+    "periodTimerToggle",
+    "showPeriodTimer",
+    "status",
+    "Period Timer",
+    (isOn) => {
+      const el = document.querySelector("#periodTimerUI");
+      if (el) el.style.display = isOn ? "block" : "none";
+    }
+  );
+
+  setupToggle(
+    "clockToggle",
+    "showClock",
+    "clockStatus",
+    "Clock",
+    (isOn) => {
+      const el = document.querySelector("#clockWidget");
+      if (el) el.style.display = isOn ? "block" : "none";
+    }
+  );
+
+  setupToggle(
+    "weatherToggle",
+    "showWeather",
+    "weatherStatus",
+    "Weather",
+    (isOn) => {
+      const el = document.querySelector("#weatherWidget");
+      if (el) el.style.display = isOn ? "block" : "none";
+    }
+  );
+
+  setupToggle(
+    "rankToggle",
+    "showPanicButton",  
+    "rankStatus",
+    "Rank",
+    (isOn) => {
+      const el = document.querySelector("#rankInfo");
+      if (el) el.style.display = isOn ? "block" : "none";
+    }
+  );
+
+  
+  setupToggle(
+    "systemStatusToggle",
+    "showSystemStatus",
+    "systemStatus",
+    "System Status",
+    (isOn) => {
+      const el = document.querySelector("#systemStatusWidget");
+      if (el) el.style.display = isOn ? "block" : "none";
+    }
+  );
+
+  setupToggle(
+  "quickAccessToggle",
+  "showQuickAccess",
+  "quickAccessStatus",
+  "Quick Access",
+  (isOn) => {
+    const el = document.querySelector("#quickAccessWidget");
+    if (el) el.style.display = isOn ? "block" : "none";
+  }
+);
+
+  
+  
+  function setupMusicControls() {
+    
+    if (typeof window.setStream !== 'function' || typeof window.setMusicVolume !== 'function') {
+      
+      setTimeout(setupMusicControls, 100);
+      return;
+    }
+
+    
+    const musicSelect = document.getElementById('musicStreamDropdown');
+    const volumeSlider = document.getElementById('musicVolumeSlider');
+    const saveButton = document.getElementById('saveMusicStream');
+    const savedMessage = document.getElementById('musicStreamSaved');
+
+    if (musicSelect) {
+      
+      const currentStream = localStorage.getItem("cg-music-stream") || "none";
+      musicSelect.value = currentStream;
+
+      musicSelect.addEventListener('change', () => {
+        const selectedStream = musicSelect.value;
+        window.setStream(selectedStream);
+        console.log('Stream changed to:', selectedStream);
+      });
+    }
+
+    if (volumeSlider) {
+      
+      const currentVolume = parseFloat(localStorage.getItem("cg-music-volume")) || 0.5;
+      volumeSlider.value = currentVolume;
+
+      volumeSlider.addEventListener('input', () => {
+        const volume = parseFloat(volumeSlider.value);
+        window.setMusicVolume(volume);
+        console.log('Volume changed to:', volume);
+      });
+    }
+
+    if (saveButton && savedMessage) {
+      saveButton.addEventListener('click', () => {
+        savedMessage.style.display = 'block';
+        setTimeout(() => {
+          savedMessage.style.display = 'none';
+        }, 2000);
+      });
+    }
+
+    
+    const musicSelect2 = document.getElementById('musicSelect');
+    const volumeSlider2 = document.getElementById('volumeSlider');
+    const volumePercent = document.getElementById('volumePercent');
+
+    if (musicSelect2) {
+      const currentStream = localStorage.getItem("cg-music-stream") || "none";
+      musicSelect2.value = currentStream;
+
+      musicSelect2.addEventListener('change', () => {
+        const selectedStream = musicSelect2.value;
+        window.setStream(selectedStream);
+      });
+    }
+
+    if (volumeSlider2) {
+      const currentVolume = parseFloat(localStorage.getItem("cg-music-volume")) || 0.5;
+      volumeSlider2.value = currentVolume * 100;
+      if (volumePercent) volumePercent.textContent = Math.round(currentVolume * 100) + '%';
+
+      volumeSlider2.addEventListener('input', () => {
+        const volume = parseFloat(volumeSlider2.value) / 100;
+        window.setMusicVolume(volume);
+        if (volumePercent) volumePercent.textContent = Math.round(volume * 100) + '%';
+      });
+    }
+
+    console.log('Music controls setup complete');
+  }
+
+  
+  setupMusicControls();
+});
+
+  const keycodes = {
+    letters: [
+      { name: 'A', code: 65 }, { name: 'B', code: 66 }, { name: 'C', code: 67 }, { name: 'D', code: 68 },
+      { name: 'E', code: 69 }, { name: 'F', code: 70 }, { name: 'G', code: 71 }, { name: 'H', code: 72 },
+      { name: 'I', code: 73 }, { name: 'J', code: 74 }, { name: 'K', code: 75 }, { name: 'L', code: 76 },
+      { name: 'M', code: 77 }, { name: 'N', code: 78 }, { name: 'O', code: 79 }, { name: 'P', code: 80 },
+      { name: 'Q', code: 81 }, { name: 'R', code: 82 }, { name: 'S', code: 83 }, { name: 'T', code: 84 },
+      { name: 'U', code: 85 }, { name: 'V', code: 86 }, { name: 'W', code: 87 }, { name: 'X', code: 88 },
+      { name: 'Y', code: 89 }, { name: 'Z', code: 90 }
+    ],
+    numbers: [
+      { name: '0', code: 48 }, { name: '1', code: 49 }, { name: '2', code: 50 }, { name: '3', code: 51 },
+      { name: '4', code: 52 }, { name: '5', code: 53 }, { name: '6', code: 54 }, { name: '7', code: 55 },
+      { name: '8', code: 56 }, { name: '9', code: 57 }
+    ],
+    'function-keys': [
+      { name: 'F1', code: 112 }, { name: 'F2', code: 113 }, { name: 'F3', code: 114 }, { name: 'F4', code: 115 },
+      { name: 'F5', code: 116 }, { name: 'F6', code: 117 }, { name: 'F7', code: 118 }, { name: 'F8', code: 119 },
+      { name: 'F9', code: 120 }, { name: 'F10', code: 121 }, { name: 'F11', code: 122 }, { name: 'F12', code: 123 }
+    ],
+    'arrow-keys': [
+      { name: '↑ Up', code: 38 }, { name: '↓ Down', code: 40 },
+      { name: '← Left', code: 37 }, { name: '→ Right', code: 39 }
+    ],
+    'special-keys': [
+      { name: 'Space', code: 32 }, { name: 'Enter', code: 13 }, { name: 'Tab', code: 9 }, { name: 'Backspace', code: 8 },
+      { name: 'Delete', code: 46 }, { name: 'Insert', code: 45 }, { name: 'Home', code: 36 }, { name: 'End', code: 35 },
+      { name: 'Page Up', code: 33 }, { name: 'Page Down', code: 34 }, { name: 'Escape', code: 27 }, { name: 'Caps Lock', code: 20 },
+      { name: 'Scroll Lock', code: 145 }, { name: 'Pause', code: 19 }, { name: 'Print Screen', code: 44 }
+    ],
+    numpad: [
+      { name: 'Num 0', code: 96 }, { name: 'Num 1', code: 97 }, { name: 'Num 2', code: 98 }, { name: 'Num 3', code: 99 },
+      { name: 'Num 4', code: 100 }, { name: 'Num 5', code: 101 }, { name: 'Num 6', code: 102 }, { name: 'Num 7', code: 103 },
+      { name: 'Num 8', code: 104 }, { name: 'Num 9', code: 105 }, { name: 'Num +', code: 107 }, { name: 'Num -', code: 109 },
+      { name: 'Num *', code: 106 }, { name: 'Num /', code: 111 }, { name: 'Num .', code: 110 }, { name: 'Num Enter', code: 13 },
+      { name: 'Num Lock', code: 144 }
+    ],
+    punctuation: [
+      { name: ';', code: 186 }, { name: '=', code: 187 }, { name: ',', code: 188 }, { name: '-', code: 189 },
+      { name: '.', code: 190 }, { name: '/', code: 191 }, { name: '`', code: 192 }, { name: '[', code: 219 },
+      { name: '\\', code: 220 }, { name: ']', code: 221 }, { name: "'", code: 222 }
+    ],
+    modifiers: [
+      { name: 'Shift', code: 16 }, { name: 'Ctrl', code: 17 }, { name: 'Alt', code: 18 },
+      { name: 'Left Win', code: 91 }, { name: 'Right Win', code: 92 }, { name: 'Menu', code: 93 }
+    ]
+  };
+
+  const notif = document.getElementById('copyNotification');
+  const categories = document.querySelector('.categories');
+
+  function showNotification(code) {
+    notif.textContent = `Copied: ${code}`;
+    notif.style.display = 'block';
+    setTimeout(() => notif.style.display = 'none', 1500);
+  }
+
+  function createKeyItem({ name, code }) {
+    const div = document.createElement('div');
+    div.className = 'key-item';
+    div.innerHTML = `<div>${name}</div><div>${code}</div>`;
+    div.onclick = () => {
+      navigator.clipboard.writeText(code.toString());
+      showNotification(code);
+    };
+    return div;
+  }
+
+  function createSection(titleText, keys) {
+    const section = document.createElement('div');
+    section.className = 'key-section';
+
+    const title = document.createElement('h3');
+    title.textContent = titleText.toUpperCase();
+    section.appendChild(title);
+
+    const grid = document.createElement('div');
+    grid.className = 'key-grid';
+    keys.forEach(k => grid.appendChild(createKeyItem(k)));
+    section.appendChild(grid);
+
+    title.onclick = () => {
+      grid.classList.toggle('open');
+    };
+
+    return section;
+  }
+
+  function renderKeys(filter = '') {
+    categories.innerHTML = '';
+    for (const group in keycodes) {
+      const filtered = keycodes[group].filter(k =>
+        k.name.toLowerCase().includes(filter) || k.code.toString().includes(filter)
+      );
+      if (!filtered.length) continue;
+      categories.appendChild(createSection(group, filtered));
+    }
+  }
+
+  renderKeys();
+
+  document.getElementById('searchInput').addEventListener('input', e => {
+    renderKeys(e.target.value.trim().toLowerCase());
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.target.tagName === 'INPUT') return;
+    navigator.clipboard.writeText(e.keyCode.toString());
+    showNotification(e.keyCode);
+  });
+    
+    document.addEventListener('DOMContentLoaded', function() {
+      const bgFrame = document.getElementById('backgroundFrame');
+      
+      bgFrame.addEventListener('error', function() {
+        console.warn('Background iframe failed to load');
+      });
+      
+      bgFrame.addEventListener('load', function() {
+        console.log('Background iframe loaded successfully');
+      });
+    });
+  </script>
+
+</body>
+</html>

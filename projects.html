@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="favicon.png">
+<title>Crafted Gamz | Other Projects</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<script src="periodSchedule.js"></script>
+<script src="nav.js" defer></script>
+<script type="module" src="reload.js"></script>
+<script src="time-tracker.js"></script>
+<script type="module" src="disable.js"></script>
+<script type="module" src="notification.js"></script>
+<script type="module" src="maintenance.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
+<script src="whatsnew.js"></script>
+
+<style>
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: sans-serif;
+  overflow-x: hidden;
+}
+
+iframe {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  border: none;
+}
+
+h1 {
+  font-size: 3rem;
+  color: white;
+  font-weight: bold;
+  line-height: 1.2;
+  margin: 3em auto;
+  text-align: center;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+}
+
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  padding-bottom: 5vh;
+}
+
+.box {
+  position: relative;
+  border-radius: 32px;
+  padding: 20px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+  color: white;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  width: 200px;
+  height: 340px;
+  margin: 10px;
+  text-decoration: none;
+  cursor: pointer;
+  overflow: hidden;
+  background: linear-gradient(145deg, rgba(255,255,255,0.03), rgba(255,255,255,0.008));
+  border: 1px solid rgba(255,255,255,0.08);
+  backdrop-filter: blur(18px) saturate(180%) contrast(120%) brightness(105%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%) contrast(120%) brightness(105%);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3), inset 0 0 0.5px rgba(255,255,255,0.2), inset 0 0 20px rgba(255,255,255,0.02);
+}
+
+.box::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -50%;
+  width: 200%;
+  height: 100%;
+  background: radial-gradient(
+    ellipse at 60% 40%,
+    rgba(255, 255, 255, 0.08),
+    transparent 60%
+  );
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.box:hover {
+  transform: scale(1.03);
+  box-shadow:
+    0 8px 30px rgba(0, 0, 0, 0.35),
+    inset 0 0 20px rgba(255, 255, 255, 0.04);
+}
+
+.box img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  position: relative;
+  z-index: 2;
+}
+
+.box .text {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: white;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  position: relative;
+  z-index: 2;
+  margin-bottom: 8px;
+}
+
+.box .description {
+  font-size: 0.85em;
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.4;
+  position: relative;
+  z-index: 2;
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+.disclaimer {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9rem;
+  margin: 1em auto 2em auto;
+}
+
+.disclaimer hr {
+  border: none;
+  height: 1px;
+  width: 600px;
+  background: rgba(255, 255, 255, 0.5);
+  margin: 0.5em auto;
+}
+
+.disclaimer div {
+  margin: 0.5em 0;
+}
+
+</style>
+  <script type='text/javascript' src='//civicmillion.com/c1/20/eb/c120eb7ffae731368e11088d8c95e60c.js'></script>
+</head>
+<body>
+<iframe src="../bg.html"></iframe>
+<h1>Other Projects</h1>
+<div class="disclaimer">
+  <hr>
+  <span>These are not associated with Crafted Gamz or affiliated projects in any way.</span>
+  <hr>
+</div>
+<div class="container">
+  <a href="https://pulsar-beta.vercel.app/" class="box">
+    <img src="img/projects/pulsar.png" alt="Pulsar">
+    <div class="text">Pulsar</div>
+    <div class="description">A fast and modern all in one pr0xy and UBG site.</div>
+  </a>
+  <a href="https://edu-portal.social/" class="box">
+    <img src="img/projects/saturn.png" alt="Saturn Pr0xy">
+    <div class="text">Saturn Pr0xy</div>
+    <div class="description">Secure pr0xy service.</div>
+  </a>
+  <a href="https://precalc.k22.su/" class="box">
+    <img src="img/projects/shadow.png" alt="Shadow Pr0xy">
+    <div class="text">Shadow Pr0xy</div>
+    <div class="description">Pr0xy service, ads downside.</div>
+  </a>
+  <a href="https://discord.gg/T8zbw9Mgpe" class="box">
+    <img src="img/projects/carbon.png" alt="Carbon Pr0xy">
+    <div class="text">Carbon Pr0xy</div>
+    <div class="description">Lightweight pr0xy with different engines.</div>
+  </a>
+  <a href="https://adsgf.7s.com.tr/" class="box">
+    <img src="img/projects/waves.png" alt="Waves">
+    <div class="text">Waves</div>
+    <div class="description">Dynamic sleek pr0xy platform.</div>
+  </a>
+  <a href="https://thisisnotbottedbtw.bethisraelmedia.org/" class="box">
+    <img src="img/projects/jmw.png" alt="Jordans Math Work">
+    <div class="text">Jordans Math Work</div>
+    <div class="description">Full UBG, pr0xy, basiclly an entire hub.</div>
+  </a>
+  <a href="https://ifeardaily.marimarithegoat.casacam.net/" class="box">
+    <img src="img/projects/axiom.png" alt="Axiom Pr0xy">
+    <div class="text">Axiom Pr0xy</div>
+    <div class="description">Advanced pr0xy and UBG hub. Press "c" when on the page to enter.</div>
+  </a>
+  <a href="https://mret.baby" class="box">
+    <img src="img/projects/mret.png" alt="mret">
+    <div class="text">mret</div>
+    <div class="description">IXL Annihilator</div>
+  </a>
+  <a href="https://flicker.chat" class="box">
+    <img src="img/projects/flicker.png" alt="Flicker AI">
+    <div class="text">Flicker AI</div>
+    <div class="description">AI Chatbot.</div>
+  </a>
+</div>
+</body>
+</html>
