@@ -18,6 +18,7 @@ This is v12 of Crafted Gamz, also shown in the site files as `12.0.0` and descri
 - Added maintenance and disable systems backed by Firebase and Netlify so the site can be taken down or redirected centrally.
 - Added a version update script and dynamic current-version display.
 
+## Games and sections included
 
 - A large game library with around `401` configured entries, including games like 2048, Basket Random, Bloons TD 4 and 5, Chrome Dino, Cookie Clicker, Core Ball, Crossy Road, Drift Boss, Duck Life 1 through 4, Flappy Bird, Flappy Plane, Hextris, Minecraft 1.5 and 1.8, Minesweeper, Monkey Mart, Motox3m, Ovo, Retro Bowl, Rooftop Snipers, Run 2, Run 3, Shell Shockers, Slope, Slope 2, Smash Karts, Snow Rider 3D, Tanuki Sunset, Temple Run 2, Tiny Fishing, Tunnel Rush, Wordle, and Worlds Hardest Game.
 - Main Page
