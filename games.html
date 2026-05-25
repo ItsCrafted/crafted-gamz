@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="favicon.png">
+  <title>Crafted Gamz | Games</title>
+  <script src="nav.js"></script>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: sans-serif;
+      overflow-x: hidden;
+    }
+
+    iframe {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1;
+      border: none;
+    }
+
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      padding-top: 5vh;
+    }
+
+    .box {
+      background-color: rgba(0, 0, 0, 0.7);
+      border-radius: 12px;
+      padding: 20px;
+      transition: transform 0.2s ease, background-color 0.3s ease;
+      color: white;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      width: 200px;
+      height: 300px;
+      margin: 10px;
+      position: relative;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .box:hover {
+      transform: scale(1.05);
+      background-color: #081a2e;
+    }
+
+    .box img {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+
+    .box .text {
+      font-size: 1.2em;
+      font-weight: bold;
+    }
+
+    .heart-icon {
+      font-size: 24px;
+      color: #ff6b6b;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      z-index: 10;
+      text-shadow: 0 0 10px rgba(0,0,0,0.8);
+      margin-top: 10px;
+    }
+
+    .heart-icon:hover {
+      transform: scale(1.2);
+      filter: drop-shadow(0 0 8px #ff6b6b);
+    }
+
+    .heart-icon.saved {
+      color: #ff6b6b;
+      animation: heartPulse 0.6s ease-out;
+    }
+
+    .heart-icon.unsaved {
+      color: transparent;
+      -webkit-text-stroke: 2px #ff6b6b;
+      text-stroke: 2px #ff6b6b;
+    }
+
+    @keyframes heartPulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.3); }
+      100% { transform: scale(1); }
+    }
+
+    .search-dropdown {
+      width: 500px;
+      margin: 0 auto 10px;
+      position: relative;
+      z-index: 1;
+    }
+
+    #dropdownSearch {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 2px solid #4bf9ed;
+      background: rgba(0, 0, 0, 0.6);
+      color: white;
+      font-size: 16px;
+      outline: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 5px #4bf9ed;
+    }
+
+    #dropdownSearch:focus {
+      background: rgba(0, 0, 0, 0.9);
+      box-shadow: 0 0 15px #4bf9ed, 0 0 30px #4bf9ed;
+    }
+
+    #dropdownList {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      position: absolute;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      border-radius: 0 0 10px 10px;
+      z-index: 1;
+      max-height: 200px;
+      overflow-y: auto;
+      display: none;
+    }
+
+    #dropdownList li {
+      padding: 10px;
+      color: white;
+      cursor: pointer;
+    }
+
+    #dropdownList li:hover {
+      background-color: #4bf9ed;
+      color: black;
+    }
+
+    h1 {
+      font-size: 3rem;
+      color: #ffffff;
+      font-weight: bold;
+      line-height: 1.2;
+      margin: 3em auto;
+      text-align: center;
+    }
+
+    h2 {
+      font-size: 3rem;
+      color: #ffffff;
+      font-weight: bold;
+      line-height: 1.2;
+      margin: 3em auto;
+      text-align: center;
+    }
+
+    .button {
+      background-color: rgba(0, 0, 0, 0.7);
+      border-radius: 120px;
+      transition: transform 0.2s ease, background-color 0.3s ease;
+      color: white;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 500px;
+      height: 50px;
+      text-decoration: none;
+      margin-top: 30px;
+      border-color: #4bf9ed;
+      border-width: 2px;
+      border-style: solid;
+    }
+
+    .button:hover {
+      background: rgba(0, 0, 0, 0.9);
+      box-shadow: 0 0 15px #4bf9ed, 0 0 30px #4bf9ed;
+    }
+
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: #00ffe5 transparent;
+    }
+
+    *::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    *::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    *::-webkit-scrollbar-thumb {
+      background-color: #00ffe5;
+      border-radius: 10px;
+      border: 2px solid transparent; 
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="status.js"></script>
+</head>
+<body>
+  <iframe src="bg.html"></iframe>
+
+  <h1>Popular Games</h1>
+
+  <div style="color: #4bf9ed; font-weight: bold; font-size: 20px; text-align: center; margin-top: 100px;"></div>
+  
+  <div class="search-dropdown">
+    <input type="text" id="dropdownSearch" placeholder="Search..." onkeyup="filterDropdown()">
+    <ul id="dropdownList"></ul>
+    <a class="button" href="all-games.html">Go to all games</a>
+  </div>
+
+  <div class="container">
+    <div class="box" data-id="10-minutes-till-dawn">
+      <img src="img/gicon/10-minutes-till-dawn.png" alt="10 Minutes Till Dawn">
+      <h3>10 Minutes Till Dawn</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="10-minutes-till-dawn"></i>
+    </div>
+    
+    <div class="box" data-id="2048">
+      <img src="img/gicon/2048.png" alt="2048">
+      <h3>2048</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="2048"></i>
+    </div>
+    
+    <div class="box" data-id="backrooms">
+      <img src="img/gicon/backrooms.png" alt="Backrooms">
+      <h3>Backrooms</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="backrooms"></i>
+    </div>
+    
+    <div class="box" data-id="backrooms2d">
+      <img src="img/gicon/backrooms2d.png" alt="Backrooms 2D">
+      <h3>Backrooms 2D</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="backrooms2d"></i>
+    </div>
+    
+    <div class="box" data-id="bacon-may-die">
+      <img src="img/gicon/bacon-may-die.png" alt="Bacon May Die">
+      <h3>Bacon May Die</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="bacon-may-die"></i>
+    </div>
+    
+    <div class="box" data-id="bad-ice-cream-2">
+      <img src="img/gicon/bad-ice-cream-2.png" alt="Bad Ice Cream 2">
+      <h3>Bad Ice Cream 2</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="bad-ice-cream-2"></i>
+    </div>
+    
+    <div class="box" data-id="bad-ice-cream-3">
+      <img src="img/gicon/bad-ice-cream-3.png" alt="Bad Ice Cream 3">
+      <h3>Bad Ice Cream 3</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="bad-ice-cream-3"></i>
+    </div>
+    
+    <div class="box" data-id="bad-ice-cream">
+      <img src="img/gicon/bad-ice-cream.png" alt="Bad Ice Cream">
+      <h3>Bad Ice Cream</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="bad-ice-cream"></i>
+    </div>
+    
+    <div class="box" data-id="baldis-basics">
+      <img src="img/gicon/baldis-basics.png" alt="Baldis Basics">
+      <h3>Baldis Basics</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="baldis-basics"></i>
+    </div>
+    
+    <div class="box" data-id="basket-random">
+      <img src="img/gicon/basket-random.png" alt="Basket Random">
+      <h3>Basket Random</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="basket-random"></i>
+    </div>
+    
+    <div class="box" data-id="basketball-stars">
+      <img src="img/gicon/basketball-stars.png" alt="Basketball Stars">
+      <h3>Basketball Stars</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="basketball-stars"></i>
+    </div>
+    
+    <div class="box" data-id="bitlife">
+      <img src="img/gicon/bitlife.png" alt="Bitlife">
+      <h3>Bitlife</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="bitlife"></i>
+    </div>
+    
+    <div class="box" data-id="bntts">
+      <img src="img/gicon/bntts.png" alt="Big Neon Tower, Tiny Square">
+      <h3>Big Neon Tower, Tiny Square</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="bntts"></i>
+    </div>
+    
+    <div class="box" data-id="btts">
+      <img src="img/gicon/btts.png" alt="Big Tower Tiny Square">
+      <h3>Big Tower Tiny Square</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="btts"></i>
+    </div>
+    
+    <div class="box" data-id="busandsubway">
+      <img src="img/gicon/busandsubway.png" alt="Subway Surfers">
+      <h3>Subway Surfers</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="busandsubway"></i>
+    </div>
+    
+    <div class="box" data-id="chess">
+      <img src="img/gicon/chess.png" alt="Chess">
+      <h3>Chess</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="chess"></i>
+    </div>
+    
+    <div class="box" data-id="cluster-rush">
+      <img src="img/gicon/cluster-rush.png" alt="Cluster Rush">
+      <h3>Cluster Rush</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="cluster-rush"></i>
+    </div>
+    
+    <div class="box" data-id="cmm-client">
+      <img src="img/gicon/cmm-client.png" alt="Cmm Client (Minecraft)">
+      <h3>Cmm Client (Minecraft)</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="cmm-client"></i>
+    </div>
+    
+    <div class="box" data-id="ctr-holiday">
+      <img src="img/gicon/ctr-holiday.png" alt="Cut The Rope Holiday">
+      <h3>Cut The Rope Holiday</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="ctr-holiday"></i>
+    </div>
+    
+    <div class="box" data-id="ctr-tr">
+      <img src="img/gicon/ctr-tr.png" alt="Cut The Rope 2">
+      <h3>Cut The Rope 2</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="ctr-tr"></i>
+    </div>
+    
+    <div class="box" data-id="ctr">
+      <img src="img/gicon/ctr.png" alt="Cut The Rope">
+      <h3>Cut The Rope</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="ctr"></i>
+    </div>
+    
+    <div class="box" data-id="death-run-3d">
+      <img src="img/gicon/death-run-3d.png" alt="Death Run 3D">
+      <h3>Death Run 3D</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="death-run-3d"></i>
+    </div>
+    
+    <div class="box" data-id="drift-boss">
+      <img src="img/gicon/drift-boss.png" alt="Drift Boss">
+      <h3>Drift Boss</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="drift-boss"></i>
+    </div>
+    
+    <div class="box" data-id="drift-hunters">
+      <img src="img/gicon/drift-hunters.png" alt="Drift Hunters">
+      <h3>Drift Hunters</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="drift-hunters"></i>
+    </div>
+    
+    <div class="box" data-id="drive-mad">
+      <img src="img/gicon/drive-mad.png" alt="Drive Mad">
+      <h3>Drive Mad</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="drive-mad"></i>
+    </div>
+    
+    <div class="box" data-id="ducklife2">
+      <img src="img/gicon/ducklife2.png" alt="Duck Life 2">
+      <h3>Duck Life 2</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="ducklife2"></i>
+    </div>
+    
+    <div class="box" data-id="ducklife3">
+      <img src="img/gicon/ducklife3.png" alt="Duck Life 3">
+      <h3>Duck Life 3</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="ducklife3"></i>
+    </div>
+    
+    <div class="box" data-id="ducklife4">
+      <img src="img/gicon/ducklife4.png" alt="Duck Life 4">
+      <h3>Duck Life 4</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="ducklife4"></i>
+    </div>
+    
+    <div class="box" data-id="fireboywatergirlforesttemple">
+      <img src="img/gicon/fireboywatergirlforesttemple.png" alt="Fireboy And Watergirl Forest Temple">
+      <h3>Fireboy And Watergirl Forest Temple</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="fireboywatergirlforesttemple"></i>
+    </div>
+    
+    <div class="box" data-id="flappy-bird">
+      <img src="img/gicon/flappy-bird.png" alt="Flappy Bird">
+      <h3>Flappy Bird</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="flappy-bird"></i>
+    </div>
+    
+    <div class="box" data-id="getaway-shootout">
+      <img src="img/gicon/getaway-shootout.png" alt="Getaway Shootout">
+      <h3>Getaway Shootout</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="getaway-shootout"></i>
+    </div>
+
+    <div class="box" data-id="learntofly2">
+      <img src="img/gicon/learntofly2.png" alt="Learn To Fly 2">
+      <h3>Learn To Fly 2</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="learntofly2"></i>
+    </div>
+    
+    <div class="box" data-id="madalin-stunt-cars-2">
+      <img src="img/gicon/madalin-stunt-cars-2.png" alt="Madalin Stunt Cars 2">
+      <h3>Madalin Stunt Cars 2</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="madalin-stunt-cars-2"></i>
+    </div>
+    
+    <div class="box" data-id="madalin-stunt-cars-3">
+      <img src="img/gicon/madalin-stunt-cars-3.png" alt="Madalin Stunt Cars 3">
+      <h3>Madalin Stunt Cars 3</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="madalin-stunt-cars-3"></i>
+    </div>
+    
+    <div class="box" data-id="minecraft-15">
+      <img src="img/gicon/minecraft-15.png" alt="Minecraft 1.5">
+      <h3>Minecraft 1.5</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="minecraft-15"></i>
+    </div>
+    
+    <div class="box" data-id="minecraft-18">
+      <img src="img/gicon/minecraft-18.png" alt="Minecraft 1.8">
+      <h3>Minecraft 1.8</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="minecraft-18"></i>
+    </div>
+    
+    <div class="box" data-id="motox3m-pool">
+      <img src="img/gicon/motox3m-pool.png" alt="Motox 3M Pool Party">
+      <h3>Motox 3M Pool Party</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="motox3m-pool"></i>
+    </div>
+    
+    <div class="box" data-id="motox3m-spooky">
+      <img src="img/gicon/motox3m-spooky.png" alt="Motox 3M Spooky Edition">
+      <h3>Motox 3M Spooky Edition</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="motox3m-spooky"></i>
+    </div>
+    
+    <div class="box" data-id="motox3m-winter">
+      <img src="img/gicon/motox3m-winter.png" alt="Motox 3M Winter Edition">
+      <h3>Motox 3M Winter Edition</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="motox3m-winter"></i>
+    </div>
+    
+    <div class="box" data-id="motox3m">
+      <img src="img/gicon/motox3m.png" alt="Motox 3M">
+      <h3>Motox 3M</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="motox3m"></i>
+    </div>
+    
+    <div class="box" data-id="motox3m2">
+      <img src="img/gicon/motox3m2.png" alt="Motox 3M 2">
+      <h3>Motox 3M 2</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="motox3m2"></i>
+    </div>
+    
+    <div class="box" data-id="retro-bowl">
+      <img src="img/gicon/retro-bowl.png" alt="Retro Bowl">
+      <h3>Retro Bowl</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="retro-bowl"></i>
+    </div>
+    
+    <div class="box" data-id="rooftop-snipers">
+      <img src="img/gicon/rooftop-snipers.png" alt="Rooftop Snipers">
+      <h3>Rooftop Snipers</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="rooftop-snipers"></i>
+    </div>
+    
+    <div class="box" data-id="run">
+      <img src="img/gicon/run.png" alt="Run">
+      <h3>Run</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="run"></i>
+    </div>
+    
+    <div class="box" data-id="run2">
+      <img src="img/gicon/run2.png" alt="Run 2">
+      <h3>Run 2</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="run2"></i>
+    </div>
+    
+    <div class="box" data-id="run3">
+      <img src="img/gicon/run3.png" alt="Run 3">
+      <h3>Run 3</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="run3"></i>
+    </div>
+    
+    <div class="box" data-id="scrapmetal">
+      <img src="img/gicon/scrapmetal.png" alt="Scrap Metal">
+      <h3>Scrap Metal</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="scrapmetal"></i>
+    </div>
+    
+    <div class="box" data-id="slope">
+      <img src="img/gicon/slope.png" alt="Slope">
+      <h3>Slope</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="slope"></i>
+    </div>
+    
+    <div class="box" data-id="slope-2">
+      <img src="img/gicon/slope-2.png" alt="Slope 2">
+      <h3>Slope 2</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="slope-2"></i>
+    </div>
+    
+    <div class="box" data-id="slope-ball">
+      <img src="img/gicon/slope-ball.png" alt="Slope Ball">
+      <h3>Slope Mobile</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="slope-ball"></i>
+    </div>
+    
+    <div class="box" data-id="smashkarts">
+      <img src="img/gicon/smashkarts.png" alt="Smash Karts">
+      <h3>Smash Karts</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="smashkarts"></i>
+    </div>
+    
+    <div class="box" data-id="snowrider3d">
+      <img src="img/gicon/snowrider3d.png" alt="Snow Rider 3D">
+      <h3>Snow Rider 3D</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="snowrider3d"></i>
+    </div>
+    
+    <div class="box" data-id="soccer-random">
+      <img src="img/gicon/soccer-random.png" alt="Soccer Random">
+      <h3>Soccer Random</h3>
+      <i class="heart-icon fas fa-heart" data-game-id="soccer-random"></i>
+    </div>
+  </div>
+
+  <h2>That's All Folks 🤓☝️</h2>
+
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+<script>
+// Firebase initialization
+let firebaseApp;
+let db;
+
+async function loadFirebaseConfig() {
+  try {
+    const res = await fetch('/.netlify/functions/get-firebase-config');
+    if (!res.ok) throw new Error('Failed to fetch Firebase config');
+    const config = await res.json();
+    return config;
+  } catch (error) {
+    console.error('Error loading Firebase config:', error);
+    throw error;
+  }
+}
+
+async function initializeFirebase() {
+  try {
+    const config = await loadFirebaseConfig();
+    if (firebase.apps.length === 0) {
+      firebaseApp = firebase.initializeApp(config);
+    }
+    db = firebase.firestore();
+    console.log('Firebase initialized successfully');
+  } catch (error) {
+    console.error('Failed to initialize Firebase:', error);
+  }
+}
+
+// Track game click to Firebase
+async function trackGameClick(gameName) {
+  if (!db || !gameName) return;
+  
+  try {
+    console.log(`Tracking click for game: ${gameName}`);
+    
+    const gameDoc = db.collection("gameCounts").doc(gameName);
+    const docSnapshot = await gameDoc.get();
+    
+    if (docSnapshot.exists) {
+      const currentCount = docSnapshot.data().count || 0;
+      await gameDoc.update({ 
+        count: currentCount + 1,
+        lastClicked: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      console.log(`Updated count for ${gameName}: ${currentCount + 1}`);
+    } else {
+      await gameDoc.set({ 
+        count: 1,
+        lastClicked: firebase.firestore.FieldValue.serverTimestamp(),
+        gameName: gameName
+      });
+      console.log(`Created new count for ${gameName}: 1`);
+    }
+  } catch (error) {
+    console.error("Failed to update game count:", error);
+  }
+}
+
+class GameSaver {
+  constructor() {
+    this.savedGames = this.getSavedGames();
+    this.initHearts();
+    this.initGameClicks();
+    this.initSearch();
+  }
+
+  getSavedGames() {
+    try {
+      const saved = JSON.parse(localStorage.getItem('savedGames') || '[]');
+      return Array.isArray(saved) ? saved : [];
+    } catch {
+      return [];
+    }
+  }
+
+  saveGame(gameId) {
+    if (!this.savedGames.includes(gameId)) {
+      this.savedGames.push(gameId);
+      localStorage.setItem('savedGames', JSON.stringify(this.savedGames));
+      return true;
+    }
+    return false;
+  }
+
+  unsaveGame(gameId) {
+    const index = this.savedGames.indexOf(gameId);
+    if (index > -1) {
+      this.savedGames.splice(index, 1);
+      localStorage.setItem('savedGames', JSON.stringify(this.savedGames));
+      return true;
+    }
+    return false;
+  }
+
+  isGameSaved(gameId) {
+    return this.savedGames.includes(gameId);
+  }
+
+  initHearts() {
+    document.querySelectorAll('.heart-icon').forEach(heart => {
+      const gameId = heart.getAttribute('data-game-id');
+      this.updateHeartVisual(heart, this.isGameSaved(gameId));
+
+      heart.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const isSaved = this.isGameSaved(gameId);
+        
+        if (isSaved) {
+          this.unsaveGame(gameId);
+        } else {
+          this.saveGame(gameId);
+        }
+        
+        this.updateHeartVisual(heart, !isSaved);
+      });
+    });
+  }
+
+  updateHeartVisual(heart, isSaved) {
+    if (isSaved) {
+      heart.classList.remove('unsaved');
+      heart.classList.add('saved');
+    } else {
+      heart.classList.remove('saved');
+      heart.classList.add('unsaved');
+    }
+  }
+
+  initGameClicks() {
+    document.querySelectorAll('.box').forEach(box => {
+      box.addEventListener('click', async (e) => {
+        // Skip if clicking on heart icon
+        if (e.target.classList.contains('heart-icon')) {
+          return;
+        }
+        
+        e.preventDefault();
+        
+        const gameId = box.getAttribute('data-id');
+        const gameName = box.querySelector("h3")?.textContent.trim();
+        
+        // Set up localStorage for game
+        if (gameId) {
+          localStorage.setItem('gameIds', JSON.stringify([gameId]));
+          
+          // Set up game storage
+          if (!window.gameStorage) window.gameStorage = {};
+          window.gameStorage.selectedGame = gameId;
+        }
+
+        // Track Firebase click
+        if (gameName) {
+          await trackGameClick(gameName);
+        }
+        
+        // Navigate after tracking
+        setTimeout(() => {
+          window.location.href = 'game.html';
+        }, 150);
+      });
+    });
+  }
+
+  initSearch() {
+    const searchInput = document.getElementById("dropdownSearch");
+    const dropdownList = document.getElementById("dropdownList");
+    const gameBoxes = document.querySelectorAll(".box h3");
+
+    if (!searchInput || !dropdownList || gameBoxes.length === 0) {
+      console.warn('Search elements not found');
+      return;
+    }
+
+    // Clear existing dropdown items
+    dropdownList.innerHTML = '';
+
+    gameBoxes.forEach(box => {
+      const li = document.createElement("li");
+      li.textContent = box.textContent;
+      li.addEventListener("click", () => {
+        const targetBox = Array.from(gameBoxes).find(g => g.textContent === li.textContent);
+        if (targetBox) {
+          const container = targetBox.closest(".box");
+
+          container.scrollIntoView({ behavior: "smooth", block: "center" });
+
+          container.style.boxShadow = "0 0 20px 5px #4bf9ed";
+          container.style.border = "2px solid #4bf9ed";
+
+          setTimeout(() => {
+            container.style.boxShadow = "";
+            container.style.border = "";
+          }, 3000);
+        }
+
+        dropdownList.style.display = "none";
+        searchInput.value = "";
+      });
+      dropdownList.appendChild(li);
+    });
+
+    window.filterDropdown = () => {
+      const value = searchInput.value.toLowerCase();
+      const items = dropdownList.getElementsByTagName("li");
+      let matches = 0;
+
+      for (let item of items) {
+        if (item.textContent.toLowerCase().includes(value)) {
+          item.style.display = "";
+          matches++;
+        } else {
+          item.style.display = "none";
+        }
+      }
+
+      dropdownList.style.display = (matches > 0 && value.trim() !== "") ? "block" : "none";
+    };
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!searchInput.contains(e.target) && !dropdownList.contains(e.target)) {
+        dropdownList.style.display = "none";
+      }
+    });
+  }
+}
+
+// Game counter
+document.addEventListener('DOMContentLoaded', () => {
+  const totalGames = document.querySelectorAll(".box").length;
+  if (totalGames > 0) {
+    const counter = document.createElement("div");
+    counter.textContent = `Popular Game Count: ${totalGames}`;
+    counter.style.color = "#4bf9ed";
+    counter.style.fontWeight = "bold";
+    counter.style.fontSize = "20px";
+    counter.style.textAlign = "center";
+    counter.style.marginTop = "100px";
+    
+    const searchDropdown = document.querySelector(".search-dropdown");
+    if (searchDropdown) {
+      document.body.insertBefore(counter, searchDropdown);
+    } else {
+      document.body.appendChild(counter);
+    }
+  }
+});
+
+// Initialize everything
+document.addEventListener('DOMContentLoaded', async () => {
+  await initializeFirebase();
+  new GameSaver();
+});
+
+// Fallback initialization
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', async () => {
+    await initializeFirebase();
+    new GameSaver();
+  });
+} else {
+  initializeFirebase().then(() => {
+    new GameSaver();
+  });
+}
+</script>
+
+</body>
+</html>
