@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crafted Gamz</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: black;
+    }
+
+    video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      border: none;
+      z-index: -1;
+    }
+
+    iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      border: none;
+      z-index: 1;
+    }
+
+    .play-button {
+      position: absolute;
+      z-index: 10;
+      background-color: white;
+      color: black;
+      padding: 15px 30px;
+      font-size: 18px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .play-button:active {
+      transform: scale(0.98);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Video -->
+  <video id="video" playsinline style="display: none;">
+    <source src="load2.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+
+  <!-- Play Button -->
+  <button id="play-button" class="play-button">Open Crafted Gamz v.X (Crafted's Way)</button>
+
+  <script>
+    const video = document.getElementById('video');
+    const playButton = document.getElementById('play-button');
+
+    // Play video on button click
+    playButton.addEventListener('click', () => {
+      video.muted = false; // Ensure sound is enabled
+      video.style.display = 'block'; // Show video
+      playButton.style.display = 'none'; // Hide button
+      video.play();
+
+      // Redirect after 9.5 seconds
+      setTimeout(() => {
+        const iframe = document.createElement('iframe');
+        iframe.src = 'timeloader.html';
+        document.body.appendChild(iframe); // Add the iframe
+
+        // Shrink and move the video offscreen
+        video.style.width = '1px';
+        video.style.height = '1px';
+        video.style.top = '-100px';
+        video.style.left = '-100px';
+      }, 3200);
+
+      // Completely hide the video after 17 seconds
+      setTimeout(() => {
+        video.style.opacity = '0';
+      }, 10000);
+    });
+
+    // Disable right-click on the video
+    video.addEventListener('contextmenu', (event) => event.preventDefault());
+  </script>
+
+</body>
+</html>

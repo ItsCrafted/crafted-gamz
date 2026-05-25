@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/x-icon" href="Files/favicon2.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wikipedia</title>
+    <script>
+        // Secret codes to trigger different actions
+        let secretCode1 = "Crafted>GG";
+        let secretCode2 = "Debug123";
+        const secretCode3 = "CraftedHub"; 
+        const secretCode4 = "AtlasIsAutistic"; // New code for battery3.html
+
+        // Function to open a new blank window with an iframe
+        function openInBlank(file) {
+            const newWindow = window.open('', '_blank'); // Open in a new tab
+            newWindow.document.write(`
+                <html>
+                <head>
+                    <title>about:blank</title>
+                    <style>
+                        body {
+                            margin: 0;
+                            overflow: hidden;
+                        }
+                        iframe {
+                            width: 100vw;
+                            height: 100vh;
+                            border: none;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <iframe src="Files/${file}"></iframe>
+                </body>
+                </html>
+            `);
+            newWindow.document.close();
+
+            // Protect the "about:blank" tab from being closed
+            newWindow.onbeforeunload = function() {
+                return "You have unsaved work, are you sure you want to leave?";
+            };
+        }
+
+        // Function to handle input and trigger actions based on secret codes
+        function handleSubmit() {
+            const query = document.getElementById("entry-box").value.trim();
+            if (query === secretCode1) {
+                openInBlank("Boot/battery.html"); // Open battery.html for "Crafted>GG"
+            } else if (query === secretCode3) {
+                openInBlank("Boot/battery2.html"); // Open battery2.html for "WTC"
+            } else if (query === secretCode4) {
+                openInBlank("Boot/battery3.html"); // Open battery3.html for "ARM"
+            } else if (query === secretCode2) {
+                var newWindow = window.open('Files/gameloader.html', '_blank'); // Open gameloader.html in a new tab for "Debug123"
+                newWindow.focus();
+            } else {
+                // Redirect to Wikipedia search for any other input
+                window.location.href = `https://en.wikipedia.org/wiki/Special:Search?search=${encodeURIComponent(query)}`;
+            }
+            // Clear the input field after submission
+            document.getElementById("entry-box").value = "";
+        }
+
+        // Trigger the submit action when "Enter" is pressed
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "Enter") {
+                handleSubmit(); // Trigger on "Enter" key
+            }
+        });
+
+        // Initialize focus on input field when the page loads
+        window.onload = function() {
+            document.getElementById("entry-box").focus();
+        };
+    </script>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #222;
+            flex-direction: column;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            pointer-events: none;
+        }
+
+        #entry-container {
+            position: absolute;
+            top: 472px;
+            left: 48%;
+            transform: translateX(-50%);
+            z-index: 10;
+            display: flex;
+            gap: 10px;
+            background-color: #101418;
+        }
+
+        #entry-box {
+            padding: 5px;
+            border: 1px solid #ccc;
+            width: 385px;
+            height: 32px;
+            font-size: 16px;
+            border-radius: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Iframe to show Wikipedia -->
+    <iframe src="https://www.wikipedia.org/" scrolling="no"></iframe>
+
+    <!-- Search Box -->
+    <div id="entry-container">
+        <input type="text" id="entry-box" placeholder="Search Wikipedia" autocomplete="off">
+    </div>
+
+</body>
+</html>
+

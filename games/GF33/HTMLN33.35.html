@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JotForm Embeds</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    iframe {
+      width: 100%;
+      height: 600px;
+      border: none;
+      margin-bottom: 20px;
+    }
+  </style>
+    <script>
+      // Load settings from localStorage
+      const redirectUrl = localStorage.getItem("panicRedirectUrl") || "https://www.wikipedia.org";
+      const keyCode = parseInt(localStorage.getItem("panicKeyCode"), 10) || 27;
+  
+      // Panic action function
+      function triggerPanic() {
+        // Open the redirect URL
+        // Replace the current page
+        window.location.replace(redirectUrl);
+      }
+  
+      // Add event listener for the hotkey (keydown event)
+      document.addEventListener("keydown", function(event) {
+        if (event.keyCode === keyCode) {
+          triggerPanic();
+        }
+      });
+  
+      // Optional: Allow click on the Panic Button to trigger the same action
+      document.getElementById("panic-button").addEventListener("click", function(event) {
+        event.preventDefault(); // Prevent default link behavior
+        triggerPanic();
+      });
+    </script>
+</head>
+<body>
+
+  <h1>Forms</h1>
+
+  <h2>Game Request Form</h2>
+  <!-- JotForm Embed 1 -->
+  <script type="text/javascript" src="https://form.jotform.com/jsform/243357973200052"></script>
+
+  <h2>Glitch Submission</h2>
+  <!-- JotForm Embed 2 -->
+  <script type="text/javascript" src="https://form.jotform.com/jsform/243321903577053"></script>
+
+  <h3>Help Center Requests</h3>
+  <!-- JotForm Embed 3 -->
+  <script type="text/javascript" src="https://form.jotform.com/jsform/243411716867057"></script>
+  
+</body>
+</html>

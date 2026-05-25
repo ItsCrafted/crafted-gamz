@@ -1,0 +1,1 @@
+add your image, then rename it to "custom.jpg" select Custom in settings, then it should load

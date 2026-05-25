@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings</title>
+  <script src="settingicon.js"></script>
+  <link rel="stylesheet" href="../styles.css">
+  
+  <!-- Additional scripts -->
+  <script src="../../Settings/theme-switcher.js"></script>
+  <script src="../../attbswitchgames.js"></script>
+  <script src="../../script.js"></script>
+  <script>
+    // Load settings from localStorage
+    const redirectUrl = localStorage.getItem("panicRedirectUrl") || "https://www.wikipedia.org";
+    const keyCode = parseInt(localStorage.getItem("panicKeyCode"), 10) || 27;
+
+    // Panic action function
+    function triggerPanic() {
+      // Open the redirect URL
+      // Replace the current page
+      window.location.replace(redirectUrl);
+    }
+
+    // Add event listener for the hotkey (keydown event)
+    document.addEventListener("keydown", function(event) {
+      if (event.keyCode === keyCode) {
+        triggerPanic();
+      }
+    });
+
+    // Optional: Allow click on the Panic Button to trigger the same action
+    document.getElementById("panic-button").addEventListener("click", function(event) {
+      event.preventDefault(); // Prevent default link behavior
+      triggerPanic();
+    });
+  </script>
+</head>
+<body>
+  <div class="navbar">
+    <a href="../games/GF35/HTMLN35.html" class="navbar-item">Minecraft Version Selector 🛜</a>
+    <a href="../games/GF29/HTMLN29.html" class="navbar-item">Javascript Racer Level Selector</a>
+    <a href="../games/GF12/HTMLN12.html" class="navbar-item">Link Archive</a>
+    <a href="../games/GF32/HTMLN32.html" class="navbar-item">Movies And TV🛜</a>
+    <a href="../games/GF33/HTMLN33.html" class="navbar-item">Miscillaneous</a>
+    <a href="../gameloader.html" class="navbar-item">↩</a>    
+  </div>
+  
+  <h1 id="themeText">Settings</h1>
+  
+  <!-- Theme Settings -->
+  <div class="settings">
+    <button id="goback" onclick="window.location.href='../gameloader.html'">Back to Main page</button>
+  </div>
+
+  <span style="display:block; height: 30px;"></span>
+
+  <div class="settings">
+    <label for="theme">Select Theme:</label>
+    <select id="theme">
+      <option value="light">Light</option>
+      <option value="dark">Dark</option>
+      <option value="sunset">Sunset</option>
+      <option value="sky">Sky</option>
+      <option value="nuclear">Nuclear</option>
+      <option value="ocean">Ocean</option>
+      <option value="poison">Poison</option>
+      <option value="kelp">Kelp</option>
+      <option value="black-pyramid">Black Pyramid</option> <!-- New option added here -->
+      <option value="mountains">Mountains</option>
+      <option value="stellar-desert">Stellar Desert</option>
+      <option value="jungle">Jungle</option>
+      <option value="savanna">Savanna</option>
+      <option value="volcano">Volcano</option>
+      <option value="autumn-forest">Autumn Forest</option>
+      <option value="tundra">Tundra</option>
+      <option value="canyon">Canyon</option>
+      <option value="enforcer">The Enforcer</option>
+      <option value="cat">The 1000 Yard Stare</option>
+      <option value="wild">Wilder</option>
+      <option value="enforcer">option3</option>
+      <option value="enforcer">option4</option>
+      <option value="enforcer">option5</option>
+      <option value="enforcer">option6</option>
+      <option value="enforcer">option7</option>
+      <option value="enforcer">option8</option>
+      <option value="enforcer">option9</option>
+    </select>
+    <span style="display:block; height: 5px;"></span>
+    <button id="saveBtn">Save</button>
+  </div>
+
+  <span style="display:block; height: 30px;"></span>
+
+  <div class="settings">
+<label for="">Set Disguise Screen</label>
+    <select id="redirect-select">
+        <option value="1">Wikipedia</option>
+        <option value="2">APS Main Site</option>
+        <option value="3">Page 3</option>
+        <option value="4">Page 4</option>
+        <option value="5">Random</option>
+    </select>
+    <br>
+    <button onclick="setRedirectValue()">Save Value</button>
+</div>
+<script>
+  function setRedirectValue() {
+      const selectedValue = document.getElementById("redirect-select").value;
+      localStorage.setItem("redirectValue", selectedValue);
+      alert("Redirect value set to " + selectedValue);
+  }
+</script>
+
+<span style="display:block; height: 30px;"></span>
+
+  <!-- Clock Settings -->
+  <div class="settings">
+    <label for="clock-format">Clock Format:</label>
+    <select id="clock-format">
+      <option value="24">24-Hour</option>
+      <option value="12">12-Hour</option>
+    </select>
+    <br><br>
+    <label for="enable-clock">Enable Clock:</label>
+    <input type="checkbox" id="enable-clock" checked>
+    <span style="display:block; height: 5px;"></span>
+    <button id="saveClockBtn">Save Clock Settings</button>
+  </div>
+
+  <span style="display:block; height: 30px;"></span>
+  <div class="settings">
+    <label for="track">Select Background Music Track:</label>
+    <select id="track">
+        <option value="0">Big Flappy Tower, Tiny Square OST</option>
+        <option value="1">Lena Raine: Scattered And Lost</option>
+        <option value="2">C418: Subwoofer Lullaby</option>
+        <option value="3">LOFI Girl: 1 AM Chill Session</option>
+        <option value="4">LOFI Girl: Afternoon Jazz</option>
+    </select>
+
+    <br><br>
+
+    <label for="autoplay">Repeat Track:</label>
+    <input type="checkbox" id="autoplay">
+
+    <br><br>
+
+    <label for="volume">Volume:</label>
+    <input type="range" id="volume" min="0" max="1" step="0.1" value="0.5">
+
+    <br><br>
+
+    <button onclick="saveConfig()">Save Settings</button>
+
+  </div>
+  <script>
+    function saveConfig() {
+        const config = {
+            defaultTrack: document.getElementById("track").value,
+            autoplay: document.getElementById("autoplay").checked,
+            volume: document.getElementById("volume").value
+        };
+        localStorage.setItem("musicConfig", JSON.stringify(config));
+        alert("Settings Saved!");
+    }
+
+    function loadConfig() {
+        const config = JSON.parse(localStorage.getItem("musicConfig"));
+        if (config) {
+            document.getElementById("track").value = config.defaultTrack;
+            document.getElementById("autoplay").checked = config.autoplay;
+            document.getElementById("volume").value = config.volume;
+        }
+    }
+
+    loadConfig();
+</script>
+
+<span style="display:block; height: 30px;"></span>
+
+  <div class="settings">
+    <h2>Panic Button Settings</h2>
+    <label for="redirectUrl">Redirect URL:</label>
+    <input type="text" id="redirectUrl" placeholder="Enter a URL (e.g., https://google.com)">
+
+    <label for="keyCode">Hotkey (Key Code):</label>
+    <input type="number" id="keyCode" placeholder="Enter Key Code (default: 27 for Escape)">
+    <span style="display:block; height: 10px;"></span>
+    <button id="saveSettings">Save Panic Settings</button>
+    <label>⚠️ Warning: Restart Crafted Gamz After Changing </label>
+     <label>Panic Button Settings For Settings To Apply ⚠️</label>
+     <h3>Key Code Description:</h3>
+     <iframe src="../keycodes.txt" style="width: 90%; height: 200px; border: 1px solid #ccc;"></iframe>
+  </div>
+
+  <script>
+    const tracks = [
+      "../tracks/track1.mp3",
+      "../tracks/track2.mp3",
+      "../tracks/track3.mp3",
+      "../tracks/track4.mp3",
+      "../tracks/track5.mp3"
+    ];
+
+    let config = JSON.parse(localStorage.getItem("musicConfig")) || { defaultTrack: 0, autoplay: false, volume: 0.5 };
+    let audio = new Audio(tracks[config.defaultTrack]);
+    audio.loop = true;
+    audio.volume = config.volume;
+
+    function startMusic() {
+      audio.play().catch(() => {
+        document.addEventListener("click", startMusic, { once: true });
+      });
+    }
+
+    startMusic();
+  </script>
+
+  <script>
+    // Load and save clock settings
+    const clockFormatSelect = document.getElementById('clock-format');
+    const enableClockCheckbox = document.getElementById('enable-clock');
+    const themeSelect = document.getElementById('theme');
+
+    // Load saved settings on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedFormat = localStorage.getItem('timeFormat') || '24';
+      const isClockEnabled = localStorage.getItem('clockEnabled') === 'true';
+      const savedTheme = localStorage.getItem('theme') || 'light';
+
+      clockFormatSelect.value = savedFormat;
+      enableClockCheckbox.checked = isClockEnabled;
+      themeSelect.value = savedTheme;
+
+      // Apply the saved theme to the body
+      document.body.className = savedTheme;
+    });
+
+    // Save clock settings
+    document.getElementById('saveClockBtn').addEventListener('click', () => {
+      localStorage.setItem('timeFormat', clockFormatSelect.value);
+      localStorage.setItem('clockEnabled', enableClockCheckbox.checked);
+    });
+
+    // Save theme settings
+    document.getElementById('saveBtn').addEventListener('click', () => {
+      const selectedTheme = themeSelect.value;
+      localStorage.setItem('theme', selectedTheme);
+      document.body.className = selectedTheme;  // Apply the new theme immediately
+    });
+  </script>
+    <script>
+      // Load existing settings if available
+      document.addEventListener("DOMContentLoaded", () => {
+        const redirectUrl = localStorage.getItem("panicRedirectUrl") || "https://www.wikipedia.org";
+        const keyCode = localStorage.getItem("panicKeyCode") || 27;
+  
+        document.getElementById("redirectUrl").value = redirectUrl;
+        document.getElementById("keyCode").value = keyCode;
+      });
+  
+      // Save settings to localStorage
+      document.getElementById("saveSettings").addEventListener("click", () => {
+        const redirectUrl = document.getElementById("redirectUrl").value;
+        const keyCode = parseInt(document.getElementById("keyCode").value, 10);
+  
+        if (redirectUrl && keyCode) {
+          localStorage.setItem("panicRedirectUrl", redirectUrl);
+          localStorage.setItem("panicKeyCode", keyCode);
+          alert("Settings saved!");
+        } else {
+          alert("Please fill in all fields.");
+        }
+      });
+    </script>
+</body>
+</html>
