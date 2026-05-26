@@ -1,0 +1,421 @@
+<html>
+    <head>
+<title>404 Page Not Found</title>
+<link rel="shortcut icon" href="browser/img/favicon.png" type="image/x-icon">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Space+Mono:wght@400;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  .page-404 {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    font-family: 'Syne', sans-serif;
+  }
+
+  .bg-iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    z-index: 0;
+  }
+
+  svg#filter-def {
+    position: absolute;
+    width: 0;
+    height: 0;
+  }
+
+  .card-wrap {
+    position: relative;
+    z-index: 10;
+    width: min(520px, 90%);
+    border-radius: 2rem;
+    overflow: visible;
+    box-shadow: 0 8px 64px rgba(0,0,0,0.6), 0 0 0 0.5px rgba(255,255,255,0.1);
+    transform-style: preserve-3d;
+    will-change: transform;
+    cursor: pointer;
+  }
+
+  .hover-zone {
+    position: absolute;
+    inset: -72px;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .glare-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 25;
+    border-radius: 2rem;
+    pointer-events: none;
+    overflow: hidden;
+    mix-blend-mode: screen;
+  }
+
+  .card-inner {
+    border-radius: 2rem;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .orbit-canvas {
+    position: absolute;
+    inset: -40px;
+    z-index: 20;
+    pointer-events: none;
+  }
+
+  .glass-filter {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    backdrop-filter: blur(18px) saturate(1.4);
+    -webkit-backdrop-filter: blur(18px) saturate(1.4);
+    filter: url(#lg-dist);
+    isolation: isolate;
+  }
+
+  .glass-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: rgba(255,255,255,0.22);
+  }
+
+  .glass-specular {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    border-radius: 2rem;
+    overflow: hidden;
+    box-shadow:
+      inset 1px 1px 0 rgba(255,255,255,0.35),
+      inset 0 0 24px rgba(255,255,255,0.08);
+  }
+
+  .glass-content {
+    position: relative;
+    z-index: 3;
+    padding: 48px 52px 44px;
+    text-align: center;
+    color: white;
+  }
+
+  .fuzzy-text {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 100px;
+    line-height: 1;
+    letter-spacing: -4px;
+    color: white;
+    display: block;
+    filter: url(#fuzzy-constant);
+    margin-bottom: 8px;
+    user-select: none;
+  }
+
+  .divider {
+    width: 48px;
+    height: 1px;
+    background: rgba(255,255,255,0.25);
+    margin: 0 auto 20px;
+  }
+
+  .err-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+    text-shadow: #ffffff 0 0 20px;
+    margin-bottom: 20px;
+    display: block;
+  }
+
+  .message {
+    font-family: 'Syne', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.6;
+    color: rgba(255,255,255,0.65);
+    margin-bottom: 32px;
+  }
+
+  .message em {
+    color: rgba(255,255,255,0.9);
+    font-style: normal;
+    font-weight: 700;
+  }
+
+  .btn-glass {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 28px;
+    border-radius: 50px;
+    border: 1px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.1);
+    color: white;
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    text-decoration: none;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: inset 1px 1px 0 rgba(255,255,255,0.15), 0 4px 16px rgba(0,0,0,0.3);
+    transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+  }
+
+  .btn-glass:hover {
+    background: rgba(255,255,255,0.18);
+    transform: translateY(-2px);
+    box-shadow: inset 1px 1px 0 rgba(255,255,255,0.2), 0 8px 24px rgba(0,0,0,0.4);
+  }
+
+  .btn-glass:active { transform: translateY(0); }
+
+  .status-dot {
+    display: inline-block;
+    width: 6px;
+    height: 7px;
+    border-radius: 50%;
+    background: #ffffff;
+    box-shadow: 0 0 8px #f472b6;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+</style>
+    </head>
+<body>
+    
+<svg id="filter-def">
+  <defs>
+    <filter id="lg-dist">
+      <feTurbulence type="fractalNoise" baseFrequency="0.012 0.008" numOctaves="3" result="noise" seed="2"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="8" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <filter id="fuzzy-constant" x="-20%" y="-20%" width="140%" height="140%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.028" numOctaves="4" result="noise" seed="1">
+        <animate attributeName="seed" values="1;5;11;3;17;7;2;13;1" dur="0.6s" repeatCount="indefinite"/>
+        <animate attributeName="baseFrequency" values="0.028;0.032;0.025;0.03;0.028" dur="1.8s" repeatCount="indefinite"/>
+      </feTurbulence>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="6" xChannelSelector="R" yChannelSelector="G" result="displaced"/>
+      <feGaussianBlur in="displaced" stdDeviation="1.2"/>
+    </filter>
+  </defs>
+</svg>
+
+<div class="page-404">
+  <iframe class="bg-iframe" src="https://i.cgamz.site" allowtransparency="true" scrolling="no"></iframe>
+
+  <div class="card-wrap" id="cardWrap">
+    <div class="hover-zone" id="hoverZone"></div>
+    <canvas class="orbit-canvas" id="orbitCanvas"></canvas>
+    <div class="glare-layer" id="glareLayer"></div>
+    <div class="card-inner">
+      <div class="glass-filter"></div>
+      <div class="glass-overlay"></div>
+      <div class="glass-specular"></div>
+      <div class="glass-content">
+        <span class="err-label"><span class="status-dot"></span>page not found</span>
+        <span class="fuzzy-text">404</span>
+        <div class="divider"></div>
+        <p class="message">
+          The page you're looking for has unfortunately <em>floated into the abyss.</em><br>
+          It may have moved, or perhaps, it had never even been conceived.
+        </p>
+        <button class="btn-glass" href="/" onclick="window.location.href='/'">
+          ← Back to the known
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const canvas = document.getElementById('orbitCanvas');
+  const ctx = canvas.getContext('2d');
+  const wrap = document.getElementById('cardWrap');
+  const inner = wrap.querySelector('.card-inner');
+
+  const PAD = 40;
+  const LINE_LEN = 80;
+
+  let W, H, pathPoints = [];
+
+  function buildPath(w, h, r) {
+    const pts = [];
+    const STEPS = 1200;
+
+    const straight = (x0, y0, x1, y1) => {
+      const len = Math.hypot(x1 - x0, y1 - y0);
+      const n = Math.max(2, Math.round(len));
+      for (let i = 0; i < n; i++) {
+        const f = i / n;
+        pts.push({ x: x0 + (x1 - x0) * f, y: y0 + (y1 - y0) * f });
+      }
+    };
+
+    const arc = (cx, cy, r, a0, a1) => {
+      const span = a1 - a0;
+      const n = Math.max(2, Math.round(Math.abs(span) * r));
+      for (let i = 0; i < n; i++) {
+        const a = a0 + span * (i / n);
+        pts.push({ x: cx + Math.cos(a) * r, y: cy + Math.sin(a) * r });
+      }
+    };
+
+    straight(r, 0, w - r, 0);
+    arc(w - r, r, r, -Math.PI / 2, 0);
+    straight(w, r, w, h - r);
+    arc(w - r, h - r, r, 0, Math.PI / 2);
+    straight(w - r, h, r, h);
+    arc(r, h - r, r, Math.PI / 2, Math.PI);
+    straight(0, h - r, 0, r);
+    arc(r, r, r, Math.PI, Math.PI * 3 / 2);
+
+    const normals = pts.map((p, i) => {
+      const prev = pts[(i - 1 + pts.length) % pts.length];
+      const next = pts[(i + 1) % pts.length];
+      const dx = next.x - prev.x;
+      const dy = next.y - prev.y;
+      const len = Math.hypot(dx, dy) || 1;
+      return { tx: dx / len, ty: dy / len };
+    });
+
+    return pts.map((p, i) => ({
+      x: PAD + p.x,
+      y: PAD + p.y,
+      tx: normals[i].tx,
+      ty: normals[i].ty,
+    }));
+  }
+
+  function resize() {
+    const rect = inner.getBoundingClientRect();
+    W = rect.width + PAD * 2;
+    H = rect.height + PAD * 2;
+    canvas.width = W;
+    canvas.height = H;
+    const R = parseFloat(getComputedStyle(inner).borderRadius) || 32;
+    pathPoints = buildPath(rect.width, rect.height, R);
+  }
+
+  function draw(ts) {
+    ctx.clearRect(0, 0, W, H);
+
+    if (!pathPoints.length) { requestAnimationFrame(draw); return; }
+
+    const speed = 0.00025;
+    const t = (ts * speed) % 1;
+    const total = pathPoints.length;
+    const TRAIL = 200;
+
+    for (let dir = 0; dir < 2; dir++) {
+      const idx = dir === 0
+        ? Math.floor(((t % 1) + 1) % 1 * total)
+        : Math.floor(((1 - t % 1) + 1) % 1 * total);
+
+      ctx.save();
+      ctx.lineWidth = 3;
+      ctx.lineCap = 'butt';
+      ctx.lineJoin = 'round';
+      ctx.shadowColor = 'rgba(200,210,255,0.9)';
+      ctx.shadowBlur = 14;
+      ctx.strokeStyle = 'rgba(255,255,255,0.88)';
+
+      ctx.beginPath();
+      for (let i = TRAIL; i >= 0; i--) {
+        const pidx = dir === 0
+          ? (idx - i + total) % total
+          : (idx + i) % total;
+        const p = pathPoints[pidx];
+        if (i === TRAIL) ctx.moveTo(p.x, p.y);
+        else ctx.lineTo(p.x, p.y);
+      }
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    requestAnimationFrame(draw);
+  }
+
+  resize();
+  new ResizeObserver(resize).observe(inner);
+  requestAnimationFrame(draw);
+
+  const glare = document.getElementById('glareLayer');
+
+  let rx = 0, ry = 0, scale = 1;
+  let trx = 0, try_ = 0, tscale = 1;
+  let glareX = 50, glareY = 50, glareO = 0;
+  let tglareX = 50, tglareY = 50, tglareO = 0;
+  let hovering = false;
+  const STIFFNESS = 0.12;
+  const GLARE_STIFFNESS = 0.1;
+  const EXPAND = 72;
+
+  document.addEventListener('mousemove', (e) => {
+    const rect = wrap.getBoundingClientRect();
+    const inZone = e.clientX >= rect.left - EXPAND &&
+                   e.clientX <= rect.right + EXPAND &&
+                   e.clientY >= rect.top - EXPAND &&
+                   e.clientY <= rect.bottom + EXPAND;
+
+    if (inZone && !hovering) {
+      hovering = true;
+      tscale = 1.08;
+      tglareO = 0.32;
+    } else if (!inZone && hovering) {
+      hovering = false;
+      trx = 0; try_ = 0; tscale = 1; tglareO = 0;
+    }
+
+    if (inZone) {
+      const mx = (e.clientX - rect.left) / rect.width;
+      const my = (e.clientY - rect.top) / rect.height;
+      trx = (my - 0.5) * -32;
+      try_ = (mx - 0.5) * 32;
+      tglareX = Math.max(0, Math.min(100, mx * 100));
+      tglareY = Math.max(0, Math.min(100, my * 100));
+    }
+  });
+
+  function tiltLoop() {
+    rx += (trx - rx) * STIFFNESS;
+    ry += (try_ - ry) * STIFFNESS;
+    scale += (tscale - scale) * STIFFNESS;
+    glareX += (tglareX - glareX) * GLARE_STIFFNESS;
+    glareY += (tglareY - glareY) * GLARE_STIFFNESS;
+    glareO += (tglareO - glareO) * GLARE_STIFFNESS;
+
+    const shadow = hovering
+      ? `${-ry * 2}px ${rx * 2 + 28}px 100px rgba(0,0,0,0.85), 0 0 0 0.5px rgba(255,255,255,0.15)`
+      : `0 8px 64px rgba(0,0,0,0.6), 0 0 0 0.5px rgba(255,255,255,0.1)`;
+
+    wrap.style.transform = `perspective(600px) rotateX(${rx}deg) rotateY(${ry}deg) scale(${scale})`;
+    wrap.style.boxShadow = shadow;
+
+    glare.style.background = `radial-gradient(circle at ${glareX}% ${glareY}%, rgba(255,255,255,${glareO}) 0%, rgba(255,255,255,0) 60%)`;
+
+    requestAnimationFrame(tiltLoop);
+  }
+
+  tiltLoop();
+</script>
+
+</body>
+</html>
