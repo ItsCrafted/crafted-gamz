@@ -1,17 +1,39 @@
 const WISP_QUERY_OVERRIDE = new URLSearchParams(window.location.search).get('wisp')
-const DEFAULT_WISP = WISP_QUERY_OVERRIDE || 'wss://pale-pen-crafted-gamz-b0390771.koyeb.app/'
+const WISP_WORKER_BASE = 'wss://wisp.cgamz.online'
+const DEFAULT_WISP = WISP_QUERY_OVERRIDE || `${WISP_WORKER_BASE}/us-east-1/`
 const WISP_CONNECT_TIMEOUT_MS = 15000
 const WISP_PING_TIMEOUT_MS = 8000
 const WISP_BACKGROUND_PING_MS = 5000
-const WISP_US_EAST_URL = WISP_QUERY_OVERRIDE || 'wss://pale-pen-crafted-gamz-b0390771.koyeb.app/'
-const WISP_US_WEST_URL = WISP_QUERY_OVERRIDE || DEFAULT_WISP
-const WISP_EUROPE_URL = WISP_QUERY_OVERRIDE || 'wss://actual-gisela-eclipsedevelopers-6f1a13cf.koyeb.app/'
 
 const WISP_SERVERS = [
-  { id: 'us-east', label: 'US East', location: 'Washington, DC', flagSrc: 'img/flags/us.png', url: WISP_US_EAST_URL },
-  { id: 'us-west', label: 'US West', location: 'Washington, DC', flagSrc: 'img/flags/us.png', url: WISP_US_WEST_URL },
-  { id: 'europe', label: 'Europe', location: 'Frankfurt, Germany', flagSrc: 'img/flags/eu.png', url: WISP_EUROPE_URL },
+  { id: 'us-east-1', label: 'US East 1', location: 'Virginia, USA',     flagSrc: 'img/flags/us.png', url: WISP_QUERY_OVERRIDE || `${WISP_WORKER_BASE}/us-east-1/`, lat: 37.4316,  lon: -78.6569  },
+  { id: 'us-east-2', label: 'US East 2', location: 'Ohio, USA',         flagSrc: 'img/flags/us.png', url: WISP_QUERY_OVERRIDE || `${WISP_WORKER_BASE}/us-east-2/`, lat: 40.4173,  lon: -82.9071  },
+  { id: 'us-west',   label: 'US West',   location: 'Oregon, USA',       flagSrc: 'img/flags/us.png', url: WISP_QUERY_OVERRIDE || `${WISP_WORKER_BASE}/us-west/`,   lat: 43.8041,  lon: -120.5542 },
+  { id: 'europe',    label: 'Europe',    location: 'Frankfurt, Germany', flagSrc: 'img/flags/eu.png', url: WISP_QUERY_OVERRIDE || `${WISP_WORKER_BASE}/europe/`,    lat: 50.1109,  lon: 8.6821    },
+  { id: 'asia',      label: 'Asia',      location: 'Singapore',         flagSrc: 'img/flags/sg.png', url: WISP_QUERY_OVERRIDE || `${WISP_WORKER_BASE}/asia/`,      lat: 1.3521,   lon: 103.8198  },
 ]
+
+function geoDistanceKm(lat1, lon1, lat2, lon2) {
+  const R = 6371
+  const dLat = (lat2 - lat1) * Math.PI / 180
+  const dLon = (lon2 - lon1) * Math.PI / 180
+  const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) ** 2
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+}
+
+async function getClosestWispServer() {
+  try {
+    const res = await fetch('https://ipapi.co/json/', { signal: AbortSignal.timeout(3000) })
+    const data = await res.json()
+    const { latitude, longitude } = data
+    if (!latitude || !longitude) return null
+    return getConfiguredWispServers()
+      .map(s => ({ server: s, dist: geoDistanceKm(latitude, longitude, s.lat, s.lon) }))
+      .sort((a, b) => a.dist - b.dist)[0].server
+  } catch (e) {
+    return null
+  }
+}
 
 let uvReady = false
 let baremuxReady = false
@@ -371,6 +393,16 @@ function startBackgroundWispPingLoop() {
 }
 
 async function chooseBestWispServer() {
+  const geo = WISP_QUERY_OVERRIDE ? null : await getClosestWispServer()
+  if (geo) {
+    currentWispServerId = geo.id
+    bestWispServerId = geo.id
+    currentWispLatencyMs = null
+    updateWispSwitcherButton()
+    renderWispSwitcherMenu()
+    return geo
+  }
+
   const best = await refreshWispPingSnapshot()
   if (best && best.server) {
     currentWispServerId = best.server.id
