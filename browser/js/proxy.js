@@ -1,17 +1,40 @@
 const WISP_QUERY_OVERRIDE = new URLSearchParams(window.location.search).get('wisp')
-const WISP_WORKER_BASE = 'wss://wisp.cgamz.online'
-const DEFAULT_WISP = WISP_QUERY_OVERRIDE || `${WISP_WORKER_BASE}/us-east-1/`
+const WISP_WORKER_BASE = 'https://wisp.cgamz.online'
+const DEFAULT_WISP_REGION = 'us-east-1'
 const WISP_CONNECT_TIMEOUT_MS = 15000
 const WISP_PING_TIMEOUT_MS = 8000
 const WISP_BACKGROUND_PING_MS = 5000
 
 const WISP_SERVERS = [
-  { id: 'us-east-1', label: 'US East 1', location: 'Virginia, USA',     flagSrc: 'img/flags/us.png', url: WISP_QUERY_OVERRIDE || `${WISP_WORKER_BASE}/us-east-1/`, lat: 37.4316,  lon: -78.6569  },
-  { id: 'us-east-2', label: 'US East 2', location: 'Ohio, USA',         flagSrc: 'img/flags/us.png', url: WISP_QUERY_OVERRIDE || `${WISP_WORKER_BASE}/us-east-2/`, lat: 40.4173,  lon: -82.9071  },
-  { id: 'us-west',   label: 'US West',   location: 'Oregon, USA',       flagSrc: 'img/flags/us.png', url: WISP_QUERY_OVERRIDE || `${WISP_WORKER_BASE}/us-west/`,   lat: 43.8041,  lon: -120.5542 },
-  { id: 'europe',    label: 'Europe',    location: 'Frankfurt, Germany', flagSrc: 'img/flags/eu.png', url: WISP_QUERY_OVERRIDE || `${WISP_WORKER_BASE}/europe/`,    lat: 50.1109,  lon: 8.6821    },
-  { id: 'asia',      label: 'Asia',      location: 'Singapore',         flagSrc: 'img/flags/sg.png', url: WISP_QUERY_OVERRIDE || `${WISP_WORKER_BASE}/asia/`,      lat: 1.3521,   lon: 103.8198  },
+  { id: 'us-east-1', label: 'US East 1', location: 'Virginia, USA',     flagSrc: 'img/flags/us.png', lat: 37.4316,  lon: -78.6569  },
+  { id: 'us-east-2', label: 'US East 2', location: 'Ohio, USA',         flagSrc: 'img/flags/us.png', lat: 40.4173,  lon: -82.9071  },
+  { id: 'us-west',   label: 'US West',   location: 'Oregon, USA',       flagSrc: 'img/flags/us.png', lat: 43.8041,  lon: -120.5542 },
+  { id: 'europe',    label: 'Europe',    location: 'Frankfurt, Germany', flagSrc: 'img/flags/eu.png', lat: 50.1109,  lon: 8.6821    },
+  { id: 'asia',      label: 'Asia',      location: 'Singapore',         flagSrc: 'img/flags/sg.png', lat: 1.3521,   lon: 103.8198  },
 ]
+
+const resolvedWispUrlCache = new Map()
+
+async function resolveWispUrl(serverId) {
+  if (WISP_QUERY_OVERRIDE) return WISP_QUERY_OVERRIDE
+  if (resolvedWispUrlCache.has(serverId)) return resolvedWispUrlCache.get(serverId)
+
+  try {
+    const res = await fetch(`${WISP_WORKER_BASE}/${serverId}/`, { signal: AbortSignal.timeout(4000) })
+    const data = await res.json()
+    if (data && data.redirect) {
+      resolvedWispUrlCache.set(serverId, data.redirect)
+      return data.redirect
+    }
+    const headerUrl = res.headers.get('X-Wisp-Redirect')
+    if (headerUrl) {
+      resolvedWispUrlCache.set(serverId, headerUrl)
+      return headerUrl
+    }
+  } catch (e) {}
+
+  return null
+}
 
 function geoDistanceKm(lat1, lon1, lat2, lon2) {
   const R = 6371
@@ -58,7 +81,7 @@ function _wispSwitcherCurrent() { return document.getElementById('wisp-switcher-
 function _wispSwitcherIcon() { return document.getElementById('wisp-switcher-icon') }
 
 function getConfiguredWispServers() {
-  return WISP_SERVERS.filter(server => typeof server.url === 'string' && server.url.trim())
+  return WISP_SERVERS
 }
 
 function getWispServerById(id) {
@@ -201,9 +224,11 @@ function initWispUi() {
   wispUiReady = true
 }
 
-function getWispUrl() {
-  const server = getCurrentWispServer()
-  return server ? server.url : DEFAULT_WISP
+async function getWispUrl(serverId) {
+  const id = serverId || currentWispServerId
+  const resolved = await resolveWispUrl(id)
+  if (resolved) return resolved
+  return `wss://wisp-${id}.onrender.com/`
 }
 
 function closeSocket(socket) {
@@ -232,12 +257,19 @@ function closeSocket(socket) {
   })
 }
 
-function measureWispServer(server, options = {}) {
+async function measureWispServer(server, options = {}) {
   const timeoutMs = options.timeoutMs || WISP_PING_TIMEOUT_MS
   const keepOpen = !!options.keepOpen
 
-  return new Promise(resolve => {
-    if (!server || !server.url) {
+  return new Promise(async resolve => {
+    if (!server) {
+      resolve({ ok: false, latency: null, socket: null, server })
+      return
+    }
+
+    const wispUrl = await getWispUrl(server.id)
+
+    if (!wispUrl) {
       resolve({ ok: false, latency: null, socket: null, server })
       return
     }
@@ -258,7 +290,7 @@ function measureWispServer(server, options = {}) {
     }
 
     try {
-      ws = new WebSocket(server.url)
+      ws = new WebSocket(wispUrl)
       ws.binaryType = 'arraybuffer'
 
       const timeout = window.setTimeout(() => {
@@ -494,8 +526,9 @@ async function initBaremux() {
     }
 
     try {
+      const wispUrl = await getWispUrl()
       baremuxConnection = new BareMux.BareMuxConnection('/baremux/worker.js')
-      await baremuxConnection.setTransport('/libcurl/index.mjs', [{ wisp: getWispUrl() }])
+      await baremuxConnection.setTransport('/libcurl/index.mjs', [{ wisp: wispUrl }])
       if (generation !== proxyTransportGeneration) return false
       baremuxReady = !!(await baremuxConnection.getTransport())
       if (!baremuxReady) setWispStatus('err')
