@@ -8,6 +8,13 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link rel="stylesheet" href="css/style.css">
 <link rel="shortcut icon" href="img/favicon.png" type="image/x-icon">
+<style>
+#ascii-area .ac {
+  display: inline-block;
+  position: relative;
+  will-change: transform;
+}
+</style>
 </head>
 <body>
 <iframe id="bg" src="https://i.cgamz.site?c=minimal" allowtransparency="true"></iframe>
@@ -79,5 +86,142 @@
   </div>
 </div>
 <script src="js/script.js"></script>
+<script>
+(function () {
+  var area = document.getElementById('ascii-area');
+  if (!area) return;
+
+  // --- wrap chars ---
+  var raw = area.textContent;
+  var html = '';
+  for (var i = 0; i < raw.length; i++) {
+    var ch = raw[i];
+    if (ch === '\n') { html += '\n'; }
+    else if (ch === ' ') { html += ' '; }
+    else { html += '<span class="ac">' + ch + '</span>'; }
+  }
+  area.innerHTML = html;
+
+  var spans = Array.from(area.querySelectorAll('.ac'));
+  var count = spans.length;
+
+  // per-char physics state
+  var px = new Float32Array(count);   // current x offset from origin
+  var py = new Float32Array(count);   // current y offset
+  var vx = new Float32Array(count);   // velocity x
+  var vy = new Float32Array(count);   // velocity y
+  var rot = new Float32Array(count);  // current rotation degrees
+  var vrot = new Float32Array(count); // rotational velocity deg/frame
+  var active = new Uint8Array(count); // 1 = in flight
+
+  // cached home positions (relative to viewport, rebuilt on resize/scroll)
+  var homeX = new Float32Array(count);
+  var homeY = new Float32Array(count);
+  var rectsCached = false;
+
+  function cacheRects() {
+    for (var i = 0; i < count; i++) {
+      var r = spans[i].getBoundingClientRect();
+      homeX[i] = r.left + r.width * 0.5;
+      homeY[i] = r.top  + r.height * 0.5;
+    }
+    rectsCached = true;
+  }
+
+  window.addEventListener('resize', function () { rectsCached = false; });
+
+  // --- tuning knobs ---
+  var RADIUS   = 100;   // cursor influence radius px
+  var LAUNCH   = 8;    // base launch speed (px/frame at 60fps)
+  var MAX_ROT  = 450;   // max rotational velocity deg/frame
+  var GRAVITY  = 0.08;  // gentle downward pull px/frame^2 toward home Y
+  var SPRING   = 0.003; // weak spring pulling back to home (position × spring)
+  var DRAG     = 0.985; // velocity damping per frame (1 = no drag)
+  var ROT_DRAG = 0.97;  // rotational damping
+  var REST_R   = 1.5;   // snap to rest when displacement < this px
+
+  var loopRunning = false;
+
+  function tick() {
+    var anyActive = false;
+
+    for (var i = 0; i < count; i++) {
+      if (!active[i]) continue;
+      anyActive = true;
+
+      // spring pulls toward home (0,0 offset)
+      vx[i] += -px[i] * SPRING;
+      vy[i] += -py[i] * SPRING;
+
+      // tiny gravity pulls downward only when char is above home
+      if (py[i] < 0) vy[i] += GRAVITY;
+
+      // drag
+      vx[i] *= DRAG;
+      vy[i] *= DRAG;
+      vrot[i] *= ROT_DRAG;
+
+      // integrate
+      px[i] += vx[i];
+      py[i] += vy[i];
+      rot[i] += vrot[i];
+
+      // settle check — close to home AND slow
+      var speed = Math.sqrt(vx[i]*vx[i] + vy[i]*vy[i]);
+      var disp  = Math.sqrt(px[i]*px[i] + py[i]*py[i]);
+      if (disp < REST_R && speed < 0.3) {
+        px[i] = 0; py[i] = 0; rot[i] = 0; vx[i] = 0; vy[i] = 0; vrot[i] = 0;
+        active[i] = 0;
+        spans[i].style.transform = 'none';
+        continue;
+      }
+
+      spans[i].style.transform =
+        'translate(' + px[i].toFixed(2) + 'px,' + py[i].toFixed(2) + 'px) rotate(' + rot[i].toFixed(2) + 'deg)';
+    }
+
+    if (anyActive) {
+      requestAnimationFrame(tick);
+    } else {
+      loopRunning = false;
+    }
+  }
+
+  area.addEventListener('mousemove', function (e) {
+    if (!rectsCached) cacheRects();
+
+    var mx = e.clientX;
+    var my = e.clientY;
+    var launched = false;
+
+    for (var i = 0; i < count; i++) {
+      var dx = homeX[i] - mx;
+      var dy = homeY[i] - my;
+      var dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < RADIUS) {
+        var force = 1 - dist / RADIUS;
+        var angle = Math.atan2(dy, dx);
+        // explode outward; stronger chars fly further
+        var speed = LAUNCH * force * (0.5 + Math.random());
+        vx[i] += Math.cos(angle) * speed;
+        vy[i] += Math.sin(angle) * speed;
+        vrot[i] += (Math.random() - 0.5) * MAX_ROT * force;
+        active[i] = 1;
+        launched = true;
+      }
+    }
+
+    if (launched && !loopRunning) {
+      loopRunning = true;
+      requestAnimationFrame(tick);
+    }
+  });
+
+  // on leave: let physics finish naturally, just boost spring slightly
+  area.addEventListener('mouseleave', function () {
+    // nothing extra — gravity + spring already handles the return
+  });
+})();
+</script>
 </body>
 </html>
