@@ -110,20 +110,70 @@
 
             <div class="config-dropdowns">
                 <div class="config-dropdown">
-                    <select id="wispSelect">
-                        <option value="wss://pale-pen-crafted-gamz-b0390771.koyeb.app/">Crafted Gamz Wisp</option>
-                        <option value="wss://wisp.rhw.one/">RHW Wisp</option>
-                        <option value="wss://wisp.mercurywork.shop/">Mercury Wisp</option>
-                        <option value="wss://wisp.terbium.cloud/">Terbium Wisp</option>
-                        <option value="wss://wisp.anura.pro/">Anura Wisp</option>
-                    </select>
+                    <div class="custom-dropdown" id="wispDropdown">
+                        <button class="dropdown-trigger" id="wispDropdownTrigger">
+                            <span class="dropdown-value" id="wispDropdownValue">US East 1 (Virginia, USA)</span>
+                            <i class="fas fa-chevron-down dropdown-arrow"></i>
+                        </button>
+                        <div class="dropdown-menu" id="wispDropdownMenu">
+                            <div class="dropdown-item" data-value="us-east-1">
+                                <span class="item-label">US East 1</span>
+                                <span class="item-location">Virginia, USA</span>
+                            </div>
+                            <div class="dropdown-item" data-value="us-east-2">
+                                <span class="item-label">US East 2</span>
+                                <span class="item-location">Ohio, USA</span>
+                            </div>
+                            <div class="dropdown-item" data-value="us-west">
+                                <span class="item-label">US West</span>
+                                <span class="item-location">Oregon, USA</span>
+                            </div>
+                            <div class="dropdown-item" data-value="europe">
+                                <span class="item-label">Europe</span>
+                                <span class="item-location">Frankfurt, Germany</span>
+                            </div>
+                            <div class="dropdown-item" data-value="asia">
+                                <span class="item-label">Asia</span>
+                                <span class="item-location">Singapore</span>
+                            </div>
+                            <div class="dropdown-item" data-value="custom">
+                                <span class="item-label">Custom WebSocket...</span>
+                                <i class="fas fa-plus item-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="customWispModal" style="display: none; margin-top: 15px; padding: 20px; background: linear-gradient(135deg, rgba(25, 25, 35, 0.95), rgba(35, 35, 45, 0.9)); border-radius: 16px; border: 2px solid rgba(255, 255, 255, 0.2); backdrop-filter: blur(20px); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4); animation: slideDown 0.3s ease forwards;">
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                            <i class="fas fa-server" style="color: rgba(255, 255, 255, 0.6); font-size: 18px;"></i>
+                            <span style="color: white; font-weight: 600; font-size: 16px;">Custom WebSocket Server</span>
+                        </div>
+                        <input type="text" id="customWispInput" placeholder="wss://your-wisp-server.com/" style="width: 100%; padding: 14px 18px; font-size: 15px; background: rgba(20, 20, 30, 0.6); border: 2px solid rgba(255, 255, 255, 0.2); border-radius: 12px; color: white; outline: none; transition: all 0.3s ease; margin-bottom: 12px;" />
+                        <div style="display: flex; gap: 10px;">
+                            <button id="saveCustomWisp" class="custom-wisp-btn" style="flex: 1;">
+                                <i class="fas fa-check"></i> Save
+                            </button>
+                            <button id="cancelCustomWisp" class="custom-wisp-btn" style="flex: 1; background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05)); border-color: rgba(255, 255, 255, 0.2);">
+                                <i class="fas fa-times"></i> Cancel
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="config-dropdown">
-                    <select id="backendSelect">
-                        <option value="scramjet">Scramjet</option>
-                        <option value="ultraviolet">Ultraviolet</option>
-                    </select>
+                    <div class="custom-dropdown" id="backendDropdown">
+                        <button class="dropdown-trigger" id="backendDropdownTrigger">
+                            <span class="dropdown-value" id="backendDropdownValue">Ultraviolet</span>
+                            <i class="fas fa-chevron-down dropdown-arrow"></i>
+                        </button>
+                        <div class="dropdown-menu" id="backendDropdownMenu">
+                            <div class="dropdown-item" data-value="scramjet">
+                                <span class="item-label">Scramjet</span>
+                            </div>
+                            <div class="dropdown-item" data-value="ultraviolet">
+                                <span class="item-label">Ultraviolet</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
