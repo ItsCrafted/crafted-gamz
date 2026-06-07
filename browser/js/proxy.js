@@ -228,7 +228,7 @@ async function getWispUrl(serverId) {
   const id = serverId || currentWispServerId
   const resolved = await resolveWispUrl(id)
   if (resolved) return resolved
-  return `wss://wisp-${id}.onrender.com/`
+  return `wss://wisp-${id}.cgamz.online/`
 }
 
 function closeSocket(socket) {
