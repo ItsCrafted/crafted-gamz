@@ -161,17 +161,21 @@ outer.style.height = PANEL_H + 'px';
   }, totalDur);
 
   function initScatter(spans) {
-    var count = spans.length;
-    var px    = new Float32Array(count);
-    var py    = new Float32Array(count);
-    var vx    = new Float32Array(count);
-    var vy    = new Float32Array(count);
-    var rot   = new Float32Array(count);
-    var vrot  = new Float32Array(count);
-    var active = new Uint8Array(count);
-    var homeX  = new Float32Array(count);
-    var homeY  = new Float32Array(count);
+    var count       = spans.length;
+    var homeX       = new Float32Array(count);
+    var homeY       = new Float32Array(count);
+    var offX        = new Float32Array(count);
+    var offY        = new Float32Array(count);
+    var velX        = new Float32Array(count);
+    var velY        = new Float32Array(count);
     var rectsCached = false;
+    var loopRunning = false;
+    var mx = -9999, my = -9999;
+
+    var RADIUS      = 80;
+    var PUSH_FORCE  = 18;
+    var SPRING_K    = 0.12;
+    var DAMPING     = 0.78;
 
     function cacheRects() {
       for (var i = 0; i < count; i++) {
@@ -184,59 +188,55 @@ outer.style.height = PANEL_H + 'px';
 
     window.addEventListener('resize', function () { rectsCached = false; });
 
-    var RADIUS   = 75;
-    var LAUNCH   = 6;
-    var MAX_ROT  = 450;
-    var GRAVITY  = 0.08;
-    var SPRING_K = 0.003;
-    var DRAG     = 0.985;
-    var ROT_DRAG = 0.97;
-    var REST_R   = 1.5;
-    var loopRunning = false;
-
-    function scatterTick() {
+    function tick() {
       var anyActive = false;
+
       for (var i = 0; i < count; i++) {
-        if (!active[i]) continue;
-        anyActive = true;
-        vx[i]   += -px[i] * SPRING_K;
-        vy[i]   += -py[i] * SPRING_K;
-        if (py[i] < 0) vy[i] += GRAVITY;
-        vx[i]   *= DRAG;  vy[i] *= DRAG;  vrot[i] *= ROT_DRAG;
-        px[i]   += vx[i]; py[i] += vy[i]; rot[i]  += vrot[i];
-        var spd  = Math.sqrt(vx[i]*vx[i] + vy[i]*vy[i]);
-        var disp = Math.sqrt(px[i]*px[i] + py[i]*py[i]);
-        if (disp < REST_R && spd < 0.3) {
-          px[i]=py[i]=rot[i]=vx[i]=vy[i]=vrot[i]=0;
-          active[i]=0;
-          spans[i].style.transform='none';
-          continue;
+        var cx   = homeX[i] + offX[i];
+        var cy   = homeY[i] + offY[i];
+        var dx   = cx - mx;
+        var dy   = cy - my;
+        var dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist < RADIUS && dist > 0.01) {
+          var force  = (1 - dist / RADIUS) * PUSH_FORCE / dist;
+          velX[i]  += dx * force;
+          velY[i]  += dy * force;
         }
-        spans[i].style.transform =
-          'translate('+px[i].toFixed(2)+'px,'+py[i].toFixed(2)+'px) rotate('+rot[i].toFixed(2)+'deg)';
+
+        velX[i] += -offX[i] * SPRING_K;
+        velY[i] += -offY[i] * SPRING_K;
+        velX[i] *= DAMPING;
+        velY[i] *= DAMPING;
+        offX[i] += velX[i];
+        offY[i] += velY[i];
+
+        var spd  = Math.abs(velX[i]) + Math.abs(velY[i]);
+        var disp = Math.abs(offX[i]) + Math.abs(offY[i]);
+        if (spd > 0.05 || disp > 0.15) anyActive = true;
+
+        spans[i].style.transform = 'translate(' + offX[i].toFixed(2) + 'px,' + offY[i].toFixed(2) + 'px)';
       }
-      if (anyActive) requestAnimationFrame(scatterTick);
+
+      if (anyActive) requestAnimationFrame(tick);
       else loopRunning = false;
+    }
+
+    function start() {
+      if (!loopRunning) { loopRunning = true; requestAnimationFrame(tick); }
     }
 
     area.addEventListener('mousemove', function (e) {
       if (!rectsCached) cacheRects();
-      var mx = e.clientX, my = e.clientY, launched = false;
-      for (var i = 0; i < count; i++) {
-        var dx = homeX[i] - mx, dy = homeY[i] - my;
-        var dist = Math.sqrt(dx*dx + dy*dy);
-        if (dist < RADIUS) {
-          var force = 1 - dist / RADIUS;
-          var angle = Math.atan2(dy, dx);
-          var spd   = LAUNCH * force * (0.5 + Math.random());
-          vx[i]   += Math.cos(angle) * spd;
-          vy[i]   += Math.sin(angle) * spd;
-          vrot[i] += (Math.random() - 0.5) * MAX_ROT * force;
-          active[i] = 1;
-          launched  = true;
-        }
-      }
-      if (launched && !loopRunning) { loopRunning=true; requestAnimationFrame(scatterTick); }
+      mx = e.clientX;
+      my = e.clientY;
+      start();
+    });
+
+    area.addEventListener('mouseleave', function () {
+      mx = -9999;
+      my = -9999;
+      start();
     });
   }
 })();
@@ -279,10 +279,23 @@ outer.style.height = PANEL_H + 'px';
   if (!overlay || !input || !results) return;
 
   var pages = Array.from(document.querySelectorAll('.dock-item[data-href]')).map(function (el) {
+    var name = el.getAttribute('aria-label') || el.querySelector('.dock-label').textContent;
+    var descs = {
+      'Games':    'Browse and play browser games',
+      'Browser':  'Built-in proxy web browser',
+      'Movies':   'Stream movies and shows',
+      'AI':       'Chat with AI assistants',
+      'Music':    'Listen to music and radio',
+      "VM's":     'Run virtual machines',
+      'Info':     'About Crafted Gamz',
+      'Account':  'Manage your account',
+      'Settings': 'Customize your experience'
+    };
     return {
-      name: el.getAttribute('aria-label') || el.querySelector('.dock-label').textContent,
+      name: name,
       href: el.dataset.href,
-      icon: el.querySelector('.dock-icon i').className
+      icon: el.querySelector('.dock-icon i').className,
+      desc: descs[name] || ''
     };
   });
 
@@ -317,7 +330,7 @@ outer.style.height = PANEL_H + 'px';
       return '<div class="sp-item' + (i === 0 ? ' active' : '') + '" data-href="' + p.href + '" tabindex="-1">' +
         '<div class="sp-item-icon"><i class="' + p.icon + '"></i></div>' +
         '<div><div class="sp-item-name">' + p.name + '</div>' +
-        '<div class="sp-item-desc">' + p.href + '</div></div>' +
+        '<div class="sp-item-desc">' + p.desc + '</div></div>' +
         '</div>';
     }).join('');
     results.querySelectorAll('.sp-item').forEach(function (el) {
@@ -360,18 +373,35 @@ outer.style.height = PANEL_H + 'px';
   var tempEl = document.getElementById('weather-temp');
   var descEl = document.getElementById('weather-desc');
   var locEl  = document.getElementById('weather-loc');
+  var iconEl = document.getElementById('weather-icon');
   var widget = document.getElementById('weather');
   if (!tempEl || !widget) return;
 
   var WMO = {
-    0:'Clear',1:'Mostly Clear',2:'Partly Cloudy',3:'Overcast',
-    45:'Fog',48:'Icy Fog',
-    51:'Light Drizzle',53:'Drizzle',55:'Heavy Drizzle',
-    61:'Light Rain',63:'Rain',65:'Heavy Rain',
-    71:'Light Snow',73:'Snow',75:'Heavy Snow',77:'Snow Grains',
-    80:'Showers',81:'Heavy Showers',82:'Violent Showers',
-    85:'Snow Showers',86:'Heavy Snow Showers',
-    95:'Thunderstorm',96:'Thunderstorm + Hail',99:'Thunderstorm + Heavy Hail'
+    0:  { icon: 'fa-sun',                 color: '#f6d365', desc: 'Clear' },
+    1:  { icon: 'fa-cloud-sun',           color: '#f6d365', desc: 'Mostly Clear' },
+    2:  { icon: 'fa-cloud-sun',           color: '#d4d4d8', desc: 'Partly Cloudy' },
+    3:  { icon: 'fa-cloud',               color: '#9ca3af', desc: 'Overcast' },
+    45: { icon: 'fa-smog',                color: '#9ca3af', desc: 'Fog' },
+    48: { icon: 'fa-smog',                color: '#9ca3af', desc: 'Icy Fog' },
+    51: { icon: 'fa-cloud-rain',          color: '#3b82f6', desc: 'Light Drizzle' },
+    53: { icon: 'fa-cloud-rain',          color: '#2563eb', desc: 'Drizzle' },
+    55: { icon: 'fa-cloud-showers-heavy', color: '#1e40af', desc: 'Heavy Drizzle' },
+    61: { icon: 'fa-cloud-showers-heavy', color: '#2563eb', desc: 'Light Rain' },
+    63: { icon: 'fa-cloud-showers-heavy', color: '#1d4ed8', desc: 'Rain' },
+    65: { icon: 'fa-cloud-showers-heavy', color: '#1e3a8a', desc: 'Heavy Rain' },
+    71: { icon: 'fa-snowflake',           color: '#e0f2fe', desc: 'Light Snow' },
+    73: { icon: 'fa-snowflake',           color: '#bae6fd', desc: 'Snow' },
+    75: { icon: 'fa-snowflake',           color: '#7dd3fc', desc: 'Heavy Snow' },
+    77: { icon: 'fa-snowflake',           color: '#38bdf8', desc: 'Snow Grains' },
+    80: { icon: 'fa-cloud-showers-heavy', color: '#3b82f6', desc: 'Showers' },
+    81: { icon: 'fa-cloud-showers-heavy', color: '#2563eb', desc: 'Heavy Showers' },
+    82: { icon: 'fa-cloud-showers-heavy', color: '#1e40af', desc: 'Violent Showers' },
+    85: { icon: 'fa-snowflake',           color: '#3b82f6', desc: 'Snow Showers' },
+    86: { icon: 'fa-snowflake',           color: '#2563eb', desc: 'Heavy Snow Showers' },
+    95: { icon: 'fa-cloud-bolt',          color: '#facc15', desc: 'Thunderstorm' },
+    96: { icon: 'fa-cloud-bolt',          color: '#eab308', desc: 'Thunderstorm + Hail' },
+    99: { icon: 'fa-cloud-bolt',          color: '#ca8a04', desc: 'Thunderstorm + Heavy Hail' }
   };
 
   function fetchWeather(lat, lon, city, region) {
@@ -381,10 +411,15 @@ outer.style.height = PANEL_H + 'px';
     fetch(url)
       .then(function (r) { return r.json(); })
       .then(function (d) {
-        var temp  = Math.round(d.current.temperature_2m);
-        var label = WMO[d.current.weathercode] || 'Unknown';
+        var code    = d.current.weathercode;
+        var mapping = WMO[code] || { icon: 'fa-cloud', color: 'rgba(255,255,255,0.7)', desc: 'Unknown' };
+        var temp    = Math.round(d.current.temperature_2m);
         tempEl.textContent = temp + '°F';
-        descEl.textContent = label;
+        descEl.textContent = mapping.desc;
+        if (iconEl) {
+          iconEl.className = 'fa-solid ' + mapping.icon;
+          iconEl.style.color = mapping.color;
+        }
         if (city && region) locEl.textContent = city + ', ' + region;
         else if (city)      locEl.textContent = city;
         widget.classList.add('loaded');
@@ -395,7 +430,6 @@ outer.style.height = PANEL_H + 'px';
       });
   }
 
-  // ipapi.co returns lat, lon, city, region_code — no API key needed for low usage
   fetch('https://ipapi.co/json/')
     .then(function (r) { return r.json(); })
     .then(function (d) {
@@ -405,4 +439,107 @@ outer.style.height = PANEL_H + 'px';
       descEl.textContent = 'Location unavailable';
       widget.classList.add('loaded');
     });
+})();
+
+/* ══════════════════════════════════════════════════════════════
+   STATUS BAR — Wisp region pings + Firebase visitor counts
+   Piggbacks on accountManager (account.js) — no duplicate init
+══════════════════════════════════════════════════════════════ */
+(function () {
+  var WISP_REGIONS = [
+    { id: 'wisp-dot-use1', url: 'https://wisp-us-east-1.cgamz.online' },
+    { id: 'wisp-dot-use2', url: 'https://wisp-us-east-2.cgamz.online' },
+    { id: 'wisp-dot-usw',  url: 'https://wisp-us-west.cgamz.online'   },
+    { id: 'wisp-dot-eu',   url: 'https://wisp-europe.cgamz.online'    },
+    { id: 'wisp-dot-as',   url: 'https://wisp-asia.cgamz.online'      }
+  ];
+
+  function pingRegion(region) {
+    var dot = document.getElementById(region.id);
+    if (!dot) return;
+    fetch(region.url, { method: 'HEAD', mode: 'no-cors', cache: 'no-store' })
+      .then(function () { dot.classList.remove('offline'); dot.classList.add('online');  })
+      .catch(function () { dot.classList.remove('online');  dot.classList.add('offline'); });
+  }
+
+  function pingAll() { WISP_REGIONS.forEach(pingRegion); }
+  pingAll();
+  setInterval(pingAll, 30000);
+
+  /* ── visitor counts via accountManager ── */
+  function fmtNum(n) {
+    if (n == null || isNaN(n)) return '—';
+    if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+    if (n >= 1000)    return (n / 1000).toFixed(1)    + 'K';
+    return String(n);
+  }
+
+  function getTodayKey() {
+    return new Date().toISOString().split('T')[0];
+  }
+
+  // Whether this session has already incremented the counters
+  var counted = sessionStorage.getItem('cgCounted') === '1';
+
+  function initStats(db, rtdb, userId) {
+    // Online presence via RTDB
+    var onlineRef = rtdb.ref('onlineUsers/' + userId);
+    onlineRef.set({ timestamp: firebase.database.ServerValue.TIMESTAMP });
+    onlineRef.onDisconnect().remove();
+    window.addEventListener('beforeunload', function () { onlineRef.remove(); });
+
+    rtdb.ref('onlineUsers').on('value', function (snap) {
+      var el = document.getElementById('stat-online-users');
+      if (el) el.textContent = fmtNum(snap.numChildren());
+    });
+
+    db.collection('stats').doc('total').onSnapshot(function (doc) {
+      var el = document.getElementById('stat-users-total');
+      if (el) el.textContent = fmtNum(doc.exists ? doc.data().count : 0);
+    });
+
+    db.collection('stats').doc('daily_' + getTodayKey()).onSnapshot(function (doc) {
+      var el = document.getElementById('stat-users-today');
+      if (el) el.textContent = fmtNum(doc.exists ? doc.data().count : 0);
+    });
+
+    // Only increment once per browser session
+    if (!counted) {
+      counted = true;
+      sessionStorage.setItem('cgCounted', '1');
+      db.collection('stats').doc('total').set(
+        { count: firebase.firestore.FieldValue.increment(1) }, { merge: true }
+      ).catch(function () {});
+      db.collection('stats').doc('daily_' + getTodayKey()).set(
+        { count: firebase.firestore.FieldValue.increment(1), date: getTodayKey() }, { merge: true }
+      ).catch(function () {});
+    }
+  }
+
+  // Wait for accountManager to be ready, then hook into its Firebase instances
+  function waitForAccountManager() {
+    if (window.accountManager && window.accountManager.auth && window.accountManager.db) {
+      var am = window.accountManager;
+
+      // Load firebase-database compat if not already present (account.js doesn't load it)
+      function attachStats(user) {
+        if (!firebase.database) {
+          var s = document.createElement('script');
+          s.src = 'https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js';
+          s.onload = function () { initStats(am.db, firebase.database(), user.uid); };
+          document.head.appendChild(s);
+        } else {
+          initStats(am.db, firebase.database(), user.uid);
+        }
+      }
+
+      am.auth.onAuthStateChanged(function (user) {
+        if (user) attachStats(user);
+      });
+    } else {
+      setTimeout(waitForAccountManager, 50);
+    }
+  }
+
+  waitForAccountManager();
 })();

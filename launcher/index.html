@@ -27,7 +27,10 @@
 
 <!-- Weather widget -->
 <div id="weather">
-  <div id="weather-temp">--°F</div>
+  <div id="weather-top">
+    <i id="weather-icon" class="fa-solid fa-cloud"></i>
+    <div id="weather-temp">--°F</div>
+  </div>
   <div id="weather-desc">Loading…</div>
   <div id="weather-loc"></div>
 </div>
@@ -60,6 +63,10 @@
            \////\\\\\\\\\ \/\\\         \//\\\\\\\\/\\    \/\\\         \//\\\\\    \//\\\\\\\\\\ \//\\\\\\\/\\           \//\\\\\\\\\\\\/  \//\\\\\\\\/\\ \/\\\  \/\\\  \/\\\  /\\\\\\\\\\\  
                \/////////  \///           \////////\//     \///           \/////      \//////////   \///////\//             \////////////     \////////\//  \///   \///   \///  \///////////  
     </div>
+
+  <div id="search-hint">
+    <span class="pill search-hint-pill">press / to search</span>
+  </div>
 
   <div id="dock-outer">
     <div id="dock-panel">
@@ -114,7 +121,57 @@
     </div>
   </div>
 </div>
+<!-- Status bar -->
+<div id="status-bar">
+  <div id="status-left">
+    <div class="pill wisp-pill">
+      <div class="wisp-region">
+        <span class="wisp-dot" id="wisp-dot-use1"></span>
+        <span class="wisp-label">US East 1</span>
+      </div>
+      <span class="pill-sep"></span>
+      <div class="wisp-region">
+        <span class="wisp-dot" id="wisp-dot-use2"></span>
+        <span class="wisp-label">US East 2</span>
+      </div>
+      <span class="pill-sep"></span>
+      <div class="wisp-region">
+        <span class="wisp-dot" id="wisp-dot-usw"></span>
+        <span class="wisp-label">US West</span>
+      </div>
+      <span class="pill-sep"></span>
+      <div class="wisp-region">
+        <span class="wisp-dot" id="wisp-dot-eu"></span>
+        <span class="wisp-label">Europe</span>
+      </div>
+      <span class="pill-sep"></span>
+      <div class="wisp-region">
+        <span class="wisp-dot" id="wisp-dot-as"></span>
+        <span class="wisp-label">Asia</span>
+      </div>
+    </div>
+  </div>
+  <div id="status-center">
+    <div class="pill stats-pill">
+      <i class="fa-solid fa-circle-dot"></i>
+      <span id="stat-online-users">—</span><span class="pill-text">online</span>
+      <span class="pill-sep"></span>
+      <i class="fa-solid fa-users"></i>
+      <span id="stat-users-today">—</span><span class="pill-text">today</span>
+      <span class="pill-sep"></span>
+      <i class="fa-solid fa-chart-simple"></i>
+      <span id="stat-users-total">—</span><span class="pill-text">total</span>
+    </div>
+  </div>
+  <div id="status-right">
+    <div class="pill version-pill">
+      <span id="status-version">v15</span>
+    </div>
+  </div>
+</div>
+
 <script src="js/script.js"></script>
+<script src="js/account.js"></script>
 <!-- Spotlight trigger hint is handled in script.js -->
 </body>
 </html>
