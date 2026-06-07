@@ -302,7 +302,7 @@ html,body{height:100%;background:transparent;font-family:-apple-system,BlinkMacS
 .new-tab-page{
   position:absolute;inset:0;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:32px;
+  gap:20px;
 }
 .new-tab-page .logo{overflow:visible;position:relative;z-index:2;pointer-events:none}
 .new-tab-page .search-box{position:relative;z-index:1;margin-top:0}
@@ -554,3 +554,136 @@ html,body{height:100%;background:transparent;font-family:-apple-system,BlinkMacS
   width:16px;height:16px;border-radius:50%;transition:color .12s,background .12s;margin-left:2px;
 }
 .newtab-tip-close:hover{color:var(--ui-text);background:var(--ui-hover)}
+
+.reviews-carousel{
+  display:flex;flex-direction:column;align-items:center;
+  width:100%;max-width:520px;
+  margin:0 auto;
+}
+
+.reviews-tagline{
+  font-size:11px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;
+  color:rgba(255,255,255,0.38);
+  display:flex;align-items:center;gap:6px;
+  margin-bottom:10px;
+}
+.reviews-tagline .fa-star{
+  font-size:9px;color:var(--ui-star);
+  filter:drop-shadow(0 0 4px rgba(245,197,66,.6));
+}
+
+.reviews-row{
+  display:flex;align-items:center;gap:8px;width:100%;
+}
+
+.review-arrow{
+  flex-shrink:0;
+  width:24px;height:24px;
+  border:none;background:transparent;
+  color:rgba(255,255,255,0.28);
+  font-size:22px;line-height:1;
+  cursor:pointer;padding:0;
+  transition:color .15s ease;
+  display:flex;align-items:center;justify-content:center;
+  user-select:none;
+}
+.review-arrow:hover{ color:rgba(255,255,255,0.72); }
+.review-arrow:active{ color:#fff; }
+
+.reviews-track{
+  flex:1;min-width:0;
+  position:relative;height:88px;
+  display:flex;align-items:center;justify-content:center;
+}
+
+.review-card{
+  position:absolute;inset:0;
+  display:flex;align-items:center;gap:12px;
+  padding:11px 14px;
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.09);
+  border-radius:12px;
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  box-shadow:0 2px 16px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.07);
+  opacity:0;
+  transform:translateY(6px) scale(0.985);
+  pointer-events:none;
+  transition:opacity .5s cubic-bezier(.4,0,.2,1),
+             transform .5s cubic-bezier(.4,0,.2,1);
+  will-change:opacity,transform;
+}
+.review-card.active{
+  opacity:1;transform:translateY(0) scale(1);pointer-events:auto;
+}
+
+.review-avatar{
+  flex-shrink:0;
+  width:38px;height:38px;border-radius:50%;
+  object-fit:cover;
+  box-shadow:0 2px 8px rgba(0,0,0,0.45);
+  align-self:flex-start;
+  margin-top:2px;
+}
+
+.review-body{
+  flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;
+}
+
+.review-header{
+  display:flex;align-items:center;gap:6px;flex-wrap:nowrap;
+  overflow:hidden;
+}
+.review-name{
+  font-size:12px;font-weight:600;
+  color:var(--ui-text);letter-spacing:.05px;
+  white-space:nowrap;flex-shrink:0;
+}
+.review-owns{
+  font-size:9.5px;
+  color:var(--ui-text-muted);
+  background:rgba(255,255,255,0.07);
+  border:1px solid rgba(255,255,255,0.09);
+  border-radius:20px;
+  padding:1px 7px;
+  letter-spacing:.25px;
+  white-space:nowrap;
+  flex-shrink:1;
+  overflow:hidden;text-overflow:ellipsis;
+}
+.review-stars{
+  display:flex;gap:1.5px;margin-left:auto;flex-shrink:0;
+}
+.review-stars i{
+  font-size:10px;
+  color:var(--ui-star);
+  filter:drop-shadow(0 0 3px rgba(245,197,66,.45));
+}
+.review-stars .fa-regular.fa-star{
+  color:rgba(245,197,66,0.25);filter:none;
+}
+
+.review-text{
+  font-size:11.5px;
+  color:var(--ui-text-sub);
+  line-height:1.5;
+  overflow:hidden;
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  font-style:italic;
+  opacity:.85;
+}
+
+.reviews-dots{
+  display:flex;gap:5px;margin-top:9px;
+}
+.review-dot{
+  width:5px;height:5px;border-radius:50%;border:none;padding:0;cursor:pointer;
+  background:rgba(255,255,255,0.18);
+  transition:background .25s ease,width .25s ease;
+}
+.review-dot.active{
+  background:rgba(255,255,255,0.72);
+  width:18px;border-radius:3px;
+}

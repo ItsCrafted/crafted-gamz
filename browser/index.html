@@ -96,6 +96,7 @@
 
   <div class="content-area">
     <div class="new-tab-page" id="new-tab-page">
+
 <div class="logo">
   <svg viewBox="0 0 520 110" xmlns="http://www.w3.org/2000/svg" style="width:520px;max-width:90vw;height:auto;overflow:visible">
     <defs>
@@ -106,7 +107,6 @@
         <stop offset="78%"  stop-color="rgba(215,225,255,0.28)"/>
         <stop offset="100%" stop-color="rgba(255,255,255,0.62)"/>
       </linearGradient>
-
       <linearGradient id="logo-eg" x1="0%" y1="0%" x2="0%" y2="100%">
         <stop offset="0%"   stop-color="rgba(255,255,255,1.0)"/>
         <stop offset="35%"  stop-color="rgba(200,215,255,0.45)"/>
@@ -114,40 +114,114 @@
         <stop offset="100%" stop-color="rgba(255,255,255,0.85)"/>
       </linearGradient>
     </defs>
-
-    <text x="260" y="100" text-anchor="middle"
-          class="Curly"
-          font-size="100" letter-spacing="-2"
-          fill="rgba(0,0,0,0)" filter="url(#glass-shadow)">
-      Crafted Gamz
-    </text>
-
-    <text x="260" y="100" text-anchor="middle"
-          class="Curly"
-          font-size="100" letter-spacing="-2"
-          fill="url(#logo-gf)" filter="url(#glass-warp)">
-      Crafted Gamz
-    </text>
-
-    <text x="260" y="100" text-anchor="middle"
-          class="Curly"
-          font-size="100" letter-spacing="-2"
-          fill="none" stroke="url(#logo-eg)" stroke-width="1"
-          paint-order="stroke">
-      Crafted Gamz
-    </text>
+    <text x="260" y="100" text-anchor="middle" class="Curly" font-size="100" letter-spacing="-2" fill="rgba(0,0,0,0)" filter="url(#glass-shadow)">Crafted Gamz</text>
+    <text x="260" y="100" text-anchor="middle" class="Curly" font-size="100" letter-spacing="-2" fill="url(#logo-gf)" filter="url(#glass-warp)">Crafted Gamz</text>
+    <text x="260" y="100" text-anchor="middle" class="Curly" font-size="100" letter-spacing="-2" fill="none" stroke="url(#logo-eg)" stroke-width="1" paint-order="stroke">Crafted Gamz</text>
   </svg>
 </div>
-      <div class="search-box">
-        <i class="fa-solid fa-magnifying-glass"></i>
-        <input type="text" id="newtab-search" placeholder="Search the web">
+
+<div class="search-box">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="text" id="newtab-search" placeholder="Search the web">
+</div>
+
+<div class="shortcuts"></div>
+
+<div class="reviews-carousel" id="reviews-carousel" aria-live="polite" aria-label="User reviews">
+  <div class="reviews-tagline"><i class="fa-solid fa-star"></i> Truly a 5 star masterpiece</div>
+  <div class="reviews-row">
+    <button class="review-arrow" id="review-prev" aria-label="Previous review">&#8249;</button>
+    <div class="reviews-track" id="reviews-track">
+
+      <div class="review-card" data-index="0">
+        <img class="review-avatar" src="img/users/divine.png" onerror="this.style.background='linear-gradient(135deg,#6c63ff,#3ecfcf)';this.src='';this.alt='DV'" alt="Divine">
+        <div class="review-body">
+          <div class="review-header">
+            <span class="review-name">Divine</span>
+            <span class="review-owns">Owner of starlight.</span>
+            <div class="review-stars" aria-label="5 out of 5 stars">
+              <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+            </div>
+          </div>
+          <p class="review-text">"tuff site by Crafted"</p>
+        </div>
       </div>
-      <div class="shortcuts"></div>
-      <div class="newtab-tip" id="newtab-tip">
-        <i class="fa-solid fa-lightbulb"></i>
-        <span>Double-press <kbd>T</kbd> to open a new tab &nbsp;Â·&nbsp; Double-press <kbd>W</kbd> to close one</span>
-        <button class="newtab-tip-close" id="newtab-tip-close" title="Dismiss" aria-label="Dismiss tip"><i class="fa-solid fa-xmark"></i></button>
+
+      <div class="review-card" data-index="1">
+        <img class="review-avatar" src="img/users/mizz.png" onerror="this.style.background='linear-gradient(135deg,#ff6b6b,#ffa94d)';this.src='';this.alt='MZ'" alt="Mizz">
+        <div class="review-body">
+          <div class="review-header">
+            <span class="review-name">Mizzery</span>
+            <span class="review-owns">Owner of Zeno</span>
+            <div class="review-stars" aria-label="5 out of 5 stars">
+              <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+            </div>
+          </div>
+          <p class="review-text">"Crafted Gamz is one of the best websites I know, because of all the features it offers."</p>
+        </div>
       </div>
+
+      <div class="review-card" data-index="2">
+        <img class="review-avatar" src="img/users/flame.png" onerror="this.style.background='linear-gradient(135deg,#43e97b,#38f9d7)';this.src='';this.alt='FL'" alt="Flame">
+        <div class="review-body">
+          <div class="review-header">
+            <span class="review-name">Flame</span>
+            <span class="review-owns">Crafted Gamz User</span>
+            <div class="review-stars" aria-label="5 out of 5 stars">
+              <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+            </div>
+          </div>
+          <p class="review-text">"W game site, I really enjoy the games crafted has in here, five stars."</p>
+        </div>
+      </div>
+
+      <div class="review-card" data-index="3">
+        <img class="review-avatar" src="img/users/x8r.png" onerror="this.style.background='linear-gradient(135deg,#f953c6,#b91d73)';this.src='';this.alt='X8'" alt="x8r">
+        <div class="review-body">
+          <div class="review-header">
+            <span class="review-name">x8r</span>
+            <span class="review-owns">Owner of Cherri</span>
+            <div class="review-stars" aria-label="4.5 out of 5 stars">
+              <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+            </div>
+          </div>
+          <p class="review-text">"Super clean with a cool interface, definitely a good choice for school."</p>
+        </div>
+      </div>
+
+      <div class="review-card" data-index="4">
+        <img class="review-avatar" src="img/users/xonk.png" onerror="this.style.background='linear-gradient(135deg,#4facfe,#00f2fe)';this.src='';this.alt='XK'" alt="xonk">
+        <div class="review-body">
+          <div class="review-header">
+            <span class="review-name">xonk</span>
+            <span class="review-owns">Owner of Link Spot</span>
+            <div class="review-stars" aria-label="4.5 out of 5 stars">
+              <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+            </div>
+          </div>
+          <p class="review-text">"Looks nice."</p>
+        </div>
+      </div>
+
+    </div>
+    <button class="review-arrow" id="review-next" aria-label="Next review">&#8250;</button>
+  </div>
+
+  <div class="reviews-dots" id="reviews-dots" role="tablist" aria-label="Review navigation">
+    <button class="review-dot active" role="tab" aria-selected="true"  data-dot="0" aria-label="Review 1"></button>
+    <button class="review-dot"        role="tab" aria-selected="false" data-dot="1" aria-label="Review 2"></button>
+    <button class="review-dot"        role="tab" aria-selected="false" data-dot="2" aria-label="Review 3"></button>
+    <button class="review-dot"        role="tab" aria-selected="false" data-dot="3" aria-label="Review 4"></button>
+    <button class="review-dot"        role="tab" aria-selected="false" data-dot="4" aria-label="Review 5"></button>
+  </div>
+</div>
+
+<div class="newtab-tip" id="newtab-tip">
+  <i class="fa-solid fa-lightbulb"></i>
+  <span>Double-press <kbd>T</kbd> to open a new tab &nbsp;·&nbsp; Double-press <kbd>W</kbd> to close one</span>
+  <button class="newtab-tip-close" id="newtab-tip-close" title="Dismiss" aria-label="Dismiss tip"><i class="fa-solid fa-xmark"></i></button>
+</div>
+
     </div>
     <iframe id="page-frame" style="display:none" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-presentation allow-top-navigation-by-user-activation"></iframe>
     <div class="page-loading-screen" id="page-loading-screen" style="display:none">
@@ -158,13 +232,13 @@
         <div class="pls-orb"></div>
       </div>
       <div class="page-loading-url" id="page-loading-url"></div>
-      <div class="page-loading-tip" id="page-loading-tip"><i class="fa-solid fa-lightbulb"></i> Double-press <kbd>T</kbd> to open a new tab &nbsp;Â·&nbsp; Double-press <kbd>W</kbd> to close one</div>
+      <div class="page-loading-tip" id="page-loading-tip"><i class="fa-solid fa-lightbulb"></i> Double-press <kbd>T</kbd> to open a new tab &nbsp;·&nbsp; Double-press <kbd>W</kbd> to close one</div>
     </div>
   </div>
 
   <div class="status-bar" id="wisp-bar">
     <span id="status-text"></span>
-    <span class="wisp-bar-label" id="wisp-bar-label"><i class="fa-solid fa-circle-notch fa-spin"></i> Connectingâ€¦</span>
+    <span class="wisp-bar-label" id="wisp-bar-label"><i class="fa-solid fa-circle-notch fa-spin"></i> Connecting...</span>
   </div>
 </div>
 <script src="js/account.js"></script>
@@ -186,5 +260,6 @@
 <script src="js/tabs.js"></script>
 <script src="js/loading.js"></script>
 <script src="js/escape.js"></script>
+<script src="js/carousel.js"></script>
 </body>
 </html>
