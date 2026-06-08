@@ -605,7 +605,7 @@
 
     controlsPane.appendChild(label('Shortcuts'));
     [
-        { faIcon: 'fa-solid fa-arrow-right-arrow-left', title: 'Transfer',  sub: 'Send or receive files',      onClick: () => { close(); setTimeout(() => runScript('transfer'), 120); } },
+        { faIcon: 'fa-solid fa-arrow-right-arrow-left', title: 'Transfer',  sub: 'Send or receive files',      onClick: () => { window.open('https://t.cgamz.online', '_blank'); } },
         { faIcon: 'fa-solid fa-users',                  title: 'About Us',  sub: 'Meet the Crafted Gamz team', onClick: () => { close(); setTimeout(() => runScript('about'), 120); } },
         { faIcon: 'fa-solid fa-palette',                 title: 'Customize Background',  sub: 'Personalize your experience', onClick: () => { close(); setTimeout(() => runScript('background'), 120); } },
         { faIcon: 'fa-solid fa-table-columns',              title: 'Change Layout',          sub: 'Switch your interface style',  onClick: () => { window.location.href = '../onboarding/2.html?skip=false&only=true'; } },
