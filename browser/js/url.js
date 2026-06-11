@@ -7,6 +7,7 @@ const LOCAL_PAGES = {
   settings: '/browser/pages/settings.html',
   account: '/browser/pages/account.html',
   vms: '/browser/pages/vms.html',
+  chat: '/browser/pages/chat.html',
 }
 
 const lockIcon = document.getElementById('lock-icon')
