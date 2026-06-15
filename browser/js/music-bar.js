@@ -30,6 +30,10 @@
     externalReady: false,
     currentLyrics: null,
     lyricsLines: [],
+    dockRotation: 0,
+    expandedRotation: 0,
+    rotationInterval: null,
+    lastRotationUpdate: 0
   }
 
   state.audio.preload = 'none'
@@ -352,12 +356,50 @@
     dom.playBtn.innerHTML = playIcon
     dom.playBtn.title = state.playing ? 'Pause' : 'Play'
     dom.playBtn.setAttribute('aria-label', state.playing ? 'Pause' : 'Play')
-    
+
     if (dom.panelPlayBtn) {
       dom.panelPlayBtn.innerHTML = playIcon
     }
-    
+
     pill.classList.toggle('is-playing', state.playing)
+
+    if (state.playing) {
+      startRotation()
+    } else {
+      stopRotation()
+    }
+  }
+
+  function startRotation() {
+    if (state.rotationInterval) return
+    state.lastRotationUpdate = performance.now()
+    state.rotationInterval = setInterval(updateRotation, 16)
+  }
+
+  function stopRotation() {
+    if (state.rotationInterval) {
+      clearInterval(state.rotationInterval)
+      state.rotationInterval = null
+    }
+  }
+
+  function updateRotation() {
+    const now = performance.now()
+    const delta = (now - state.lastRotationUpdate) / 1000
+    state.lastRotationUpdate = now
+
+    const dockSpeed = 360 / 12
+    const expandedSpeed = 360 / 15
+
+    state.dockRotation = (state.dockRotation + dockSpeed * delta) % 360
+    state.expandedRotation = (state.expandedRotation + expandedSpeed * delta) % 360
+
+    if (dom.artwork) {
+      dom.artwork.style.transform = `rotate(${state.dockRotation}deg)`
+    }
+    if (dom.expandedArtwork) {
+      dom.expandedArtwork.style.transform = `rotate(${state.expandedRotation}deg)`
+    }
   }
 
   function updateProgressBar() {
@@ -365,9 +407,9 @@
     const percent = (state.audio.currentTime / state.audio.duration) * 100
     dom.progressBar.style.width = `${percent}%`
 
-    const addressBarProgress = document.getElementById('address-bar-progress')
-    if (addressBarProgress && state.playing) {
-      addressBarProgress.style.width = `${percent}%`
+    const dockProgressFill = document.getElementById('music-dock-progress-fill')
+    if (dockProgressFill) {
+      dockProgressFill.style.width = `${percent}%`
     }
 
     if (dom.timeDisplay) {
@@ -375,6 +417,14 @@
       const duration = formatTime(state.audio.duration)
       dom.timeDisplay.textContent = `${current} / ${duration}`
     }
+  }
+
+  function seekTo(e) {
+    if (!state.audio.duration) return
+    const rect = e.currentTarget.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const percent = x / rect.width
+    state.audio.currentTime = percent * state.audio.duration
   }
 
   function formatTime(seconds) {
@@ -779,6 +829,9 @@
           </div>
           <div class="music-dock-subtitle" id="music-dock-subtitle">Search songs</div>
         </div>
+        <div class="music-dock-progress-bar">
+          <div class="music-dock-progress-fill" id="music-dock-progress-fill"></div>
+        </div>
       </button>
       <div class="music-dock-controls">
         <button class="music-dock-btn" id="music-dock-prev" type="button" aria-label="Previous track" title="Previous track">
@@ -877,6 +930,7 @@
     dom.panelPlayBtn = document.getElementById('music-panel-play')
     dom.panelPrevBtn = document.getElementById('music-panel-prev')
     dom.panelNextBtn = document.getElementById('music-panel-next')
+    dom.dockProgressBar = document.querySelector('.music-dock-progress-bar')
   }
 
   function attachEvents() {
@@ -900,6 +954,12 @@
       event.stopPropagation()
       pill.classList.remove('is-searching')
       if (dom.searchBack) dom.searchBack.style.display = 'none'
+    })
+
+    dom.dockProgressBar?.addEventListener('click', (event) => {
+      event.preventDefault()
+      event.stopPropagation()
+      seekTo(event)
     })
 
     dom.prevBtn?.addEventListener('click', async (event) => {

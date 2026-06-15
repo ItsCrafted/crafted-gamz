@@ -237,12 +237,6 @@ html,body{height:100%;background:transparent;font-family:-apple-system,BlinkMacS
   position:relative;
   overflow:hidden;
 }
-.address-bar-progress{
-  position:absolute;bottom:0;left:0;height:2px;
-  background:linear-gradient(90deg, var(--ui-accent, #6366f1), var(--ui-accent-2, #8b5cf6));
-  width:0%;transition:width .15s ease-out;
-  pointer-events:none;
-}
 .address-bar-wrap:focus-within{background:var(--ui-addr-focus);border-color:rgba(255,255,255,0.4)}
 .address-bar-wrap .lock-icon{color:var(--ui-text-sub);font-size:12px;flex-shrink:0}
 .address-bar-wrap .lock-icon.secure{color:var(--ui-secure)}
@@ -310,15 +304,15 @@ html,body{height:100%;background:transparent;font-family:-apple-system,BlinkMacS
 .connection-popup-desc{color:var(--ui-text-sub);font-size:12px;line-height:1.35}
 
 .wisp-switcher-shell{
-  position:absolute;top:calc(50% - 13px);right:5px;z-index:210;
+  position:absolute;top:calc(50% - 10px);right:5px;z-index:210;
   display:flex;flex-direction:column;align-items:stretch;
   flex:0 0 auto;
   width:max-content;
   min-width:0;
-  background:var(--ui-surface-3);
-  border:1px solid var(--ui-border);
-  border-radius:999px;
-  box-shadow:0 10px 28px rgba(0,0,0,0.35);
+  background:var(--ui-addr-bg);
+  border:1px solid rgba(255,255,255,0.2);
+  border-radius:12px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.25);
   overflow:hidden;
   transform-origin:top right;
   will-change:width,height,border-radius,box-shadow,transform,opacity;
@@ -336,9 +330,9 @@ html,body{height:100%;background:transparent;font-family:-apple-system,BlinkMacS
 }
 .wisp-switcher-trigger{
   display:flex;align-items:center;justify-content:center;
-  gap:6px;min-width:0;height:24px;flex-shrink:0;
+  gap:4px;min-width:0;height:20px;flex-shrink:0;
   color:var(--ui-text-sub);
-  padding:0 8px 0 7px;
+  padding:0 6px 0 5px;
   cursor:pointer;
   user-select:none;
   transition:background .15s,color .15s,transform .18s,opacity .18s ease;
@@ -352,9 +346,9 @@ html,body{height:100%;background:transparent;font-family:-apple-system,BlinkMacS
 }
 .wisp-switcher-caret{font-size:10px;opacity:.7;transition:transform .18s ease,opacity .15s ease}
 .wisp-switcher-collapse{
-  position:absolute;top:4px;right:4px;
-  width:18px;height:18px;
-  border:none;border-radius:999px;
+  position:absolute;top:2px;right:2px;
+  width:16px;height:16px;
+  border:none;border-radius:8px;
   background:rgba(255,255,255,0.08);
   color:var(--ui-text-sub);
   display:flex;align-items:center;justify-content:center;
@@ -403,25 +397,16 @@ html,body{height:100%;background:transparent;font-family:-apple-system,BlinkMacS
   height:34px;
   margin-left:6px;
   margin-right:6px;
-  border-radius:999px;
-  background:
-    linear-gradient(180deg, rgba(255,255,255,0.09), rgba(255,255,255,0.03)),
-    rgba(var(--ui-base-rgb),0.62);
-  border:1px solid rgba(255,255,255,0.14);
-  box-shadow:0 10px 28px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.08);
-  backdrop-filter:blur(16px) saturate(140%);
-  -webkit-backdrop-filter:blur(16px) saturate(140%);
+  border-radius:20px;
+  background:var(--ui-addr-bg);
+  border:1px solid rgba(255,255,255,0.2);
+  transition:border-color .15s,background .15s;
   overflow:visible;
   pointer-events:auto;
   display:flex;
   align-items:center;
-  padding:0 8px 0 6px;
-  gap:8px;
-  transition:
-    transform .24s cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow .24s cubic-bezier(0.16, 1, 0.3, 1),
-    border-color .24s cubic-bezier(0.16, 1, 0.3, 1),
-    background-color .24s cubic-bezier(0.16, 1, 0.3, 1);
+  padding:0 10px 0 12px;
+  gap:6px;
 }
 .music-dock-main{
   flex:1;min-width:0;display:flex;align-items:center;gap:8px;
@@ -458,8 +443,11 @@ html,body{height:100%;background:transparent;font-family:-apple-system,BlinkMacS
   background:linear-gradient(135deg, rgba(255,255,255,0.3) 0%, transparent 50%, rgba(255,255,255,0.1) 100%);
   pointer-events:none;
 }
-.secondary-url-pill.is-playing .music-dock-art {
-  animation:music-spin 12s linear infinite;
+.secondary-url-pill.is-playing .music-dock-art::after {
+  display:none;
+}
+.secondary-url-pill.has-track .music-dock-art-placeholder {
+  display:none !important;
 }
 @keyframes music-spin{to{transform:rotate(360deg)}}
 .music-dock-art-placeholder{
@@ -491,9 +479,6 @@ html,body{height:100%;background:transparent;font-family:-apple-system,BlinkMacS
   background:linear-gradient(135deg, rgba(255,255,255,0.4) 0%, transparent 40%, rgba(255,255,255,0.15) 100%);
   pointer-events:none;
 }
-.secondary-url-pill.is-playing .music-expanded-art {
-  animation:music-spin-expanded 15s linear infinite;
-}
 .music-expanded-art-placeholder{
   width:100%;height:100%;display:flex;align-items:center;justify-content:center;
   color:rgba(255,255,255,0.35);font-size:48px;
@@ -501,8 +486,19 @@ html,body{height:100%;background:transparent;font-family:-apple-system,BlinkMacS
 }
 @keyframes music-spin-expanded{to{transform:rotate(360deg)}}
 .music-dock-copy{
-  flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;
-  gap:1px;line-height:1;
+  flex:1;min-width:0;display:flex;flex-direction:row;align-items:center;justify-content:center;
+  gap:8px;line-height:1;
+}
+.music-dock-progress-bar{
+  position:absolute;bottom:0;left:10px;right:10px;height:2px;
+  background:rgba(255,255,255,0.1);
+  overflow:hidden;
+  cursor:pointer;
+}
+.music-dock-progress-fill{
+  height:100%;background:#fff;
+  width:0%;transition:width .1s linear;
+  pointer-events:none;
 }
 .music-dock-title-clip{
   overflow:hidden;white-space:nowrap;min-width:0;
