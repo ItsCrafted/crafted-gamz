@@ -136,10 +136,10 @@ html,body{height:100%;background:transparent;font-family:-apple-system,BlinkMacS
 .chrome-tabs .chrome-tab .chrome-tab-close{
   flex-grow:0;flex-shrink:0;position:relative;
   width:16px;height:16px;border-radius:5px;
-  border:1px solid rgba(255,255,255,0.35);
-  background-color:rgba(255,255,255,0.06);
-  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path stroke='rgba(255,255,255,.4)' stroke-linecap='round' stroke-width='1.2' d='M1.5 1.5 L6.5 6.5 M6.5 1.5 L1.5 6.5'/></svg>");
-  background-position:center;background-repeat:no-repeat;background-size:8px 8px;
+  border:none;
+  background-color:transparent;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'><path stroke='rgba(255,255,255,.7)' stroke-linecap='round' stroke-width='1.6' d='M1.5 1.5 L8.5 8.5 M8.5 1.5 L1.5 8.5'/></svg>");
+  background-position:center;background-repeat:no-repeat;background-size:10px 10px;
   transition: all .25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 @media(hover:hover){
@@ -148,13 +148,13 @@ html,body{height:100%;background:transparent;font-family:-apple-system,BlinkMacS
     border-color:rgba(255,80,80,0.4);
     transform:rotate(90deg);
     box-shadow:0 0 10px rgba(255,80,80,0.12);
-    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path stroke='rgba(255,120,120,.9)' stroke-linecap='round' stroke-width='1.2' d='M1.5 1.5 L6.5 6.5 M6.5 1.5 L1.5 6.5'/></svg>");
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'><path stroke='rgba(255,120,120,1)' stroke-linecap='round' stroke-width='1.6' d='M1.5 1.5 L8.5 8.5 M8.5 1.5 L1.5 8.5'/></svg>");
   }
   .chrome-tabs .chrome-tab .chrome-tab-close:hover:active{
     transform:rotate(90deg) scale(0.85);
     background-color:rgba(255,60,60,0.3);
     border-color:rgba(255,80,80,0.55);
-    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path stroke='rgba(255,150,150,1)' stroke-linecap='round' stroke-width='1.2' d='M1.5 1.5 L6.5 6.5 M6.5 1.5 L1.5 6.5'/></svg>");
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'><path stroke='rgba(255,150,150,1)' stroke-linecap='round' stroke-width='1.6' d='M1.5 1.5 L8.5 8.5 M8.5 1.5 L1.5 8.5'/></svg>");
   }
 }
 @media not all and (hover:hover){
