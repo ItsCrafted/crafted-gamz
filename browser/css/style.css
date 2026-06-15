@@ -261,7 +261,7 @@ html,body{height:100%;background:transparent;font-family:-apple-system,BlinkMacS
 .connection-popup-desc{color:var(--ui-text-sub);font-size:12px;line-height:1.35}
 
 .wisp-switcher-shell{
-  position:absolute;top:calc(50% - 12px);right:8px;z-index:210;
+  position:absolute;top:calc(50% - 13px);right:5px;z-index:210;
   display:flex;flex-direction:column;align-items:stretch;
   flex:0 0 auto;
   width:max-content;
@@ -348,10 +348,12 @@ html,body{height:100%;background:transparent;font-family:-apple-system,BlinkMacS
   transform:translateY(0) scale(1);
 }
 .secondary-url-pill{
-  flex:0 1 clamp(120px, 16vw, 170px);
+  flex:0 0 clamp(120px, 16vw, 170px);
+  display:block;
   height:34px;
   aspect-ratio:5 / 1;
   margin-left:6px;
+  margin-right:6px;
   border-radius:999px;
   background:var(--ui-addr-bg);
   border:1px solid rgba(255,255,255,0.18);
