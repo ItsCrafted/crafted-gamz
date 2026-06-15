@@ -220,8 +220,7 @@ html {
   border-radius: var(--radius);
   overflow: hidden;
   animation:
-    cardIn    0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both,
-    cardFloat 8s   ease-in-out 2.5s infinite;
+    cardIn    0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
 
   background: var(--glass-bg);
   backdrop-filter: blur(var(--glass-blur)) saturate(1.4);
@@ -803,6 +802,5 @@ html {
   text-align: right;
   margin-bottom: 6px;
   transition: opacity 0.3s;
-  animation: scrollHintFloat 2.2s ease-in-out infinite;
 }
 .scroll-hint.hidden { opacity: 0; animation: none; }

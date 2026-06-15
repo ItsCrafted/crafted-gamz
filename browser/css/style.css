@@ -36,7 +36,9 @@ html,body{height:100%;background:transparent;font-family:-apple-system,BlinkMacS
 
 .titlebar{
   display:flex;align-items:flex-end;
-  background:var(--ui-base);height:46px;
+  background:rgba(var(--ui-base-rgb), 0.55);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  height:46px;
 }
 
 .chrome-tabs{
@@ -77,13 +79,23 @@ html,body{height:100%;background:transparent;font-family:-apple-system,BlinkMacS
   position:absolute;top:0;left:0;width:100%;height:100%;overflow:hidden;pointer-events:none;
 }
 .chrome-tabs .chrome-tab .chrome-tab-background>svg{width:100%;height:100%}
-.chrome-tabs .chrome-tab .chrome-tab-background>svg .chrome-tab-geometry{fill:var(--ui-base)}
+.chrome-tabs .chrome-tab .chrome-tab-background>svg .chrome-tab-geometry{
+  fill:rgb(var(--ui-base-rgb));
+  stroke:rgba(255,255,255,0.4);
+  stroke-width:1px;
+}
 .chrome-tabs .chrome-tab[active]{z-index:5}
-.chrome-tabs .chrome-tab[active] .chrome-tab-background>svg .chrome-tab-geometry{fill:var(--ui-surface)}
-.chrome-tabs .chrome-tab:not([active]) .chrome-tab-background{transition:opacity .2s ease;opacity:0}
+.chrome-tabs .chrome-tab[active] .chrome-tab-background>svg .chrome-tab-geometry{
+  fill:rgb(var(--ui-base-rgb));
+  stroke:rgba(255,255,255,0.25);
+}
+.chrome-tabs .chrome-tab .chrome-tab-background{transition:opacity .2s ease;opacity:0.18}
+.chrome-tabs .chrome-tab[active] .chrome-tab-background{opacity:0.55}
+.chrome-tabs .chrome-tab:not([active]) .tab-active-svg { display: none; }
+.chrome-tabs .chrome-tab[active] .tab-inactive-svg { display: none; }
 @media(hover:hover){
   .chrome-tabs .chrome-tab:not([active]):hover{z-index:2}
-  .chrome-tabs .chrome-tab:not([active]):hover .chrome-tab-background{opacity:1}
+  .chrome-tabs .chrome-tab:not([active]):hover .chrome-tab-background{opacity:0.35}
 }
 .chrome-tabs .chrome-tab.chrome-tab-was-just-added{top:10px;animation:chrome-tab-was-just-added 120ms forwards ease-in-out}
 @keyframes chrome-tab-was-just-added{to{top:0}}
@@ -122,25 +134,37 @@ html,body{height:100%;background:transparent;font-family:-apple-system,BlinkMacS
 }
 
 .chrome-tabs .chrome-tab .chrome-tab-close{
-  flex-grow:0;flex-shrink:0;position:relative;width:16px;height:16px;border-radius:50%;
-  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path stroke='rgba(255,255,255,.5)' stroke-linecap='square' stroke-width='1.5' d='M0 0 L8 8 M8 0 L0 8'/></svg>");
+  flex-grow:0;flex-shrink:0;position:relative;
+  width:16px;height:16px;border-radius:5px;
+  border:1px solid rgba(255,255,255,0.1);
+  background-color:rgba(255,255,255,0.04);
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path stroke='rgba(255,255,255,.4)' stroke-linecap='round' stroke-width='1.2' d='M1.5 1.5 L6.5 6.5 M6.5 1.5 L1.5 6.5'/></svg>");
   background-position:center;background-repeat:no-repeat;background-size:8px 8px;
+  transition: all .25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 @media(hover:hover){
   .chrome-tabs .chrome-tab .chrome-tab-close:hover{
-    background-color:var(--ui-hover);
-    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path stroke='rgba(255,255,255,.7)' stroke-linecap='square' stroke-width='1.5' d='M0 0 L8 8 M8 0 L0 8'/></svg>");
+    background-color:rgba(255,80,80,0.18);
+    border-color:rgba(255,80,80,0.4);
+    transform:rotate(90deg);
+    box-shadow:0 0 10px rgba(255,80,80,0.12);
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path stroke='rgba(255,120,120,.9)' stroke-linecap='round' stroke-width='1.2' d='M1.5 1.5 L6.5 6.5 M6.5 1.5 L1.5 6.5'/></svg>");
   }
   .chrome-tabs .chrome-tab .chrome-tab-close:hover:active{
-    background-color:var(--ui-active);
-    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path stroke='rgba(255,255,255,.9)' stroke-linecap='square' stroke-width='1.5' d='M0 0 L8 8 M8 0 L0 8'/></svg>");
+    transform:rotate(90deg) scale(0.85);
+    background-color:rgba(255,60,60,0.3);
+    border-color:rgba(255,80,80,0.55);
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path stroke='rgba(255,150,150,1)' stroke-linecap='round' stroke-width='1.2' d='M1.5 1.5 L6.5 6.5 M6.5 1.5 L1.5 6.5'/></svg>");
   }
 }
 @media not all and (hover:hover){
-  .chrome-tabs .chrome-tab .chrome-tab-close:active{background-color:var(--ui-hover)}
+  .chrome-tabs .chrome-tab .chrome-tab-close:active{
+    background-color:rgba(255,80,80,0.18);
+    border-color:rgba(255,80,80,0.4);
+  }
 }
 @media(hover:hover){
-  .chrome-tabs .chrome-tab:not([active]) .chrome-tab-close:not(:hover):not(:active){opacity:.8}
+  .chrome-tabs .chrome-tab:not([active]) .chrome-tab-close:not(:hover):not(:active){opacity:.7}
 }
 .chrome-tabs .chrome-tab[is-smaller] .chrome-tab-close{margin-left:auto}
 .chrome-tabs .chrome-tab[is-mini]:not([active]) .chrome-tab-close{display:none}
@@ -156,25 +180,44 @@ html,body{height:100%;background:transparent;font-family:-apple-system,BlinkMacS
 .newtab-btn{
   position:absolute;top:50%;left:0;z-index:11;
   display:flex;align-items:center;justify-content:center;
-  width:30px;height:30px;margin:0;padding:0;
+  width:26px;height:26px;margin:0;padding:0;
   margin-top:-1px;
-  border:none;border-radius:50%;background:transparent;
-  color:var(--ui-text-sub);cursor:pointer;font-size:14px;
-  transition:background .15s,color .15s;
+  border:1px solid transparent;
+  border-radius:8px;
+  background:transparent;
+  color:rgba(255,255,255,0.5);cursor:pointer;
+  transition:all .25s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.newtab-btn i{
-  display:flex;align-items:center;justify-content:center;
-  width:100%;height:100%;
-  font-size:18px;line-height:1;
+.newtab-btn i {
+  font-size:12px;
+  line-height:1;
+  width:12px;
+  height:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:transform .25s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.newtab-btn:hover{background:var(--ui-hover);color:var(--ui-text)}
-.newtab-btn:active{background:var(--ui-active)}
+.newtab-btn:hover{
+  background:rgba(255,255,255,0.12);
+  border-color:rgba(255,255,255,0.35);
+  color:#fff;
+  box-shadow:0 0 12px rgba(255,255,255,0.08);
+  transform:translate3d(var(--translate-x, 0), -50%, 0) scale(1.1);
+}
+.newtab-btn:hover i{transform:rotate(90deg)}
+.newtab-btn:active{
+  transform:translate3d(var(--translate-x, 0), -50%, 0) scale(0.92);
+  background:rgba(255,255,255,0.18);
+}
 
 .titlebar-spacer{flex:0 0 0;width:0;background:transparent}
 
 .toolbar{
   display:flex;align-items:center;gap:4px;
-  background:var(--ui-base);padding:6px 10px;height:48px;
+  background:rgba(var(--ui-base-rgb), 0.65);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  padding:6px 10px;height:48px;
   border-bottom:1px solid var(--ui-border-sub);
   position:relative;z-index:100;
 }
