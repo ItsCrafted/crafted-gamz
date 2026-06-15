@@ -209,8 +209,9 @@ html,body{height:100%;background:transparent;font-family:-apple-system,BlinkMacS
 .titlebar-spacer{flex:0 0 0;width:0;background:transparent}
 
 .toolbar{
+  margin-top:-5px;
   display:flex;align-items:center;gap:4px;
-  background:rgba(var(--ui-base-rgb), 0.65);
+  background:rgba(var(--ui-base-rgb), 0.73);
   backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
   padding:6px 10px;height:48px;
   border-bottom:1px solid var(--ui-border-sub);
