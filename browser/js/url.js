@@ -2,7 +2,6 @@ const LOCAL_PAGES = {
   games: '/browser/pages/games.html',
   movies: '/browser/pages/movies.html',
   ai: '/browser/pages/ai.html',
-  music: '/browser/pages/music.html',
   about: '/browser/pages/about.html',
   settings: '/browser/pages/settings.html',
   account: '/browser/pages/account.html',
