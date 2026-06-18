@@ -2,7 +2,7 @@ import Hyperbeam from 'https://unpkg.com/@hyperbeam/web@latest/dist/index.js';
 
 const CONTAINER_ID = 'hyperbeam-container';
 const SESSION_DURATION = 900;
-const API_ENDPOINT = 'https://vm.cdn.cgamz.online';
+const API_ENDPOINT = 'https://hyperbeam-virtual-machines.cgamz.online';
 
 let hb = null;
 let countdownInterval = null;
