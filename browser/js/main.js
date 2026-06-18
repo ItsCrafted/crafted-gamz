@@ -9,7 +9,13 @@ document.getElementById('newtab-search').addEventListener('keydown', e => {
 })
 
 document.querySelectorAll('.url-shortcut-btn').forEach(btn => {
-  btn.addEventListener('click', () => navigate(btn.dataset.localUri))
+  btn.addEventListener('click', () => {
+    if (btn.dataset.localUri === 'cg://music' && window.MusicDock) {
+      window.MusicDock.open('search')
+      return
+    }
+    navigate(btn.dataset.localUri)
+  })
 })
 
 ensureTabHistory(getActiveTab())

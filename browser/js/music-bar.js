@@ -22,6 +22,7 @@
     currentIndex: -1,
     playing: false,
     panelOpen: false,
+    view: 'player',
     searchDebounce: null,
     searchSeq: 0,
     searchResults: [],
@@ -41,6 +42,12 @@
   state.audio.volume = 0.85
 
   const dom = {}
+  const addressBarWrap = document.querySelector('.address-bar-wrap')
+  const urlInput = document.getElementById('url-input')
+
+  function isMinimized() {
+    return !state.playing && !state.panelOpen
+  }
 
   function escapeHtml(value) {
     return String(value ?? '')
@@ -188,9 +195,12 @@
     if (dom.placeholder) {
       dom.placeholder.hidden = hasArt
     }
-    if (dom.expandedArtwork) {
-      dom.expandedArtwork.src = url || ''
-      dom.expandedArtwork.hidden = !hasArt
+    if (dom.heroArtwork) {
+      dom.heroArtwork.src = url || ''
+      dom.heroArtwork.hidden = !hasArt
+    }
+    if (dom.heroPlaceholder) {
+      dom.heroPlaceholder.hidden = hasArt
     }
   }
 
@@ -238,17 +248,15 @@
   }
 
   function updateLyricsDisplay() {
-    if (!dom.lyricsContainer || !state.audio.duration) return
+    if (!dom.lyrics || !state.audio.duration) return
 
     const hasLyrics = state.lyricsLines.length > 0
+    dom.lyrics.classList.toggle('has-lines', hasLyrics)
 
     if (!hasLyrics) {
-      dom.lyricsContainer.style.display = 'none'
       updateUrlBarLyrics('', '', '')
       return
     }
-
-    dom.lyricsContainer.style.display = 'flex'
 
     const currentTime = state.audio.currentTime
     let currentIndex = -1
@@ -267,9 +275,9 @@
 
     if (dom.currentLyric.textContent !== currentLine) {
       dom.currentLyric.textContent = currentLine
-      dom.currentLyric.classList.remove('lyric-animate')
+      dom.currentLyric.classList.remove('is-new')
       void dom.currentLyric.offsetWidth
-      dom.currentLyric.classList.add('lyric-animate')
+      dom.currentLyric.classList.add('is-new')
     }
     dom.nextLyric.textContent = nextLine
 
@@ -277,65 +285,131 @@
   }
 
   function updateUrlBarLyrics(prevLine, currentLine, nextLine) {
-    const urlLyricsMarquee = document.getElementById('url-lyrics-marquee')
-    if (!urlLyricsMarquee || !state.playing) {
-      if (urlLyricsMarquee) urlLyricsMarquee.innerHTML = ''
+    const urlInput = document.getElementById('url-input')
+    const hasLyrics = state.playing && state.lyricsLines.length > 0
+
+    if (!urlInput) return
+
+    if (!hasLyrics) {
+      urlInput.dataset.lyricText = ''
+      urlInput.placeholder = 'Search or enter address'
+      addressBarWrap?.classList.remove('has-lyrics')
       return
     }
 
-    const prevText = prevLine || ''
     const currentText = currentLine || '♪'
-    const nextText = nextLine || ''
 
-    urlLyricsMarquee.innerHTML = `
-      <span class="url-lyrics-line prev">${escapeHtml(prevText)}</span>
-      <span class="url-lyrics-line current">${escapeHtml(currentText)}</span>
-      <span class="url-lyrics-line next">${escapeHtml(nextText)}</span>
-    `
+    // Only update if the text has changed
+    if (urlInput.dataset.lyricText !== currentText) {
+      urlInput.style.opacity = '0'
+      setTimeout(() => {
+        urlInput.placeholder = currentText
+        urlInput.dataset.lyricText = currentText
+        urlInput.style.opacity = '1'
+      }, 200)
+    }
+
+    addressBarWrap?.classList.add('has-lyrics')
+  }
+
+  function updateDockChrome() {
+    const minimized = isMinimized()
+    pill.classList.toggle('is-minimized', minimized)
+
+    if (minimized) {
+      if (state.currentTrack) {
+        const label = `${getTrackTitle(state.currentTrack)} — ${getArtistText(state.currentTrack)}`
+        pill.title = label
+        if (dom.chipBody) {
+          dom.chipBody.title = state.playing ? 'Open music player' : 'Resume playback (double-click to open player)'
+          dom.chipBody.setAttribute('aria-label', state.playing ? 'Open music player' : `Resume ${getTrackTitle(state.currentTrack)}`)
+        }
+      } else {
+        pill.title = 'Music — click to search'
+        if (dom.chipBody) {
+          dom.chipBody.title = 'Search music'
+          dom.chipBody.setAttribute('aria-label', 'Search music')
+        }
+      }
+    } else {
+      pill.removeAttribute('title')
+      if (dom.chipBody) {
+        dom.chipBody.title = 'Open music player'
+        dom.chipBody.setAttribute('aria-label', 'Open music player')
+      }
+    }
+
+    if (!state.playing) {
+      updateUrlBarLyrics('', '', '')
+      if (dom.chipSeekFill) dom.chipSeekFill.style.width = '0%'
+    }
+  }
+
+  function setChipTitle(title) {
+    if (!dom.chipTitle) return
+    const raw = escapeHtml(title)
+    const needsScroll = raw.length > 28
+    dom.chipTitle.classList.toggle('is-scrolling', needsScroll)
+    if (needsScroll) {
+      const duration = Math.max(8, Math.min(18, Math.round(raw.length / 2)))
+      dom.chipTitle.style.setProperty('--mp-scroll-dur', `${duration}s`)
+      dom.chipTitle.innerHTML = `<span>${raw}</span><span aria-hidden="true">${raw}</span>`
+    } else {
+      dom.chipTitle.style.removeProperty('--mp-scroll-dur')
+      dom.chipTitle.textContent = title
+    }
   }
 
   function renderNowPlaying(track, playback = null) {
     const title = track ? getTrackTitle(track) : 'Music'
-    const subtitle = track ? getSubtitle(track) : state.wsConnected ? 'Search songs' : 'Connecting to music server...'
+    const subtitle = track ? getSubtitle(track) : state.wsConnected ? 'Search songs' : 'Connecting...'
     const cover = track?.coverUrl || track?.album?.coverUrl || track?.album?.cover || track?.image || ''
     const artist = track ? getArtistText(track) : ''
 
     pill.classList.toggle('has-track', !!track)
-    if (!track) pill.classList.remove('is-searching')
 
-    if (dom.titleClip) {
-      const rawTitle = escapeHtml(title)
-      const needsScroll = rawTitle.length > 34 || (dom.titleClip.clientWidth > 0 && dom.titleText && dom.titleText.scrollWidth > dom.titleClip.clientWidth)
-      dom.titleMarquee.classList.toggle('is-scrolling', needsScroll)
-      dom.titleMarquee.style.removeProperty('--music-marquee-duration')
-      if (needsScroll) {
-        const duration = Math.max(10, Math.min(20, Math.round(rawTitle.length / 2)))
-        dom.titleMarquee.style.setProperty('--music-marquee-duration', `${duration}s`)
-      }
-      dom.titleMarquee.innerHTML = needsScroll
-        ? `<span class="music-dock-title">${rawTitle}</span><span class="music-dock-title" aria-hidden="true">${rawTitle}</span>`
-        : `<span class="music-dock-title">${rawTitle}</span>`
-    }
+    setChipTitle(title)
 
-    if (dom.subtitle) {
-      dom.subtitle.textContent = subtitle
-    }
-
-    if (dom.panelTitle) {
-      dom.panelTitle.textContent = title
-    }
-    if (dom.panelArtist) {
-      dom.panelArtist.textContent = artist
-    }
+    if (dom.chipArtist) dom.chipArtist.textContent = subtitle
+    if (dom.heroTitle) dom.heroTitle.textContent = title
+    if (dom.heroArtist) dom.heroArtist.textContent = artist || subtitle
 
     setArtwork(cover)
 
-    if (playback?.source) {
-      dom.subtitle.textContent = `${subtitle} · ${playback.source}`
+    if (playback?.source && dom.chipArtist) {
+      dom.chipArtist.textContent = `${subtitle} · ${playback.source}`
+    }
+
+    if ('mediaSession' in navigator) {
+      if (track) {
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: title,
+          artist: artist,
+          album: track.album?.title || track.albumTitle || '',
+          artwork: cover ? [{ src: cover, sizes: '512x512', type: 'image/png' }] : []
+        })
+      } else {
+        navigator.mediaSession.metadata = null
+      }
     }
 
     if (track) {
       fetchLyrics(track)
+    }
+
+    updateDockChrome()
+  }
+
+  function setView(view) {
+    state.view = view === 'search' ? 'search' : 'player'
+    pill.classList.toggle('mp-view-search', state.view === 'search')
+    if (dom.viewPlayer) dom.viewPlayer.hidden = state.view !== 'player'
+    if (dom.viewSearch) dom.viewSearch.hidden = state.view !== 'search'
+    dom.tabs?.forEach((tab) => {
+      tab.classList.toggle('is-active', tab.dataset.view === state.view)
+    })
+    if (state.view === 'search') {
+      window.setTimeout(() => dom.searchInput?.focus(), 0)
     }
   }
 
@@ -344,10 +418,14 @@
     pill.classList.toggle('is-open', state.panelOpen)
     if (dom.panel) dom.panel.hidden = !state.panelOpen
     if (state.panelOpen) {
-      if (dom.searchInput) {
+      if (!state.currentTrack && state.view === 'player') {
+        setView('search')
+      }
+      if (state.view === 'search') {
         window.setTimeout(() => dom.searchInput?.focus(), 0)
       }
     }
+    updateDockChrome()
   }
 
   function updatePlayButton() {
@@ -363,11 +441,17 @@
 
     pill.classList.toggle('is-playing', state.playing)
 
+    if ('mediaSession' in navigator) {
+      navigator.mediaSession.playbackState = state.playing ? 'playing' : 'paused'
+    }
+
     if (state.playing) {
       startRotation()
     } else {
       stopRotation()
     }
+
+    updateDockChrome()
   }
 
   function startRotation() {
@@ -397,26 +481,20 @@
     if (dom.artwork) {
       dom.artwork.style.transform = `rotate(${state.dockRotation}deg)`
     }
-    if (dom.expandedArtwork) {
-      dom.expandedArtwork.style.transform = `rotate(${state.expandedRotation}deg)`
+    if (dom.heroArtwork) {
+      dom.heroArtwork.style.transform = `rotate(${state.expandedRotation}deg)`
     }
   }
 
   function updateProgressBar() {
-    if (!dom.progressBar || !state.audio.duration) return
+    if (!state.audio.duration) return
     const percent = (state.audio.currentTime / state.audio.duration) * 100
-    dom.progressBar.style.width = `${percent}%`
 
-    const dockProgressFill = document.getElementById('music-dock-progress-fill')
-    if (dockProgressFill) {
-      dockProgressFill.style.width = `${percent}%`
-    }
+    if (dom.seekFill) dom.seekFill.style.width = `${percent}%`
+    if (dom.chipSeekFill) dom.chipSeekFill.style.width = `${percent}%`
 
-    if (dom.timeDisplay) {
-      const current = formatTime(state.audio.currentTime)
-      const duration = formatTime(state.audio.duration)
-      dom.timeDisplay.textContent = `${current} / ${duration}`
-    }
+    if (dom.timeCurrent) dom.timeCurrent.textContent = formatTime(state.audio.currentTime)
+    if (dom.timeDuration) dom.timeDuration.textContent = formatTime(state.audio.duration)
   }
 
   function seekTo(e) {
@@ -437,20 +515,23 @@
   function updateQueueMarker() {
     if (!dom.results) return
     const currentId = state.currentTrack?.id != null ? String(state.currentTrack.id) : ''
-    dom.results.querySelectorAll('.music-search-item').forEach((item) => {
-      item.classList.toggle('is-playing', item.dataset.trackId === currentId)
+    dom.results.querySelectorAll('.mp-result').forEach((item) => {
+      item.classList.toggle('is-active', item.dataset.trackId === currentId)
     })
   }
 
-  function closeSearchPanel() {
+  function closePanel() {
     setPanelOpen(false)
   }
 
-  function openSearchPanel() {
+  function openPanel(view = null) {
+    if (view) setView(view)
+    else if (!state.currentTrack) setView('search')
+    else setView('player')
     setPanelOpen(true)
   }
 
-  function toggleSearchPanel() {
+  function togglePanel() {
     setPanelOpen(!state.panelOpen)
   }
 
@@ -585,6 +666,7 @@
     const trackQueue = Array.isArray(queue) && queue.length > 0 ? queue : [track]
     const trackIndex = Array.isArray(queue) && queue.length > 0 ? index : 0
     await startPlayback(resolved.track || track, resolved.playback, trackQueue, trackIndex)
+    setView('player')
   }
 
   async function nextTrack() {
@@ -641,7 +723,7 @@
 
   function renderEmpty(message) {
     if (!dom.results) return
-    dom.results.innerHTML = `<div class="music-dock-empty">${escapeHtml(message)}</div>`
+    dom.results.innerHTML = `<div class="mp-empty">${escapeHtml(message)}</div>`
   }
 
   function renderSearchResults(payload) {
@@ -660,11 +742,11 @@
       const cover = escapeHtml(track.coverUrl || track.album?.coverUrl || '')
       const isActive = state.currentTrack?.id != null && String(state.currentTrack.id) === String(track.id)
       return `
-        <button class="music-search-item${isActive ? ' is-playing' : ''}" type="button" data-track-id="${escapeHtml(track.id)}" data-index="${index}">
-          ${cover ? `<img class="music-search-item-art" src="${cover}" alt="">` : `<div class="music-dock-art-placeholder"><i class="fa-solid fa-music"></i></div>`}
-          <div class="music-search-item-copy">
-            <div class="music-search-item-title">${title}</div>
-            <div class="music-search-item-meta">${meta}</div>
+        <button class="mp-result${isActive ? ' is-active' : ''}" type="button" data-track-id="${escapeHtml(track.id)}" data-index="${index}">
+          ${cover ? `<img class="mp-result-art" src="${cover}" alt="">` : `<div class="mp-result-art-fallback"><i class="fa-solid fa-music"></i></div>`}
+          <div class="mp-result-copy">
+            <div class="mp-result-title">${title}</div>
+            <div class="mp-result-meta">${meta}</div>
           </div>
         </button>
       `
@@ -815,217 +897,178 @@
   }
 
   function buildDom() {
+    pill.classList.add('mp-root')
     pill.innerHTML = `
-      <button class="music-dock-main" type="button" aria-label="Open music player">
-        <div class="music-dock-art-wrapper">
-          <img class="music-dock-art" id="music-dock-art" alt="" hidden>
-          <div class="music-dock-art-placeholder" id="music-dock-art-placeholder"></div>
-        </div>
-        <div class="music-dock-copy">
-          <div class="music-dock-title-clip">
-            <span class="music-dock-title-marquee" id="music-dock-title-marquee">
-              <span class="music-dock-title" id="music-dock-title">Music</span>
-            </span>
+      <div class="mp-chip">
+        <button class="mp-chip-body" type="button" aria-label="Music player">
+          <div class="mp-art">
+            <img class="mp-art-img" id="mp-art-img" alt="" hidden>
+            <div class="mp-art-fallback" id="mp-art-fallback"><i class="fa-solid fa-music"></i></div>
+            <div class="mp-art-ring" aria-hidden="true"></div>
           </div>
-          <div class="music-dock-subtitle" id="music-dock-subtitle">Search songs</div>
+          <div class="mp-chip-meta">
+            <div class="mp-chip-title-wrap">
+              <span class="mp-chip-title" id="mp-chip-title">Music</span>
+            </div>
+            <div class="mp-chip-artist" id="mp-chip-artist">Search songs</div>
+          </div>
+          <div class="mp-chip-wave" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+        </button>
+        <div class="mp-chip-transport">
+          <button class="mp-btn" id="mp-prev" type="button" aria-label="Previous" title="Previous"><i class="fa-solid fa-backward-step"></i></button>
+          <button class="mp-btn mp-btn-play" id="mp-play" type="button" aria-label="Play" title="Play"><i class="fa-solid fa-play"></i></button>
+          <button class="mp-btn" id="mp-next" type="button" aria-label="Next" title="Next"><i class="fa-solid fa-forward-step"></i></button>
         </div>
-        <div class="music-dock-progress-bar">
-          <div class="music-dock-progress-fill" id="music-dock-progress-fill"></div>
-        </div>
-      </button>
-      <div class="music-dock-controls">
-        <button class="music-dock-btn" id="music-dock-prev" type="button" aria-label="Previous track" title="Previous track">
-          <i class="fa-solid fa-backward-step"></i>
-        </button>
-        <button class="music-dock-btn is-primary" id="music-dock-play" type="button" aria-label="Play" title="Play">
-          <i class="fa-solid fa-play"></i>
-        </button>
-        <button class="music-dock-btn" id="music-dock-next" type="button" aria-label="Next track" title="Next track">
-          <i class="fa-solid fa-forward-step"></i>
-        </button>
+        <div class="mp-chip-seek" id="mp-chip-seek"><div class="mp-chip-seek-fill" id="mp-chip-seek-fill"></div></div>
       </div>
-      <div class="music-dock-panel" id="music-dock-panel" hidden>
-        <div class="music-panel-header">
-          <button class="music-panel-search-toggle" id="music-panel-search-toggle" type="button" title="Search music">
-            <i class="fa-solid fa-magnifying-glass"></i>
-          </button>
-          <div class="music-expanded-art-container">
-            <img class="music-expanded-art" id="music-expanded-art" alt="" hidden>
-            <div class="music-expanded-art-placeholder" id="music-expanded-art-placeholder"></div>
+
+      <div class="mp-panel" id="mp-panel" hidden>
+        <div class="mp-panel-top">
+          <div class="mp-tabs">
+            <button class="mp-tab is-active" type="button" data-view="player">Now Playing</button>
+            <button class="mp-tab" type="button" data-view="search">Search</button>
           </div>
-          <div class="music-panel-info">
-            <div class="music-panel-title" id="music-panel-title">Music Player</div>
-            <div class="music-panel-artist" id="music-panel-artist">Search for a song</div>
-          </div>
-          <button class="music-search-close" id="music-dock-close" type="button" aria-label="Close player">
-            <i class="fa-solid fa-chevron-down"></i>
-          </button>
-        </div>
-        
-        <div class="music-dropdown-controls" id="music-dropdown-controls">
-          <button class="music-dock-btn" id="music-panel-prev" type="button" aria-label="Previous track">
-            <i class="fa-solid fa-backward-step"></i>
-          </button>
-          <button class="music-dock-btn is-primary" id="music-panel-play" type="button" aria-label="Play/Pause">
-            <i class="fa-solid fa-play"></i>
-          </button>
-          <button class="music-dock-btn" id="music-panel-next" type="button" aria-label="Next track">
-            <i class="fa-solid fa-forward-step"></i>
-          </button>
+          <button class="mp-icon-btn" id="mp-close" type="button" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
         </div>
 
-        <div class="music-progress-container">
-          <div class="music-progress-bar-wrapper">
-            <div class="music-progress-bar" id="music-progress-bar"></div>
+        <div class="mp-view mp-view-player" id="mp-view-player">
+          <div class="mp-hero">
+            <div class="mp-hero-art">
+              <img class="mp-hero-img" id="mp-hero-img" alt="" hidden>
+              <div class="mp-hero-fallback" id="mp-hero-fallback"><i class="fa-solid fa-music"></i></div>
+            </div>
+            <div class="mp-hero-info">
+              <div class="mp-hero-title" id="mp-hero-title">Music</div>
+              <div class="mp-hero-artist" id="mp-hero-artist">Search for a song</div>
+            </div>
           </div>
-          <div class="music-time-display" id="music-time-display">0:00 / 0:00</div>
+          <div class="mp-panel-controls">
+            <button class="mp-btn" id="mp-panel-prev" type="button" aria-label="Previous"><i class="fa-solid fa-backward-step"></i></button>
+            <button class="mp-btn mp-btn-play" id="mp-panel-play" type="button" aria-label="Play"><i class="fa-solid fa-play"></i></button>
+            <button class="mp-btn" id="mp-panel-next" type="button" aria-label="Next"><i class="fa-solid fa-forward-step"></i></button>
+          </div>
+          <div class="mp-seek">
+            <span class="mp-seek-time" id="mp-time-cur">0:00</span>
+            <div class="mp-seek-bar" id="mp-seek-bar"><div class="mp-seek-fill" id="mp-seek-fill"></div></div>
+            <span class="mp-seek-time" id="mp-time-dur">0:00</span>
+          </div>
+          <div class="mp-lyrics" id="mp-lyrics">
+            <p class="mp-lyric-line" id="mp-lyric-cur">♪</p>
+            <p class="mp-lyric-next" id="mp-lyric-next"></p>
+          </div>
+          <div class="mp-volume">
+            <i class="fa-solid fa-volume-low"></i>
+            <input type="range" id="mp-volume" min="0" max="100" value="85" aria-label="Volume">
+            <i class="fa-solid fa-volume-high"></i>
+          </div>
         </div>
-        <div class="music-lyrics-container" id="music-lyrics-container">
-          <div class="music-lyric-current" id="music-lyric-current">♪</div>
-          <div class="music-lyric-next" id="music-lyric-next"></div>
+
+        <div class="mp-view mp-view-search" id="mp-view-search" hidden>
+          <div class="mp-search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input class="mp-search-input" id="mp-search-input" type="text" placeholder="Songs, albums, artists" spellcheck="false" autocomplete="off">
+          </div>
+          <div class="mp-search-status" id="mp-search-status">Search songs, albums, or artists.</div>
+          <div class="mp-search-results" id="mp-search-results"></div>
         </div>
-        <div class="music-volume-container">
-          <i class="fa-solid fa-volume-low"></i>
-          <input type="range" class="music-volume-slider" id="music-volume-slider" min="0" max="100" value="85">
-          <i class="fa-solid fa-volume-high"></i>
-        </div>
-        <div class="music-search-row">
-          <input class="music-search-input" id="music-dock-search" type="text" placeholder="Search songs, albums, artists" spellcheck="false" autocomplete="off">
-          <button class="music-search-close" id="music-search-back" type="button" aria-label="Back to player" style="display:none">
-            <i class="fa-solid fa-chevron-left"></i>
-          </button>
-        </div>
-        <div class="music-search-status" id="music-dock-status">Search songs, albums, or artists.</div>
-        <div class="music-search-results" id="music-dock-results"></div>
       </div>
     `
 
-    dom.artwork = document.getElementById('music-dock-art')
-    dom.placeholder = document.getElementById('music-dock-art-placeholder')
-    dom.expandedArtwork = document.getElementById('music-expanded-art')
-    dom.expandedPlaceholder = document.getElementById('music-expanded-art-placeholder')
-    dom.titleClip = document.querySelector('.music-dock-title-clip')
-    dom.titleMarquee = document.getElementById('music-dock-title-marquee')
-    dom.titleText = document.getElementById('music-dock-title')
-    dom.subtitle = document.getElementById('music-dock-subtitle')
-    dom.panelTitle = document.getElementById('music-panel-title')
-    dom.panelArtist = document.getElementById('music-panel-artist')
-    dom.prevBtn = document.getElementById('music-dock-prev')
-    dom.playBtn = document.getElementById('music-dock-play')
-    dom.nextBtn = document.getElementById('music-dock-next')
-    dom.panel = document.getElementById('music-dock-panel')
-    dom.searchInput = document.getElementById('music-dock-search')
-    dom.closeBtn = document.getElementById('music-dock-close')
-    dom.status = document.getElementById('music-dock-status')
-    dom.results = document.getElementById('music-dock-results')
-    dom.mainButton = pill.querySelector('.music-dock-main')
-    dom.progressBar = document.getElementById('music-progress-bar')
-    dom.timeDisplay = document.getElementById('music-time-display')
-    dom.lyricsContainer = document.getElementById('music-lyrics-container')
-    dom.currentLyric = document.getElementById('music-lyric-current')
-    dom.nextLyric = document.getElementById('music-lyric-next')
-    dom.volumeSlider = document.getElementById('music-volume-slider')
-    dom.searchToggle = document.getElementById('music-panel-search-toggle')
-    dom.searchBack = document.getElementById('music-search-back')
-    dom.panelPlayBtn = document.getElementById('music-panel-play')
-    dom.panelPrevBtn = document.getElementById('music-panel-prev')
-    dom.panelNextBtn = document.getElementById('music-panel-next')
-    dom.dockProgressBar = document.querySelector('.music-dock-progress-bar')
+    dom.artwork = document.getElementById('mp-art-img')
+    dom.placeholder = document.getElementById('mp-art-fallback')
+    dom.heroArtwork = document.getElementById('mp-hero-img')
+    dom.heroPlaceholder = document.getElementById('mp-hero-fallback')
+    dom.chipTitle = document.getElementById('mp-chip-title')
+    dom.chipArtist = document.getElementById('mp-chip-artist')
+    dom.heroTitle = document.getElementById('mp-hero-title')
+    dom.heroArtist = document.getElementById('mp-hero-artist')
+    dom.prevBtn = document.getElementById('mp-prev')
+    dom.playBtn = document.getElementById('mp-play')
+    dom.nextBtn = document.getElementById('mp-next')
+    dom.panel = document.getElementById('mp-panel')
+    dom.searchInput = document.getElementById('mp-search-input')
+    dom.closeBtn = document.getElementById('mp-close')
+    dom.status = document.getElementById('mp-search-status')
+    dom.results = document.getElementById('mp-search-results')
+    dom.chipBody = pill.querySelector('.mp-chip-body')
+    dom.seekFill = document.getElementById('mp-seek-fill')
+    dom.seekBar = document.getElementById('mp-seek-bar')
+    dom.chipSeek = document.getElementById('mp-chip-seek')
+    dom.chipSeekFill = document.getElementById('mp-chip-seek-fill')
+    dom.timeCurrent = document.getElementById('mp-time-cur')
+    dom.timeDuration = document.getElementById('mp-time-dur')
+    dom.lyrics = document.getElementById('mp-lyrics')
+    dom.currentLyric = document.getElementById('mp-lyric-cur')
+    dom.nextLyric = document.getElementById('mp-lyric-next')
+    dom.volumeSlider = document.getElementById('mp-volume')
+    dom.panelPlayBtn = document.getElementById('mp-panel-play')
+    dom.panelPrevBtn = document.getElementById('mp-panel-prev')
+    dom.panelNextBtn = document.getElementById('mp-panel-next')
+    dom.viewPlayer = document.getElementById('mp-view-player')
+    dom.viewSearch = document.getElementById('mp-view-search')
+    dom.tabs = Array.from(pill.querySelectorAll('.mp-tab'))
   }
 
   function attachEvents() {
-    dom.mainButton?.addEventListener('click', (event) => {
+    dom.chipBody?.addEventListener('click', async (event) => {
       event.preventDefault()
       event.stopPropagation()
-      toggleSearchPanel()
-      if (state.panelOpen && dom.searchInput) dom.searchInput.focus()
-    })
-    
-    dom.searchToggle?.addEventListener('click', (event) => {
-      event.preventDefault()
-      event.stopPropagation()
-      pill.classList.add('is-searching')
-      if (dom.searchBack) dom.searchBack.style.display = 'flex'
-      window.setTimeout(() => dom.searchInput?.focus(), 0)
-    })
-    
-    dom.searchBack?.addEventListener('click', (event) => {
-      event.preventDefault()
-      event.stopPropagation()
-      pill.classList.remove('is-searching')
-      if (dom.searchBack) dom.searchBack.style.display = 'none'
+
+      if (isMinimized() && state.currentTrack) {
+        try {
+          await togglePlay()
+        } catch (error) {
+          setBusy(false, error.message)
+        }
+        return
+      }
+
+      openPanel(state.currentTrack ? 'player' : 'search')
     })
 
-    dom.dockProgressBar?.addEventListener('click', (event) => {
+    dom.chipBody?.addEventListener('dblclick', (event) => {
+      event.preventDefault()
+      event.stopPropagation()
+      if (!state.panelOpen) openPanel('player')
+    })
+
+    dom.tabs?.forEach((tab) => {
+      tab.addEventListener('click', (event) => {
+        event.preventDefault()
+        event.stopPropagation()
+        setView(tab.dataset.view)
+      })
+    })
+
+    dom.chipSeek?.addEventListener('click', (event) => {
       event.preventDefault()
       event.stopPropagation()
       seekTo(event)
     })
 
-    dom.prevBtn?.addEventListener('click', async (event) => {
-      event.preventDefault()
-      event.stopPropagation()
-      try {
-        await prevTrack()
-      } catch (error) {
-        setBusy(false, error.message)
-      }
-    })
-    
-    dom.panelPrevBtn?.addEventListener('click', async (event) => {
-      event.preventDefault()
-      event.stopPropagation()
-      try {
-        await prevTrack()
-      } catch (error) {
-        setBusy(false, error.message)
-      }
-    })
+    const bindTransport = (btn, action) => {
+      btn?.addEventListener('click', async (event) => {
+        event.preventDefault()
+        event.stopPropagation()
+        try {
+          await action()
+        } catch (error) {
+          setBusy(false, error.message)
+        }
+      })
+    }
 
-    dom.playBtn?.addEventListener('click', async (event) => {
-      event.preventDefault()
-      event.stopPropagation()
-      try {
-        await togglePlay()
-      } catch (error) {
-        setBusy(false, error.message)
-      }
-    })
-    
-    dom.panelPlayBtn?.addEventListener('click', async (event) => {
-      event.preventDefault()
-      event.stopPropagation()
-      try {
-        await togglePlay()
-      } catch (error) {
-        setBusy(false, error.message)
-      }
-    })
-
-    dom.nextBtn?.addEventListener('click', async (event) => {
-      event.preventDefault()
-      event.stopPropagation()
-      try {
-        await nextTrack()
-      } catch (error) {
-        setBusy(false, error.message)
-      }
-    })
-    
-    dom.panelNextBtn?.addEventListener('click', async (event) => {
-      event.preventDefault()
-      event.stopPropagation()
-      try {
-        await nextTrack()
-      } catch (error) {
-        setBusy(false, error.message)
-      }
-    })
+    bindTransport(dom.prevBtn, prevTrack)
+    bindTransport(dom.panelPrevBtn, prevTrack)
+    bindTransport(dom.playBtn, togglePlay)
+    bindTransport(dom.panelPlayBtn, togglePlay)
+    bindTransport(dom.nextBtn, nextTrack)
+    bindTransport(dom.panelNextBtn, nextTrack)
 
     dom.closeBtn?.addEventListener('click', (event) => {
       event.preventDefault()
       event.stopPropagation()
-      closeSearchPanel()
+      closePanel()
     })
 
     dom.searchInput?.addEventListener('input', (event) => {
@@ -1037,18 +1080,19 @@
         event.preventDefault()
         await runSearch(event.target.value)
       } else if (event.key === 'Escape') {
-        closeSearchPanel()
+        closePanel()
       }
     })
 
     dom.results?.addEventListener('click', async (event) => {
-      const button = event.target.closest('.music-search-item')
+      const button = event.target.closest('.mp-result')
       if (!button) return
       const index = Number(button.dataset.index || 0)
       const track = state.searchResults[index] || state.searchResults.find((item) => String(item.id) === String(button.dataset.trackId))
       if (!track) return
       try {
         await playTrack(track, state.searchResults, index)
+        setView('player')
       } catch (error) {
         setBusy(false, error.message)
       }
@@ -1057,12 +1101,15 @@
     document.addEventListener('click', (event) => {
       if (!state.panelOpen) return
       if (pill.contains(event.target)) return
-      closeSearchPanel()
+      closePanel()
     })
 
     dom.volumeSlider?.addEventListener('input', (event) => {
       const volume = parseInt(event.target.value, 10) / 100
       state.audio.volume = volume
+      try {
+        localStorage.setItem('cg-music-volume', String(volume))
+      } catch (e) {}
     })
 
     state.audio.addEventListener('play', () => {
@@ -1083,7 +1130,9 @@
     })
 
     state.audio.addEventListener('waiting', () => {
-      if (state.currentTrack) dom.subtitle.textContent = `${getSubtitle(state.currentTrack)} · Buffering`
+      if (state.currentTrack && dom.chipArtist) {
+        dom.chipArtist.textContent = `${getSubtitle(state.currentTrack)} · Buffering`
+      }
     })
 
     state.audio.addEventListener('canplay', () => {
@@ -1106,7 +1155,7 @@
       setBusy(false, 'Playback failed')
     })
 
-    dom.progressBar?.parentElement?.addEventListener('click', (event) => {
+    dom.seekBar?.addEventListener('click', (event) => {
       if (!state.audio.duration) return
       const rect = event.currentTarget.getBoundingClientRect()
       const percent = (event.clientX - rect.left) / rect.width
@@ -1114,19 +1163,81 @@
     })
   }
 
+  function initMediaSession() {
+    if (!('mediaSession' in navigator)) return
+    navigator.mediaSession.setActionHandler('play', async () => {
+      try { await togglePlay() } catch (err) { console.error(err) }
+    })
+    navigator.mediaSession.setActionHandler('pause', async () => {
+      try { await togglePlay() } catch (err) { console.error(err) }
+    })
+    navigator.mediaSession.setActionHandler('previoustrack', async () => {
+      try { await prevTrack() } catch (err) { console.error(err) }
+    })
+    navigator.mediaSession.setActionHandler('nexttrack', async () => {
+      try { await nextTrack() } catch (err) { console.error(err) }
+    })
+  }
+
   function init() {
     buildDom()
     attachEvents()
+    setView('player')
     renderNowPlaying(null, null)
     renderEmpty('Search for a song, album, or artist.')
     updatePlayButton()
     pill.classList.toggle('has-track', !!state.currentTrack)
+    updateDockChrome()
     connectWebSocket()
+    initMediaSession()
+
+    // Restore saved volume
+    try {
+      const savedVolume = localStorage.getItem('cg-music-volume')
+      if (savedVolume !== null) {
+        const vol = parseFloat(savedVolume)
+        state.audio.volume = vol
+        if (dom.volumeSlider) {
+          dom.volumeSlider.value = Math.round(vol * 100)
+        }
+      }
+    } catch (e) {}
+
+    urlInput?.addEventListener('focus', () => {
+      addressBarWrap?.classList.add('is-editing-url')
+    })
+
+    urlInput?.addEventListener('blur', () => {
+      addressBarWrap?.classList.remove('is-editing-url')
+    })
+
     window.addEventListener('beforeunload', () => {
       try {
         if (state.ws) state.ws.close()
       } catch {}
     })
+  }
+
+  window.MusicDock = {
+    open(view) {
+      openPanel(view)
+    },
+    close() {
+      closePanel()
+    },
+    toggle() {
+      if (state.panelOpen) closePanel()
+      else openPanel()
+    },
+    play() {
+      return togglePlay()
+    },
+    isPlaying() {
+      return state.playing
+    },
+    getCurrentTrack() {
+      return state.currentTrack
+    },
   }
 
   init()
