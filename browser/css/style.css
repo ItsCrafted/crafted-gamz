@@ -237,6 +237,9 @@ html,body{height:100%;background:transparent;font-family:-apple-system,BlinkMacS
   position:relative;
   overflow:hidden;
 }
+.address-bar-wrap.wisp-menu-open {
+  overflow: visible;
+}
 .address-bar-wrap:focus-within{background:var(--ui-addr-focus);border-color:rgba(255,255,255,0.4)}
 .address-bar-wrap .lock-icon{color:var(--ui-text-sub);font-size:12px;flex-shrink:0}
 .address-bar-wrap .lock-icon.secure{color:var(--ui-secure)}
@@ -304,6 +307,7 @@ html,body{height:100%;background:transparent;font-family:-apple-system,BlinkMacS
 .wisp-switcher-shell.is-open{
   border-radius:12px;
   box-shadow:0 16px 34px rgba(0,0,0,0.35);
+  overflow: visible;
 }
 .wisp-switcher-trigger{
   display:flex;align-items:center;justify-content:center;
@@ -357,15 +361,21 @@ html,body{height:100%;background:transparent;font-family:-apple-system,BlinkMacS
   width:min(280px,calc(100vw - 32px));
   display:flex;flex-direction:column;gap:4px;
   padding:8px;
-  padding-top:30px;
   position:absolute;
   top:calc(100% + 8px);
   right:0;
   z-index:350;
   opacity:0;
   transform:translateY(-4px) scale(0.985);
+  background:rgba(28,28,30,0.96);
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:12px;
+  box-shadow:0 20px 48px rgba(0,0,0,0.45);
+  backdrop-filter:blur(24px) saturate(150%);
+  -webkit-backdrop-filter:blur(24px) saturate(150%);
   transition:opacity .14s ease,transform .22s cubic-bezier(0.16, 1, 0.3, 1);
 }
+
 .wisp-switcher-menu[hidden]{display:none !important}
 .wisp-switcher-shell[aria-expanded="true"] .wisp-switcher-menu{
   opacity:1;

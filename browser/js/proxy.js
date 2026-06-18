@@ -215,6 +215,9 @@ function finishWispSwitcherTransition(shell, menu, collapse, token, nextState) {
       width: Math.max(1, Math.round(shell.getBoundingClientRect().width)),
       height: Math.max(1, Math.round(shell.getBoundingClientRect().height)),
     }
+    // Allow menu to escape address-bar-wrap
+    const addressBarWrap = document.querySelector('.address-bar-wrap')
+    if (addressBarWrap) addressBarWrap.classList.add('wisp-menu-open')
     return
   }
 
@@ -228,6 +231,9 @@ function finishWispSwitcherTransition(shell, menu, collapse, token, nextState) {
   shell.style.pointerEvents = ''
   menu.style.opacity = ''
   menu.style.transform = ''
+  // Reset address-bar-wrap overflow
+  const addressBarWrap = document.querySelector('.address-bar-wrap')
+  if (addressBarWrap) addressBarWrap.classList.remove('wisp-menu-open')
   wispSwitcherMenuState = 'closed'
   wispSwitcherClosedSize = measureWispSwitcherClosedSize(shell, menu, collapse)
 }
