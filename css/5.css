@@ -99,7 +99,11 @@
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--text-dim);
-  border: 1px solid var(--border);
+  border: 1px solid var(--glass-border-soft);
+  background: var(--glass-bg-deep);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
   padding: 5px 12px;
   margin-bottom: 32px;
   animation: badgeReveal 0.55s cubic-bezier(0.16, 1, 0.3, 1) 0.25s both;
