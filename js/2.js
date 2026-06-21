@@ -2,17 +2,10 @@ const shouldRedirect = new URLSearchParams(window.location.search).get('skip') !
 const isOnly = new URLSearchParams(window.location.search).get('only') === 'true';
 
 const FIREBASE_CONFIG_URL = 'https://firebase.cdn.cgamz.online';
-let auth, db, chosen = null, authReady = false;
+let auth, db, authReady = false;
 
 const nextBtn  = document.getElementById('next-btn');
 const errorMsg = document.getElementById('error-msg');
-
-function select(el) {
-  document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
-  el.classList.add('selected');
-  chosen = el.dataset.value;
-  nextBtn.disabled = false;
-}
 
 async function init() {
   try {
@@ -34,8 +27,6 @@ async function init() {
 }
 
 nextBtn.addEventListener('click', async () => {
-  if (!chosen) return;
-
   const user = await new Promise(resolve => {
     if (authReady) return resolve(auth.currentUser);
     const unsub = auth.onAuthStateChanged(u => { unsub(); resolve(u); });
@@ -48,7 +39,7 @@ nextBtn.addEventListener('click', async () => {
 
   try {
     await db.collection('users').doc(user.uid).update({
-      environment: chosen,
+      environment: 'browser',
       onboardingStep: 3
     });
     if (shouldRedirect) window.location.href = isOnly ? '5.html' : '3.html';

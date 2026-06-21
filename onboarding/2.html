@@ -3,69 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Crafted Gamz: Your Look</title>
+  <title>Crafted Gamz: Browser</title>
   <link rel="stylesheet" href="../css/onboarding.css">
 <link rel="shortcut icon" href="../img/icon.png" type="image/x-icon">
-  <style>
-    .option-card.coming-soon {
-      opacity: 0.35;
-      cursor: not-allowed;
-      position: relative;
-    }
-    .option-card.coming-soon:hover {
-      background: none;
-      transform: none;
-      border-color: rgba(255,255,255,0.08);
-    }
-    .coming-soon-badge {
-      display: inline-block;
-      margin-top: 8px;
-      font-family: var(--mono);
-      font-size: 9px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--text-dim);
-      border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 4px;
-      padding: 2px 6px;
-    }
-    .legacy-tag {
-      display: inline-block;
-      margin-top: 8px;
-      font-family: var(--mono);
-      font-size: 9px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: #ff6b6b;
-      border: 1px solid rgba(255, 107, 107, 0.3);
-      border-radius: 4px;
-      padding: 2px 6px;
-      cursor: pointer;
-      position: relative;
-      z-index: 10;
-    }
-    .legacy-popup {
-      position: fixed;
-      background: rgba(20, 20, 25, 0.95);
-      border: 1px solid rgba(255, 107, 107, 0.3);
-      border-radius: 6px;
-      padding: 8px 12px;
-      font-size: 11px;
-      color: #fff;
-      white-space: nowrap;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.2s, visibility 0.2s;
-      z-index: 9999;
-      pointer-events: none;
-    }
-    .legacy-tag:hover .legacy-popup,
-    .legacy-tag:focus .legacy-popup,
-    .legacy-popup.show {
-      opacity: 1;
-      visibility: visible;
-    }
-  </style>
   <script src="https://cdn.cgamz.online/brand.js"></script>
 </head>
 <body>
@@ -89,34 +29,15 @@
     <main class="main">
       <div class="card">
 
-        <div class="card-eyebrow">Personalize</div>
-        <h1 class="card-title">How do you want it?</h1>
-        <p class="card-sub">Choose how Crafted Gamz feels. You can change this later from the control panel if in Desktop mode, or settings from Website or Browser mode.</p>
-
-        <div class="option-grid" id="option-grid">
-
-          <button class="option-card" data-value="browser" onclick="select(this)">
-            <div class="option-title">Browser</div>
-            <div class="option-desc">Browser-style tabs across the top. Familiar and fast if you live in your browser.</div>
-          </button>
-          <button class="option-card" data-value="desktop" onclick="select(this)">
-            <div class="option-title">Desktop</div>
-            <div class="option-desc">A native-feeling window with a dock, windows, and a full workspace. Best for power users.</div>
-            <div class="legacy-tag">Legacy<span class="legacy-popup">No longer supported. Browser is generally better.</span></div>
-          </button>
-          <button class="option-card" data-value="website" onclick="select(this)">
-            <div class="option-title">Website</div>
-            <div class="option-desc">A clean, simple page layout. Simple and accessible from any device.</div>
-            <div class="legacy-tag">Legacy<span class="legacy-popup">No longer supported. Browser is generally better.</span></div>
-          </button>
-
-        </div>
+        <div class="card-eyebrow">Browser</div>
+        <h1 class="card-title">Browser mode</h1>
+        <p class="card-sub">Crafted Gamz now uses the browser layout only. Continue to keep setup moving.</p>
 
         <div class="error-msg" id="error-msg"></div>
 
         <div class="action-row">
-          <span></span>
-          <button class="btn btn-primary" id="next-btn" disabled>Continue</button>
+          <button class="btn btn-ghost" onclick="window.location.href='1.html'">Back</button>
+          <button class="btn btn-primary" id="next-btn">Continue</button>
         </div>
 
       </div>
@@ -129,25 +50,5 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
   <script src="../js/2.js"></script>
   <script src="../js/bg.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      document.querySelectorAll('.legacy-tag').forEach(tag => {
-        const popup = tag.querySelector('.legacy-popup');
-        document.body.appendChild(popup);
-        
-        tag.addEventListener('mouseenter', () => {
-          const rect = tag.getBoundingClientRect();
-          popup.style.left = (rect.left + rect.width / 2) + 'px';
-          popup.style.top = (rect.top - 8) + 'px';
-          popup.style.transform = 'translateX(-50%) translateY(-100%)';
-          popup.classList.add('show');
-        });
-        
-        tag.addEventListener('mouseleave', () => {
-          popup.classList.remove('show');
-        });
-      });
-    });
-  </script>
 </body>
 </html>

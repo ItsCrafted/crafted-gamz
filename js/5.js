@@ -1,14 +1,10 @@
 const shouldRedirect = new URLSearchParams(window.location.search).get('skip') !== 'true';
-const isOnly = new URLSearchParams(window.location.search).get('only') === 'true';
 
 const FIREBASE_CONFIG_URL = 'https://firebase.cdn.cgamz.online';
-    let auth, db, userEnv = 'website', userName = '';
+    let auth, db, userName = '';
 
     const envMap = {
-      desktop: { label: 'Desktop mode',  path: '../desktop/index.html' },
-      browser:  { label: 'browser mode',   path: '../browser/index.html'  },
-      website: { label: 'Website mode',  path: '../site/index.html' },
-      launcher: { label: 'Launcher mode',  path: '../launcher/index.html' }
+      browser: { label: 'Browser mode', path: '../browser/index.html' }
     };
 
     async function init() {
@@ -26,9 +22,7 @@ const FIREBASE_CONFIG_URL = 'https://firebase.cdn.cgamz.online';
 
           const doc = await db.collection('users').doc(user.uid).get();
           if (doc.exists) {
-            const data = doc.data();
-            userEnv  = data.environment || 'website';
-            userName = data.name || '';
+            userName = doc.data().name || '';
 
             await db.collection('users').doc(user.uid).set(
               { onboardingStep: 5, onboardingComplete: true },
@@ -39,15 +33,15 @@ const FIREBASE_CONFIG_URL = 'https://firebase.cdn.cgamz.online';
           document.getElementById('greeting').textContent = userName
             ? `Hey, ${userName}.`
             : '';
-          document.getElementById('env-label').textContent = envMap[userEnv]?.label || 'Website mode';
+          document.getElementById('env-label').textContent = envMap.browser.label;
         });
       } catch (e) {
-        document.getElementById('env-label').textContent = 'Website mode';
+        document.getElementById('env-label').textContent = 'Browser mode';
       }
     }
 
     document.getElementById('launch-btn').addEventListener('click', () => {
-      const target = envMap[userEnv]?.path || '../site/index.html';
+      const target = envMap.browser.path;
       if (shouldRedirect) window.location.href = target;
     });
 
