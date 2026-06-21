@@ -1,3 +1,3 @@
-# Crafted Gamz v15
+# Crafted Gamz v16
 
-This is v15 of Crafted Gamz, shown in the repo metadata as version 15 and surfaced in the project as `15.0.0 Beta`. It expands the platform into a broader multi-mode experience with a desktop-style workspace, a browser-style shell, a website hub, a curated games library, AI tools, app store and launcher workflows, account syncing, settings, and temporary Hyperbeam VM support, while keeping the familiar Crafted Gamz focus on games, proxy access, and browser-based utilities.
+This is v16 of Crafted Gamz, shown in the repo metadata as version 16 and surfaced in the project as `16.0.0 Beta`. The project is now browser-only, with onboarding routed into the browser shell and the old desktop and site flows removed. It keeps the familiar Crafted Gamz focus on games, proxy access, AI tools, account syncing, settings, and browser-based utilities.

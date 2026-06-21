@@ -43,7 +43,7 @@
   `;
 
   const titleText = document.createElement('div');
-  titleText.textContent = 'Crafted Gamz 15';
+  titleText.textContent = 'Crafted Gamz v16';
   titleText.style.cssText = `
     position: relative;
     color: rgba(255, 255, 255, 1);
