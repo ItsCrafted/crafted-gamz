@@ -44,6 +44,7 @@ class AccountManager {
         await this._loadScript('https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js')
         await this._loadScript('https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js')
       }
+      await this._loadScript('js/user-stats.js')
 
       const config = await this._loadConfig()
       if (!firebase.apps.length) firebase.initializeApp(config)
@@ -51,6 +52,8 @@ class AccountManager {
       this.auth = firebase.auth()
       this.db   = firebase.firestore()
       this.firebaseLoaded = true
+
+      if (typeof UserStats !== 'undefined') UserStats.bindAuth(firebase, this.auth)
 
       this.auth.getRedirectResult().then(result => {
         if (result && result.user) this._ensureUserDoc(result.user)
@@ -89,6 +92,9 @@ class AccountManager {
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         bookmarks: []
       })
+      if (typeof UserStats !== 'undefined') {
+        try { await UserStats.recordNewUser(this.db) } catch (e) { console.warn('[Account] Stats:', e) }
+      }
     }
   }
 

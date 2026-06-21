@@ -25,6 +25,32 @@
       <p>Crafted Gamz is a web platform providing access to games, applications, AI services, virtual machines, and more, all directly through your browser.</p>
       <p>This platform is also meant for internet freedom. With the on-going, rising censorship in this world: all the way from GoGuardian on a school Chromebook to Europe's Digital Services Act, this site will help you evade that.</p>
     </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">User Stats</div>
+    <div class="stats-strip">
+      <div class="stat-box">
+        <div class="stat-value" id="stat-online">—</div>
+        <div class="stat-label">Online Now</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value" id="stat-today">—</div>
+        <div class="stat-label">Users Today</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value" id="stat-month">—</div>
+        <div class="stat-label">This Month</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value" id="stat-alltime">—</div>
+        <div class="stat-label">All Time</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">Platform</div>
     <div class="stats-strip">
       <div class="stat-box">
         <div class="stat-value">16</div>
@@ -165,5 +191,10 @@
     </div>
   </div>
 </div>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script src="../js/user-stats.js"></script>
+<script src="../js/about-stats.js"></script>
 </body>
 </html>

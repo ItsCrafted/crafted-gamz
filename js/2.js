@@ -16,6 +16,7 @@ async function init() {
     if (!firebase.apps.length) firebase.initializeApp(config);
     auth = firebase.auth();
     db   = firebase.firestore();
+    if (typeof UserStats !== 'undefined') UserStats.bindAuth(firebase, auth);
 
     auth.onAuthStateChanged(user => {
       authReady = true;

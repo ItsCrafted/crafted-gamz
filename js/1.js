@@ -25,6 +25,7 @@ const FIREBASE_CONFIG_URL = 'https://firebase.cdn.cgamz.online';
         if (!firebase.apps.length) firebase.initializeApp(config);
         auth = firebase.auth();
         db   = firebase.firestore();
+        if (typeof UserStats !== 'undefined') UserStats.bindAuth(firebase, auth);
 
         auth.getRedirectResult().then(async (result) => {
           if (result.user) await handleOAuth(result.user);
@@ -59,6 +60,9 @@ const FIREBASE_CONFIG_URL = 'https://firebase.cdn.cgamz.online';
           storage:   {},
           onboardingStep: 2
         });
+        if (typeof UserStats !== 'undefined') {
+          try { await UserStats.recordNewUser(db) } catch (e) { console.warn('[Onboarding] Stats:', e) }
+        }
       }
     }
 
@@ -91,6 +95,9 @@ const FIREBASE_CONFIG_URL = 'https://firebase.cdn.cgamz.online';
             storage: {},
             onboardingStep: 2
           });
+          if (typeof UserStats !== 'undefined') {
+            try { await UserStats.recordNewUser(db) } catch (e) { console.warn('[Onboarding] Stats:', e) }
+          }
         } else {
           await auth.signInWithEmailAndPassword(email, password);
         }

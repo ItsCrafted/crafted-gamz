@@ -134,6 +134,7 @@ const FIREBASE_CONFIG_URL = 'https://firebase.cdn.cgamz.online';
         if (!firebase.apps.length) firebase.initializeApp(config);
         auth = firebase.auth();
         db   = firebase.firestore();
+        if (typeof UserStats !== 'undefined') UserStats.bindAuth(firebase, auth);
         auth.onAuthStateChanged(user => { if (!user) window.location.href = '1.html'; });
       } catch (e) {
         errorMsg.textContent = 'Could not connect. Please refresh.';
