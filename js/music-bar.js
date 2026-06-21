@@ -2,7 +2,7 @@
   const pill = document.getElementById('music-pill')
   if (!pill) return
 
-  const MUSIC_API_BASE = (window.MUSIC_API_BASE || 'https://music.cgamz.online').replace(/\/+$/, '')
+  const MUSIC_API_BASE = (window.MUSIC_API_BASE || 'https://server.cgamz.online').replace(/\/+$/, '')
   const MUSIC_WS_URL = window.MUSIC_WS_URL || MUSIC_API_BASE.replace(/^http/, 'ws') + '/ws'
   const LRCLIB_API = 'https://lrclib.net/api'
 
