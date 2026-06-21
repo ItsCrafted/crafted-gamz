@@ -27,7 +27,8 @@ function resolveCgUrl(input) {
 function getDisplayUrl(rawUrl) {
   try {
     const absolute = new URL(rawUrl, window.location.origin)
-    const entry = Object.entries(LOCAL_PAGES).find(([, path]) => absolute.pathname === path)
+    const pathname = absolute.pathname.replace(/^\/+/, '')
+    const entry = Object.entries(LOCAL_PAGES).find(([, path]) => path.replace(/^\/+/, '') === pathname)
     if (entry) return `cg://${entry[0]}`
   } catch (e) {}
   return rawUrl

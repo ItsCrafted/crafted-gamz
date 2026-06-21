@@ -37,7 +37,7 @@ const FIREBASE_CONFIG_URL = 'https://firebase.cdn.cgamz.online';
             return;
           }
 
-          redirect('browser/index.html');
+          redirect('index.html');
 
         } catch (e) {
           redirect('onboarding/1.html');
