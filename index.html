@@ -1,29 +1,344 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Crafted Gamz</title>
-  <link rel="stylesheet" href="css/index.css">
-  <link rel="shortcut icon" href="img/icon.png" type="image/x-icon">
-      <meta name="theme-color" content="#ffffff">
-    <meta property="og:description" content="Play hundreds of games, use proxies, use apps, chat With AI, connect to virtual machines, and watch movies all online for free. Crafted Gamz offers a wide variety of games and tools at your disposal, all for free." />
-    <meta property="og:image" content="https://crafted-gamz-16.craftedgamz.workers.dev//embed.png" />
-    <meta property="og:type" content="website" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Crafted Gamz" />
-    <meta name="twitter:description" content="Play hundreds of games, use proxies, use apps, chat With AI, connect to virtual machines, and watch movies all online for free. Crafted Gamz offers a wide variety of games and tools at your disposal, all for free." />
-    <meta name="twitter:image" content="https://crafted-gamz-16.craftedgamz.workers.dev//embed.png" />
-    <meta name="description" content="Play hundreds of games, use proxies, use apps, chat With AI, connect to virtual machines, and watch movies all online for free. Crafted Gamz offers a wide variety of games and tools at your disposal, all for free." />
-    <meta name="keywords" content="games, online games, free games, action games, adventure games, puzzle games, crafted gamz, play games, gaming, crafted games" />
-    <meta name="author" content="Crafted" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crafted Gamz</title>
+<meta name="theme-color" content="#ffffff">
+<meta property="og:description" content="Play hundreds of games, use proxies, use apps, chat With AI, connect to virtual machines, and watch movies all online for free. Crafted Gamz offers a wide variety of games and tools at your disposal, all for free." />
+<meta property="og:image" content="https://crafted-gamz-16.craftedgamz.workers.dev//embed.png" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Crafted Gamz" />
+<meta name="twitter:description" content="Play hundreds of games, use proxies, use apps, chat With AI, connect to virtual machines, and watch movies all online for free. Crafted Gamz offers a wide variety of games and tools at your disposal, all for free." />
+<meta name="twitter:image" content="https://crafted-gamz-16.craftedgamz.workers.dev//embed.png" />
+<meta name="description" content="Play hundreds of games, use proxies, use apps, chat With AI, connect to virtual machines, and watch movies all online for free. Crafted Gamz offers a wide variety of games and tools at your disposal, all for free." />
+<meta name="keywords" content="games, online games, free games, action games, adventure games, puzzle games, crafted gamz, play games, gaming, crafted games" />
+<meta name="author" content="Crafted" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="shortcut icon" href="img/favicon.png" type="image/x-icon">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/music-bar.css">
+<script src="https://braverybreezebinding.com/0f/56/be/0f56be0c6cb9ec47495a2b2c40ef7b0f.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script>
+const FIREBASE_CONFIG_URL = 'https://firebase.cdn.cgamz.online';
+
+async function initOnboardingGate() {
+  let config;
+
+  try {
+    const res = await fetch(FIREBASE_CONFIG_URL, {
+      headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'craftedgamz-firebase' }
+    });
+    config = await res.json();
+  } catch (e) {
+    redirect('/onboarding/1.html');
+    return;
+  }
+
+  if (!firebase.apps.length) firebase.initializeApp(config);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+
+  auth.onAuthStateChanged(async (user) => {
+    if (!user) {
+      redirect('/onboarding/1.html');
+      return;
+    }
+
+    try {
+      const doc = await db.collection('users').doc(user.uid).get();
+      if (!doc.exists) {
+        redirect('/onboarding/1.html');
+        return;
+      }
+
+      const data = doc.data();
+      const step = data.onboardingStep || 1;
+
+      if (step < 5) {
+        redirect(`/onboarding/${step}.html`);
+      }
+    } catch (e) {
+      redirect('/onboarding/1.html');
+    }
+  });
+}
+
+function redirect(path) {
+  window.location.href = path;
+}
+
+initOnboardingGate();
+</script>
   <script src="https://cdn.cgamz.online/brand.js"></script>
 </head>
 <body>
-  <span id="status">loading...</span>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-  <script src="js/index.js"></script>
+<div class="bg-container" style="position:fixed;top:0;left:0;width:100vw;height:100vh;overflow:hidden;z-index:-1;">
+  <iframe id="browser-bg-frame" src="bg.html" style="width:100%;height:100%;border:none;"></iframe>
+</div>
+
+<svg id="svg-filters" style="display:none;position:absolute;width:0;height:0">
+  <filter id="lg-dist" x="0%" y="0%" width="100%" height="100%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.008 0.008" numOctaves="2" seed="92" result="noise" />
+    <feGaussianBlur in="noise" stdDeviation="2" result="blurred" />
+    <feDisplacementMap in="SourceGraphic" in2="blurred" scale="70" xChannelSelector="R" yChannelSelector="G" />
+  </filter>
+</svg>
+<svg style="display:none;position:absolute;width:0;height:0">
+  <filter id="glass-warp" x="-4%" y="-20%" width="108%" height="140%" color-interpolation-filters="sRGB" primitiveUnits="userSpaceOnUse">
+    <feTurbulence type="fractalNoise" baseFrequency="0.009 0.007" numOctaves="2" seed="14" result="noise"/>
+    <feDisplacementMap in="SourceGraphic" in2="noise" scale="5" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+  <filter id="glass-shadow" x="-4%" y="-20%" width="108%" height="160%">
+    <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="rgba(8,4,35,0.6)"/>
+  </filter>
+</svg>
+<div class="browser">
+
+  <div class="titlebar">
+    <div class="chrome-tabs" style="--tab-content-margin:9px" id="tabs-el">
+      <div class="chrome-tabs-content">
+        <div class="chrome-tab" active data-url="newtab" data-title="New Tab">
+          <div class="chrome-tab-dividers"></div>
+          <div class="chrome-tab-background">
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg"><defs><symbol id="chrome-tab-geometry-left" viewBox="0 0 214 36"><path d="M17 0h197v36H0v-2c4.5 0 9-3.5 9-8V8c0-4.5 3.5-8 8-8z"/></symbol><symbol id="chrome-tab-geometry-right" viewBox="0 0 214 36"><use xlink:href="#chrome-tab-geometry-left"/></symbol><symbol id="chrome-tab-geometry-left-inactive" viewBox="0 0 214 36"><path d="M17 0h197v32H17c-4.5 0-8-3.5-8-8V8c0-4.5 3.5-8 8-8z"/></symbol><symbol id="chrome-tab-geometry-right-inactive" viewBox="0 0 214 36"><use xlink:href="#chrome-tab-geometry-left-inactive"/></symbol><clipPath id="crop"><rect class="mask" width="100%" height="100%" x="0"/></clipPath></defs><g class="tab-active-svg"><svg width="52%" height="100%"><use xlink:href="#chrome-tab-geometry-left" width="214" height="36" class="chrome-tab-geometry"/></svg><g transform="scale(-1,1)"><svg width="52%" height="100%" x="-100%" y="0"><use xlink:href="#chrome-tab-geometry-right" width="214" height="36" class="chrome-tab-geometry"/></svg></g></g><g class="tab-inactive-svg"><svg width="52%" height="100%"><use xlink:href="#chrome-tab-geometry-left-inactive" width="214" height="36" class="chrome-tab-geometry"/></svg><g transform="scale(-1,1)"><svg width="52%" height="100%" x="-100%" y="0"><use xlink:href="#chrome-tab-geometry-right-inactive" width="214" height="36" class="chrome-tab-geometry"/></svg></g></g></svg>
+          </div>
+          <div class="chrome-tab-content">
+            <div class="chrome-tab-favicon" style="background-image:url('img/favicon.png')"></div>
+            <div class="chrome-tab-title">New Tab</div>
+            <div class="chrome-tab-drag-handle"></div>
+            <div class="chrome-tab-close"></div>
+          </div>
+        </div>
+        <button class="newtab-btn chrome-tabs-newtab-btn" id="newtab-btn" title="New tab" aria-label="New tab"><svg class="newtab-icon" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg"><line x1="9" y1="2" x2="9" y2="16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="2" y1="9" x2="16" y2="9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+      </div>
+      <div class="chrome-tabs-bottom-bar"></div>
+    </div>
+    <div class="titlebar-spacer"></div>
+  </div>
+
+  <div class="toolbar">
+    <button class="nav-btn" id="btn-back" disabled><i class="fa-solid fa-arrow-left"></i></button>
+    <button class="nav-btn" id="btn-forward" disabled><i class="fa-solid fa-arrow-right"></i></button>
+    <button class="nav-btn" id="btn-refresh"><i class="fa-solid fa-rotate-right"></i></button>
+    <button class="nav-btn" id="btn-home"><i class="fa-solid fa-house"></i></button>
+    <div class="address-bar-wrap">
+      <button class="lock-icon-btn" id="lock-icon-btn" type="button" aria-label="Connection info">
+        <i class="fa-solid fa-circle-info lock-icon" id="lock-icon"></i>
+      </button>
+      <input type="text" id="url-input" placeholder="Search or enter address" spellcheck="false" autocomplete="off">
+      <button class="bookmark-star-btn" id="btn-bookmark-star" title="Bookmark this page" aria-label="Bookmark this page" style="display:none">
+        <i class="fa-regular fa-star"></i>
+      </button>
+      <div class="wisp-switcher-shell" id="wisp-switcher-btn" role="button" tabindex="0" title="Choose Wisp server" aria-label="Choose Wisp server" aria-haspopup="true" aria-expanded="false">
+        <div class="wisp-switcher-trigger">
+          <span class="wisp-switcher-icon wisp-flag" id="wisp-switcher-icon" aria-hidden="true"></span>
+          <span class="wisp-switcher-current" id="wisp-switcher-current">Auto</span>
+          <i class="fa-solid fa-chevron-down wisp-switcher-caret"></i>
+        </div>
+        <button class="wisp-switcher-collapse" id="wisp-switcher-collapse" type="button" aria-label="Minimize Wisp selector" hidden>
+          <i class="fa-solid fa-chevron-up"></i>
+        </button>
+        <div class="wisp-switcher-menu" id="wisp-switcher-menu" hidden>
+          <div class="wisp-switcher-menu-head">
+            <div class="wisp-switcher-menu-title">Wisp Regions</div>
+          </div>
+          <div class="wisp-switcher-menu-list" id="wisp-switcher-menu-list"></div>
+        </div>
+      </div>
+      <div class="connection-popup" id="connection-popup" hidden>
+        <div class="connection-popup-title" id="connection-popup-title">Connection</div>
+        <div class="connection-popup-desc" id="connection-popup-desc"></div>
+      </div>
+    </div>
+    <div class="mp-root" id="music-pill"></div>
+    <div class="url-shortcuts">
+      <button class="url-shortcut-btn" data-local-uri="cg://games" title="Games" aria-label="Games"><i class="fa-solid fa-gamepad"></i></button>
+      <button class="url-shortcut-btn" data-local-uri="cg://movies" title="Movies" aria-label="Movies"><i class="fa-solid fa-film"></i></button>
+      <button class="url-shortcut-btn" data-local-uri="cg://ai" title="AI" aria-label="AI"><i class="fa-solid fa-robot"></i></button>
+      <button class="url-shortcut-btn" data-local-uri="cg://vms" title="VMs" aria-label="VMs"><i class="fa-solid fa-server"></i></button>
+      <button class="url-shortcut-btn" data-local-uri="cg://chat" title="cChat" aria-label="cChat"><i class="fa-solid fa-comments"></i></button>
+      <button class="url-shortcut-btn" data-local-uri="cg://about" title="About" aria-label="About"><i class="fa-solid fa-circle-info"></i></button>
+    </div>
+    <div class="toolbar-right">
+      <button class="nav-btn" id="btn-user-page" title="Account" aria-label="Account"><i class="fa-solid fa-user"></i></button>
+      <button class="nav-btn" id="btn-system-settings" title="Settings" aria-label="Settings"><i class="fa-solid fa-cog"></i></button>
+    </div>
+  </div>
+
+  <div class="bookmarks-bar" id="bookmarks-bar"></div>
+
+  <div class="content-area">
+    <div class="new-tab-page" id="new-tab-page">
+
+<div class="logo">
+  <svg viewBox="0 0 520 110" xmlns="http://www.w3.org/2000/svg" style="width:520px;max-width:90vw;height:auto;overflow:visible">
+    <defs>
+      <linearGradient id="logo-gf" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%"   stop-color="rgba(255,255,255,0.78)"/>
+        <stop offset="14%"  stop-color="rgba(220,230,255,0.48)"/>
+        <stop offset="48%"  stop-color="rgba(190,205,255,0.16)"/>
+        <stop offset="78%"  stop-color="rgba(215,225,255,0.28)"/>
+        <stop offset="100%" stop-color="rgba(255,255,255,0.62)"/>
+      </linearGradient>
+      <linearGradient id="logo-eg" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%"   stop-color="rgba(255,255,255,1.0)"/>
+        <stop offset="35%"  stop-color="rgba(200,215,255,0.45)"/>
+        <stop offset="65%"  stop-color="rgba(200,215,255,0.45)"/>
+        <stop offset="100%" stop-color="rgba(255,255,255,0.85)"/>
+      </linearGradient>
+    </defs>
+    <text x="260" y="100" text-anchor="middle" class="Curly" font-size="100" letter-spacing="-2" fill="rgba(0,0,0,0)" filter="url(#glass-shadow)">Crafted Gamz</text>
+    <text x="260" y="100" text-anchor="middle" class="Curly" font-size="100" letter-spacing="-2" fill="url(#logo-gf)" filter="url(#glass-warp)">Crafted Gamz</text>
+    <text x="260" y="100" text-anchor="middle" class="Curly" font-size="100" letter-spacing="-2" fill="none" stroke="url(#logo-eg)" stroke-width="1" paint-order="stroke">Crafted Gamz</text>
+  </svg>
+</div>
+
+<div class="search-box">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="text" id="newtab-search" placeholder="Search the web">
+</div>
+
+<div class="shortcuts"></div>
+
+<div class="reviews-carousel" id="reviews-carousel" aria-live="polite" aria-label="User reviews">
+  <div class="reviews-tagline"><i class="fa-solid fa-star"></i> Truly a 5 star masterpiece</div>
+  <div class="reviews-row">
+    <button class="review-arrow" id="review-prev" aria-label="Previous review">&#8249;</button>
+    <div class="reviews-track" id="reviews-track">
+
+      <div class="review-card" data-index="0">
+        <img class="review-avatar" src="img/users/divine.png" onerror="this.style.background='linear-gradient(135deg,#6c63ff,#3ecfcf)';this.src='';this.alt='DV'" alt="Divine">
+        <div class="review-body">
+          <div class="review-header">
+            <span class="review-name">Divine</span>
+            <span class="review-owns">Owner of starlight.</span>
+            <div class="review-stars" aria-label="5 out of 5 stars">
+              <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+            </div>
+          </div>
+          <p class="review-text">"tuff site by Crafted"</p>
+        </div>
+      </div>
+
+      <div class="review-card" data-index="1">
+        <img class="review-avatar" src="img/users/mizz.png" onerror="this.style.background='linear-gradient(135deg,#ff6b6b,#ffa94d)';this.src='';this.alt='MZ'" alt="Mizz">
+        <div class="review-body">
+          <div class="review-header">
+            <span class="review-name">Mizzery</span>
+            <span class="review-owns">Owner of Zeno</span>
+            <div class="review-stars" aria-label="5 out of 5 stars">
+              <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+            </div>
+          </div>
+          <p class="review-text">"Crafted Gamz is one of the best websites I know, because of all the features it offers."</p>
+        </div>
+      </div>
+
+      <div class="review-card" data-index="2">
+        <img class="review-avatar" src="img/users/flame.png" onerror="this.style.background='linear-gradient(135deg,#43e97b,#38f9d7)';this.src='';this.alt='FL'" alt="Flame">
+        <div class="review-body">
+          <div class="review-header">
+            <span class="review-name">Flame</span>
+            <span class="review-owns">Crafted Gamz User</span>
+            <div class="review-stars" aria-label="5 out of 5 stars">
+              <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+            </div>
+          </div>
+          <p class="review-text">"W game site, I really enjoy the games crafted has in here, five stars."</p>
+        </div>
+      </div>
+
+      <div class="review-card" data-index="3">
+        <img class="review-avatar" src="img/users/x8r.png" onerror="this.style.background='linear-gradient(135deg,#f953c6,#b91d73)';this.src='';this.alt='X8'" alt="x8r">
+        <div class="review-body">
+          <div class="review-header">
+            <span class="review-name">x8r</span>
+            <span class="review-owns">Owner of Cherri</span>
+            <div class="review-stars" aria-label="4.5 out of 5 stars">
+              <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+            </div>
+          </div>
+          <p class="review-text">"Super clean with a cool interface, definitely a good choice for school."</p>
+        </div>
+      </div>
+
+      <div class="review-card" data-index="4">
+        <img class="review-avatar" src="img/users/xonk.png" onerror="this.style.background='linear-gradient(135deg,#4facfe,#00f2fe)';this.src='';this.alt='XK'" alt="xonk">
+        <div class="review-body">
+          <div class="review-header">
+            <span class="review-name">xonk</span>
+            <span class="review-owns">Owner of Link Spot</span>
+            <div class="review-stars" aria-label="4.5 out of 5 stars">
+              <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+            </div>
+          </div>
+          <p class="review-text">"Looks nice."</p>
+        </div>
+      </div>
+
+    </div>
+    <button class="review-arrow" id="review-next" aria-label="Next review">&#8250;</button>
+  </div>
+
+  <div class="reviews-dots" id="reviews-dots" role="tablist" aria-label="Review navigation">
+    <button class="review-dot active" role="tab" aria-selected="true"  data-dot="0" aria-label="Review 1"></button>
+    <button class="review-dot"        role="tab" aria-selected="false" data-dot="1" aria-label="Review 2"></button>
+    <button class="review-dot"        role="tab" aria-selected="false" data-dot="2" aria-label="Review 3"></button>
+    <button class="review-dot"        role="tab" aria-selected="false" data-dot="3" aria-label="Review 4"></button>
+    <button class="review-dot"        role="tab" aria-selected="false" data-dot="4" aria-label="Review 5"></button>
+  </div>
+</div>
+
+<div class="newtab-tip" id="newtab-tip">
+  <i class="fa-solid fa-lightbulb"></i>
+  <span>Double-press <kbd>T</kbd> to open a new tab &nbsp;·&nbsp; Double-press <kbd>W</kbd> to close one</span>
+  <button class="newtab-tip-close" id="newtab-tip-close" title="Dismiss" aria-label="Dismiss tip"><i class="fa-solid fa-xmark"></i></button>
+</div>
+
+    </div>
+    <iframe id="page-frame" style="display:none" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-presentation allow-top-navigation-by-user-activation"></iframe>
+    <div class="page-loading-screen" id="page-loading-screen" style="display:none">
+      <div class="page-loading-spinner">
+        <div class="pls-ring pls-ring-0"></div>
+        <div class="pls-ring pls-ring-1"></div>
+        <div class="pls-ring pls-ring-2"></div>
+        <div class="pls-orb"></div>
+      </div>
+      <div class="page-loading-url" id="page-loading-url"></div>
+      <div class="page-loading-tip" id="page-loading-tip"><i class="fa-solid fa-lightbulb"></i> Double-press <kbd>T</kbd> to open a new tab &nbsp;·&nbsp; Double-press <kbd>W</kbd> to close one</div>
+    </div>
+  </div>
+
+  <div class="status-bar" id="wisp-bar">
+    <span id="status-text"></span>
+    <span class="wisp-bar-label" id="wisp-bar-label"><i class="fa-solid fa-circle-notch fa-spin"></i> Connecting...</span>
+  </div>
+</div>
+<script src="js/account.js"></script>
+<script src="https://unpkg.com/draggabilly@2.2.0/dist/draggabilly.pkgd.min.js"></script>
+<script src="/baremux/index.js"></script>
+<script src="/uv/uv.bundle.js"></script>
+<script src="/uv/uv.config.js"></script>
+<script src="js/chrome-tabs.js"></script>
+<script src="js/bookmarks.js"></script>
+<script src="js/bookmarks-bar.js"></script>
+<script src="js/proxy.js"></script>
+<script src="js/url.js"></script>
+<script src="js/music-bar.js"></script>
+<script src="js/navigation.js"></script>
+<script src="js/keyboard.js"></script>
+<script src="js/pins.js"></script>
+<script src="js/theme-state.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/main.js"></script>
+<script src="js/tabs.js"></script>
+<script src="js/loading.js"></script>
+<script src="js/escape.js"></script>
+<script src="js/carousel.js"></script>
 </body>
 </html>

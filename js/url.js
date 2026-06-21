@@ -1,12 +1,12 @@
 const LOCAL_PAGES = {
-  games: '/browser/pages/games.html',
-  movies: '/browser/pages/movies.html',
-  ai: '/browser/pages/ai.html',
-  about: '/browser/pages/about.html',
-  settings: '/browser/pages/settings.html',
-  account: '/browser/pages/account.html',
-  vms: '/browser/pages/vms.html',
-  chat: '/browser/pages/chat.html',
+  games: 'pages/games.html',
+  movies: 'pages/movies.html',
+  ai: 'pages/ai.html',
+  about: 'pages/about.html',
+  settings: 'pages/settings.html',
+  account: 'pages/account.html',
+  vms: 'pages/vms.html',
+  chat: 'pages/chat.html',
 }
 
 const lockIcon = document.getElementById('lock-icon')

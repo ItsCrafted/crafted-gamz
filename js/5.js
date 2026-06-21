@@ -4,7 +4,7 @@ const FIREBASE_CONFIG_URL = 'https://firebase.cdn.cgamz.online';
     let auth, db, userName = '';
 
     const envMap = {
-      browser: { label: 'Browser mode', path: '../browser/index.html' }
+      browser: { label: 'Browser mode', path: '../index.html' }
     };
 
     async function init() {
