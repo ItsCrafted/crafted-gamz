@@ -204,3 +204,22 @@ const BrowserThemeState = (() => {
 })()
 
 window.BrowserThemeState = BrowserThemeState
+
+/* Auto-apply --cg-radius so every document that loads this module gets the value.
+   theme.js overwrites it on the shell, but pages/iframes rely on this fallback. */
+;(function () {
+  function applyRadiusVar() {
+    try {
+      var state = BrowserThemeState.loadThemeState()
+      if (state && typeof state.radius === 'number') {
+        document.documentElement.style.setProperty('--cg-radius', state.radius + 'px')
+      }
+    } catch (_) {}
+  }
+  applyRadiusVar()
+  window.addEventListener('storage', function (e) {
+    if (e.key === BrowserThemeState.THEME_KEY || e.key === BrowserThemeState.SETTINGS_KEY) {
+      applyRadiusVar()
+    }
+  })
+})()
