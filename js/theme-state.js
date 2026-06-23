@@ -5,6 +5,7 @@ const BrowserThemeState = (() => {
     mode: 'dark',
     accentColor: '#4285f4',
     bgPreset: 'minimal',
+    radius: 16,
   }
 
   const BACKGROUND_PRESETS = {
@@ -84,12 +85,19 @@ const BrowserThemeState = (() => {
     return BACKGROUND_PRESETS[preset] ? preset : DEFAULT_THEME_STATE.bgPreset
   }
 
+  function normalizeRadius(value) {
+    const num = Number(value)
+    if (!Number.isFinite(num)) return DEFAULT_THEME_STATE.radius
+    return Math.max(0, Math.min(50, Math.round(num)))
+  }
+
   function normalizeThemeState(raw) {
     const next = raw && typeof raw === 'object' ? raw : {}
     return {
       mode: normalizeMode(next.mode),
       accentColor: normalizeAccentColor(next.accentColor),
       bgPreset: normalizeBgPreset(next.bgPreset),
+      radius: normalizeRadius(next.radius),
     }
   }
 
@@ -134,6 +142,7 @@ const BrowserThemeState = (() => {
       mode: getLegacyMode(rawTheme, rawSettings),
       accentColor: rawTheme.accentColor || rawSettings.accentColor,
       bgPreset: rawTheme.bgPreset || rawTheme.bgStyle || rawSettings.bgPreset || rawSettings.bgStyle,
+      radius: rawTheme.radius ?? rawSettings.radius,
     })
   }
 
@@ -160,6 +169,7 @@ const BrowserThemeState = (() => {
         : (shouldUsePresetAccent
           ? getDefaultAccent(normalizedMode, normalizedPreset)
           : current.accentColor),
+      radius: patch && patch.radius !== undefined ? patch.radius : current.radius,
     })
     localStorage.setItem(THEME_KEY, JSON.stringify(next))
 
@@ -169,6 +179,7 @@ const BrowserThemeState = (() => {
       theme: next.mode,
       accentColor: next.accentColor,
       bgStyle: next.bgPreset,
+      radius: next.radius,
     }))
 
     return next

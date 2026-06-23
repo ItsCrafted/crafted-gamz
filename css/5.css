@@ -72,7 +72,7 @@
   width: 4px;
   height: 4px;
   background: var(--accent);
-  border-radius: 50%;
+  border-radius:calc(var(--cg-radius) * 2);
   animation: dotPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
 
@@ -116,7 +116,7 @@
   width: 5px;
   height: 5px;
   background: var(--accent);
-  border-radius: 50%;
+  border-radius:calc(var(--cg-radius) * 2);
   animation: badgeDotPulse 2.4s ease-in-out infinite;
 }
 

@@ -22,7 +22,7 @@ body{
   margin-bottom:28px;
 }
 .page-header-icon{
-  width:36px;height:36px;border-radius:10px;
+  width:36px;height:36px;border-radius:calc(var(--cg-radius) * 5 / 8);
   background:rgba(255,255,255,0.1);
   border:1px solid rgba(255,255,255,0.2);
   backdrop-filter:blur(12px) saturate(180%);
@@ -47,7 +47,7 @@ body{
 .card{
   background:rgba(255,255,255,0.07);
   border:1px solid rgba(255,255,255,0.15);
-  border-radius:12px;
+  border-radius:calc(var(--cg-radius) * 3 / 4);
   overflow:hidden;
   margin-bottom:10px;
   backdrop-filter:blur(16px) saturate(180%);
@@ -68,7 +68,7 @@ body{
 .card-row.clickable:active{background:rgba(255,255,255,0.04)}
 
 .row-icon{
-  width:30px;height:30px;border-radius:8px;flex-shrink:0;
+  width:30px;height:30px;border-radius:calc(var(--cg-radius) * 1 / 2);flex-shrink:0;
   display:flex;align-items:center;justify-content:center;
   font-size:13px;
 }
@@ -94,7 +94,7 @@ body{
 .profile-card{
   background:rgba(255,255,255,0.07);
   border:1px solid rgba(255,255,255,0.15);
-  border-radius:12px;
+  border-radius:calc(var(--cg-radius) * 3 / 4);
   padding:20px 16px;
   display:flex;align-items:center;gap:16px;
   margin-bottom:10px;
@@ -103,7 +103,7 @@ body{
   box-shadow:0 4px 24px rgba(0,0,0,0.2),inset 0 1px 0 rgba(255,255,255,0.12);
 }
 .avatar{
-  width:52px;height:52px;border-radius:50%;flex-shrink:0;
+  width:52px;height:52px;border-radius:calc(var(--cg-radius) * 2);flex-shrink:0;
   background:linear-gradient(135deg,rgba(255,255,255,0.15),rgba(255,255,255,0.06));
   display:flex;align-items:center;justify-content:center;
   font-size:20px;font-weight:600;color:#fff;overflow:hidden;
@@ -122,7 +122,7 @@ body{
   flex:1;
   background:rgba(255,255,255,0.07);
   border:1px solid rgba(255,255,255,0.15);
-  border-radius:12px;
+  border-radius:calc(var(--cg-radius) * 3 / 4);
   padding:14px 12px;text-align:center;
   backdrop-filter:blur(16px) saturate(180%);
   -webkit-backdrop-filter:blur(16px) saturate(180%);
@@ -132,7 +132,7 @@ body{
 .stat-label{font-size:10px;color:rgba(255,255,255,0.4);margin-top:4px;text-transform:uppercase;letter-spacing:.5px}
 
 .badge{
-  font-size:10px;padding:2px 7px;border-radius:10px;
+  font-size:10px;padding:2px 7px;border-radius:calc(var(--cg-radius) * 5 / 8);
   font-weight:500;letter-spacing:.3px;flex-shrink:0;
 }
 .badge.active{background:rgba(87,180,95,0.2);color:#7ec986;border:1px solid rgba(87,180,95,0.35)}
@@ -140,7 +140,7 @@ body{
 
 .btn{
   display:inline-flex;align-items:center;gap:7px;
-  border-radius:8px;font-size:12px;font-family:inherit;
+  border-radius:calc(var(--cg-radius) * 1 / 2);font-size:12px;font-family:inherit;
   padding:7px 13px;cursor:pointer;transition:background .15s,border-color .15s,box-shadow .15s;
   white-space:nowrap;flex-shrink:0;font-weight:500;
 }
@@ -185,7 +185,7 @@ body{
 .bm-title{flex:1;font-size:12px;color:#ccc;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .bm-url{font-size:11px;color:rgba(255,255,255,0.32);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px}
 .bm-remove{
-  width:24px;height:24px;border-radius:6px;border:none;
+  width:24px;height:24px;border-radius:calc(var(--cg-radius) * 3 / 8);border:none;
   background:transparent;color:rgba(255,100,100,0.45);
   cursor:pointer;font-size:11px;flex-shrink:0;
   display:flex;align-items:center;justify-content:center;
@@ -202,7 +202,7 @@ body{
 .export-btn{
   display:flex;align-items:center;gap:10px;
   background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);
-  border-radius:8px;padding:11px 13px;cursor:pointer;
+  border-radius:calc(var(--cg-radius) * 1 / 2);padding:11px 13px;cursor:pointer;
   transition:background .12s,border-color .12s,box-shadow .12s;
 }
 .export-btn:hover{background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.2);box-shadow:0 4px 12px rgba(0,0,0,0.15)}
@@ -214,7 +214,7 @@ body{
 .guest-banner{
   display:flex;align-items:center;gap:14px;
   background:rgba(255,200,60,0.08);border:1px solid rgba(255,200,60,0.22);
-  border-radius:12px;padding:16px;margin-bottom:12px;
+  border-radius:calc(var(--cg-radius) * 3 / 4);padding:16px;margin-bottom:12px;
   backdrop-filter:blur(12px) saturate(180%);
   -webkit-backdrop-filter:blur(12px) saturate(180%);
   box-shadow:0 4px 16px rgba(255,200,60,0.08),inset 0 1px 0 rgba(255,200,60,0.12);
@@ -226,14 +226,14 @@ body{
 
 .skeleton{
   background:linear-gradient(90deg,rgba(255,255,255,.06) 25%,rgba(255,255,255,.11) 50%,rgba(255,255,255,.06) 75%);
-  background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:6px;
+  background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:calc(var(--cg-radius) * 3 / 8);
 }
 @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 
 #acct-toast{
   position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(8px);
   background:rgba(255,255,255,0.1);color:#fff;font-size:12px;
-  padding:8px 18px;border-radius:20px;
+  padding:8px 18px;border-radius:calc(var(--cg-radius) * 5 / 4);
   border:1px solid rgba(255,255,255,0.2);
   box-shadow:0 4px 20px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,0.15);
   backdrop-filter:blur(20px) saturate(180%);
@@ -255,7 +255,7 @@ body{
 .confirm-box{
   background:rgba(255,255,255,0.1);
   border:1px solid rgba(255,255,255,0.2);
-  border-radius:14px;
+  border-radius:calc(var(--cg-radius) * 7 / 8);
   box-shadow:0 16px 48px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,0.15);
   backdrop-filter:blur(32px) saturate(200%);
   -webkit-backdrop-filter:blur(32px) saturate(200%);

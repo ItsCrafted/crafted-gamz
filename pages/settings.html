@@ -48,6 +48,27 @@
       <div class="bg-grid" id="bg-grid"></div>
     </div>
 
+    <div class="card-row" style="flex-direction:column;align-items:flex-start;gap:14px">
+      <div style="display:flex;align-items:center;gap:14px;width:100%">
+        <div class="row-icon orange"><i class="fa-solid fa-circle-notch"></i></div>
+        <div class="row-body">
+          <div class="row-title">Corner Roundness</div>
+          <div class="row-sub">Controls how rounded every corner in the browser is. Syncs to your account.</div>
+        </div>
+        <div class="row-end">
+          <span class="radius-value" id="radius-value">16</span><span class="radius-unit">px</span>
+        </div>
+      </div>
+      <div class="radius-slider-wrap">
+        <input type="range" min="0" max="50" step="1" value="16" class="radius-slider" id="radius-slider" aria-label="Corner roundness in pixels">
+        <div class="radius-ticks">
+          <span data-tick="0">0</span>
+          <span data-tick="16">Default</span>
+          <span data-tick="50">50</span>
+        </div>
+      </div>
+    </div>
+
     <div class="card-row clickable" id="switch-layout-row">
       <div class="row-icon blue"><i class="fa-solid fa-table-columns"></i></div>
       <div class="row-body">

@@ -67,6 +67,7 @@ class AccountManager {
           await this.pullBookmarks()
           await this.pullPins()
           await this.pullTabs()
+          await this.pullRadius()
           this._startSync()
           this._hideOverlay()
         } else {
@@ -163,6 +164,7 @@ class AccountManager {
     this.syncIntervalId = setInterval(() => {
       this.pushBookmarks()
       this.pushTabs()
+      this.pushRadius()
     }, this.SYNC_MS)
     console.log('[Account] Auto-sync started (every', this.SYNC_MS / 1000, 's, change-based)')
   }
@@ -171,6 +173,7 @@ class AccountManager {
     if (this.syncIntervalId) { clearInterval(this.syncIntervalId); this.syncIntervalId = null }
     this.syncCount    = 0
     this.lastSyncHash = ''
+    this._lastPushedRadius = undefined
   }
 
 
@@ -275,10 +278,70 @@ class AccountManager {
   }
 
 
+  _getLocalRadius() {
+    try {
+      const raw = JSON.parse(localStorage.getItem('cg_theme'))
+      if (raw && typeof raw.radius === 'number') return raw.radius
+    } catch {}
+    return null
+  }
+
+  scheduleRadiusSync() {
+    if (!this.user) return
+    clearTimeout(this._radiusSyncTimer)
+    this._radiusSyncTimer = setTimeout(() => this.pushRadius(), 1500)
+  }
+
+  async pushRadius() {
+    if (!this.user || !this.db) return
+    const radius = this._getLocalRadius()
+    if (radius === null) return
+    if (radius === this._lastPushedRadius) return
+    this._lastPushedRadius = radius
+    try {
+      await this.db.collection('users').doc(this.user.uid).set(
+        { radius, lastSync: firebase.firestore.FieldValue.serverTimestamp() },
+        { merge: true }
+      )
+      console.log(`[Account] Pushed radius ${radius}px`)
+    } catch (e) {
+      console.warn('[Account] Radius push failed:', e)
+    }
+  }
+
+  async pullRadius() {
+    if (!this.user || !this.db) return
+    try {
+      const doc = await this.db.collection('users').doc(this.user.uid).get()
+      if (!doc.exists) return
+      const remote = doc.data().radius
+      if (typeof remote !== 'number') return
+
+      const local = this._getLocalRadius()
+      this._lastPushedRadius = remote
+
+      if (local !== remote) {
+        if (window.BrowserThemeState) {
+          window.BrowserThemeState.saveThemeState({ radius: remote })
+        }
+        if (window.Theme && typeof window.Theme.setRadius === 'function') {
+          await window.Theme.setRadius(remote)
+        } else {
+          document.documentElement.style.setProperty('--cg-radius', `${remote}px`)
+        }
+        console.log(`[Account] Pulled radius ${remote}px from Firestore`)
+      }
+    } catch (e) {
+      console.warn('[Account] Radius pull failed:', e)
+    }
+  }
+
+
   async signOut() {
     await this.pushBookmarks()
     await this.pushPins()
     await this.pushTabs()
+    await this.pushRadius()
     this._stopSync()
     await this.auth.signOut()
     this.user    = null

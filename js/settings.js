@@ -26,6 +26,18 @@ function applyThemeControls() {
   document.querySelectorAll('.bg-option').forEach(button => {
     button.classList.toggle('active', button.dataset.bg === themeState.bgPreset)
   })
+  applyRadiusControls(themeState.radius)
+}
+
+function applyRadiusControls(radius) {
+  const slider = document.getElementById('radius-slider')
+  const valueLabel = document.getElementById('radius-value')
+  if (!slider || !valueLabel) return
+  const v = radius !== undefined ? radius : BrowserThemeState.DEFAULT_THEME_STATE.radius
+  slider.value = v
+  valueLabel.textContent = v
+  const max = Number(slider.max) || 50
+  slider.style.setProperty('--radius-pct', `${(v / max) * 100}%`)
 }
 
 function buildBackgroundGrid() {
@@ -59,6 +71,27 @@ document.getElementById('theme-select').addEventListener('change', event => {
   applyThemeControls()
   notifyParent({ type: 'cg_theme_mode', mode })
   showToast('Theme updated')
+})
+
+const radiusSlider = document.getElementById('radius-slider')
+const radiusValueLabel = document.getElementById('radius-value')
+
+function syncRadiusFill(slider) {
+  const v = Number(slider.value)
+  const max = Number(slider.max) || 50
+  slider.style.setProperty('--radius-pct', `${(v / max) * 100}%`)
+  radiusValueLabel.textContent = v
+}
+
+radiusSlider.addEventListener('input', event => {
+  const radius = Number(event.target.value)
+  setThemeState({ radius })
+  syncRadiusFill(event.target)
+  notifyParent({ type: 'cg_radius', radius })
+})
+
+radiusSlider.addEventListener('change', () => {
+  showToast('Roundness updated')
 })
 
 document.getElementById('switch-layout-row').addEventListener('click', () => {

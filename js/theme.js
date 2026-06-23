@@ -66,6 +66,15 @@ const Theme = (() => {
     Object.entries(vars).forEach(([key, value]) => root.style.setProperty(key, value))
   }
 
+  function applyRadius(radius) {
+    const state = loadState()
+    const value = (radius !== undefined && radius !== null)
+      ? BrowserThemeState.normalizeThemeState({ ...state, radius }).radius
+      : state.radius
+    document.documentElement.style.setProperty('--cg-radius', `${value}px`)
+    return value
+  }
+
   function buildVarsFromPalette(palette, mode, accentOverride) {
     const accent = accentOverride || palette.accent
     const isLight = mode === 'light'
@@ -131,6 +140,7 @@ const Theme = (() => {
       mode: state.mode || DEFAULT_STATE.mode,
       accentColor: state.accentColor || DEFAULT_STATE.accentColor,
       bgPreset: state.bgPreset || DEFAULT_STATE.bgPreset,
+      radius: state.radius !== undefined ? state.radius : DEFAULT_STATE.radius,
     }
 
     const preset = getBackgroundPreset(nextState.bgPreset)
@@ -139,6 +149,8 @@ const Theme = (() => {
     } else {
       applyVars(buildVarsFromPalette(preset.dark, 'dark', nextState.accentColor))
     }
+
+    applyRadius(nextState.radius)
 
     document.documentElement.dataset.theme = nextState.mode
     document.documentElement.dataset.bgPreset = nextState.bgPreset
@@ -159,6 +171,11 @@ const Theme = (() => {
   async function applyPreset(presetKey) {
     const state = loadState()
     return applyState({ ...state, bgPreset: presetKey })
+  }
+
+  async function setRadius(radius) {
+    const state = loadState()
+    return applyState({ ...state, radius })
   }
 
   async function setAccentColor(accentColor) {
@@ -202,6 +219,15 @@ const Theme = (() => {
       return
     }
 
+    if (event.data.type === 'cg_radius' && event.data.radius !== undefined) {
+      setRadius(event.data.radius).then(() => {
+        if (window.accountManager && typeof window.accountManager.scheduleRadiusSync === 'function') {
+          window.accountManager.scheduleRadiusSync()
+        }
+      })
+      return
+    }
+
     if (event.data.type === 'cg_theme_refresh') {
       refresh()
     }
@@ -219,6 +245,7 @@ const Theme = (() => {
     applyMode,
     applyPreset,
     setAccentColor,
+    setRadius,
     setBackgroundPreset,
     getState: loadState,
   }

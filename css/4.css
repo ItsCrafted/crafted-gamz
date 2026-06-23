@@ -4,7 +4,7 @@
   position: absolute;
   inset: 0;
   width: 50%;
-  border-radius: var(--radius);
+  border-radius:var(--radius);
   background: #fff;
   pointer-events: none;
   transform: translateX(0%);

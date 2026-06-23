@@ -26,7 +26,7 @@ body{display:flex;flex-direction:column}
   display:flex;align-items:center;gap:12px;
 }
 .page-header-icon{
-  width:36px;height:36px;border-radius:10px;flex-shrink:0;
+  width:36px;height:36px;border-radius:calc(var(--cg-radius) * 5 / 8);flex-shrink:0;
   background:var(--glass-bg);
   border:1px solid var(--glass-border);
   backdrop-filter:var(--glass-blur);
@@ -48,7 +48,7 @@ body{display:flex;flex-direction:column}
   border:1px solid var(--glass-border);
   backdrop-filter:var(--glass-blur);
   -webkit-backdrop-filter:var(--glass-blur);
-  border-radius:20px;padding:2px 9px;
+  border-radius:calc(var(--cg-radius) * 5 / 4);padding:2px 9px;
   box-shadow:inset 0 1px 0 rgba(255,255,255,0.1);
 }
 
@@ -59,7 +59,7 @@ body{display:flex;flex-direction:column}
   border:1px solid var(--glass-border);
   backdrop-filter:var(--glass-blur);
   -webkit-backdrop-filter:var(--glass-blur);
-  border-radius:20px;height:36px;
+  border-radius:calc(var(--cg-radius) * 5 / 4);height:36px;
   padding:0 12px;
   box-shadow:0 4px 12px rgba(0,0,0,0.1),inset 0 1px 0 rgba(255,255,255,0.12);
   transition:border-color .15s,background .15s,box-shadow .15s;
@@ -85,7 +85,7 @@ body{display:flex;flex-direction:column}
 
 .sort-btn{
   display:flex;align-items:center;gap:6px;
-  height:36px;padding:0 12px;border-radius:20px;
+  height:36px;padding:0 12px;border-radius:calc(var(--cg-radius) * 5 / 4);
   background:var(--glass-bg);
   border:1px solid var(--glass-border);
   backdrop-filter:var(--glass-blur);
@@ -108,7 +108,7 @@ body{display:flex;flex-direction:column}
 .filter-pill{
   flex-shrink:0;
   display:inline-flex;align-items:center;
-  padding:4px 10px;border-radius:20px;font-size:11px;font-family:inherit;
+  padding:4px 10px;border-radius:calc(var(--cg-radius) * 5 / 4);font-size:11px;font-family:inherit;
   background:var(--glass-bg);
   border:1px solid var(--glass-border-soft);
   backdrop-filter:var(--glass-blur);
@@ -138,7 +138,7 @@ body{display:flex;flex-direction:column}
 }
 .games-scroll::-webkit-scrollbar{width:6px}
 .games-scroll::-webkit-scrollbar-track{background:transparent}
-.games-scroll::-webkit-scrollbar-thumb{background:var(--scrollbar);border-radius:3px}
+.games-scroll::-webkit-scrollbar-thumb{background:var(--scrollbar);border-radius:calc(var(--cg-radius) * 3 / 16)}
 .games-scroll::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,0.2)}
 
 .games-grid{
@@ -152,7 +152,7 @@ body{display:flex;flex-direction:column}
   border:1px solid var(--glass-border-soft);
   backdrop-filter:var(--glass-blur);
   -webkit-backdrop-filter:var(--glass-blur);
-  border-radius:12px;
+  border-radius:calc(var(--cg-radius) * 3 / 4);
   overflow:hidden;
   cursor:pointer;
   box-shadow:0 4px 16px rgba(0,0,0,0.2),inset 0 1px 0 rgba(255,255,255,0.08);
@@ -193,7 +193,7 @@ body{display:flex;flex-direction:column}
 
 .match-highlight{
   background:rgba(110,220,140,0.22);
-  border-radius:2px;padding:0 1px;color:var(--accent);
+  border-radius:calc(var(--cg-radius) * 1 / 8);padding:0 1px;color:var(--accent);
 }
 
 .empty-state{
@@ -239,13 +239,13 @@ body{display:flex;flex-direction:column}
   border:1px solid rgba(255,255,255,0.2);
   backdrop-filter:blur(16px) saturate(180%);
   -webkit-backdrop-filter:blur(16px) saturate(180%);
-  border-radius:50%;
+  border-radius:calc(var(--cg-radius) * 2);
   box-shadow:0 4px 16px rgba(0,0,0,0.25),inset 0 1px 0 rgba(255,255,255,0.15);
   pointer-events:all;
 }
 .game-bubble-name{
   width:auto;
-  border-radius:50px;
+  border-radius:var(--cg-radius);
   padding:6px 16px;
   font-size:13px;font-weight:500;color:#e8eaed;
   white-space:nowrap;
@@ -253,7 +253,7 @@ body{display:flex;flex-direction:column}
 }
 .game-back{
   display:flex;align-items:center;justify-content:center;
-  width:32px;height:32px;border:none;border-radius:50%;
+  width:32px;height:32px;border:none;border-radius:calc(var(--cg-radius) * 2);
   background:transparent;color:rgba(255,255,255,0.6);cursor:pointer;
   font-size:14px;flex-shrink:0;transition:background .15s,color .15s;
 }
@@ -267,7 +267,7 @@ body{display:flex;flex-direction:column}
 .game-actions{display:flex;align-items:center;gap:4px}
 .game-action-btn{
   display:flex;align-items:center;justify-content:center;
-  width:32px;height:32px;border:none;border-radius:50%;
+  width:32px;height:32px;border:none;border-radius:calc(var(--cg-radius) * 2);
   background:transparent;color:rgba(255,255,255,0.6);cursor:pointer;
   font-size:13px;flex-shrink:0;transition:background .15s,color .15s;
 }
