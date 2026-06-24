@@ -1,10 +1,11 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
 :root{
-  --glass-bg:rgba(255,255,255,0.08);
-  --glass-border:rgba(255,255,255,0.18);
-  --glass-hover:rgba(255,255,255,0.13);
-  --glass-blur:blur(16px) saturate(180%);
+  --glass-bg:color-mix(in srgb,rgba(255,255,255,0.08) calc(var(--cg-glass,1) * 100%),transparent);
+  --glass-border:color-mix(in srgb,rgba(255,255,255,0.18) calc(var(--cg-glass,1) * 100%),transparent);
+  --glass-hover:color-mix(in srgb,rgba(255,255,255,0.13) calc(var(--cg-glass,1) * 100%),transparent);
+  --glass-blur:blur(calc(16px * var(--cg-glass,1))) saturate(180%);
+  --glass-specular:inset 0 1px 0 rgba(255,255,255,calc(0.15 * var(--cg-specular,1)));
   --text-primary:rgba(255,255,255,0.95);
   --text-secondary:rgba(255,255,255,0.58);
   --text-muted:rgba(255,255,255,0.38);

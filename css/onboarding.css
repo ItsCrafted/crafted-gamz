@@ -29,13 +29,14 @@
   --radius-sm:calc(var(--cg-radius) * 0.625);
   --transition: 0.18s ease;
 
-  --glass-bg: rgba(255,255,255,0.07);
-  --glass-bg-deep: rgba(255,255,255,0.04);
-  --glass-border: rgba(255,255,255,0.15);
-  --glass-border-soft: rgba(255,255,255,0.08);
-  --glass-hover: rgba(255,255,255,0.12);
-  --glass-highlight: rgba(255,255,255,0.15);
-  --glass-blur: blur(16px) saturate(180%);
+  --glass-bg: color-mix(in srgb,rgba(255,255,255,0.07) calc(var(--cg-glass,1) * 100%),transparent);
+  --glass-bg-deep: color-mix(in srgb,rgba(255,255,255,0.04) calc(var(--cg-glass,1) * 100%),transparent);
+  --glass-border: color-mix(in srgb,rgba(255,255,255,0.15) calc(var(--cg-glass,1) * 100%),transparent);
+  --glass-border-soft: color-mix(in srgb,rgba(255,255,255,0.08) calc(var(--cg-glass,1) * 100%),transparent);
+  --glass-hover: color-mix(in srgb,rgba(255,255,255,0.12) calc(var(--cg-glass,1) * 100%),transparent);
+  --glass-highlight: color-mix(in srgb,rgba(255,255,255,0.15) calc(var(--cg-glass,1) * 100%),transparent);
+  --glass-blur: blur(calc(16px * var(--cg-glass,1))) saturate(180%);
+  --glass-specular:inset 0 1px 0 rgba(255,255,255,calc(0.15 * var(--cg-specular,1)));
 }
 
 html, body {

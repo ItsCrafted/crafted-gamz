@@ -6,6 +6,8 @@ const BrowserThemeState = (() => {
     accentColor: '#4285f4',
     bgPreset: 'minimal',
     radius: 16,
+    glass: 1,
+    specular: 1,
   }
 
   const BACKGROUND_PRESETS = {
@@ -91,6 +93,18 @@ const BrowserThemeState = (() => {
     return Math.max(0, Math.min(50, Math.round(num)))
   }
 
+  function normalizeGlass(value) {
+    const num = Number(value)
+    if (!Number.isFinite(num)) return DEFAULT_THEME_STATE.glass
+    return Math.max(0, Math.min(1, Math.round(num * 1000) / 1000))
+  }
+
+  function normalizeSpecular(value) {
+    const num = Number(value)
+    if (!Number.isFinite(num)) return DEFAULT_THEME_STATE.specular
+    return Math.max(0, Math.min(1, Math.round(num * 1000) / 1000))
+  }
+
   function normalizeThemeState(raw) {
     const next = raw && typeof raw === 'object' ? raw : {}
     return {
@@ -98,6 +112,8 @@ const BrowserThemeState = (() => {
       accentColor: normalizeAccentColor(next.accentColor),
       bgPreset: normalizeBgPreset(next.bgPreset),
       radius: normalizeRadius(next.radius),
+      glass: normalizeGlass(next.glass),
+      specular: normalizeSpecular(next.specular),
     }
   }
 
@@ -143,6 +159,8 @@ const BrowserThemeState = (() => {
       accentColor: rawTheme.accentColor || rawSettings.accentColor,
       bgPreset: rawTheme.bgPreset || rawTheme.bgStyle || rawSettings.bgPreset || rawSettings.bgStyle,
       radius: rawTheme.radius ?? rawSettings.radius,
+      glass: rawTheme.glass ?? rawSettings.glass,
+      specular: rawTheme.specular ?? rawSettings.specular,
     })
   }
 
@@ -170,6 +188,8 @@ const BrowserThemeState = (() => {
           ? getDefaultAccent(normalizedMode, normalizedPreset)
           : current.accentColor),
       radius: patch && patch.radius !== undefined ? patch.radius : current.radius,
+      glass: patch && patch.glass !== undefined ? patch.glass : current.glass,
+      specular: patch && patch.specular !== undefined ? patch.specular : current.specular,
     })
     localStorage.setItem(THEME_KEY, JSON.stringify(next))
 
@@ -180,6 +200,8 @@ const BrowserThemeState = (() => {
       accentColor: next.accentColor,
       bgStyle: next.bgPreset,
       radius: next.radius,
+      glass: next.glass,
+      specular: next.specular,
     }))
 
     return next
@@ -205,21 +227,29 @@ const BrowserThemeState = (() => {
 
 window.BrowserThemeState = BrowserThemeState
 
-/* Auto-apply --cg-radius so every document that loads this module gets the value.
-   theme.js overwrites it on the shell, but pages/iframes rely on this fallback. */
+/* Auto-apply --cg-radius, --cg-glass, and --cg-specular so every document that loads this module
+   gets the values. theme.js overwrites them on the shell, but pages/iframes rely
+   on this fallback. */
 ;(function () {
-  function applyRadiusVar() {
+  function applyThemeVars() {
     try {
       var state = BrowserThemeState.loadThemeState()
-      if (state && typeof state.radius === 'number') {
+      if (!state) return
+      if (typeof state.radius === 'number') {
         document.documentElement.style.setProperty('--cg-radius', state.radius + 'px')
+      }
+      if (typeof state.glass === 'number') {
+        document.documentElement.style.setProperty('--cg-glass', state.glass)
+      }
+      if (typeof state.specular === 'number') {
+        document.documentElement.style.setProperty('--cg-specular', state.specular)
       }
     } catch (_) {}
   }
-  applyRadiusVar()
+  applyThemeVars()
   window.addEventListener('storage', function (e) {
     if (e.key === BrowserThemeState.THEME_KEY || e.key === BrowserThemeState.SETTINGS_KEY) {
-      applyRadiusVar()
+      applyThemeVars()
     }
   })
 })()

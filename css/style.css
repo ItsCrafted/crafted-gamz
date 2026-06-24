@@ -36,8 +36,8 @@ html,body{height:100%;background:transparent;font-family:-apple-system,BlinkMacS
 
 .titlebar{
   display:flex;align-items:flex-end;
-  background:rgba(var(--ui-base-rgb), 0.55);
-  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  background:color-mix(in srgb,rgb(var(--ui-base-rgb)) calc(55% * var(--cg-glass,1)),transparent);
+  backdrop-filter:blur(calc(16px * var(--cg-glass,1)));-webkit-backdrop-filter:blur(calc(16px * var(--cg-glass,1)));
   height:46px;
 }
 
@@ -103,7 +103,7 @@ html,body{height:100%;background:transparent;font-family:-apple-system,BlinkMacS
 .chrome-tabs .chrome-tab .chrome-tab-content{
   position:absolute;display:flex;top:0;bottom:0;
   left:var(--tab-content-margin);right:var(--tab-content-margin);
-  padding:9px 8px;border-top-left-radius:8px;border-top-right-radius:8px;
+  padding:9px 8px;border-top-left-radius:calc(var(--cg-radius) * 1 / 2);border-top-right-radius:calc(var(--cg-radius) * 1 / 2);
   overflow:hidden;pointer-events:all;
 }
 .chrome-tabs .chrome-tab[is-mini] .chrome-tab-content{padding-left:2px;padding-right:2px}
@@ -130,7 +130,7 @@ html,body{height:100%;background:transparent;font-family:-apple-system,BlinkMacS
 
 .chrome-tabs .chrome-tab .chrome-tab-drag-handle{
   position:absolute;top:0;bottom:0;right:0;left:0;
-  border-top-left-radius:8px;border-top-right-radius:8px;
+  border-top-left-radius:calc(var(--cg-radius) * 1 / 2);border-top-right-radius:calc(var(--cg-radius) * 1 / 2);
 }
 
 .chrome-tabs .chrome-tab .chrome-tab-close{
@@ -211,8 +211,8 @@ html,body{height:100%;background:transparent;font-family:-apple-system,BlinkMacS
 .toolbar{
   margin-top:-5px;
   display:flex;align-items:center;gap:4px;
-  background:rgba(var(--ui-base-rgb), 0.73);
-  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  background:color-mix(in srgb,rgb(var(--ui-base-rgb)) calc(73% * var(--cg-glass,1)),transparent);
+  backdrop-filter:blur(calc(16px * var(--cg-glass,1)));-webkit-backdrop-filter:blur(calc(16px * var(--cg-glass,1)));
   padding:6px 10px;height:48px;
   border-bottom:1px solid var(--ui-border-sub);
   position:relative;z-index:100;
@@ -367,12 +367,12 @@ html,body{height:100%;background:transparent;font-family:-apple-system,BlinkMacS
   z-index:350;
   opacity:0;
   transform:translateY(-4px) scale(0.985);
-  background:rgba(28,28,30,0.96);
+  background:color-mix(in srgb,rgba(28,28,30,0.96) calc(var(--cg-glass,1) * 100%),transparent);
   border:1px solid rgba(255,255,255,0.12);
   border-radius:calc(var(--cg-radius) * 3 / 4);
   box-shadow:0 20px 48px rgba(0,0,0,0.45);
-  backdrop-filter:blur(24px) saturate(150%);
-  -webkit-backdrop-filter:blur(24px) saturate(150%);
+  backdrop-filter:blur(calc(24px * var(--cg-glass,1))) saturate(150%);
+  -webkit-backdrop-filter:blur(calc(24px * var(--cg-glass,1))) saturate(150%);
   transition:opacity .14s ease,transform .22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 

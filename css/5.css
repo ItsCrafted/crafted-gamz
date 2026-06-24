@@ -1,3 +1,6 @@
+:root{
+  --glass-specular:inset 0 1px 0 rgba(255,255,255,calc(0.15 * var(--cg-specular,1)));
+}
 
 .card {
   max-width: 440px;

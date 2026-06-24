@@ -75,7 +75,25 @@ const Theme = (() => {
     return value
   }
 
-  function buildVarsFromPalette(palette, mode, accentOverride) {
+  function applyGlass(glass) {
+    const state = loadState()
+    const value = (glass !== undefined && glass !== null)
+      ? BrowserThemeState.normalizeThemeState({ ...state, glass }).glass
+      : state.glass
+    document.documentElement.style.setProperty('--cg-glass', value)
+    return value
+  }
+
+  function applySpecular(specular) {
+    const state = loadState()
+    const value = (specular !== undefined && specular !== null)
+      ? BrowserThemeState.normalizeThemeState({ ...state, specular }).specular
+      : state.specular
+    document.documentElement.style.setProperty('--cg-specular', value)
+    return value
+  }
+
+  function buildVarsFromPalette(palette, mode, accentOverride, glass) {
     const accent = accentOverride || palette.accent
     const isLight = mode === 'light'
     const base = palette.base
@@ -90,6 +108,7 @@ const Theme = (() => {
     const divider = isLight ? 'rgba(0,0,0,0.12)' : 'rgba(255,255,255,0.15)'
     const hoverColor = isLight ? '#000000' : '#ffffff'
     const tintTarget = isLight ? '#ffffff' : accent
+    const glassMult = typeof glass === 'number' ? glass : 1
 
     return {
       '--ui-base': base,
@@ -99,7 +118,7 @@ const Theme = (() => {
       '--ui-surface-3': rgba(mixHex(surface, tintTarget, isLight ? 0.06 : 0.1), isLight ? 0.92 : 0.94),
       '--ui-surface-4': rgba(mixHex(base, surface, 0.72), isLight ? 0.98 : 0.97),
       '--ui-surface-5': rgba(mixHex(base, surface2, 0.42), isLight ? 0.98 : 0.98),
-      '--ui-overlay': rgba(mixHex(base, hoverColor, isLight ? 0.2 : 0.04), isLight ? 0.84 : 0.76),
+      '--ui-overlay': rgba(mixHex(base, hoverColor, isLight ? 0.2 : 0.04), (isLight ? 0.84 : 0.76) * glassMult),
       '--ui-border': border,
       '--ui-border-sub': borderSub,
       '--ui-addr-bg': rgba(mixHex(surface2, accent, isLight ? 0.08 : 0.15), isLight ? 0.78 : 0.52),
@@ -141,16 +160,20 @@ const Theme = (() => {
       accentColor: state.accentColor || DEFAULT_STATE.accentColor,
       bgPreset: state.bgPreset || DEFAULT_STATE.bgPreset,
       radius: state.radius !== undefined ? state.radius : DEFAULT_STATE.radius,
+      glass: state.glass !== undefined ? state.glass : DEFAULT_STATE.glass,
+      specular: state.specular !== undefined ? state.specular : DEFAULT_STATE.specular,
     }
 
     const preset = getBackgroundPreset(nextState.bgPreset)
     if (nextState.mode === 'light') {
-      applyVars(buildVarsFromPalette(preset.light, 'light', nextState.accentColor))
+      applyVars(buildVarsFromPalette(preset.light, 'light', nextState.accentColor, nextState.glass))
     } else {
-      applyVars(buildVarsFromPalette(preset.dark, 'dark', nextState.accentColor))
+      applyVars(buildVarsFromPalette(preset.dark, 'dark', nextState.accentColor, nextState.glass))
     }
 
     applyRadius(nextState.radius)
+    applyGlass(nextState.glass)
+    applySpecular(nextState.specular)
 
     document.documentElement.dataset.theme = nextState.mode
     document.documentElement.dataset.bgPreset = nextState.bgPreset
@@ -176,6 +199,16 @@ const Theme = (() => {
   async function setRadius(radius) {
     const state = loadState()
     return applyState({ ...state, radius })
+  }
+
+  async function setGlass(glass) {
+    const state = loadState()
+    return applyState({ ...state, glass })
+  }
+
+  async function setSpecular(specular) {
+    const state = loadState()
+    return applyState({ ...state, specular })
   }
 
   async function setAccentColor(accentColor) {
@@ -228,6 +261,24 @@ const Theme = (() => {
       return
     }
 
+    if (event.data.type === 'cg_glass' && event.data.glass !== undefined) {
+      setGlass(event.data.glass).then(() => {
+        if (window.accountManager && typeof window.accountManager.scheduleGlassSync === 'function') {
+          window.accountManager.scheduleGlassSync()
+        }
+      })
+      return
+    }
+
+    if (event.data.type === 'cg_specular' && event.data.specular !== undefined) {
+      setSpecular(event.data.specular).then(() => {
+        if (window.accountManager && typeof window.accountManager.scheduleSpecularSync === 'function') {
+          window.accountManager.scheduleSpecularSync()
+        }
+      })
+      return
+    }
+
     if (event.data.type === 'cg_theme_refresh') {
       refresh()
     }
@@ -246,6 +297,8 @@ const Theme = (() => {
     applyPreset,
     setAccentColor,
     setRadius,
+    setGlass,
+    setSpecular,
     setBackgroundPreset,
     getState: loadState,
   }

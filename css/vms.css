@@ -1,12 +1,13 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
 :root{
-  --glass-bg:rgba(255,255,255,0.07);
-  --glass-bg-deep:rgba(255,255,255,0.04);
-  --glass-border:rgba(255,255,255,0.15);
-  --glass-border-soft:rgba(255,255,255,0.08);
-  --glass-hover:rgba(255,255,255,0.12);
-  --glass-blur:blur(16px) saturate(180%);
+  --glass-bg:color-mix(in srgb,rgba(255,255,255,0.07) calc(var(--cg-glass,1) * 100%),transparent);
+  --glass-bg-deep:color-mix(in srgb,rgba(255,255,255,0.04) calc(var(--cg-glass,1) * 100%),transparent);
+  --glass-border:color-mix(in srgb,rgba(255,255,255,0.15) calc(var(--cg-glass,1) * 100%),transparent);
+  --glass-border-soft:color-mix(in srgb,rgba(255,255,255,0.08) calc(var(--cg-glass,1) * 100%),transparent);
+  --glass-hover:color-mix(in srgb,rgba(255,255,255,0.12) calc(var(--cg-glass,1) * 100%),transparent);
+  --glass-blur:blur(calc(16px * var(--cg-glass,1))) saturate(180%);
+  --glass-specular:inset 0 1px 0 rgba(255,255,255,calc(0.15 * var(--cg-specular,1)));
   --text:#e8eaed;
   --text-muted:rgba(255,255,255,0.45);
   --text-dim:rgba(255,255,255,0.65);
@@ -55,7 +56,7 @@ html,body{
   color:rgba(255,255,255,0.75);
   font-size:16px;
   flex-shrink:0;
-  box-shadow:0 4px 12px rgba(0,0,0,0.15),inset 0 1px 0 rgba(255,255,255,0.15);
+  box-shadow:0 4px 12px rgba(0,0,0,0.15),var(--glass-specular);
 }
 .page-title{
   font-size:24px;font-weight:500;letter-spacing:-.35px;color:#fff;
@@ -74,7 +75,7 @@ html,body{
   -webkit-backdrop-filter:var(--glass-blur);
   color:var(--text-dim);font-size:12px;font-weight:600;
   white-space:nowrap;
-  box-shadow:0 4px 12px rgba(0,0,0,0.1),inset 0 1px 0 rgba(255,255,255,0.12);
+  box-shadow:0 4px 12px rgba(0,0,0,0.1),var(--glass-specular);
 }
 
 .vm-layout{
@@ -94,7 +95,7 @@ html,body{
   -webkit-backdrop-filter:var(--glass-blur);
   border-radius:var(--cg-radius);
   padding:16px;
-  box-shadow:0 4px 24px rgba(0,0,0,0.2),inset 0 1px 0 rgba(255,255,255,0.1);
+  box-shadow:0 4px 24px rgba(0,0,0,0.2),var(--glass-specular);
 }
 .vm-panel-hero{padding:18px}
 .vm-panel-label{
@@ -152,21 +153,21 @@ html,body{
   -webkit-backdrop-filter:var(--glass-blur);
   color:#fff;font-size:13px;font-family:inherit;font-weight:600;
   cursor:pointer;
-  box-shadow:0 4px 12px rgba(0,0,0,0.1),inset 0 1px 0 rgba(255,255,255,0.12);
+  box-shadow:0 4px 12px rgba(0,0,0,0.1),var(--glass-specular);
   transition:background var(--transition),border-color var(--transition),transform var(--transition),opacity var(--transition),box-shadow var(--transition);
 }
 .vm-btn:hover:not(:disabled){
   background:var(--glass-hover);
   border-color:rgba(255,255,255,0.24);
   transform:translateY(-1px);
-  box-shadow:0 6px 20px rgba(0,0,0,0.15),inset 0 1px 0 rgba(255,255,255,0.15);
+  box-shadow:0 6px 20px rgba(0,0,0,0.15),var(--glass-specular);
 }
 .vm-btn:active:not(:disabled){transform:translateY(0)}
 .vm-btn:disabled{opacity:.38;cursor:not-allowed}
 .vm-btn-primary{
   background:rgba(255,255,255,0.14);
   border-color:rgba(255,255,255,0.25);
-  box-shadow:0 4px 16px rgba(0,0,0,0.15),inset 0 1px 0 rgba(255,255,255,0.18);
+  box-shadow:0 4px 16px rgba(0,0,0,0.15),var(--glass-specular);
 }
 
 .vm-note-list{
@@ -198,7 +199,7 @@ html,body{
   -webkit-backdrop-filter:var(--glass-blur);
   border-radius:calc(var(--cg-radius) * 5 / 4);
   overflow:hidden;
-  box-shadow:0 20px 60px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.1);
+  box-shadow:0 20px 60px rgba(0,0,0,0.3),var(--glass-specular);
 }
 
 #hyperbeam-container{
@@ -261,7 +262,7 @@ html,body{
   color:rgba(255,255,255,0.6);
   font-size:26px;
   margin-bottom:18px;
-  box-shadow:0 4px 16px rgba(0,0,0,0.15),inset 0 1px 0 rgba(255,255,255,0.12);
+  box-shadow:0 4px 16px rgba(0,0,0,0.15),var(--glass-specular);
 }
 .vm-empty-title{
   font-size:19px;font-weight:600;color:#fff;

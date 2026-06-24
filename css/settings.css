@@ -1,5 +1,9 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
+:root{
+  --glass-specular:inset 0 1px 0 rgba(255,255,255,calc(0.15 * var(--cg-specular,1)));
+}
+
 body{
   color:#e8eaed;
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
