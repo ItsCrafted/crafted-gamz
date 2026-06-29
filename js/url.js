@@ -7,6 +7,7 @@ const LOCAL_PAGES = {
   account: 'pages/account.html',
   vms: 'pages/vms.html',
   chat: 'pages/chat.html',
+  'cloud-gaming': 'pages/cloud-gaming.html',
 }
 
 const lockIcon = document.getElementById('lock-icon')
