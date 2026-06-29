@@ -115,14 +115,14 @@ input {
 }
 
 input:focus {
-  border-color: var(--ui-accent, #4285f4);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ui-accent, #4285f4) 25%, transparent);
+  border-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.25);
 }
 
 .btn-launch {
   width: 100%;
-  background: var(--ui-accent, #4285f4);
-  color: #fff;
+  background: #ffffff;
+  color: #000000;
   border: none;
   border-radius: var(--radius-sm);
   padding: 14px;
@@ -134,7 +134,7 @@ input:focus {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  box-shadow: 0 4px 12px color-mix(in srgb, var(--ui-accent, #4285f4) 30%, transparent);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
 }
 
 .btn-launch:hover {
@@ -186,7 +186,7 @@ input:focus {
 .loader-dot {
   width: 6px;
   height: 6px;
-  background-color: var(--ui-accent, #4285f4);
+  background-color: #ffffff;
   border-radius: 50%;
   animation: bounce 1.4s infinite ease-in-out both;
 }
@@ -241,9 +241,9 @@ input:focus {
 }
 
 .step.active .step-circle {
-  border-color: var(--ui-accent, #4285f4);
-  color: var(--ui-accent, #4285f4);
-  background: color-mix(in srgb, var(--ui-accent, #4285f4) 15%, transparent);
+  border-color: #ffffff;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.15);
 }
 
 .step.active .step-label {
@@ -252,8 +252,8 @@ input:focus {
 }
 
 .step.completed .step-circle {
-  border-color: var(--ui-accent, #4285f4);
-  background: var(--ui-accent, #4285f4);
+  border-color: #ffffff;
+  background: #ffffff;
   color: #000;
 }
 
@@ -287,7 +287,7 @@ input:focus {
 .queue-num {
   font-size: 24px;
   font-weight: 700;
-  color: var(--ui-accent, #4285f4);
+  color: #ffffff;
 }
 
 .queue-text {
@@ -341,9 +341,9 @@ input:focus {
   content: '';
   width: 6px;
   height: 6px;
-  background-color: var(--ui-accent, #4285f4);
+  background-color: #ffffff;
   border-radius: 50%;
-  box-shadow: 0 0 8px var(--ui-accent, #4285f4);
+  box-shadow: 0 0 8px #ffffff;
 }
 
 .game-timer {
@@ -514,7 +514,7 @@ input:focus {
 
 <script>
 const CONFIG = {
-  server: 'https://cloud.cganz.online',
+  server: 'https://cloud.cgamz.online',
   apiKey: 'b9c3d2c6509c74c0db54d77d9fbd31e26e9b85a86d3dfc0b6a1c5d91c8a7f4e37f2d1e6845bc9a1f0e8d4f63b72ac59f4c1de0a97b5f3d86e2c9a4f7813db6a'
 };
 
