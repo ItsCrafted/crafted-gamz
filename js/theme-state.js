@@ -3,11 +3,13 @@ const BrowserThemeState = (() => {
   const SETTINGS_KEY = 'cg_settings'
   const DEFAULT_THEME_STATE = {
     mode: 'dark',
-    accentColor: '#4285f4',
+    accentColor: null,
     bgPreset: 'minimal',
     radius: 16,
     glass: 1,
     specular: 1,
+    wallpaper: null,
+    customAccent: false,
   }
 
   const BACKGROUND_PRESETS = {
@@ -69,12 +71,42 @@ const BrowserThemeState = (() => {
     },
   }
 
+  /* ── Dynamic wallpaper keys available in dynamic-wallpapers.html ── */
+  const DYNAMIC_WALLPAPERS = [
+    { key: 'lightning',    label: 'Lightning',    color: '7cb9ff' },
+    { key: 'aurora',       label: 'Aurora',       color: '72efdd' },
+    { key: 'starfield',    label: 'Starfield',    color: 'a78bfa' },
+    { key: 'waves',        label: 'Waves',        color: '38bdf8' },
+    { key: 'matrix',       label: 'Matrix',       color: '00ff41' },
+    { key: 'rain',         label: 'Rain',         color: '60a5fa' },
+    { key: 'snow',         label: 'Snow',         color: 'e0f2fe' },
+    { key: 'sunset',       label: 'Sunset',       color: 'fb923c' },
+    { key: 'cyberpunk',    label: 'Cyberpunk',    color: '00f5ff' },
+    { key: 'clouds',       label: 'Clouds',       color: 'cbd5e1' },
+    { key: 'volcano',      label: 'Volcano',      color: 'f97316' },
+    { key: 'desert',       label: 'Desert',       color: 'fbbf24' },
+    { key: 'glacier',      label: 'Glacier',      color: '7dd3fc' },
+    { key: 'fireflies',    label: 'Fireflies',    color: 'fde68a' },
+    { key: 'nebula-anim',  label: 'Nebula',       color: 'c084fc' },
+    { key: 'ocean-anim',   label: 'Ocean',        color: '22d3ee' },
+    { key: 'sakura',       label: 'Sakura',       color: 'f9a8d4' },
+    { key: 'pulse',        label: 'Pulse',        color: '818cf8' },
+    { key: 'galaxy',       label: 'Galaxy',       color: '93c5fd' },
+    { key: 'plasma',       label: 'Plasma',       color: 'a855f7' },
+    { key: 'thunder',      label: 'Thunder',      color: 'bfdbfe' },
+    { key: 'aurora-dream', label: 'Aurora Dream', color: '34d399' },
+    { key: 'cyber-rain',   label: 'Cyber Rain',   color: '2dd4bf' },
+    { key: 'void',         label: 'Void',         color: 'a855f7' },
+    { key: 'plasma-fire',  label: 'Plasma Fire',  color: 'f97316' },
+  ]
+
   function isHexColor(value) {
     return typeof value === 'string' && /^#[\da-f]{6}$/i.test(value.trim())
   }
 
   function normalizeAccentColor(value) {
-    return isHexColor(value) ? value.trim().toLowerCase() : DEFAULT_THEME_STATE.accentColor
+    if (value === null || value === undefined || value === '') return null
+    return isHexColor(value) ? value.trim().toLowerCase() : null
   }
 
   function normalizeMode(value) {
@@ -105,6 +137,12 @@ const BrowserThemeState = (() => {
     return Math.max(0, Math.min(2, Math.round(num * 1000) / 1000))
   }
 
+  function normalizeWallpaper(value) {
+    if (!value) return null
+    const key = String(value).trim().toLowerCase()
+    return DYNAMIC_WALLPAPERS.some(w => w.key === key) ? key : null
+  }
+
   function normalizeThemeState(raw) {
     const next = raw && typeof raw === 'object' ? raw : {}
     return {
@@ -114,6 +152,8 @@ const BrowserThemeState = (() => {
       radius: normalizeRadius(next.radius),
       glass: normalizeGlass(next.glass),
       specular: normalizeSpecular(next.specular),
+      wallpaper: normalizeWallpaper(next.wallpaper),
+      customAccent: next.customAccent === true,
     }
   }
 
@@ -161,6 +201,8 @@ const BrowserThemeState = (() => {
       radius: rawTheme.radius ?? rawSettings.radius,
       glass: rawTheme.glass ?? rawSettings.glass,
       specular: rawTheme.specular ?? rawSettings.specular,
+      wallpaper: rawTheme.wallpaper ?? rawSettings.wallpaper ?? null,
+      customAccent: rawTheme.customAccent ?? rawSettings.customAccent ?? false,
     })
   }
 
@@ -176,7 +218,8 @@ const BrowserThemeState = (() => {
     const requestedPreset = patch && patch.bgPreset !== undefined ? patch.bgPreset : current.bgPreset
     const normalizedMode = normalizeMode(requestedMode)
     const normalizedPreset = normalizeBgPreset(requestedPreset)
-    const shouldUsePresetAccent = patch && patch.accentColor === undefined && patch && (patch.mode !== undefined || patch.bgPreset !== undefined)
+    const patchingCustomAccent = patch && patch.customAccent !== undefined ? patch.customAccent : current.customAccent
+    const shouldUsePresetAccent = !patchingCustomAccent && patch && patch.accentColor === undefined && (patch.mode !== undefined || patch.bgPreset !== undefined)
     const next = normalizeThemeState({
       ...current,
       ...patch,
@@ -190,6 +233,8 @@ const BrowserThemeState = (() => {
       radius: patch && patch.radius !== undefined ? patch.radius : current.radius,
       glass: patch && patch.glass !== undefined ? patch.glass : current.glass,
       specular: patch && patch.specular !== undefined ? patch.specular : current.specular,
+      wallpaper: patch && patch.wallpaper !== undefined ? patch.wallpaper : current.wallpaper,
+      customAccent: patchingCustomAccent,
     })
     localStorage.setItem(THEME_KEY, JSON.stringify(next))
 
@@ -202,6 +247,8 @@ const BrowserThemeState = (() => {
       radius: next.radius,
       glass: next.glass,
       specular: next.specular,
+      wallpaper: next.wallpaper,
+      customAccent: next.customAccent,
     }))
 
     return next
@@ -217,10 +264,12 @@ const BrowserThemeState = (() => {
     SETTINGS_KEY,
     DEFAULT_THEME_STATE,
     BACKGROUND_PRESETS,
+    DYNAMIC_WALLPAPERS,
     loadThemeState,
     saveThemeState,
     getDefaultAccent,
     normalizeThemeState,
+    normalizeWallpaper,
     getBackgroundPreset,
   }
 })()

@@ -19,11 +19,10 @@ body{
 }
 
 .page{
-  max-width:780px;
+  max-width:1200px;
   margin:0 auto;
   padding:32px 20px 64px;
 }
-
 .page-header{
   display:flex;
   align-items:center;
@@ -113,20 +112,51 @@ body{
 .select-pill option{background:#1a1a1a;color:#e8eaed}
 
 .bg-grid{
-  display:grid;grid-template-columns:repeat(4,1fr);gap:8px;
+  display:grid;
+  width:100%;              /* <-- THIS is the important part */
+  grid-template-columns:repeat(4, minmax(0,1fr));
+  gap:12px;
   padding:12px 16px 14px;
   border-top:1px solid var(--glass-border-soft);
 }
+#bg-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr)) !important;
+    gap:10px;
+}
+
+#bg-grid .bg-option{
+  width:100%;
+  aspect-ratio:16/9;
+  min-height:150px;
+}
+#bg-grid .bg-tile{
+  width:100%;
+}
+
+.bg-tile{
+  width:auto;
+}
+.bg-tile-label{
+  font-size:10px;color:rgba(255,255,255,0.45);
+  font-weight:500;letter-spacing:.2px;
+  text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  transition:color .15s;
+}
+.bg-tile:hover .bg-tile-label,
+.bg-tile.active .bg-tile-label{
+  color:rgba(255,255,255,0.85);
+}
 .bg-option{
-  aspect-ratio:16/9;border-radius:calc(var(--cg-radius) * 1 / 2);cursor:pointer;overflow:hidden;
+  border-radius:calc(var(--cg-radius) * 1 / 2);cursor:pointer;overflow:hidden;
   border:2px solid var(--glass-border-soft);
   backdrop-filter:var(--glass-blur);
   -webkit-backdrop-filter:var(--glass-blur);
   transition:border-color .15s,transform .15s,box-shadow .15s;
   position:relative;
-  display:flex;align-items:center;justify-content:center;
-  font-size:10px;color:rgba(255,255,255,0.5);
-  font-weight:500;letter-spacing:.3px;
+  display:block;
+  width:100%;
+  aspect-ratio:16/9;
 }
 .bg-option:hover{
   transform:scale(1.03);
@@ -136,12 +166,6 @@ body{
 .bg-option.active{
   border-color:rgba(255,255,255,0.85);
   box-shadow:0 0 0 1px rgba(255,255,255,0.3),0 4px 16px rgba(0,0,0,0.2);
-}
-.bg-option span{
-  position:relative;z-index:1;
-  background:rgba(0,0,0,0.45);
-  backdrop-filter:blur(4px);
-  border-radius:calc(var(--cg-radius) * 1 / 4);padding:2px 5px;
 }
 
 .sync-badge{
@@ -230,3 +254,63 @@ body{
   transform:translateX(16px);background:#222;
 }
 .row-icon.red{background:rgba(239,68,68,0.22);color:#f87171}
+.row-icon.pink{background:rgba(236,72,153,0.22);color:#f9a8d4}
+.row-icon.green{background:rgba(34,197,94,0.22);color:#86efac}
+.row-icon.yellow{background:rgba(234,179,8,0.22);color:#fde047}
+
+/* ── Accent color picker ── */
+.accent-row-end{display:flex;align-items:center;gap:8px}
+
+.color-swatch-wrap{
+  position:relative;display:inline-flex;align-items:center;justify-content:center;
+  cursor:pointer;width:32px;height:32px;border-radius:calc(var(--cg-radius) * 1 / 2);
+  border:1px solid var(--glass-border);overflow:hidden;
+  box-shadow:0 2px 8px rgba(0,0,0,0.25);
+  transition:transform .12s,box-shadow .12s;
+}
+.color-swatch-wrap:hover{transform:scale(1.08);box-shadow:0 4px 12px rgba(0,0,0,0.3)}
+.color-swatch-wrap input[type=color]{
+  position:absolute;width:200%;height:200%;top:-50%;left:-50%;
+  border:none;padding:0;cursor:pointer;opacity:0;
+}
+.color-swatch{
+  display:block;width:100%;height:100%;pointer-events:none;
+}
+.color-swatch.empty{
+  background:
+    linear-gradient(to bottom right, transparent calc(50% - 0.5px), rgba(255,80,80,0.7) calc(50% - 0.5px), rgba(255,80,80,0.7) calc(50% + 0.5px), transparent calc(50% + 0.5px)),
+    var(--glass-bg);
+}
+
+.accent-reset-btn{
+  background:var(--glass-bg);border:1px solid var(--glass-border);
+  color:rgba(255,255,255,0.55);font-size:11px;font-family:inherit;
+  padding:4px 10px;border-radius:calc(var(--cg-radius) * 1 / 2);
+  cursor:pointer;transition:background .12s,color .12s;white-space:nowrap;
+}
+.accent-reset-btn:hover{background:var(--glass-hover);color:rgba(255,255,255,0.85)}
+
+/* ── Live Wallpaper grid (shares .bg-grid + .bg-option styles) ── */
+.wallpaper-option{background:linear-gradient(135deg,#0a0a18,#050510)}
+
+.bg-section-divider{
+  width:100%;padding:4px 16px 6px;
+  display:flex;align-items:center;gap:8px;
+}
+.bg-section-divider span{
+  font-size:10px;font-weight:600;letter-spacing:.7px;text-transform:uppercase;
+  color:rgba(255,255,255,0.35);white-space:nowrap;
+}
+.bg-section-divider span em{
+  font-style:normal;font-weight:400;letter-spacing:.2px;text-transform:none;
+  color:rgba(255,255,255,0.22);
+}
+.bg-section-divider::after{
+  content:'';flex:1;height:1px;background:var(--glass-border-soft);
+}
+/* The wallpaper grid sits immediately after the divider — no second border-top */
+#wallpaper-grid{
+  display:grid;
+  grid-template-columns:repeat(4, minmax(0, 1fr));
+  gap:12px;
+}

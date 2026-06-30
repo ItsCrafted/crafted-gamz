@@ -15,6 +15,8 @@ class AccountManager {
     this.syncCount      = 0
     this.lastSyncHash   = ''
 
+    this._lastPushedTheme = undefined
+
     this._init()
   }
 
@@ -164,7 +166,7 @@ class AccountManager {
     this.syncIntervalId = setInterval(() => {
       this.pushBookmarks()
       this.pushTabs()
-      this.pushRadius()
+      this.pushTheme()
     }, this.SYNC_MS)
     console.log('[Account] Auto-sync started (every', this.SYNC_MS / 1000, 's, change-based)')
   }
@@ -174,6 +176,7 @@ class AccountManager {
     this.syncCount    = 0
     this.lastSyncHash = ''
     this._lastPushedRadius = undefined
+    this._lastPushedTheme  = undefined
   }
 
 
@@ -286,55 +289,80 @@ class AccountManager {
     return null
   }
 
-  scheduleRadiusSync() {
+  // kept for back-compat (theme.js calls this)
+  scheduleRadiusSync() { this.scheduleThemeSync() }
+  scheduleGlassSync()   { this.scheduleThemeSync() }
+  scheduleSpecularSync(){ this.scheduleThemeSync() }
+
+  scheduleThemeSync() {
     if (!this.user) return
-    clearTimeout(this._radiusSyncTimer)
-    this._radiusSyncTimer = setTimeout(() => this.pushRadius(), 1500)
+    clearTimeout(this._themeSyncTimer)
+    this._themeSyncTimer = setTimeout(() => this.pushTheme(), 1500)
   }
 
-  async pushRadius() {
+  _getLocalTheme() {
+    try {
+      return JSON.parse(localStorage.getItem('cg_theme')) || null
+    } catch { return null }
+  }
+
+  async pushTheme() {
     if (!this.user || !this.db) return
-    const radius = this._getLocalRadius()
-    if (radius === null) return
-    if (radius === this._lastPushedRadius) return
-    this._lastPushedRadius = radius
+    const theme = this._getLocalTheme()
+    if (!theme) return
+    const hash = JSON.stringify(theme)
+    if (hash === this._lastPushedTheme) return
+    this._lastPushedTheme = hash
+    // also keep _lastPushedRadius in sync so old callers don't re-push
+    this._lastPushedRadius = theme.radius
     try {
       await this.db.collection('users').doc(this.user.uid).set(
-        { radius, lastSync: firebase.firestore.FieldValue.serverTimestamp() },
+        {
+          theme,
+          // legacy flat field kept for radius backwards-compat
+          radius: theme.radius ?? null,
+          lastSync: firebase.firestore.FieldValue.serverTimestamp(),
+        },
         { merge: true }
       )
-      console.log(`[Account] Pushed radius ${radius}px`)
+      console.log('[Account] Pushed theme', theme)
     } catch (e) {
-      console.warn('[Account] Radius push failed:', e)
+      console.warn('[Account] Theme push failed:', e)
     }
   }
 
-  async pullRadius() {
+  async pullTheme() {
     if (!this.user || !this.db) return
     try {
       const doc = await this.db.collection('users').doc(this.user.uid).get()
       if (!doc.exists) return
-      const remote = doc.data().radius
-      if (typeof remote !== 'number') return
+      const data = doc.data()
 
-      const local = this._getLocalRadius()
-      this._lastPushedRadius = remote
-
-      if (local !== remote) {
-        if (window.BrowserThemeState) {
-          window.BrowserThemeState.saveThemeState({ radius: remote })
-        }
-        if (window.Theme && typeof window.Theme.setRadius === 'function') {
-          await window.Theme.setRadius(remote)
-        } else {
-          document.documentElement.style.setProperty('--cg-radius', `${remote}px`)
-        }
-        console.log(`[Account] Pulled radius ${remote}px from Firestore`)
+      // prefer new `theme` object; fall back to legacy flat `radius`
+      let remote = data.theme || null
+      if (!remote && typeof data.radius === 'number') {
+        remote = { radius: data.radius }
       }
+      if (!remote) return
+
+      this._lastPushedTheme = JSON.stringify(remote)
+      this._lastPushedRadius = remote.radius
+
+      if (window.BrowserThemeState) {
+        window.BrowserThemeState.saveThemeState(remote)
+      }
+      if (window.Theme && typeof window.Theme.refresh === 'function') {
+        await window.Theme.refresh()
+      }
+      console.log('[Account] Pulled theme from Firestore', remote)
     } catch (e) {
-      console.warn('[Account] Radius pull failed:', e)
+      console.warn('[Account] Theme pull failed:', e)
     }
   }
+
+  // legacy kept so old sync interval entry still compiles
+  async pushRadius() { return this.pushTheme() }
+  async pullRadius() { return this.pullTheme() }
 
 
   async signOut() {

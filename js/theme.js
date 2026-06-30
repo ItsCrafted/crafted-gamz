@@ -146,6 +146,8 @@ const Theme = (() => {
     const frame = document.getElementById('browser-bg-frame')
     if (!frame || !frame.contentWindow) return
     frame.contentWindow.postMessage({ type: 'cg_bg_preset', preset: state.bgPreset }, '*')
+    frame.contentWindow.postMessage({ type: 'cg_wallpaper', wallpaper: state.wallpaper }, '*')
+    frame.contentWindow.postMessage({ type: 'cg_accent', accentColor: state.accentColor }, '*')
   }
 
   function normalizeLegacyPreset(presetKey) {
@@ -157,11 +159,13 @@ const Theme = (() => {
   async function applyState(state, options = {}) {
     const nextState = {
       mode: state.mode || DEFAULT_STATE.mode,
-      accentColor: state.accentColor || DEFAULT_STATE.accentColor,
+      accentColor: state.accentColor !== undefined ? state.accentColor : DEFAULT_STATE.accentColor,
       bgPreset: state.bgPreset || DEFAULT_STATE.bgPreset,
       radius: state.radius !== undefined ? state.radius : DEFAULT_STATE.radius,
       glass: state.glass !== undefined ? state.glass : DEFAULT_STATE.glass,
       specular: state.specular !== undefined ? state.specular : DEFAULT_STATE.specular,
+      wallpaper: state.wallpaper !== undefined ? state.wallpaper : DEFAULT_STATE.wallpaper,
+      customAccent: state.customAccent !== undefined ? state.customAccent : DEFAULT_STATE.customAccent,
     }
 
     const preset = getBackgroundPreset(nextState.bgPreset)
@@ -177,6 +181,14 @@ const Theme = (() => {
 
     document.documentElement.dataset.theme = nextState.mode
     document.documentElement.dataset.bgPreset = nextState.bgPreset
+
+    // Keep the browser theme-color meta in sync with the resolved accent
+    const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+    if (metaThemeColor) {
+      const preset = getBackgroundPreset(nextState.bgPreset)
+      const resolvedAccent = nextState.accentColor || (nextState.mode === 'light' ? preset.light.accent : preset.dark.accent)
+      metaThemeColor.content = resolvedAccent
+    }
 
     if (!options.skipSave) {
       saveState(nextState)
@@ -211,9 +223,14 @@ const Theme = (() => {
     return applyState({ ...state, specular })
   }
 
-  async function setAccentColor(accentColor) {
+  async function setAccentColor(accentColor, customAccent = true) {
     const state = loadState()
-    return applyState({ ...state, accentColor })
+    return applyState({ ...state, accentColor, customAccent })
+  }
+
+  async function setWallpaper(wallpaper) {
+    const state = loadState()
+    return applyState({ ...state, wallpaper })
   }
 
   async function setBackgroundPreset(bgPreset) {
@@ -249,6 +266,11 @@ const Theme = (() => {
 
     if (event.data.type === 'cg_bg_preset' && event.data.preset) {
       setBackgroundPreset(event.data.preset)
+      return
+    }
+
+    if (event.data.type === 'cg_wallpaper') {
+      setWallpaper(event.data.wallpaper ?? null)
       return
     }
 
@@ -296,6 +318,7 @@ const Theme = (() => {
     applyMode,
     applyPreset,
     setAccentColor,
+    setWallpaper,
     setRadius,
     setGlass,
     setSpecular,

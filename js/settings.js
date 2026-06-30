@@ -23,12 +23,43 @@ function setThemeState(patch) {
 function applyThemeControls() {
   const themeState = getThemeState()
   document.getElementById('theme-select').value = themeState.mode
-  document.querySelectorAll('.bg-option').forEach(button => {
-    button.classList.toggle('active', button.dataset.bg === themeState.bgPreset)
+  // sync active state on both button and wrapper
+  document.querySelectorAll('.bg-option[data-bg]').forEach(button => {
+    const isActive = button.dataset.bg === themeState.bgPreset
+    button.classList.toggle('active', isActive)
+    if (button.parentElement?.classList.contains('bg-tile')) {
+      button.parentElement.classList.toggle('active', isActive)
+    }
   })
   applyRadiusControls(themeState.radius)
   applyGlassControls(themeState.glass)
   applySpecularControls(themeState.specular)
+  applyAccentControls(themeState.accentColor)
+  applyWallpaperControls(themeState.wallpaper)
+}
+
+function applyAccentControls(accentColor) {
+  const input = document.getElementById('accent-color-input')
+  const swatch = document.getElementById('accent-color-swatch')
+  if (!input || !swatch) return
+  if (accentColor) {
+    input.value = accentColor
+    swatch.style.background = accentColor
+    swatch.classList.remove('empty')
+  } else {
+    swatch.style.background = ''
+    swatch.classList.add('empty')
+  }
+}
+
+function applyWallpaperControls(wallpaperKey) {
+  document.querySelectorAll('.wallpaper-option').forEach(btn => {
+    const isActive = btn.dataset.wallpaper === (wallpaperKey || '')
+    btn.classList.toggle('active', isActive)
+    if (btn.parentElement?.classList.contains('bg-tile')) {
+      btn.parentElement.classList.toggle('active', isActive)
+    }
+  })
 }
 
 function applyGlassControls(glass) {
@@ -62,28 +93,119 @@ function applyRadiusControls(radius) {
   slider.style.setProperty('--radius-pct', `${(v / max) * 100}%`)
 }
 
+function makeTileWrapper(isActive) {
+  const wrap = document.createElement('div')
+  wrap.className = 'bg-tile' + (isActive ? ' active' : '')
+  return wrap
+}
+
 function buildBackgroundGrid() {
   const grid = document.getElementById('bg-grid')
   const themeState = getThemeState()
   grid.innerHTML = ''
 
   Object.entries(BrowserThemeState.BACKGROUND_PRESETS).forEach(([key, preset]) => {
+    const wrap = makeTileWrapper(themeState.bgPreset === key)
+    wrap.dataset.bg = key
+
     const button = document.createElement('button')
     button.type = 'button'
     button.className = 'bg-option' + (themeState.bgPreset === key ? ' active' : '')
     button.dataset.bg = key
     button.style.background = preset.preview
-    if (key === 'none') button.style.borderStyle = 'dashed'
-    button.innerHTML = `<span>${preset.label}</span>`
+    if (key === 'none') {
+      button.style.borderStyle = 'dashed'
+    } else {
+      const frame = document.createElement('iframe')
+      frame.src = preset.url
+      frame.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;border:none;pointer-events:none'
+      frame.setAttribute('sandbox', 'allow-scripts')
+      frame.setAttribute('loading', 'lazy')
+      button.appendChild(frame)
+    }
+
+    const lbl = document.createElement('div')
+    lbl.className = 'bg-tile-label'
+    lbl.textContent = preset.label
 
     button.addEventListener('click', () => {
-      setThemeState({ bgPreset: key })
+      setThemeState({ bgPreset: key, wallpaper: null })
       applyThemeControls()
       notifyParent({ type: 'cg_bg_preset', preset: key })
+      notifyParent({ type: 'cg_wallpaper', wallpaper: null })
       showToast('Background updated')
     })
 
-    grid.appendChild(button)
+    wrap.appendChild(button)
+    wrap.appendChild(lbl)
+    grid.appendChild(wrap)
+  })
+}
+
+function buildWallpaperGrid() {
+  const grid = document.getElementById('wallpaper-grid')
+  const themeState = getThemeState()
+  grid.innerHTML = ''
+
+  // "None" tile
+  const noneWrap = makeTileWrapper(!themeState.wallpaper)
+  const noneBtn = document.createElement('button')
+  noneBtn.type = 'button'
+  noneBtn.className = 'bg-option wallpaper-option' + (!themeState.wallpaper ? ' active' : '')
+  noneBtn.dataset.wallpaper = ''
+  noneBtn.style.background = 'linear-gradient(135deg,#101010,#1a1a1a)'
+  noneBtn.style.borderStyle = 'dashed'
+  noneBtn.addEventListener('click', () => {
+    setThemeState({ wallpaper: null, accentColor: null, customAccent: false })
+    applyThemeControls()
+    notifyParent({ type: 'cg_wallpaper', wallpaper: null })
+    notifyParent({ type: 'cg_theme_accent', accentColor: null })
+    showToast('Wallpaper removed')
+  })
+  const noneLbl = document.createElement('div')
+  noneLbl.className = 'bg-tile-label'
+  noneLbl.textContent = 'None'
+  noneWrap.appendChild(noneBtn)
+  noneWrap.appendChild(noneLbl)
+  grid.appendChild(noneWrap)
+
+  BrowserThemeState.DYNAMIC_WALLPAPERS.forEach(({ key, label, color }) => {
+    const wrap = makeTileWrapper(themeState.wallpaper === key)
+
+    const button = document.createElement('button')
+    button.type = 'button'
+    button.className = 'bg-option wallpaper-option' + (themeState.wallpaper === key ? ' active' : '')
+    button.dataset.wallpaper = key
+
+    // use per-wallpaper color for the snapshot; fallback to user accent if set
+    const state = getThemeState()
+    const accentParam = state.accentColor
+      ? state.accentColor.replace('#', '')
+      : color
+    const frame = document.createElement('iframe')
+    frame.src = `../dynamic-wallpapers.html?w=${encodeURIComponent(key)}&c=${accentParam}&snapshot=1`
+    frame.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;border:none;pointer-events:none'
+    frame.setAttribute('sandbox', 'allow-scripts')
+    frame.setAttribute('loading', 'lazy')
+    button.appendChild(frame)
+
+    const lbl = document.createElement('div')
+    lbl.className = 'bg-tile-label'
+    lbl.textContent = label
+
+    button.addEventListener('click', () => {
+      const accentColor = '#' + color
+      setThemeState({ wallpaper: key, bgPreset: 'none', accentColor, customAccent: false })
+      applyThemeControls()
+      notifyParent({ type: 'cg_wallpaper', wallpaper: key })
+      notifyParent({ type: 'cg_bg_preset', preset: 'none' })
+      notifyParent({ type: 'cg_theme_accent', accentColor })
+      showToast(`Wallpaper: ${label}`)
+    })
+
+    wrap.appendChild(button)
+    wrap.appendChild(lbl)
+    grid.appendChild(wrap)
   })
 }
 
@@ -93,6 +215,34 @@ document.getElementById('theme-select').addEventListener('change', event => {
   applyThemeControls()
   notifyParent({ type: 'cg_theme_mode', mode })
   showToast('Theme updated')
+})
+
+// Accent color picker
+const accentInput = document.getElementById('accent-color-input')
+const accentSwatch = document.getElementById('accent-color-swatch')
+const accentResetBtn = document.getElementById('accent-reset-btn')
+
+accentInput.addEventListener('input', event => {
+  const accentColor = event.target.value
+  accentSwatch.style.background = accentColor
+  setThemeState({ accentColor, customAccent: true })
+  notifyParent({ type: 'cg_theme_accent', accentColor })
+  // Also update the browser theme-color meta tag if we can reach it
+  try {
+    const meta = window.parent.document.querySelector('meta[name="theme-color"]')
+    if (meta) meta.content = accentColor
+  } catch (_) {}
+})
+
+accentInput.addEventListener('change', () => {
+  showToast('Accent color updated')
+})
+
+accentResetBtn.addEventListener('click', () => {
+  setThemeState({ accentColor: null, customAccent: false })
+  applyAccentControls(null)
+  notifyParent({ type: 'cg_theme_accent', accentColor: null })
+  showToast('Accent color removed')
 })
 
 const radiusSlider = document.getElementById('radius-slider')
@@ -158,11 +308,13 @@ adsToggle.addEventListener('change', () => {
 })
 
 buildBackgroundGrid()
+buildWallpaperGrid()
 applyThemeControls()
 
 window.addEventListener('storage', event => {
   if (event.key === BrowserThemeState.THEME_KEY) {
     buildBackgroundGrid()
+    buildWallpaperGrid()
     applyThemeControls()
   }
 })

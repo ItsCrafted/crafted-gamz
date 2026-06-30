@@ -37,15 +37,32 @@
       </div>
     </div>
 
+    <div class="card-row">
+      <div class="row-icon pink"><i class="fa-solid fa-palette"></i></div>
+      <div class="row-body">
+        <div class="row-title">Accent Color</div>
+        <div class="row-sub">Tints the browser UI and live wallpapers. Reset to use preset default.</div>
+      </div>
+      <div class="row-end accent-row-end">
+        <label class="color-swatch-wrap" aria-label="Pick accent color" title="Pick accent color">
+          <input type="color" id="accent-color-input">
+          <span class="color-swatch" id="accent-color-swatch"></span>
+        </label>
+        <button class="accent-reset-btn" id="accent-reset-btn" title="Reset to preset default" aria-label="Reset accent color">Reset</button>
+      </div>
+    </div>
+
     <div class="card-row" style="flex-direction:column;align-items:flex-start;gap:0">
       <div style="display:flex;align-items:center;gap:14px;width:100%">
         <div class="row-icon teal"><i class="fa-solid fa-image"></i></div>
         <div class="row-body">
-          <div class="row-title">Background Preset</div>
-          <div class="row-sub" id="bg-row-sub">Each preset owns its preview colors and remote background URL through bg.html</div>
+          <div class="row-title">Background</div>
+          <div class="row-sub" id="bg-row-sub">Choose a preset or an animated live wallpaper.</div>
         </div>
       </div>
       <div class="bg-grid" id="bg-grid"></div>
+      <div class="bg-section-divider"><span>Live Wallpapers <em>(From Zeno)</em></span></div>
+      <div class="bg-grid" id="wallpaper-grid"></div>
     </div>
 
     <div class="card-row" style="flex-direction:column;align-items:flex-start;gap:14px">

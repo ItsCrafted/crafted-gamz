@@ -29,6 +29,19 @@
   (function () {
     'use strict';
 
+    const IS_SNAPSHOT = new URLSearchParams(location.search).get('snapshot') === '1';
+
+    /* Wrap rAF so snapshot mode cancels after the first rendered frame */
+    const _raf = window.requestAnimationFrame.bind(window);
+    if (IS_SNAPSHOT) {
+      let _fired = false;
+      window.requestAnimationFrame = function (cb) {
+        if (_fired) return 0;
+        _fired = true;
+        return _raf(cb);
+      };
+    }
+
     /* ── Static Unsplash wallpapers ── */
     const STATIC = {
       mountains:    'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=80&fit=crop',
