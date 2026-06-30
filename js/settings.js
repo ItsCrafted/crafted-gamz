@@ -27,6 +27,28 @@ function applyThemeControls() {
     button.classList.toggle('active', button.dataset.bg === themeState.bgPreset)
   })
   applyRadiusControls(themeState.radius)
+  applyGlassControls(themeState.glass)
+  applySpecularControls(themeState.specular)
+}
+
+function applyGlassControls(glass) {
+  const slider = document.getElementById('glass-slider')
+  const valueLabel = document.getElementById('glass-value')
+  if (!slider || !valueLabel) return
+  const v = glass !== undefined ? glass : BrowserThemeState.DEFAULT_THEME_STATE.glass
+  slider.value = v
+  valueLabel.textContent = Math.round(v * 100)
+  slider.style.setProperty('--radius-pct', `${(v / 2) * 100}%`)
+}
+
+function applySpecularControls(specular) {
+  const slider = document.getElementById('specular-slider')
+  const valueLabel = document.getElementById('specular-value')
+  if (!slider || !valueLabel) return
+  const v = specular !== undefined ? specular : BrowserThemeState.DEFAULT_THEME_STATE.specular
+  slider.value = v
+  valueLabel.textContent = Math.round(v * 100)
+  slider.style.setProperty('--radius-pct', `${(v / 2) * 100}%`)
 }
 
 function applyRadiusControls(radius) {
@@ -87,6 +109,7 @@ radiusSlider.addEventListener('input', event => {
   const radius = Number(event.target.value)
   setThemeState({ radius })
   syncRadiusFill(event.target)
+  document.documentElement.style.setProperty('--cg-radius', `${radius}px`)
   notifyParent({ type: 'cg_radius', radius })
 })
 
@@ -94,8 +117,44 @@ radiusSlider.addEventListener('change', () => {
   showToast('Roundness updated')
 })
 
-document.getElementById('switch-layout-row').addEventListener('click', () => {
-  window.parent.location.href = '/onboarding/2.html?skip=false&only=true'
+const glassSlider = document.getElementById('glass-slider')
+const glassValueLabel = document.getElementById('glass-value')
+
+glassSlider.addEventListener('input', event => {
+  const glass = Number(event.target.value)
+  setThemeState({ glass })
+  glassValueLabel.textContent = Math.round(glass * 100)
+  glassSlider.style.setProperty('--radius-pct', `${(glass / 2) * 100}%`)
+  document.documentElement.style.setProperty('--cg-glass', glass)
+  notifyParent({ type: 'cg_glass', glass })
+})
+
+glassSlider.addEventListener('change', () => {
+  showToast('Glass opacity updated')
+})
+
+const specularSlider = document.getElementById('specular-slider')
+const specularValueLabel = document.getElementById('specular-value')
+
+specularSlider.addEventListener('input', event => {
+  const specular = Number(event.target.value)
+  setThemeState({ specular })
+  specularValueLabel.textContent = Math.round(specular * 100)
+  specularSlider.style.setProperty('--radius-pct', `${(specular / 2) * 100}%`)
+  document.documentElement.style.setProperty('--cg-specular', specular)
+  notifyParent({ type: 'cg_specular', specular })
+})
+
+specularSlider.addEventListener('change', () => {
+  showToast('Specularity updated')
+})
+
+// Ads toggle
+const adsToggle = document.getElementById('ads-toggle')
+adsToggle.checked = localStorage.getItem('cg_ads') !== '0'
+adsToggle.addEventListener('change', () => {
+  localStorage.setItem('cg_ads', adsToggle.checked ? '1' : '0')
+  showToast(adsToggle.checked ? 'Ads enabled' : 'Ads disabled')
 })
 
 buildBackgroundGrid()

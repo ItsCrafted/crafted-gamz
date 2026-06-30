@@ -96,13 +96,13 @@ const BrowserThemeState = (() => {
   function normalizeGlass(value) {
     const num = Number(value)
     if (!Number.isFinite(num)) return DEFAULT_THEME_STATE.glass
-    return Math.max(0, Math.min(1, Math.round(num * 1000) / 1000))
+    return Math.max(0, Math.min(2, Math.round(num * 1000) / 1000))
   }
 
   function normalizeSpecular(value) {
     const num = Number(value)
     if (!Number.isFinite(num)) return DEFAULT_THEME_STATE.specular
-    return Math.max(0, Math.min(1, Math.round(num * 1000) / 1000))
+    return Math.max(0, Math.min(2, Math.round(num * 1000) / 1000))
   }
 
   function normalizeThemeState(raw) {

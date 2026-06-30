@@ -9,6 +9,12 @@ const btnRefresh = document.getElementById('btn-refresh')
 const btnHome = document.getElementById('btn-home')
 const btnSystemSettings = document.getElementById('btn-system-settings')
 const btnUserPage = document.getElementById('btn-user-page')
+const wispBar = document.getElementById('wisp-bar')
+
+function setWispBarVisible(visible) {
+  if (!wispBar) return
+  wispBar.style.display = visible ? '' : 'none'
+}
 
 const tabHistory = new WeakMap()
 let urlSyncIntervalId = null
@@ -53,6 +59,7 @@ function showLoadingScreen(url) {
   newTabPage.style.display = 'none'
   pageFrame.style.display = 'none'
   pageLoadingScreen.style.display = 'flex'
+  setWispBarVisible(false)
 }
 
 function hideLoadingScreen() {
@@ -125,6 +132,7 @@ async function openHistoryEntry(tabEl, index) {
     syncNavButtons(tabEl)
     updateBookmarkStar(local.display)
     setBookmarksBarVisible(false)
+    setWispBarVisible(false)
     return
   }
   if (!uvReady || !baremuxReady) await initProxyStack()
@@ -150,6 +158,7 @@ function showNewTabPage() {
   updateBookmarkStar('newtab')
   setBookmarksBarVisible(true)
   renderBookmarksBar()
+  setWispBarVisible(true)
 }
 
 async function navigate(url) {
@@ -179,6 +188,7 @@ async function navigate(url) {
     syncNavButtons(localTab)
     updateBookmarkStar(full)
     setBookmarksBarVisible(false)
+    setWispBarVisible(false)
     saveTabsSnapshot()
     return
   }

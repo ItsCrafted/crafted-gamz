@@ -69,14 +69,64 @@
       </div>
     </div>
 
-    <div class="card-row clickable" id="switch-layout-row">
-      <div class="row-icon blue"><i class="fa-solid fa-table-columns"></i></div>
+    <div class="card-row" style="flex-direction:column;align-items:flex-start;gap:14px">
+      <div style="display:flex;align-items:center;gap:14px;width:100%">
+        <div class="row-icon blue"><i class="fa-solid fa-droplet"></i></div>
+        <div class="row-body">
+          <div class="row-title">Glass Opacity</div>
+          <div class="row-sub">Controls the transparency of glass surfaces across the browser.</div>
+        </div>
+        <div class="row-end">
+          <span class="radius-value" id="glass-value">100</span><span class="radius-unit">%</span>
+        </div>
+      </div>
+      <div class="radius-slider-wrap">
+        <input type="range" min="0" max="2" step="0.01" value="1" class="radius-slider" id="glass-slider" aria-label="Glass opacity">
+        <div class="radius-ticks">
+          <span data-tick="0">0%</span>
+          <span data-tick="50">100%</span>
+          <span data-tick="100">200%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-row" style="flex-direction:column;align-items:flex-start;gap:14px">
+      <div style="display:flex;align-items:center;gap:14px;width:100%">
+        <div class="row-icon yellow"><i class="fa-solid fa-sun"></i></div>
+        <div class="row-body">
+          <div class="row-title">Specularity</div>
+          <div class="row-sub">Controls the intensity of the top-edge highlight on glass elements.</div>
+        </div>
+        <div class="row-end">
+          <span class="radius-value" id="specular-value">100</span><span class="radius-unit">%</span>
+        </div>
+      </div>
+      <div class="radius-slider-wrap">
+        <input type="range" min="0" max="2" step="0.01" value="1" class="radius-slider" id="specular-slider" aria-label="Specularity">
+        <div class="radius-ticks">
+          <span data-tick="0">0%</span>
+          <span data-tick="50">100%</span>
+          <span data-tick="100">200%</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="section-label">Advanced</div>
+  <div class="card">
+
+    <div class="card-row" id="ads-row">
+      <div class="row-icon red"><i class="fa-solid fa-shield-halved"></i></div>
       <div class="row-body">
-        <div class="row-title">Browser Setup</div>
-        <div class="row-sub">Re-open the browser onboarding page</div>
+        <div class="row-title">Ads</div>
+        <div class="row-sub">Disabling removes the ad script. Takes effect on next page load.</div>
       </div>
       <div class="row-end">
-        <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:11px;opacity:0.4;"></i>
+        <label class="toggle-wrap" aria-label="Toggle ads">
+          <input type="checkbox" id="ads-toggle" checked>
+          <span class="toggle-track"></span>
+        </label>
       </div>
     </div>
 
