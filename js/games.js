@@ -169,6 +169,22 @@ function renderFilters(){
   });
 }
 
+function renderSkeletons(count){
+  const grid = document.getElementById('games-grid');
+  grid.innerHTML='';
+  for(let i=0;i<count;i++){
+    const skeleton = document.createElement('div');
+    skeleton.className='skeleton-card';
+    skeleton.innerHTML=`
+      <div class="skeleton-img"></div>
+      <div class="skeleton-body">
+        <div class="skeleton-title"></div>
+      </div>
+    `;
+    grid.appendChild(skeleton);
+  }
+}
+
 function renderGrid(results){
   const tokens = tokenize(query);
   const grid = document.getElementById('games-grid');

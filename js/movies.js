@@ -20,7 +20,19 @@ function getCategoryFromGenres(ids){
 
 function showLoading(){
   grid.innerHTML='';
-  for(let i=0;i<20;i++){const el=document.createElement('div');el.className='loading-shimmer';grid.appendChild(el)}
+  for(let i=0;i<20;i++){
+    const el=document.createElement('div');
+    el.className='skeleton-movie-card';
+    el.innerHTML=`
+      <div class="skeleton-movie-img"></div>
+      <div class="skeleton-movie-rating"></div>
+      <div class="skeleton-movie-info">
+        <div class="skeleton-movie-title"></div>
+        <div class="skeleton-movie-year"></div>
+      </div>
+    `;
+    grid.appendChild(el);
+  }
 }
 
 function formatMovies(raw,fallbackCategory=''){
