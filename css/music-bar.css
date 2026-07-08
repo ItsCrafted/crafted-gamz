@@ -792,6 +792,63 @@
   line-height: 1.45;
 }
 
+/* Skeleton Loaders for Music Search */
+.mp-skeleton-result {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: calc(var(--cg-radius) * 3 / 4);
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+.mp-skeleton-art {
+  width: 40px;
+  height: 40px;
+  border-radius: calc(var(--cg-radius) * 1 / 2);
+  flex: 0 0 auto;
+  background: linear-gradient(90deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.09) 50%, rgba(255,255,255,0.04) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.mp-skeleton-copy {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mp-skeleton-title {
+  height: 12px;
+  width: 70%;
+  background: linear-gradient(90deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0.08) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 2px;
+}
+
+.mp-skeleton-meta {
+  height: 10px;
+  width: 50%;
+  background: linear-gradient(90deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.06) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 2px;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
 /* Empty player state */
 .mp-root:not(.has-track) .mp-view-player .mp-hero-art {
   width: 120px;

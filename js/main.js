@@ -39,6 +39,9 @@ if (tipClose) {
     tip.style.opacity = '0'
     setTimeout(() => { tip.style.display = 'none' }, 300)
     localStorage.setItem('cg_tip_dismissed', '1')
+    if (window.accountManager && typeof window.accountManager.scheduleTipDismissedSync === 'function') {
+      window.accountManager.scheduleTipDismissedSync()
+    }
   })
 }
 

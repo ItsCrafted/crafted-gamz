@@ -119,9 +119,30 @@ async function searchMovies(query){
 }
 
 function openPlayer(movieId,title){
+  // Track in history
+  if (window.CraftedHistory) {
+    const movie = allMovies.find(m => m.id === movieId);
+    if (movie) {
+      window.CraftedHistory.addToHistory(window.CraftedHistory.HISTORY_TYPES.MOVIE, {
+        id: movieId,
+        title: movie.name,
+        subtitle: movie.year,
+        cover: movie.poster
+      });
+    }
+  }
   window.open(`https://player.videasy.net/movie/${movieId}`,'_blank');
 }
-searchInput.addEventListener('input',e=>{clearTimeout(searchTimer);searchTimer=setTimeout(()=>searchMovies(e.target.value),500)});
+searchInput.addEventListener('input',e=>{
+  const query = e.target.value.trim();
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(()=>searchMovies(query),500);
+  
+  // Track search history
+  if (window.CraftedHistory && query.length >= 2) {
+    window.CraftedHistory.addSearchHistory(query, 'movies');
+  }
+});
 document.querySelectorAll('.cat-btn').forEach(btn=>{
   btn.addEventListener('click',async()=>{
     document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
@@ -131,5 +152,14 @@ document.querySelectorAll('.cat-btn').forEach(btn=>{
   });
 });
 loadBtn.addEventListener('click',()=>{currentCategory==='all'?loadTopMovies(true):loadCategoryMovies(currentCategory,true)});
+
+// Handle search from history
+window.addEventListener('searchFromHistory', (e) => {
+  const query = e.detail;
+  if (query) {
+    searchInput.value = query;
+    searchMovies(query);
+  }
+});
 
 loadTopMovies();

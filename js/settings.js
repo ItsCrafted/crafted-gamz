@@ -304,6 +304,9 @@ const adsToggle = document.getElementById('ads-toggle')
 adsToggle.checked = localStorage.getItem('cg_ads') !== '0'
 adsToggle.addEventListener('change', () => {
   localStorage.setItem('cg_ads', adsToggle.checked ? '1' : '0')
+  if (window.accountManager && typeof window.accountManager.scheduleAdsSync === 'function') {
+    window.accountManager.scheduleAdsSync()
+  }
   showToast(adsToggle.checked ? 'Ads enabled' : 'Ads disabled')
 })
 

@@ -632,6 +632,16 @@
     state.currentIndex = Number.isFinite(index) ? index : state.currentIndex
     state.playing = true
 
+    // Track in history
+    if (window.CraftedHistory) {
+      window.CraftedHistory.addToHistory(window.CraftedHistory.HISTORY_TYPES.MUSIC, {
+        id: track.id,
+        title: getTrackTitle(track),
+        subtitle: getArtistText(track),
+        cover: track.coverUrl || track.album?.coverUrl || ''
+      });
+    }
+
     renderNowPlaying(track, playback)
     updatePlayButton()
     updateQueueMarker()
@@ -726,6 +736,19 @@
     dom.results.innerHTML = `<div class="mp-empty">${escapeHtml(message)}</div>`
   }
 
+  function renderSkeletons(count = 8) {
+    if (!dom.results) return
+    dom.results.innerHTML = Array(count).fill(0).map(() => `
+      <div class="mp-skeleton-result">
+        <div class="mp-skeleton-art"></div>
+        <div class="mp-skeleton-copy">
+          <div class="mp-skeleton-title"></div>
+          <div class="mp-skeleton-meta"></div>
+        </div>
+      </div>
+    `).join('')
+  }
+
   function renderSearchResults(payload) {
     const tracks = payload?.tracks?.items || payload?.items || []
     state.searchResults = tracks
@@ -765,6 +788,7 @@
     }
 
     setBusy(true, `Searching for "${trimmed}"...`)
+    renderSkeletons(8)
     const requestId = ++state.searchSeq
 
     try {
@@ -1072,7 +1096,13 @@
     })
 
     dom.searchInput?.addEventListener('input', (event) => {
-      scheduleSearch(event.target.value)
+      const query = event.target.value.trim();
+      scheduleSearch(query);
+      
+      // Track search history
+      if (window.CraftedHistory && query.length >= 2) {
+        window.CraftedHistory.addSearchHistory(query, 'music');
+      }
     })
 
     dom.searchInput?.addEventListener('keydown', async (event) => {
@@ -1109,6 +1139,9 @@
       state.audio.volume = volume
       try {
         localStorage.setItem('cg-music-volume', String(volume))
+        if (window.accountManager && typeof window.accountManager.scheduleMusicVolumeSync === 'function') {
+          window.accountManager.scheduleMusicVolumeSync()
+        }
       } catch (e) {}
     })
 
@@ -1215,6 +1248,15 @@
       try {
         if (state.ws) state.ws.close()
       } catch {}
+    })
+
+    // Handle search from history
+    window.addEventListener('searchFromHistory', (e) => {
+      const query = e.detail;
+      if (query && dom.searchInput) {
+        dom.searchInput.value = query;
+        runSearch(query);
+      }
     })
   }
 

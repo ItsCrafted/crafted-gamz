@@ -192,6 +192,12 @@ async function navigate(url) {
     saveTabsSnapshot()
     return
   }
+  
+  // Track proxy navigation in history
+  if (window.CraftedHistory) {
+    window.CraftedHistory.addProxyHistory(full);
+  }
+  
   if (!/^https?:\/\//i.test(full) && !full.startsWith('about:')) {
     if (full.includes('.') && !full.includes(' ')) {
       full = 'https://' + full

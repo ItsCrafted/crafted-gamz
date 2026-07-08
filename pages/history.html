@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crafted Gamz History</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/history.css">
+  <script src="https://cdn.cgamz.online/brand.js"></script>
+  <script src="../js/theme-state.js"></script>
+</head>
+<body>
+<div class="bg-container">
+  <iframe src="../bg.html"></iframe>
+</div>
+
+<main id="main-content">
+  <header class="page-header">
+    <div class="page-header-left">
+      <div class="page-header-icon"><i class="fa-solid fa-clock-rotate-left"></i></div>
+      <div>
+        <h1 class="page-title">History</h1>
+        <p class="page-subtitle">View your recently played games, movies, and music.</p>
+      </div>
+    </div>
+    <div class="page-header-right">
+      <button class="header-btn" id="clearHistoryBtn" title="Clear all history">
+        <i class="fa-solid fa-trash"></i>
+        <span>Clear All</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="history-filters">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="game">Games</button>
+    <button class="filter-btn" data-filter="movie">Movies</button>
+    <button class="filter-btn" data-filter="music">Music</button>
+    <button class="filter-btn" data-filter="search">Search</button>
+    <button class="filter-btn" data-filter="proxy">Proxy</button>
+  </div>
+
+  <div class="history-content" id="historyContent">
+    <div class="empty-state" id="emptyState">
+      <div class="empty-icon"><i class="fa-solid fa-clock-rotate-left"></i></div>
+      <div class="empty-title">No history yet</div>
+      <div class="empty-subtitle">Start playing games, watching movies, or listening to music to see your history here.</div>
+    </div>
+  </div>
+</main>
+
+<script src="../js/history.js"></script>
+<script src="../js/history-page.js"></script>
+</body>
+</html>

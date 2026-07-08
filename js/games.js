@@ -231,6 +231,15 @@ function openGame(g){
   document.getElementById('game-title').textContent = g.name;
   document.getElementById('game-frame').src = `../games/${g.id}.html`;
   document.getElementById('game-view').classList.add('open');
+  
+  // Track in history
+  if (window.CraftedHistory) {
+    window.CraftedHistory.addToHistory(window.CraftedHistory.HISTORY_TYPES.GAME, {
+      id: g.id,
+      title: g.name,
+      cover: `../img/games/${g.id.replace(/['"]/g,'')}.png`
+    });
+  }
 }
 
 function closeGame(){
@@ -256,6 +265,11 @@ document.getElementById('search-input').addEventListener('input',e=>{
   query=e.target.value.trim();
   document.getElementById('search-clear').classList.toggle('visible',query.length>0);
   render();
+  
+  // Track search history
+  if (window.CraftedHistory && query.length >= 2) {
+    window.CraftedHistory.addSearchHistory(query, 'games');
+  }
 });
 
 document.getElementById('search-clear').addEventListener('click',()=>{
@@ -270,4 +284,15 @@ document.getElementById('sort-btn').addEventListener('click',()=>{
   document.getElementById('sort-icon').className=`fa-solid ${sortAsc?'fa-arrow-down-a-z':'fa-arrow-up-a-z'}`;
   document.getElementById('sort-label').textContent=sortAsc?'A–Z':'Z–A';
   render();
+});
+
+// Handle search from history
+window.addEventListener('searchFromHistory', (e) => {
+  const query = e.detail;
+  if (query) {
+    document.getElementById('search-input').value = query;
+    query = query.trim();
+    document.getElementById('search-clear').classList.toggle('visible', query.length > 0);
+    render();
+  }
 });

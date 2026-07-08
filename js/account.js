@@ -16,6 +16,9 @@ class AccountManager {
     this.lastSyncHash   = ''
 
     this._lastPushedTheme = undefined
+    this._lastPushedAds = undefined
+    this._lastPushedMusicVolume = undefined
+    this._lastPushedTipDismissed = undefined
 
     this._init()
   }
@@ -70,6 +73,9 @@ class AccountManager {
           await this.pullPins()
           await this.pullTabs()
           await this.pullRadius()
+          await this.pullAds()
+          await this.pullMusicVolume()
+          await this.pullTipDismissed()
           this._startSync()
           this._hideOverlay()
         } else {
@@ -167,6 +173,9 @@ class AccountManager {
       this.pushBookmarks()
       this.pushTabs()
       this.pushTheme()
+      this.pushAds()
+      this.pushMusicVolume()
+      this.pushTipDismissed()
     }, this.SYNC_MS)
     console.log('[Account] Auto-sync started (every', this.SYNC_MS / 1000, 's, change-based)')
   }
@@ -177,6 +186,9 @@ class AccountManager {
     this.lastSyncHash = ''
     this._lastPushedRadius = undefined
     this._lastPushedTheme  = undefined
+    this._lastPushedAds = undefined
+    this._lastPushedMusicVolume = undefined
+    this._lastPushedTipDismissed = undefined
   }
 
 
@@ -365,11 +377,172 @@ class AccountManager {
   async pullRadius() { return this.pullTheme() }
 
 
+  // Ads preference sync
+  _getAds() {
+    return localStorage.getItem('cg_ads') !== '0'
+  }
+
+  _setAds(enabled) {
+    localStorage.setItem('cg_ads', enabled ? '1' : '0')
+  }
+
+  scheduleAdsSync() {
+    if (!this.user) return
+    clearTimeout(this._adsSyncTimer)
+    this._adsSyncTimer = setTimeout(() => this.pushAds(), 1500)
+  }
+
+  async pushAds() {
+    if (!this.user || !this.db) return
+    const ads = this._getAds()
+    const hash = String(ads)
+    if (hash === this._lastPushedAds) return
+    this._lastPushedAds = hash
+    try {
+      await this.db.collection('users').doc(this.user.uid).set(
+        { ads, lastSync: firebase.firestore.FieldValue.serverTimestamp() },
+        { merge: true }
+      )
+      console.log('[Account] Pushed ads preference:', ads)
+    } catch (e) {
+      console.warn('[Account] Ads push failed:', e)
+    }
+  }
+
+  async pullAds() {
+    if (!this.user || !this.db) return
+    try {
+      const doc = await this.db.collection('users').doc(this.user.uid).get()
+      if (!doc.exists) return
+      const data = doc.data()
+      if (typeof data.ads === 'boolean') {
+        this._setAds(data.ads)
+        this._lastPushedAds = String(data.ads)
+        console.log('[Account] Pulled ads preference from Firestore:', data.ads)
+      }
+    } catch (e) {
+      console.warn('[Account] Ads pull failed:', e)
+    }
+  }
+
+
+  // Music volume sync
+  _getMusicVolume() {
+    try {
+      const vol = localStorage.getItem('cg-music-volume')
+      return vol !== null ? parseFloat(vol) : null
+    } catch { return null }
+  }
+
+  _setMusicVolume(volume) {
+    if (volume !== null) {
+      localStorage.setItem('cg-music-volume', String(volume))
+    } else {
+      localStorage.removeItem('cg-music-volume')
+    }
+  }
+
+  scheduleMusicVolumeSync() {
+    if (!this.user) return
+    clearTimeout(this._musicVolumeSyncTimer)
+    this._musicVolumeSyncTimer = setTimeout(() => this.pushMusicVolume(), 1500)
+  }
+
+  async pushMusicVolume() {
+    if (!this.user || !this.db) return
+    const volume = this._getMusicVolume()
+    const hash = String(volume)
+    if (hash === this._lastPushedMusicVolume) return
+    this._lastPushedMusicVolume = hash
+    try {
+      await this.db.collection('users').doc(this.user.uid).set(
+        { musicVolume: volume, lastSync: firebase.firestore.FieldValue.serverTimestamp() },
+        { merge: true }
+      )
+      console.log('[Account] Pushed music volume:', volume)
+    } catch (e) {
+      console.warn('[Account] Music volume push failed:', e)
+    }
+  }
+
+  async pullMusicVolume() {
+    if (!this.user || !this.db) return
+    try {
+      const doc = await this.db.collection('users').doc(this.user.uid).get()
+      if (!doc.exists) return
+      const data = doc.data()
+      if (typeof data.musicVolume === 'number' || data.musicVolume === null) {
+        this._setMusicVolume(data.musicVolume)
+        this._lastPushedMusicVolume = String(data.musicVolume)
+        console.log('[Account] Pulled music volume from Firestore:', data.musicVolume)
+      }
+    } catch (e) {
+      console.warn('[Account] Music volume pull failed:', e)
+    }
+  }
+
+
+  // Tip dismissed sync
+  _getTipDismissed() {
+    return localStorage.getItem('cg_tip_dismissed') === '1'
+  }
+
+  _setTipDismissed(dismissed) {
+    if (dismissed) {
+      localStorage.setItem('cg_tip_dismissed', '1')
+    } else {
+      localStorage.removeItem('cg_tip_dismissed')
+    }
+  }
+
+  scheduleTipDismissedSync() {
+    if (!this.user) return
+    clearTimeout(this._tipDismissedSyncTimer)
+    this._tipDismissedSyncTimer = setTimeout(() => this.pushTipDismissed(), 1500)
+  }
+
+  async pushTipDismissed() {
+    if (!this.user || !this.db) return
+    const tipDismissed = this._getTipDismissed()
+    const hash = String(tipDismissed)
+    if (hash === this._lastPushedTipDismissed) return
+    this._lastPushedTipDismissed = hash
+    try {
+      await this.db.collection('users').doc(this.user.uid).set(
+        { tipDismissed, lastSync: firebase.firestore.FieldValue.serverTimestamp() },
+        { merge: true }
+      )
+      console.log('[Account] Pushed tip dismissed:', tipDismissed)
+    } catch (e) {
+      console.warn('[Account] Tip dismissed push failed:', e)
+    }
+  }
+
+  async pullTipDismissed() {
+    if (!this.user || !this.db) return
+    try {
+      const doc = await this.db.collection('users').doc(this.user.uid).get()
+      if (!doc.exists) return
+      const data = doc.data()
+      if (typeof data.tipDismissed === 'boolean') {
+        this._setTipDismissed(data.tipDismissed)
+        this._lastPushedTipDismissed = String(data.tipDismissed)
+        console.log('[Account] Pulled tip dismissed from Firestore:', data.tipDismissed)
+      }
+    } catch (e) {
+      console.warn('[Account] Tip dismissed pull failed:', e)
+    }
+  }
+
+
   async signOut() {
     await this.pushBookmarks()
     await this.pushPins()
     await this.pushTabs()
     await this.pushRadius()
+    await this.pushAds()
+    await this.pushMusicVolume()
+    await this.pushTipDismissed()
     this._stopSync()
     await this.auth.signOut()
     this.user    = null
