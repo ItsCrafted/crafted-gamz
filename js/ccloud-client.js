@@ -238,7 +238,7 @@ class CCloudClient {
       })
 
       if (!response.ok) {
-        if (response.status === 404) {
+        if (response.status === 404 || response.status === 500) {
           return null
         }
         throw new Error('Failed to get data')
