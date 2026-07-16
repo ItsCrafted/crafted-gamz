@@ -1,0 +1,16 @@
+{
+  "name": "ccloud",
+  "version": "1.0.0",
+  "description": "Firebase-based authentication and data storage service",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "keywords": ["firebase", "auth", "cloudflare", "worker"],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "wrangler": "^3.57.0"
+  }
+}

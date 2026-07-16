@@ -1,0 +1,36 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Users have full control over their own data directory
+    // EXCEPT for the 3rd-party field which is reserved for external services
+    match /users/{userId}/data/{document=**} {
+      allow read: if request.auth != null && request.auth.uid == userId;
+      allow write: if request.auth != null &&
+                     request.auth.uid == userId &&
+                     !request.path[3].matches('3rd-party');
+    }
+
+    // 3rd-party field is read-only for users, writeable only by service accounts
+    match /users/{userId}/data/3rd-party/{document=**} {
+      allow read: if request.auth != null && request.auth.uid == userId;
+      allow write: if false; // Users cannot write to 3rd-party field
+    }
+
+    // History collection - read-only for users
+    match /users/{userId}/_history/{document=**} {
+      allow read: if request.auth != null && request.auth.uid == userId;
+      allow write: if false; // Only backend can write history
+    }
+
+    // Schemas collection - users can manage their own schemas
+    match /users/{userId}/_schemas/{document=**} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Users can also read/write their root user document
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}

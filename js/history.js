@@ -21,11 +21,21 @@
   let syncTimer = null;
 
   function initFirebase() {
-    if (typeof firebase !== 'undefined' && firebase.firestore && firebase.auth) {
+    // Try to access Firebase from parent window first (for iframe context)
+    const targetFirebase = (window.parent && window.parent.firebase && window.parent.firebase.apps.length > 0)
+      ? window.parent.firebase
+      : firebase;
+
+    if (typeof targetFirebase !== 'undefined' && targetFirebase.firestore && targetFirebase.auth) {
       try {
-        firebaseDb = firebase.firestore();
-        firebaseAuth = firebase.auth();
-        
+        // Check if Firebase app is initialized
+        if (!targetFirebase.apps.length) {
+          console.log('[History] Firebase app not initialized yet, waiting...');
+          return;
+        }
+        firebaseDb = targetFirebase.firestore();
+        firebaseAuth = targetFirebase.auth();
+
         firebaseAuth.onAuthStateChanged(user => {
           syncEnabled = !!user;
           if (syncEnabled) {
@@ -38,18 +48,24 @@
       } catch (error) {
         console.error('Firebase initialization failed:', error);
       }
+    } else {
+      console.log('[History] Firebase not available yet');
     }
   }
 
   function loadHistory() {
     try {
       const stored = localStorage.getItem(HISTORY_KEY);
+      console.log('[History] Loading from localStorage, stored:', stored);
       if (stored) {
         const parsed = JSON.parse(stored);
         historyData = {
           items: Array.isArray(parsed.items) ? parsed.items : [],
           lastSync: parsed.lastSync || null
         };
+        console.log('[History] Loaded history:', historyData);
+      } else {
+        console.log('[History] No existing history found in localStorage');
       }
     } catch (error) {
       console.error('Failed to load history:', error);
@@ -59,7 +75,9 @@
 
   function saveHistory() {
     try {
+      console.log('[History] Saving to localStorage:', historyData);
       localStorage.setItem(HISTORY_KEY, JSON.stringify(historyData));
+      console.log('[History] Saved successfully');
       if (syncEnabled) {
         scheduleSync();
       }
@@ -69,6 +87,7 @@
   }
 
   function addToHistory(type, item) {
+    console.log('[History] addToHistory called:', { type, item });
     const historyItem = {
       id: item.id || generateId(),
       type: type,
@@ -84,11 +103,15 @@
       }
     };
 
+    console.log('[History] Created history item:', historyItem);
+
     // Remove existing item with same ID to avoid duplicates
     historyData.items = historyData.items.filter(i => i.id !== historyItem.id);
 
     // Add new item at the beginning
     historyData.items.unshift(historyItem);
+
+    console.log('[History] History items count:', historyData.items.length);
 
     // Limit history size
     if (historyData.items.length > MAX_HISTORY_ITEMS) {
@@ -226,11 +249,14 @@
 
     try {
       const userId = firebaseAuth.currentUser.uid;
-      const historyRef = firebaseDb.collection('users').doc(userId).collection('data').doc('history');
+      const historyRef = firebaseDb.collection('users').doc(userId);
       
       await historyRef.set({
-        items: historyData.items,
-        lastSync: Date.now()
+        history: {
+          items: historyData.items,
+          lastSync: Date.now()
+        },
+        lastSync: firebase.firestore.FieldValue.serverTimestamp()
       }, { merge: true });
       
       historyData.lastSync = Date.now();
@@ -245,13 +271,14 @@
 
     try {
       const userId = firebaseAuth.currentUser.uid;
-      const historyRef = firebaseDb.collection('users').doc(userId).collection('data').doc('history');
+      const historyRef = firebaseDb.collection('users').doc(userId);
       const doc = await historyRef.get();
       
       if (doc.exists) {
-        const remoteData = doc.data();
+        const data = doc.data();
+        const remoteData = data.history;
         
-        if (remoteData.items && Array.isArray(remoteData.items)) {
+        if (remoteData && remoteData.items && Array.isArray(remoteData.items)) {
           const remoteTimestamp = remoteData.lastSync || 0;
           const localTimestamp = historyData.lastSync || 0;
           
@@ -290,16 +317,56 @@
 
   // Initialize
   loadHistory();
-  
+
+  // If running in iframe, use parent's CraftedHistory instead
+  if (window.parent && window.parent !== window) {
+    console.log('[History] Running in iframe context');
+    console.log('[History] Parent has CraftedHistory:', !!window.parent.CraftedHistory);
+    if (window.parent.CraftedHistory) {
+      console.log('[History] Using parent CraftedHistory');
+      window.CraftedHistory = window.parent.CraftedHistory;
+      return; // Don't initialize Firebase in iframe context
+    } else {
+      console.log('[History] Parent CraftedHistory not available, waiting...');
+      // Poll for parent CraftedHistory
+      let attempts = 0;
+      const checkParent = setInterval(() => {
+        attempts++;
+        if (window.parent.CraftedHistory) {
+          console.log('[History] Parent CraftedHistory found after', attempts, 'attempts');
+          window.CraftedHistory = window.parent.CraftedHistory;
+          clearInterval(checkParent);
+        } else if (attempts > 20) {
+          console.log('[History] Gave up waiting for parent CraftedHistory');
+          clearInterval(checkParent);
+        }
+      }, 200);
+      return;
+    }
+  }
+
+  console.log('[History] Running in main context, initializing Firebase');
+
   // Initialize Firebase when available
-  if (typeof firebase !== 'undefined') {
-    initFirebase();
+  function tryInitFirebase() {
+    const targetFirebase = (window.parent && window.parent.firebase)
+      ? window.parent.firebase
+      : firebase;
+
+    if (typeof targetFirebase !== 'undefined' && targetFirebase.apps.length > 0) {
+      initFirebase();
+    } else {
+      console.log('[History] Firebase not ready, retrying in 500ms...');
+      setTimeout(tryInitFirebase, 500);
+    }
+  }
+
+  if (typeof firebase !== 'undefined' || (window.parent && window.parent.firebase)) {
+    tryInitFirebase();
   } else {
     // Wait for Firebase to load
     document.addEventListener('DOMContentLoaded', () => {
-      if (typeof firebase !== 'undefined') {
-        initFirebase();
-      }
+      tryInitFirebase();
     });
   }
 })();
