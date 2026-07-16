@@ -190,6 +190,16 @@ async function navigate(url) {
     setBookmarksBarVisible(false)
     setWispBarVisible(false)
     saveTabsSnapshot()
+
+    // Track local page navigation in history
+    if (window.CraftedHistory) {
+      window.CraftedHistory.addToHistory(window.CraftedHistory.HISTORY_TYPES.PROXY, {
+        id: `local_${Date.now()}_${local.key}`,
+        title: local.key,
+        subtitle: 'Local page'
+      });
+    }
+
     return
   }
   

@@ -18,52 +18,29 @@
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/music-bar.css">
 <script>if(localStorage.getItem('cg_ads')!=='0'){document.write('<scr'+'ipt src="https://braverybreezebinding.com/0f/56/be/0f56be0c6cb9ec47495a2b2c40ef7b0f.js"><\/scr'+'ipt>')}</script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script src="js/ccloud-client.js"></script>
 <script>
-const FIREBASE_CONFIG_URL = 'https://firebase.cdn.cgamz.online';
-
 async function initOnboardingGate() {
-  let config;
-
   try {
-    const res = await fetch(FIREBASE_CONFIG_URL, {
-      headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'craftedgamz-firebase' }
-    });
-    config = await res.json();
-  } catch (e) {
-    redirect('/onboarding/1.html');
-    return;
-  }
-
-  if (!firebase.apps.length) firebase.initializeApp(config);
-  const auth = firebase.auth();
-  const db = firebase.firestore();
-
-  auth.onAuthStateChanged(async (user) => {
-    if (!user) {
+    // Check if user is logged in via cCloud
+    const savedSession = localStorage.getItem('ccloud_session');
+    if (!savedSession) {
       redirect('/onboarding/1.html');
       return;
     }
 
-    try {
-      const doc = await db.collection('users').doc(user.uid).get();
-      if (!doc.exists) {
-        redirect('/onboarding/1.html');
-        return;
-      }
-
-      const data = doc.data();
-      const step = data.onboardingStep || 1;
-
-      if (step < 5) {
-        redirect(`/onboarding/${step}.html`);
-      }
-    } catch (e) {
+    const session = JSON.parse(savedSession);
+    if (!session.user || !session.token) {
       redirect('/onboarding/1.html');
+      return;
     }
-  });
+
+    // For now, skip onboarding check - users can complete it later
+    // In future, store onboarding progress in cCloud
+  } catch (e) {
+    console.warn('[Init] Onboarding gate error:', e);
+    redirect('/onboarding/1.html');
+  }
 }
 
 function redirect(path) {
@@ -318,6 +295,7 @@ initOnboardingGate();
   </div>
 </div>
 <script src="js/account.js"></script>
+<script src="js/history.js"></script>
 <script src="https://unpkg.com/draggabilly@2.2.0/dist/draggabilly.pkgd.min.js"></script>
 <script src="/baremux/index.js"></script>
 <script src="/uv/uv.bundle.js"></script>

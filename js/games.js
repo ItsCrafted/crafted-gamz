@@ -227,18 +227,26 @@ function render(){
   meta.textContent=`${results.length} of ${games.length} — ${parts.join(' · ')}`;
 }
 
+console.log('[Games] games.js loaded');
+
 function openGame(g){
+  console.log('[Games] openGame called:', g);
   document.getElementById('game-title').textContent = g.name;
   document.getElementById('game-frame').src = `../games/${g.id}.html`;
   document.getElementById('game-view').classList.add('open');
-  
+
+  console.log('[Games] window.CraftedHistory available:', !!window.CraftedHistory);
+
   // Track in history
   if (window.CraftedHistory) {
+    console.log('[Games] Calling addToHistory for game:', g.name);
     window.CraftedHistory.addToHistory(window.CraftedHistory.HISTORY_TYPES.GAME, {
       id: g.id,
       title: g.name,
       cover: `../img/games/${g.id.replace(/['"]/g,'')}.png`
     });
+  } else {
+    console.log('[Games] CraftedHistory not available, skipping history');
   }
 }
 

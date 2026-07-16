@@ -4,22 +4,30 @@
   function renderHistory() {
     const content = document.getElementById('historyContent');
     const emptyState = document.getElementById('emptyState');
-    
+
+    console.log('[HistoryPage] renderHistory called, filter:', currentFilter);
+    console.log('[HistoryPage] CraftedHistory available:', !!window.CraftedHistory);
+
     if (!window.CraftedHistory) {
       content.innerHTML = '<div class="empty-state"><div class="empty-title">History not available</div></div>';
       return;
     }
 
     const items = window.CraftedHistory.getHistory(currentFilter);
-    
+    console.log('[HistoryPage] Items returned:', items.length, items);
+
     if (items.length === 0) {
-      content.innerHTML = '';
-      content.appendChild(emptyState);
-      emptyState.style.display = 'flex';
+      content.innerHTML = `
+        <div class="empty-state" id="emptyState" style="display:flex">
+          <div class="empty-icon"><i class="fa-solid fa-clock-rotate-left"></i></div>
+          <div class="empty-title">No history yet</div>
+          <div class="empty-subtitle">Start playing games, watching movies, or listening to music to see your history here.</div>
+        </div>
+      `;
       return;
     }
 
-    emptyState.style.display = 'none';
+    content.innerHTML = '';
     
     const grouped = window.CraftedHistory.groupHistoryByDate(items);
     let html = '';

@@ -186,37 +186,8 @@ function setupPasswordReset(am) {
   const row = document.getElementById('pw-reset-row')
   if (!row) return
 
-  let sending = false
-
   row.addEventListener('click', async () => {
-    if (sending) return
-    const user = am.user
-    if (!user || !user.email) { showToast('No email on file'); return }
-
-    sending = true
-    const sub = document.getElementById('pw-reset-sub')
-    const chevron = document.getElementById('pw-reset-chevron')
-    if (sub) sub.textContent = 'Sending…'
-    if (chevron) chevron.className = 'fa-solid fa-circle-notch fa-spin-custom'
-
-    try {
-      const firebase = window.parent && window.parent.firebase ? window.parent.firebase : window.firebase
-      await firebase.auth().sendPasswordResetEmail(user.email)
-      showToast('Reset link sent to ' + user.email)
-      if (sub) sub.textContent = 'Reset link sent — check your inbox'
-      if (chevron) chevron.className = 'row-chevron fa-solid fa-check'
-      setTimeout(() => {
-        if (sub) sub.textContent = 'Send a reset link to your email'
-        if (chevron) chevron.className = 'row-chevron fa-solid fa-chevron-right'
-        sending = false
-      }, 4000)
-    } catch (err) {
-      const msg = err.code === 'auth/too-many-requests' ? 'Too many requests — try later' : 'Failed to send reset link'
-      showToast(msg)
-      if (sub) sub.textContent = 'Send a reset link to your email'
-      if (chevron) chevron.className = 'row-chevron fa-solid fa-chevron-right'
-      sending = false
-    }
+    showToast('Password reset coming soon')
   })
 }
 
@@ -255,7 +226,7 @@ function renderPage() {
     ? window.parent.accountManager
     : window.accountManager
 
-  if (!am || !am.firebaseLoaded) { setTimeout(renderPage, 200); return }
+  if (!am) { setTimeout(renderPage, 200); return }
 
   document.getElementById('loading-state').style.display = 'none'
 
@@ -268,7 +239,7 @@ function renderPage() {
     document.getElementById('signed-in-state').style.display = 'none'
     document.getElementById('acct-signin-btn').addEventListener('click', () => {
       am.isGuest = false
-      am.showAuthPrompt()
+      am._showOverlay()
     })
     return
   }

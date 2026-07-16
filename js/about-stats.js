@@ -1,6 +1,4 @@
 (function () {
-  const FIREBASE_CONFIG_URL = 'https://firebase.cdn.cgamz.online';
-
   function setStat(id, value) {
     const el = document.getElementById(id);
     if (el) el.textContent = UserStats.formatCount(value);
@@ -10,33 +8,33 @@
     if (typeof UserStats === 'undefined') return;
 
     try {
-      const res = await fetch(FIREBASE_CONFIG_URL, {
-        headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'craftedgamz-firebase' }
-      });
-      const config = await res.json();
-      if (!firebase.apps.length) firebase.initializeApp(config);
+      // Check for cCloud session
+      const sessionStr = localStorage.getItem('ccloud_session');
+      if (!sessionStr) return;
 
-      const auth = firebase.auth();
-      const db = firebase.firestore();
+      const session = JSON.parse(sessionStr);
+      if (!session || !session.user) return;
 
-      await new Promise((resolve) => {
-        const unsub = auth.onAuthStateChanged(() => {
-          unsub();
-          resolve();
-        });
-      });
+      // Get cCloud client from accountManager
+      let ccloud = null;
+      if (window.accountManager && window.accountManager.ccloud) {
+        ccloud = window.accountManager.ccloud;
+      } else if (window.parent && window.parent.accountManager && window.parent.accountManager.ccloud) {
+        ccloud = window.parent.accountManager.ccloud;
+      }
 
-      if (!auth.currentUser) return;
+      if (!ccloud) return;
 
-      UserStats.bindAuth(firebase, auth);
+      // Bind cCloud client to UserStats and start subscriptions
+      UserStats.bindCCloud(ccloud);
 
-      UserStats.subscribeUserCounts(db, (counts) => {
+      UserStats.subscribeUserCounts((counts) => {
         setStat('stat-alltime', counts.allTime);
         setStat('stat-today', counts.today);
         setStat('stat-month', counts.month);
       });
 
-      UserStats.subscribeOnlineCount(firebase, (online) => {
+      UserStats.subscribeOnlineCount((online) => {
         setStat('stat-online', online);
       });
     } catch (e) {
