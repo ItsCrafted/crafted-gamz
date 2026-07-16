@@ -1,6 +1,6 @@
 class AccountManager {
   constructor() {
-    this.CCLOUD_URL       = 'https://cloud.cgamz.online'
+    this.CCLOUD_URL       = 'https://cloud.craftedgamz.com'
     this.BM_KEY           = 'cg_bookmarks'
     this.PINS_KEY         = 'cg_pins'
     this.TABS_KEY         = 'cg_tabs'

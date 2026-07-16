@@ -1,12 +1,12 @@
 /**
  * cCloud Client for Crafted Gamz
- * Replaces Firebase with cCloud (https://cloud.cgamz.online)
+ * Replaces Firebase with cCloud (https://cloud.craftedgamz.com)
  * Handles authentication and data sync with offline-first support
  */
 
 class CCloudClient {
   constructor(config = {}) {
-    this.workerUrl = config.workerUrl || 'https://cloud.cgamz.online'
+    this.workerUrl = config.workerUrl || 'https://cloud.craftedgamz.com'
     this.currentUser = null
     this.token = null
     this.syncEnabled = false
