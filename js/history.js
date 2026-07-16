@@ -15,41 +15,28 @@
     lastSync: null
   };
 
-  let firebaseDb = null;
-  let firebaseAuth = null;
+  let ccloud = null;
   let syncEnabled = false;
   let syncTimer = null;
 
-  function initFirebase() {
-    // Try to access Firebase from parent window first (for iframe context)
-    const targetFirebase = (window.parent && window.parent.firebase && window.parent.firebase.apps.length > 0)
-      ? window.parent.firebase
-      : firebase;
+  function initCCloud() {
+    // Get cCloud from parent if available
+    const ccloudClient = (window.parent && window.parent.accountManager && window.parent.accountManager.ccloud)
+      ? window.parent.accountManager.ccloud
+      : window.accountManager?.ccloud;
 
-    if (typeof targetFirebase !== 'undefined' && targetFirebase.firestore && targetFirebase.auth) {
-      try {
-        // Check if Firebase app is initialized
-        if (!targetFirebase.apps.length) {
-          console.log('[History] Firebase app not initialized yet, waiting...');
-          return;
-        }
-        firebaseDb = targetFirebase.firestore();
-        firebaseAuth = targetFirebase.auth();
-
-        firebaseAuth.onAuthStateChanged(user => {
-          syncEnabled = !!user;
-          if (syncEnabled) {
-            syncFromFirebase();
-            startAutoSync();
-          } else {
-            stopAutoSync();
-          }
-        });
-      } catch (error) {
-        console.error('Firebase initialization failed:', error);
+    if (ccloudClient) {
+      ccloud = ccloudClient;
+      const user = ccloud.getCurrentUser();
+      syncEnabled = !!user;
+      if (syncEnabled) {
+        syncFromCCloud();
+        startAutoSync();
+      } else {
+        stopAutoSync();
       }
     } else {
-      console.log('[History] Firebase not available yet');
+      console.log('[History] cCloud not available yet');
     }
   }
 
@@ -226,15 +213,15 @@
     return `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
 
-  // Firebase Sync Functions
+  // cCloud Sync Functions
   function scheduleSync() {
     if (syncTimer) clearTimeout(syncTimer);
-    syncTimer = setTimeout(syncToFirebase, 2000);
+    syncTimer = setTimeout(syncToCCloud, 2000);
   }
 
   function startAutoSync() {
     if (syncTimer) clearInterval(syncTimer);
-    syncTimer = setInterval(syncToFirebase, 30000);
+    syncTimer = setInterval(syncToCCloud, 30000);
   }
 
   function stopAutoSync() {
@@ -244,59 +231,57 @@
     }
   }
 
-  async function syncToFirebase() {
-    if (!syncEnabled || !firebaseAuth.currentUser || !firebaseDb) return;
+  async function syncToCCloud() {
+    if (!syncEnabled || !ccloud) return;
 
     try {
-      const userId = firebaseAuth.currentUser.uid;
-      const historyRef = firebaseDb.collection('users').doc(userId);
-      
-      await historyRef.set({
-        history: {
-          items: historyData.items,
-          lastSync: Date.now()
-        },
-        lastSync: firebase.firestore.FieldValue.serverTimestamp()
-      }, { merge: true });
-      
+      const user = ccloud.getCurrentUser();
+      if (!user) {
+        syncEnabled = false;
+        return;
+      }
+
+      await ccloud.setData(`users/${user.uid}/history`, {
+        items: historyData.items,
+        lastSync: Date.now()
+      });
+
       historyData.lastSync = Date.now();
       localStorage.setItem(HISTORY_KEY, JSON.stringify(historyData));
     } catch (error) {
-      console.error('Failed to sync history to Firebase:', error);
+      console.error('Failed to sync history to cCloud:', error);
     }
   }
 
-  async function syncFromFirebase() {
-    if (!syncEnabled || !firebaseAuth.currentUser || !firebaseDb) return;
+  async function syncFromCCloud() {
+    if (!syncEnabled || !ccloud) return;
 
     try {
-      const userId = firebaseAuth.currentUser.uid;
-      const historyRef = firebaseDb.collection('users').doc(userId);
-      const doc = await historyRef.get();
-      
-      if (doc.exists) {
-        const data = doc.data();
-        const remoteData = data.history;
-        
-        if (remoteData && remoteData.items && Array.isArray(remoteData.items)) {
-          const remoteTimestamp = remoteData.lastSync || 0;
-          const localTimestamp = historyData.lastSync || 0;
-          
-          if (remoteTimestamp > localTimestamp) {
-            historyData = {
-              items: remoteData.items,
-              lastSync: remoteTimestamp
-            };
-            localStorage.setItem(HISTORY_KEY, JSON.stringify(historyData));
-          }
+      const user = ccloud.getCurrentUser();
+      if (!user) {
+        syncEnabled = false;
+        return;
+      }
+
+      const data = await ccloud.getData(`users/${user.uid}/history`).catch(() => null);
+
+      if (data && data.items && Array.isArray(data.items)) {
+        const remoteTimestamp = data.lastSync || 0;
+        const localTimestamp = historyData.lastSync || 0;
+
+        if (remoteTimestamp > localTimestamp) {
+          historyData = {
+            items: data.items,
+            lastSync: remoteTimestamp
+          };
+          localStorage.setItem(HISTORY_KEY, JSON.stringify(historyData));
         }
       }
     } catch (error) {
-      console.error('Failed to sync history from Firebase:', error);
+      console.error('Failed to sync history from cCloud:', error);
     }
   }
 
-  // Export functions for use in other modules
   window.CraftedHistory = {
     HISTORY_TYPES,
     addToHistory,
@@ -311,8 +296,8 @@
     groupHistoryByDate,
     loadHistory,
     saveHistory,
-    syncToFirebase,
-    syncFromFirebase
+    syncToCCloud,
+    syncFromCCloud
   };
 
   // Initialize
@@ -325,7 +310,7 @@
     if (window.parent.CraftedHistory) {
       console.log('[History] Using parent CraftedHistory');
       window.CraftedHistory = window.parent.CraftedHistory;
-      return; // Don't initialize Firebase in iframe context
+      return; // Don't initialize cCloud in iframe context
     } else {
       console.log('[History] Parent CraftedHistory not available, waiting...');
       // Poll for parent CraftedHistory
@@ -345,28 +330,25 @@
     }
   }
 
-  console.log('[History] Running in main context, initializing Firebase');
+  console.log('[History] Running in main context, initializing cCloud');
 
-  // Initialize Firebase when available
-  function tryInitFirebase() {
-    const targetFirebase = (window.parent && window.parent.firebase)
-      ? window.parent.firebase
-      : firebase;
-
-    if (typeof targetFirebase !== 'undefined' && targetFirebase.apps.length > 0) {
-      initFirebase();
+  // Initialize cCloud when available
+  function tryInitCCloud() {
+    const am = window.accountManager;
+    if (am && am.ccloud) {
+      initCCloud();
     } else {
-      console.log('[History] Firebase not ready, retrying in 500ms...');
-      setTimeout(tryInitFirebase, 500);
+      console.log('[History] cCloud not ready, retrying in 500ms...');
+      setTimeout(tryInitCCloud, 500);
     }
   }
 
-  if (typeof firebase !== 'undefined' || (window.parent && window.parent.firebase)) {
-    tryInitFirebase();
+  // Try to initialize immediately or wait for DOM
+  if (window.accountManager?.ccloud) {
+    tryInitCCloud();
   } else {
-    // Wait for Firebase to load
     document.addEventListener('DOMContentLoaded', () => {
-      tryInitFirebase();
+      tryInitCCloud();
     });
   }
 })();

@@ -1,49 +1,30 @@
-const shouldRedirect = new URLSearchParams(window.location.search).get('skip') !== 'true';
+// Onboarding Step 5: Complete & Launch
+// Final step - show user greeting and launch main app
 
-const FIREBASE_CONFIG_URL = 'https://firebase.cdn.cgamz.online';
-    let auth, db, userName = '';
-
-    const envMap = {
-      browser: { label: 'Browser mode', path: '../index.html' }
-    };
-
-    async function init() {
-      try {
-        const res = await fetch(FIREBASE_CONFIG_URL, {
-          headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'craftedgamz-firebase' }
-        });
-        const config = await res.json();
-        if (!firebase.apps.length) firebase.initializeApp(config);
-        auth = firebase.auth();
-        db   = firebase.firestore();
-        if (typeof UserStats !== 'undefined') UserStats.bindAuth(firebase, auth);
-
-        auth.onAuthStateChanged(async user => {
-          if (!user && shouldRedirect) { window.location.href = '1.html'; return; }
-
-          const doc = await db.collection('users').doc(user.uid).get();
-          if (doc.exists) {
-            userName = doc.data().name || '';
-
-            await db.collection('users').doc(user.uid).set(
-              { onboardingStep: 5, onboardingComplete: true },
-              { merge: true }
-            );
-          }
-
-          document.getElementById('greeting').textContent = userName
-            ? `Hey, ${userName}.`
-            : '';
-          document.getElementById('env-label').textContent = envMap.browser.label;
-        });
-      } catch (e) {
-        document.getElementById('env-label').textContent = 'Browser mode';
+async function init() {
+  try {
+    const savedSession = localStorage.getItem('ccloud_session');
+    if (savedSession) {
+      const session = JSON.parse(savedSession);
+      const greeting = document.getElementById('greeting');
+      if (greeting && session.user) {
+        greeting.textContent = `Welcome, ${session.user.displayName || session.user.email.split('@')[0]}!`;
       }
     }
+  } catch (e) {
+    console.error('[Onboarding 5] Init error:', e);
+  }
 
-    document.getElementById('launch-btn').addEventListener('click', () => {
-      const target = envMap.browser.path;
-      if (shouldRedirect) window.location.href = target;
+  const launchBtn = document.getElementById('launch-btn');
+  if (launchBtn) {
+    launchBtn.addEventListener('click', () => {
+      window.location.href = '../';
     });
+  }
+}
 
-    init();
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}

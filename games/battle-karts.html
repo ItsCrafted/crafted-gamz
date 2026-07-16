@@ -210,8 +210,7 @@ function rewriteURL(original) {
 		}
 		
 	</script>
-	<script id="gmsoft-jssdk" ></script>
-  <script src="https://cdn.cgamz.online/brand.js"></script>
+	<script src="https://cdn.cgamz.online/brand.js"></script>
 </head>
 
 <body>
@@ -290,43 +289,17 @@ function rewriteURL(original) {
 		};
 		document.body.appendChild(script);
 	</script>
-	<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
-	<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore-compat.js"></script>
-	<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-auth-compat.js"></script>
-	<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-analytics-compat.js"></script>
-	<script type="module">
-		// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
- apiKey: "AIzaSyA9QsG-2FEAj-kXVPhc9uxKBHbSCxg9Cl4",
- authDomain: "battle-karts.firebaseapp.com",
- projectId: "battle-karts",
- storageBucket: "battle-karts.firebasestorage.app",
- messagingSenderId: "568397893700",
- appId: "1:568397893700:web:215d11059ce72d4f5bec11",
- measurementId: "G-WS1029LDKW"
-};
-		if(firebaseConfig ){
-			window.dataLayer = window.dataLayer || [];
-			window.gtag = function () { window.dataLayer.push(arguments); }
-
-			window.gtag("config", firebaseConfig.measurementId, {
-			  cookie_domain: window.location.hostname,
-			  cookie_flags: "SameSite=None;Secure",
-			});
-			// Initialize Firebase
-			const app = firebase.initializeApp(firebaseConfig);
-			//const auth = getAuth(app);
-		}
 	</script>
 	<script>
+		// Analytics placeholder (Firebase removed, using cCloud only)
 		function firebaseSetUserProperties(props) {
-			firebase.analytics().setUserProperties(props);
+			// Analytics disabled
 		}
 		function firebaseLogEvent(event_name) {
-			firebase.analytics().logEvent(event_name);
+			// Analytics disabled
 		}
 		function firebaseLogEventParameter(event_name, event_param) {
-			firebase.analytics().logEvent(event_name, event_param);
+			// Analytics disabled
 		}
 	</script>
 	
